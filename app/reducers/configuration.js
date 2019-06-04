@@ -1,12 +1,12 @@
 // @flow
 
+import type { Action } from './types';
 import {
   NEXT_STAGE,
   PREVIOUS_STAGE,
   RESET_CONFIGURATION,
-  SET_CONFIGURATION} from '../actions/configuration';
-import type { Action } from './types';
-import { HIDE_CONFIGURATION, SHOW_CONFIGURATION } from '../actions/electron';
+  SET_CONFIGURATION
+} from '../constants/actionTypes';
 
 export type configurationStateType = {
   stage: number,

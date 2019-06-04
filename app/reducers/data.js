@@ -1,10 +1,13 @@
 // @flow
 
-import { DATA_OVERVIEW_SET } from '../actions/electron';
 import type { Action } from './types';
+import { DATA_OVERVIEW_SET } from '../constants/actionTypes';
 
+// todo: refine typing
+// eslint-disable-next-line flowtype/no-weak-types
+export type OverviewDataType = Array<Object>;
 export type dataStateType = {
-  overview?: any
+  overview?: OverviewDataType
 };
 
 const dataDefaultState: dataStateType = {};

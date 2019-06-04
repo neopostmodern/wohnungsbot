@@ -1,20 +1,23 @@
 // @flow
 
+import { shell } from 'electron';
 import {
   dataOverviewSet,
-  ELECTRON_ROUTING,
   electronRouting,
-  HIDE_CONFIGURATION,
-  INTERNAL_ADD_BROWSER_VIEW,
-  SET_BROWSER_VIEW_READY,
-  SET_BROWSER_WINDOW,
   setBrowserViewReady,
-  setBrowserViewUrl,
-  SHOW_CONFIGURATION
+  setBrowserViewUrl
 } from '../actions/electron';
 import type { Action, Store } from '../reducers/types';
 import type { electronStateType } from '../reducers/electron';
 import { sleep } from '../utils/async';
+import {
+  ELECTRON_ROUTING,
+  HIDE_CONFIGURATION,
+  INTERNAL_ADD_BROWSER_VIEW,
+  SET_BROWSER_VIEW_READY,
+  SET_BROWSER_WINDOW,
+  SHOW_CONFIGURATION
+} from '../constants/actionTypes';
 
 function resizeViews(
   electronState: electronStateType,
@@ -65,6 +68,7 @@ function resizeViews(
 }
 
 // credit: https://github.com/danro/jquery-easing/blob/master/jquery.easing.js#L38
+/* eslint-disable */
 const easeInOutCubic = (currentTime, startValue, valueChange, duration) => {
   if ((currentTime /= duration / 2) < 1)
     return (
@@ -75,6 +79,7 @@ const easeInOutCubic = (currentTime, startValue, valueChange, duration) => {
     startValue
   );
 };
+/* eslint-enable */
 
 export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
@@ -92,18 +97,20 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   }
 
   if (action.type === SET_BROWSER_VIEW_READY) {
-    if (action.payload.puppetViewReady) {
+    if (action.payload.name === 'puppet' && action.payload.ready) {
       if (
         store
           .getState()
-          .electron.url.startsWith('https://www.immobilienscout24.de/Suche')
+          .electron.views.puppet.url.startsWith(
+            'https://www.immobilienscout24.de/Suche'
+          )
       ) {
         const rawData = await store
           .getState()
-          .electron.puppetView.webContents.executeJavaScript(
+          .electron.views.puppet.browserView.webContents.executeJavaScript(
             `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
           );
-        next(dataOverviewSet(rawData));
+        store.dispatch(dataOverviewSet(rawData));
       }
     }
   }
@@ -122,6 +129,10 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     browserView.webContents.on('did-finish-load', () => {
       store.dispatch(setBrowserViewReady(name, true));
     });
+    browserView.webContents.on('new-window', (event, targetUrl) => {
+      event.preventDefault();
+      shell.openExternal(targetUrl);
+    });
 
     if (initialUrl) {
       process.nextTick(() => store.dispatch(electronRouting(name, initialUrl)));
@@ -139,7 +150,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   ) {
     const animationSteps = 500;
     const electronState = store.getState().electron;
-    for (let step = 0; step < animationSteps; step++) {
+    for (let step = 0; step < animationSteps; step += 1) {
       resizeViews(
         electronState,
         easeInOutCubic(

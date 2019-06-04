@@ -13,6 +13,7 @@ export type stateType = {
 
 export type Action = {
   +type: string,
+  // eslint-disable-next-line flowtype/no-weak-types
   payload: any,
   meta?: {
     target: string

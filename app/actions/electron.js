@@ -6,16 +6,19 @@ import { MAIN } from '../constants/targets';
 import { targetedAction } from '../middleware/targetFilter';
 import type { Action, Dispatch, GetState } from '../reducers/types';
 import type { BrowserViewName } from '../reducers/electron';
-
-export const WILL_CLICK = 'WILL_CLICK';
-export const CLICK_LOGIN = 'CLICK_LOGIN';
-export const SET_BROWSER_WINDOW = 'SET_BROWSER_WINDOW';
-export const SET_BROWSER_VIEW_READY = 'SET_BROWSER_VIEW_READY';
-export const SET_BROWSER_VIEW_URL = 'SET_BROWSER_VIEW_URL';
-export const ELECTRON_ROUTING = 'ELECTRON_ROUTING';
-export const DATA_OVERVIEW_SET = 'DATA_OVERVIEW_SET';
-export const INTERNAL_ADD_BROWSER_VIEW = 'INTERNAL_ADD_BROWSER_VIEW';
-export const RESIZE = 'RESIZE';
+import type { OverviewDataType } from '../reducers/data';
+import {
+  CLICK_LOGIN,
+  DATA_OVERVIEW_SET,
+  ELECTRON_ROUTING,
+  HIDE_CONFIGURATION,
+  INTERNAL_ADD_BROWSER_VIEW,
+  SET_BROWSER_VIEW_READY,
+  SET_BROWSER_VIEW_URL,
+  SET_BROWSER_WINDOW,
+  SHOW_CONFIGURATION,
+  WILL_CLICK
+} from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
   return {
@@ -46,7 +49,7 @@ export function addView(
 
 export function click(selector: string) {
   return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.puppetView;
+    const { webContents } = getState().actionTypes.puppetView;
     webContents.focus();
     const boundingRect = await webContents.executeJavaScript(`
         JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()));
@@ -122,15 +125,12 @@ export function electronRouting(
   };
 }
 
-export function dataOverviewSet(data: any): Action {
+export function dataOverviewSet(data: OverviewDataType): Action {
   return {
     type: DATA_OVERVIEW_SET,
     payload: { data }
   };
 }
-
-export const HIDE_CONFIGURATION = 'HIDE_CONFIGURATION';
-export const SHOW_CONFIGURATION = 'SHOW_CONFIGURATION';
 
 export function hideConfiguration(): Action {
   return {
@@ -139,16 +139,10 @@ export function hideConfiguration(): Action {
   };
 }
 
+// todo: implement middleware & reducer
 export function showConfiguration(): Action {
   return {
     type: SHOW_CONFIGURATION,
-    payload: null
-  };
-}
-
-export function resize(): Action {
-  return {
-    type: RESIZE,
     payload: null
   };
 }

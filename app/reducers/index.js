@@ -7,6 +7,7 @@ import data from './data';
 import configuration from './configuration';
 
 export default function createRootReducer(history: History) {
+  // eslint-disable-next-line flowtype/no-weak-types
   const reducers: any = {
     electron,
     animations,

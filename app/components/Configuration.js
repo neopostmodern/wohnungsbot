@@ -1,16 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
-import { Shell } from 'electron';
 import styles from './Configuration.scss';
 import type { configurationStateType } from '../reducers/configuration';
-
-type Props = {
-  nextStage: () => void,
-  previousStage: () => void,
-  hideConfiguration: () => void,
-  configuration: configurationStateType
-};
 
 type ElementDescription = {
   text: string | Node | ((props: Props) => Node),
@@ -64,9 +56,9 @@ const stages: Array<StageDescription> = [
           <br /> <br />
           Und keine Sorge, deine Suchprofil-Daten verlassen deinen Computer
           nicht. Wenn du mir (und dem Bot) das nicht glauben willst, kannst du
-          einfach in {/* todo: link to source */}
+          in{' '}
           <a
-            onClick={() => Shell.openExternal('http://todo.com')}
+            href="https://github.com/neopostmodern/wohnungsbot"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -87,12 +79,12 @@ const stages: Array<StageDescription> = [
       text: 'Bereit für die Wohnungssuche?'
     },
     body: {
-      text: (props: Props) => (
+      text: ({ configuration }: Props) => (
         <>
           Das ist dein Suchprofil:
           <pre
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify(props.configuration, null, 2)
+              __html: JSON.stringify(configuration, null, 2)
             }}
           />
         </>
@@ -105,6 +97,13 @@ const stages: Array<StageDescription> = [
     }
   }
 ];
+
+type Props = {
+  nextStage: () => void,
+  previousStage: () => void,
+  hideConfiguration: () => void,
+  configuration: configurationStateType
+};
 
 export default class Configuration extends Component<Props> {
   props: Props;
@@ -137,7 +136,9 @@ export default class Configuration extends Component<Props> {
               {this.renderAmbiguous(stage.title.text)}
             </h2>
 
-            <div className={stage.body.className}>{this.renderAmbiguous(stage.body.text)}</div>
+            <div className={stage.body.className}>
+              {this.renderAmbiguous(stage.body.text)}
+            </div>
           </main>
           <div className={styles.buttons}>
             <button
@@ -147,7 +148,7 @@ export default class Configuration extends Component<Props> {
                   ? hideConfiguration
                   : nextStage
               }
-              className={`primary ${stage.buttons.forward.className}`}
+              className={`primary ${stage.buttons.forward.className || ''}`}
               style={stage.buttons.forward.style}
             >
               {this.renderAmbiguous(stage.buttons.forward.text)}{' '}

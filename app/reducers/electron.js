@@ -2,10 +2,12 @@
 import dotProp from 'dot-prop-immutable';
 import type { BrowserWindow, BrowserView } from 'electron';
 import {
+  HIDE_CONFIGURATION,
+  INTERNAL_ADD_BROWSER_VIEW,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_VIEW_URL,
-  INTERNAL_ADD_BROWSER_VIEW, SET_BROWSER_WINDOW, HIDE_CONFIGURATION
-} from '../actions/electron';
+  SET_BROWSER_WINDOW
+} from '../constants/actionTypes';
 import type { Action } from './types';
 
 export type BrowserViewName =

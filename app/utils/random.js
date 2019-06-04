@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export function uniqueId() {
   return (
     Date.now().toString(36) +

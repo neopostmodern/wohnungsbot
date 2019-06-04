@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import styles from './BotOverlay.scss';
+// $FlowFixMe
 import BotIllustration from '../../resources/bot.svg';
 import type { BrowserViewState } from '../reducers/electron';
 import type { animationsStateType, anyAnimation } from '../reducers/animations';
@@ -13,7 +14,7 @@ type Props = {
 export default class BotOverlay extends Component<Props> {
   props: Props;
 
-  renderAnimations(animations: Array<anyAnimation>) {
+  static renderAnimations(animations: Array<anyAnimation>) {
     return (
       <div className={styles.animations}>
         {animations.map(animation => {
@@ -42,7 +43,7 @@ export default class BotOverlay extends Component<Props> {
 
     return (
       <div className={styles.container} data-tid="container">
-        {this.renderAnimations(animations.animations)}
+        {BotOverlay.renderAnimations(animations.animations)}
         <img
           src={BotIllustration}
           alt="bot"

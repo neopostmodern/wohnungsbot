@@ -20,13 +20,14 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  font-size: 130%;
 }
 
 .title {
-  font-size: 2rem;
+  font-size: 2em;
 }
 .largeTitle {
-  font-size: 5rem;
+  font-size: 3em;
 }
 
 .buttons {

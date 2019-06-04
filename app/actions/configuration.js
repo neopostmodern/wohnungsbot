@@ -1,10 +1,11 @@
 import type { configurationStateType } from '../reducers/configuration';
 import type { Action } from '../reducers/types';
-
-export const SET_CONFIGURATION = 'SET_CONFIGURATION';
-export const RESET_CONFIGURATION = 'RESET_CONFIGURATION';
-export const NEXT_STAGE = 'NEXT_STAGE';
-export const PREVIOUS_STAGE = 'PREVIOUS_STAGE';
+import {
+  NEXT_STAGE,
+  PREVIOUS_STAGE,
+  RESET_CONFIGURATION,
+  SET_CONFIGURATION
+} from '../constants/actionTypes';
 
 export function setConfiguration(
   configuration: configurationStateType
@@ -38,4 +39,3 @@ export function previousStage(): Action {
     meta: { configuration: true }
   };
 }
-

@@ -8,6 +8,7 @@ type Props = {
   clickLogin: () => void,
   electronRouting: (name: 'puppet', url: string) => void,
   puppet: BrowserViewState,
+  // eslint-disable-next-line react/no-unused-prop-types
   data: dataStateType
 };
 
@@ -15,7 +16,7 @@ export default class Sidebar extends Component<Props> {
   props: Props;
 
   renderContent() {
-    const { clickLogin, electronRouting, data } = this.props;
+    const { clickLogin, electronRouting } = this.props;
 
     return (
       <>
@@ -49,25 +50,12 @@ export default class Sidebar extends Component<Props> {
         >
           Reset
         </button>
-        <br />
-        <br />
-        <br />
-        <br />
-        {data && data.overview ? (
-          <pre
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(data.overview, null, 2)
-            }}
-          />
-        ) : null}
       </>
     );
   }
 
   render() {
-    const {
-      puppet
-    } = this.props;
+    const { puppet } = this.props;
 
     return (
       <div className={styles.container}>
