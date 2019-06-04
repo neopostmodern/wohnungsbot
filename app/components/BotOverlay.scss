@@ -1,0 +1,70 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: calc(100% - 25px);
+  right: 0;
+  border: 10px solid #226798;
+  box-sizing: border-box;
+}
+
+$bot-illustration-offset-right: 10vh;
+$bot-illustration-width: 15vh;
+.botIllustration {
+  position: absolute;
+  bottom: -2px;
+  right: $bot-illustration-offset-right;
+  width: $bot-illustration-width;
+}
+
+$speech-bubble-color: #58aeec;
+$speech-bubble-anchor-width: 4vh;
+.speechBubble {
+  position: absolute;
+  right: $bot-illustration-offset-right + $bot-illustration-width +
+    $speech-bubble-anchor-width - 1vh;
+  bottom: 3vh;
+  background-color: $speech-bubble-color;
+  color: #333;
+  font-size: calc(20px + 1vh);
+  padding: 0.5em 0.7em 0.4em;
+}
+.speechBubble::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 1vh;
+  width: 0;
+  height: 0;
+  border: 0 solid transparent;
+  border-top-width: 2vh;
+  border-left: 4vh #58aeec solid;
+  margin-right: -4vh;
+}
+
+.animations {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+.clickAnimation {
+  width: 0;
+  height: 0;
+  border: 10px solid deeppink;
+  border-radius: 50%;
+  position: absolute;
+  animation: click 2s forwards;
+}
+@keyframes click {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+  }
+}

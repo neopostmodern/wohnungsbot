@@ -1,0 +1,72 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@import '~material-design-icons/iconfont/material-icons.css';
+
+$BOT_DARK: #226798;
+
+body {
+  margin: 0;
+  position: relative;
+  color: black;
+  height: 100vh;
+  background-color: transparent;
+  font-family: Lunchtype22, serif;
+  overflow-y: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+h2 {
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  z-index: 10000000;
+}
+
+p {
+  font-size: 24px;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: $BOT_DARK;
+  text-decoration: underline;
+}
+
+a:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+button {
+  font-family: Lunchtype24, sans-serif;
+  //background: #eee;
+  background: none;
+  border: none;
+  color: #333;
+  padding: 0;
+  //padding: 0.4em 0.8em 0.4em;
+  //border-radius: 0.1em;
+  font-size: 20px;
+  text-transform: uppercase;
+  //box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+
+  &.primary {
+    color: $BOT_DARK;
+  }
+
+  .material-icons {
+    font-size: inherit;
+    position: relative;
+    top: 0.1em;
+    max-width: 1.4em; // todo: why?!
+  }
+}
