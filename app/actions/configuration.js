@@ -5,7 +5,7 @@ import {
   PREVIOUS_STAGE,
   RESET_CONFIGURATION,
   SET_CONFIGURATION,
-  TOGGLE_ZIP_CODE
+  TOGGLE_POSTCODE
 } from '../constants/actionTypes';
 
 export function setConfiguration(
@@ -40,10 +40,10 @@ export function previousStage(): Action {
     meta: { configuration: true }
   };
 }
-export function toggleZipCode(zipCode: string): Action {
+export function togglePostcode(postcode: string): Action {
   return {
-    type: TOGGLE_ZIP_CODE,
-    payload: { zipCode },
+    type: TOGGLE_POSTCODE,
+    payload: { postcode },
     meta: { configuration: true }
   };
 }

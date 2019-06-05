@@ -3,7 +3,7 @@ import React from 'react';
 import { Map, GeoJSON, TileLayer, Marker } from 'react-leaflet';
 import { divIcon } from 'leaflet';
 import { feature } from 'topojson';
-import topoData from '../map/berlin-zipcodes-data.topo';
+import topoData from '../map/berlin-postcodes-data.topo';
 import labels from '../map/labels';
 
 const geoData = feature(topoData, topoData.objects.collection);
@@ -23,7 +23,7 @@ const baseStyle = {
   fillOpacity: 0.2
 };
 
-type ZipCodeDescription = {
+type PostcodeDescription = {
   id: string
 };
 type Layer = {
@@ -34,11 +34,11 @@ type Layer = {
 };
 
 type Props = {
-  selectedZipCodes: Array<string>,
-  toggleZipCodeSelected: (zipCode: string) => void
+  selectedPostcodes: Array<string>,
+  togglePostcodeSelected: (postcode: string) => void
 };
 
-class ZipCodeMap extends React.Component<Props> {
+class PostcodeMap extends React.Component<Props> {
   props: Props;
 
   constructor() {
@@ -50,11 +50,11 @@ class ZipCodeMap extends React.Component<Props> {
     (this: any).style = this.style.bind(this);
   }
 
-  handle(zipCodeDescription: ZipCodeDescription, layer: Layer) {
+  handle(postcodeDescription: PostcodeDescription, layer: Layer) {
     layer.on('mouseover', () => {
-      const { selectedZipCodes } = this.props;
-      const currentlySelected = selectedZipCodes.includes(
-        zipCodeDescription.id
+      const { selectedPostcodes } = this.props;
+      const currentlySelected = selectedPostcodes.includes(
+        postcodeDescription.id
       );
       layer.setStyle({
         fillColor: currentlySelected ? 'darkred' : 'darkgreen',
@@ -62,18 +62,18 @@ class ZipCodeMap extends React.Component<Props> {
       });
     });
     layer.on('mouseout', () => {
-      layer.setStyle(this.style(zipCodeDescription));
+      layer.setStyle(this.style(postcodeDescription));
     });
     layer.on('click', () => {
-      const { toggleZipCodeSelected } = this.props;
-      toggleZipCodeSelected(zipCodeDescription.id);
+      const { togglePostcodeSelected } = this.props;
+      togglePostcodeSelected(postcodeDescription.id);
     });
   }
 
-  style(zipCodeDescription: ZipCodeDescription) {
-    const { selectedZipCodes } = this.props;
+  style(postcodeDescription: PostcodeDescription) {
+    const { selectedPostcodes } = this.props;
     const style = Object.assign({}, baseStyle);
-    if (selectedZipCodes.includes(zipCodeDescription.id)) {
+    if (selectedPostcodes.includes(postcodeDescription.id)) {
       Object.assign(style, {
         fillOpacity: 0.8,
         fillColor: 'darkgreen'
@@ -111,4 +111,4 @@ class ZipCodeMap extends React.Component<Props> {
   }
 }
 
-export default ZipCodeMap;
+export default PostcodeMap;

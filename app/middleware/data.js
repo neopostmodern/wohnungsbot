@@ -14,7 +14,7 @@ function assessFlatFromOverviewEntry(
   const flatPostcode = rawEntry['resultlist.realEstate'].address.postcode;
   reasons.push({
     reason: `Postleitzahl: ${flatPostcode}`,
-    result: configuration.zipCodes.includes(flatPostcode)
+    result: configuration.postcodes.includes(flatPostcode)
   });
 
   const result = reasons.every(reason => reason.result);
@@ -37,12 +37,14 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
       configuration
     } = store.getState();
 
-    overview.forEach(rawEntry => {
-      const flatId = rawEntry['@id'];
+    if (overview) {
+      overview.forEach(rawEntry => {
+        const flatId = rawEntry['@id'];
 
-      const verdict = assessFlatFromOverviewEntry(rawEntry, configuration);
-      store.dispatch(setVerdict(flatId, verdict));
-    });
+        const verdict = assessFlatFromOverviewEntry(rawEntry, configuration);
+        store.dispatch(setVerdict(flatId, verdict));
+      });
+    }
   }
 
   next(action);

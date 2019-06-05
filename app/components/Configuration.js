@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import styles from './Configuration.scss';
 import type { configurationStateType } from '../reducers/configuration';
-import ZipCodeMap from './ZipCodeMap';
+import PostcodeMap from './PostcodeMap';
 
 type ElementDescription = {
   text: string | Node | ((props: Props) => Node),
@@ -86,15 +86,15 @@ const stages: Array<StageDescription> = [
       className: `${styles.wide} ${styles.high}`
     },
     body: {
-      text: ({ toggleZipCode, configuration: { zipCodes } }: Props) => (
+      text: ({ togglePostcode, configuration: { postcodes } }: Props) => (
         <div>
           <div style={{ display: 'flex' }}>
             <div>
               Wähle Bereiche in denen du nach Wohnungen suchen möchtest in dem
-              du auf sie klickst — {zipCodes.length} Postleitzahl-Bezirke
+              du auf sie klickst — {postcodes.length} Postleitzahl-Bezirke
               ausgewählt
               <br />
-              <small>{zipCodes.join(', ')}</small>
+              <small>{postcodes.join(', ')}</small>
             </div>
             <button type="button" style={{ marginLeft: 'auto' }}>
               Zurücksetzen <span className="material-icons">replay</span>{' '}
@@ -102,9 +102,9 @@ const stages: Array<StageDescription> = [
           </div>
           <br />
           <br />
-          <ZipCodeMap
-            toggleZipCodeSelected={toggleZipCode}
-            selectedZipCodes={zipCodes}
+          <PostcodeMap
+            togglePostcodeSelected={togglePostcode}
+            selectedPostcodes={postcodes}
           />
         </div>
       )
@@ -143,7 +143,7 @@ type Props = {
   nextStage: () => void,
   previousStage: () => void,
   hideConfiguration: () => void,
-  toggleZipCode: (zipCode: string) => void,
+  togglePostcode: (postcode: string) => void,
   configuration: configurationStateType
 };
 

@@ -6,7 +6,7 @@ import Configuration from '../components/Configuration';
 import {
   nextStage,
   previousStage,
-  toggleZipCode
+  togglePostcode
 } from '../actions/configuration';
 import { hideConfiguration } from '../actions/electron';
 
@@ -18,7 +18,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { nextStage, previousStage, hideConfiguration, toggleZipCode },
+    { nextStage, previousStage, hideConfiguration, togglePostcode },
     dispatch
   );
 }

@@ -6,37 +6,37 @@ import {
   PREVIOUS_STAGE,
   RESET_CONFIGURATION,
   SET_CONFIGURATION,
-  TOGGLE_ZIP_CODE
+  TOGGLE_POSTCODE
 } from '../constants/actionTypes';
 
 export type configurationStateType = {
   stage: number,
   loaded: boolean,
-  zipCodes: Array<string>
+  postcodes: Array<string>
 };
 
 const configurationDefaultState: configurationStateType = {
   stage: 0,
   loaded: false,
-  zipCodes: []
+  postcodes: []
 };
 
 export default function configuration(
   state: configurationStateType = configurationDefaultState,
   action: Action
 ): configurationStateType {
-  if (action.type === TOGGLE_ZIP_CODE) {
-    const { zipCode } = action.payload;
-    const { zipCodes } = state;
+  if (action.type === TOGGLE_POSTCODE) {
+    const { postcode } = action.payload;
+    const { postcodes } = state;
 
-    if (zipCodes.includes(zipCode)) {
+    if (postcodes.includes(postcode)) {
       return Object.assign({}, state, {
-        zipCodes: zipCodes.filter(z => z !== zipCode)
+        postcodes: postcodes.filter(z => z !== postcode)
       });
     }
 
     return Object.assign({}, state, {
-      zipCodes: zipCodes.concat([zipCode])
+      postcodes: postcodes.concat([postcode])
     });
   }
 
