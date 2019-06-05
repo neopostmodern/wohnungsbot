@@ -139,7 +139,6 @@ export function hideConfiguration(): Action {
   };
 }
 
-// todo: implement middleware & reducer
 export function showConfiguration(): Action {
   return {
     type: SHOW_CONFIGURATION,

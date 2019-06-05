@@ -6,6 +6,7 @@ import type { dataStateType } from '../reducers/data';
 
 type Props = {
   clickLogin: () => void,
+  showConfiguration: () => void,
   electronRouting: (name: 'puppet', url: string) => void,
   puppet: BrowserViewState,
   // eslint-disable-next-line react/no-unused-prop-types
@@ -16,7 +17,7 @@ export default class Sidebar extends Component<Props> {
   props: Props;
 
   renderContent() {
-    const { clickLogin, electronRouting } = this.props;
+    const { clickLogin, showConfiguration, electronRouting } = this.props;
 
     return (
       <>
@@ -39,6 +40,11 @@ export default class Sidebar extends Component<Props> {
         <br />
         <br />
         <br />
+        <button onClick={showConfiguration} type="button">
+          Suchfilter anpassen
+        </button>
+        <br />
+        <br />
         <button
           onClick={() =>
             electronRouting(
@@ -48,7 +54,7 @@ export default class Sidebar extends Component<Props> {
           }
           type="button"
         >
-          Reset
+          Seite erneut laden
         </button>
       </>
     );

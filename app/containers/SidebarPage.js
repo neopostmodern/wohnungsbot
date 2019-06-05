@@ -1,7 +1,11 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
-import { clickLogin, electronRouting } from '../actions/electron';
+import {
+  clickLogin,
+  electronRouting,
+  showConfiguration
+} from '../actions/electron';
 
 function mapStateToProps(state) {
   return {
@@ -11,7 +15,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ clickLogin, electronRouting }, dispatch);
+  return bindActionCreators(
+    { clickLogin, electronRouting, showConfiguration },
+    dispatch
+  );
 }
 
 export default connect(
