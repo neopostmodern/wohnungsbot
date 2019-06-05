@@ -10,9 +10,16 @@
   width: 800px;
   max-width: 95vw;
   height: 400px;
-  max-height: 95vh;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
+
+  &.wide {
+    width: 100%;
+  }
+  &.high {
+    height: 100%;
+  }
 }
 
 main {

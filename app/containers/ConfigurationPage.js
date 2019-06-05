@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Configuration from '../components/Configuration';
 
-import { nextStage, previousStage } from '../actions/configuration';
+import {
+  nextStage,
+  previousStage,
+  toggleZipCode
+} from '../actions/configuration';
 import { hideConfiguration } from '../actions/electron';
 
 function mapStateToProps(state) {
@@ -14,7 +18,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { nextStage, previousStage, hideConfiguration },
+    { nextStage, previousStage, hideConfiguration, toggleZipCode },
     dispatch
   );
 }

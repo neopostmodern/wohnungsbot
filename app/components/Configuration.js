@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import styles from './Configuration.scss';
 import type { configurationStateType } from '../reducers/configuration';
+import ZipCodeMap from './ZipCodeMap';
 
 type ElementDescription = {
   text: string | Node | ((props: Props) => Node),
@@ -11,6 +12,9 @@ type ElementDescription = {
 };
 type ButtonDescription = ElementDescription;
 type StageDescription = {
+  container?: {
+    className?: string
+  },
   title: ElementDescription,
   body: ElementDescription,
   buttons: {
@@ -76,6 +80,43 @@ const stages: Array<StageDescription> = [
   },
   {
     title: {
+      text: 'Suchbereich festlegen'
+    },
+    container: {
+      className: `${styles.wide} ${styles.high}`
+    },
+    body: {
+      text: ({ toggleZipCode, configuration: { zipCodes } }: Props) => (
+        <div>
+          <div style={{ display: 'flex' }}>
+            <div>
+              Wähle Bereiche in denen du nach Wohnungen suchen möchtest in dem
+              du auf sie klickst — {zipCodes.length} Postleitzahl-Bezirke
+              ausgewählt
+              <br />
+              <small>{zipCodes.join(', ')}</small>
+            </div>
+            <button type="button" style={{ marginLeft: 'auto' }}>
+              Zurücksetzen <span className="material-icons">replay</span>{' '}
+            </button>
+          </div>
+          <br />
+          <br />
+          <ZipCodeMap
+            toggleZipCodeSelected={toggleZipCode}
+            selectedZipCodes={zipCodes}
+          />
+        </div>
+      )
+    },
+    buttons: {
+      forward: {
+        text: `Weiter`
+      }
+    }
+  },
+  {
+    title: {
       text: 'Bereit für die Wohnungssuche?'
     },
     body: {
@@ -102,6 +143,7 @@ type Props = {
   nextStage: () => void,
   previousStage: () => void,
   hideConfiguration: () => void,
+  toggleZipCode: (zipCode: string) => void,
   configuration: configurationStateType
 };
 
@@ -130,7 +172,11 @@ export default class Configuration extends Component<Props> {
 
     return (
       <div className={styles.container} data-tid="container">
-        <div className={styles.innerContainer}>
+        <div
+          className={`${styles.innerContainer} ${
+            stage.container ? stage.container.className || '' : ''
+          }`}
+        >
           <main>
             <h2 className={stage.title.className} style={stage.title.style}>
               {this.renderAmbiguous(stage.title.text)}

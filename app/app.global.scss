@@ -3,6 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 @import '~material-design-icons/iconfont/material-icons.css';
+@import '~leaflet/dist/leaflet.css';
 
 $BOT_DARK: #226798;
 
@@ -27,8 +28,8 @@ h2 {
   z-index: 10000000;
 }
 
-p {
-  font-size: 24px;
+small {
+  font-size: 70%;
 }
 
 li {
@@ -69,4 +70,13 @@ button {
     top: 0.1em;
     max-width: 1.4em; // todo: why?!
   }
+}
+
+// map
+.district-label {
+  background: none;
+  border: none;
+  pointer-events: none !important;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.7);
 }
