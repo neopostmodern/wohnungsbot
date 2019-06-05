@@ -3,8 +3,11 @@
 import { WAKE_UP } from '../actions/infrastructure';
 import { setConfiguration } from '../actions/configuration';
 import persistentStore from '../utils/persistentStore';
+import { refreshVerdicts } from '../actions/data';
+import type { Action, Dispatch, Store } from '../reducers/types';
 
-export default store => next => action => {
+// eslint-disable-next-line no-unused-vars
+export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {
     const configuration = persistentStore.get('configuration');
     configuration.loaded = true;
@@ -17,6 +20,8 @@ export default store => next => action => {
       delete configuration.loaded;
       persistentStore.set('configuration', configuration);
     });
+
+    store.dispatch(refreshVerdicts());
   }
 
   next(action);

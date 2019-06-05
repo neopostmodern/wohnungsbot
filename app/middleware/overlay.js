@@ -1,6 +1,6 @@
 // @flow
 
-import { clickAnimationClear, clickAnimationShow } from '../actions/animations';
+import { clickAnimationClear, clickAnimationShow } from '../actions/overlay';
 import { uniqueId } from '../utils/random';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { WILL_CLICK } from '../constants/actionTypes';

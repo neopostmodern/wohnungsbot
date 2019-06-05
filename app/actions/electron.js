@@ -6,10 +6,8 @@ import { MAIN } from '../constants/targets';
 import { targetedAction } from '../middleware/targetFilter';
 import type { Action, Dispatch, GetState } from '../reducers/types';
 import type { BrowserViewName } from '../reducers/electron';
-import type { OverviewDataType } from '../reducers/data';
 import {
   CLICK_LOGIN,
-  DATA_OVERVIEW_SET,
   ELECTRON_ROUTING,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
@@ -17,7 +15,8 @@ import {
   SET_BROWSER_VIEW_URL,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
-  WILL_CLICK
+  WILL_CLICK,
+  PERFORM_SCROLL
 } from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
@@ -125,13 +124,6 @@ export function electronRouting(
   };
 }
 
-export function dataOverviewSet(data: OverviewDataType): Action {
-  return {
-    type: DATA_OVERVIEW_SET,
-    payload: { data }
-  };
-}
-
 export function hideConfiguration(): Action {
   return {
     type: HIDE_CONFIGURATION,
@@ -143,5 +135,18 @@ export function showConfiguration(): Action {
   return {
     type: SHOW_CONFIGURATION,
     payload: null
+  };
+}
+
+export function performScroll(name: BrowserViewName, deltaY: number): Action {
+  return {
+    type: PERFORM_SCROLL,
+    payload: {
+      name,
+      deltaY
+    },
+    meta: {
+      target: MAIN
+    }
   };
 }

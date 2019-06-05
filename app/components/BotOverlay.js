@@ -4,11 +4,14 @@ import styles from './BotOverlay.scss';
 // $FlowFixMe
 import BotIllustration from '../../resources/bot.svg';
 import type { BrowserViewState } from '../reducers/electron';
-import type { animationsStateType, anyAnimation } from '../reducers/animations';
+import type { overlayStateType, anyAnimation } from '../reducers/overlay';
+import type { Verdicts } from '../reducers/data';
 
 type Props = {
   puppet: BrowserViewState,
-  animations: animationsStateType
+  overlay: overlayStateType,
+  verdicts: Verdicts,
+  performScroll: (name: 'puppet', deltaY: number) => void
 };
 
 export default class BotOverlay extends Component<Props> {
@@ -38,12 +41,70 @@ export default class BotOverlay extends Component<Props> {
     );
   }
 
+  constructor() {
+    super();
+
+    // eslint-disable-next-line flowtype/no-weak-types
+    (this: any).handleWheel = this.handleWheel.bind(this);
+  }
+
+  handleWheel(event: WheelEvent) {
+    const { performScroll } = this.props;
+    performScroll('puppet', Math.sign(event.deltaY) * 30);
+  }
+
   render() {
-    const { puppet, animations } = this.props;
+    const { puppet, overlay, verdicts } = this.props;
+
+    const matchedFlats = Object.values(verdicts).filter(({ result }) => result)
+      .length;
 
     return (
-      <div className={styles.container} data-tid="container">
-        {BotOverlay.renderAnimations(animations.animations)}
+      <div
+        className={styles.container}
+        data-tid="container"
+        onWheel={this.handleWheel}
+      >
+        {BotOverlay.renderAnimations(overlay.animations)}
+        {overlay.overviewBoundaries
+          ? overlay.overviewBoundaries.map(({ id, boundaries }) => (
+              <div
+                key={id}
+                className={styles.verdictOverlay}
+                style={{
+                  top: boundaries.top,
+                  left: boundaries.left,
+                  width: boundaries.width,
+                  height: boundaries.height
+                }}
+              >
+                <div className={styles.summary}>
+                  <span
+                    className={`material-icons ${
+                      verdicts[id].result ? styles.good : styles.bad
+                    }`}
+                  >
+                    {verdicts[id].result ? 'thumb_up_alt' : 'thumb_down_alt'}
+                  </span>
+                </div>
+                <div>
+                  {verdicts[id].reasons.map(({ reason, result }) => (
+                    <div key={reason}>
+                      <span
+                        className={`material-icons ${
+                          result ? styles.good : styles.bad
+                        }`}
+                      >
+                        {result ? 'check' : 'block'}
+                      </span>
+                      &nbsp;
+                      {reason}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))
+          : null}
         <img
           src={BotIllustration}
           alt="bot"
@@ -51,7 +112,9 @@ export default class BotOverlay extends Component<Props> {
         />
         <div className={styles.speechBubble}>
           {puppet.ready
-            ? 'Ich bin bereit.'
+            ? matchedFlats > 0
+              ? `${matchedFlats} passende Wohnungen gefunden.`
+              : 'Ich bin bereit.'
             : `Website lädt, gleich geht's los...`}
         </div>
       </div>

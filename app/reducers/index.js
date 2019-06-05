@@ -2,7 +2,7 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import electron from './electron';
-import animations from './animations';
+import overlay from './overlay';
 import data from './data';
 import configuration from './configuration';
 
@@ -10,7 +10,7 @@ export default function createRootReducer(history: History) {
   // eslint-disable-next-line flowtype/no-weak-types
   const reducers: any = {
     electron,
-    animations,
+    overlay,
     data,
     configuration
   };

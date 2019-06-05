@@ -2,8 +2,6 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
-@import '~material-design-icons/iconfont/material-icons.css';
-@import '~leaflet/dist/leaflet.css';
 
 $BOT_DARK: #226798;
 
@@ -63,16 +61,19 @@ button {
   &.primary {
     color: $BOT_DARK;
   }
+}
 
-  .material-icons {
-    font-size: inherit;
-    position: relative;
-    top: 0.1em;
-    max-width: 1.4em; // todo: why?!
-  }
+// icons
+@import '~material-design-icons/iconfont/material-icons.css';
+.material-icons {
+  font-size: inherit;
+  max-width: 1.4em; // todo: why?!
+  position: relative;
+  top: 0.1em;
 }
 
 // map
+@import '~leaflet/dist/leaflet.css';
 .district-label {
   background: none;
   border: none;

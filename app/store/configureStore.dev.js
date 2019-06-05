@@ -14,10 +14,11 @@ import getHistory from './history';
 import createRootReducer from '../reducers';
 import { MAIN, RENDERER } from '../constants/targets';
 import targetFilter from '../middleware/targetFilter';
-import animations from '../middleware/animations';
+import overlay from '../middleware/overlay';
 import logging from '../middleware/logging';
 import electron from '../middleware/electron';
 import configuration from '../middleware/configuration';
+import data from '../middleware/data';
 import * as counterActions from '../actions/electron';
 import type { stateType } from '../reducers/types';
 
@@ -65,7 +66,11 @@ const configureStore = (target: string, initialState?: stateType) => {
   }
 
   if (target === RENDERER) {
-    middleware.push(animations);
+    middleware.push(overlay);
+  }
+
+  if (target === MAIN) {
+    middleware.push(data);
   }
 
   const rootReducer = createRootReducer(history);

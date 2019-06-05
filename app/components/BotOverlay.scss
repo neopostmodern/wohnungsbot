@@ -68,3 +68,22 @@ $speech-bubble-anchor-width: 4vh;
     opacity: 0;
   }
 }
+
+.verdictOverlay {
+  position: absolute;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+
+  .summary {
+    font-size: 5em;
+  }
+}
+
+.bad {
+  color: darkred;
+}
+.good {
+  color: darkgreen;
+}

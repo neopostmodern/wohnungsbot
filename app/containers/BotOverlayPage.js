@@ -1,12 +1,22 @@
 // @flow
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import BotOverlay from '../components/BotOverlay';
+import { performScroll } from '../actions/electron';
 
 function mapStateToProps(state) {
   return {
     puppet: state.electron.views.puppet,
-    animations: state.animations
+    overlay: state.overlay,
+    verdicts: state.data.verdicts
   };
 }
 
-export default connect(mapStateToProps)(BotOverlay);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ performScroll }, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BotOverlay);

@@ -2,8 +2,9 @@
 import type { Action } from './types';
 import {
   CLICK_ANIMATION_CLEAR,
-  CLICK_ANIMATION_SHOW
-} from '../actions/animations';
+  CLICK_ANIMATION_SHOW,
+  SET_OVERVIEW_BOUNDARIES
+} from '../constants/actionTypes';
 
 export type baseAnimation = {
   animationId: string
@@ -15,18 +16,19 @@ export type clickAnimation = {
 } & baseAnimation;
 export type anyAnimation = clickAnimation;
 
-export type animationsStateType = {
-  animations: Array<anyAnimation>
+export type overlayStateType = {
+  animations: Array<anyAnimation>,
+  overviewBoundaries?: Array<{ id: string, boundaries: ClientRect }>
 };
 
-const animationsDefaultState: animationsStateType = {
+const overlayDefaultState: overlayStateType = {
   animations: []
 };
 
-export default function animations(
-  state: animationsStateType = animationsDefaultState,
+export default function overlay(
+  state: overlayStateType = overlayDefaultState,
   action: Action
-): animationsStateType {
+): overlayStateType {
   if (action.type === CLICK_ANIMATION_SHOW) {
     const animationsTemp = state.animations.slice();
     animationsTemp.push(action.payload);
@@ -38,6 +40,12 @@ export default function animations(
       animations: state.animations.filter(
         animation => animation.animationId !== action.payload.animationId
       )
+    });
+  }
+
+  if (action.type === SET_OVERVIEW_BOUNDARIES) {
+    return Object.assign({}, state, {
+      overviewBoundaries: action.payload.overviewBoundaries
     });
   }
 

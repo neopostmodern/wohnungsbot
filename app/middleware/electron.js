@@ -2,7 +2,6 @@
 
 import { shell } from 'electron';
 import {
-  dataOverviewSet,
   electronRouting,
   setBrowserViewReady,
   setBrowserViewUrl
@@ -11,13 +10,21 @@ import type { Action, Store } from '../reducers/types';
 import type { electronStateType } from '../reducers/electron';
 import { sleep } from '../utils/async';
 import {
+  CALCULATE_OVERVIEW_BOUNDARIES,
   ELECTRON_ROUTING,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
+  PERFORM_SCROLL,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION
 } from '../constants/actionTypes';
+import type { RawOverviewData } from '../reducers/data';
+import {
+  calculateOverviewBoundaries,
+  setOverviewBoundaries
+} from '../actions/overlay';
+import { dataOverviewSet } from '../actions/data';
 
 function resizeViews(
   electronState: electronStateType,
@@ -43,7 +50,7 @@ function resizeViews(
   puppet.browserView.setBounds({
     x: sideBarWidth + 10,
     y: 10,
-    width: windowWidth - sideBarWidth - 20,
+    width: windowWidth - sideBarWidth, // - 20, // by not subtracting the offset we push the scrollbar out of view
     height: windowHeight - 20
   });
   botOverlay.browserView.setBounds({
@@ -98,19 +105,15 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
   if (action.type === SET_BROWSER_VIEW_READY) {
     if (action.payload.name === 'puppet' && action.payload.ready) {
-      if (
-        store
-          .getState()
-          .electron.views.puppet.url.startsWith(
-            'https://www.immobilienscout24.de/Suche'
-          )
-      ) {
-        const rawData = await store
-          .getState()
-          .electron.views.puppet.browserView.webContents.executeJavaScript(
-            `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
-          );
+      const { puppet } = store.getState().electron.views;
+      if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
+        const rawData: RawOverviewData = await puppet.browserView.webContents.executeJavaScript(
+          `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
+        );
         store.dispatch(dataOverviewSet(rawData));
+        store.dispatch(calculateOverviewBoundaries());
+        setTimeout(() => store.dispatch(calculateOverviewBoundaries()), 1000);
+        setTimeout(() => store.dispatch(calculateOverviewBoundaries()), 5000);
       }
     }
   }
@@ -141,7 +144,10 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
   if (action.type === SET_BROWSER_WINDOW) {
     const { window } = action.payload;
-    window.on('resize', () => resizeViews(store.getState().electron));
+    window.on('resize', () => {
+      resizeViews(store.getState().electron);
+      process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
+    });
   }
 
   if (
@@ -163,6 +169,54 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       // eslint-disable-next-line no-await-in-loop
       await sleep(5);
     }
+  }
+
+  if (action.type === CALCULATE_OVERVIEW_BOUNDARIES) {
+    const {
+      electron: {
+        views: { puppet }
+      },
+      data: { overview }
+    } = store.getState();
+
+    if (overview) {
+      const overviewBoundaries = [];
+
+      const innerHeight = await puppet.browserView.webContents.executeJavaScript(
+        `window.innerHeight`
+      );
+
+      // eslint-disable-next-line no-restricted-syntax
+      for (const rawEntry of overview) {
+        const id = rawEntry['@id'];
+        // eslint-disable-next-line no-await-in-loop
+        const boundaries = await puppet.browserView.webContents.executeJavaScript(
+          `JSON.parse(JSON.stringify(document.getElementById('result-${id}').getBoundingClientRect()))`
+        );
+        if (boundaries.top > innerHeight) {
+          break;
+        }
+        if (boundaries.top + boundaries.height < 0) {
+          // eslint-disable-next-line no-continue
+          continue;
+        }
+        overviewBoundaries.push({ id, boundaries });
+      }
+
+      store.dispatch(setOverviewBoundaries(overviewBoundaries));
+    }
+  }
+
+  if (action.type === PERFORM_SCROLL) {
+    const {
+      electron: { views }
+    } = store.getState();
+
+    await views[action.payload.name].browserView.webContents.executeJavaScript(
+      `window.scrollBy(0, ${action.payload.deltaY});`
+    );
+
+    process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
   }
 
   next(action);
