@@ -15,6 +15,7 @@ import {
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
   PERFORM_SCROLL,
+  RETURN_TO_SEARCH_PAGE,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION
@@ -91,6 +92,12 @@ const easeInOutCubic = (currentTime, startValue, valueChange, duration) => {
 export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
 ) => {
+  if (action.type === RETURN_TO_SEARCH_PAGE) {
+    store.dispatch(
+      electronRouting('puppet', store.getState().configuration.searchUrl)
+    );
+  }
+
   if (action.type === ELECTRON_ROUTING) {
     const { name, targetUrl } = action.payload;
     store.dispatch(setBrowserViewReady(name, false));
@@ -150,6 +157,11 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     });
   }
 
+  if (action.type === HIDE_CONFIGURATION) {
+    const { searchUrl } = store.getState().configuration;
+    store.dispatch(electronRouting('puppet', searchUrl));
+  }
+
   if (
     action.type === HIDE_CONFIGURATION ||
     action.type === SHOW_CONFIGURATION
@@ -170,6 +182,8 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       await sleep(5);
     }
   }
+
+  // todo: invalidate / remove boundaries on URL change etc.
 
   if (action.type === CALCULATE_OVERVIEW_BOUNDARIES) {
     const {

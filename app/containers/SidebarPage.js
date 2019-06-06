@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
 import {
   clickLogin,
-  electronRouting,
+  returnToSearchPage,
   showConfiguration
 } from '../actions/electron';
 
@@ -16,7 +16,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { clickLogin, electronRouting, showConfiguration },
+    { clickLogin, returnToSearchPage, showConfiguration },
     dispatch
   );
 }

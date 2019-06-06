@@ -1,0 +1,453 @@
+[
+  {
+    "geoNodeId": 1276003001001,
+    "label": "Adlershof (Treptow)",
+    "postcodes": ["12489"]
+  },
+  {
+    "geoNodeId": 1276003001027,
+    "label": "Alt-Hohenschönhausen (Hohenschönhausen)",
+    "postcodes": ["13053", "13055", "13051"]
+  },
+  {
+    "geoNodeId": 1276003001002,
+    "label": "Altglienicke (Treptow)",
+    "postcodes": ["12524"]
+  },
+  {
+    "geoNodeId": 1276003001069,
+    "label": "Baumschulenweg (Treptow)",
+    "postcodes": ["12437"]
+  },
+  {
+    "geoNodeId": 1276003001003,
+    "label": "Biesdorf (Marzahn)",
+    "postcodes": ["12683"]
+  },
+  {
+    "geoNodeId": 1276003001004,
+    "label": "Blankenburg (Weißensee)",
+    "postcodes": ["13125", "13129"]
+  },
+  {
+    "geoNodeId": 1276003001005,
+    "label": "Blankenfelde (Pankow)",
+    "postcodes": ["13159"]
+  },
+  {
+    "geoNodeId": 1276003001006,
+    "label": "Bohnsdorf (Treptow)",
+    "postcodes": ["12526"]
+  },
+  {
+    "geoNodeId": 1276003001007,
+    "label": "Britz (Neukölln)",
+    "postcodes": ["12359", "12347", "12349", "12351"]
+  },
+  {
+    "geoNodeId": 1276003001008,
+    "label": "Buch (Pankow)",
+    "postcodes": ["13125"]
+  },
+  {
+    "geoNodeId": 1276003001010,
+    "label": "Buckow (Neukölln)",
+    "postcodes": ["12349", "12351", "12353", "12357"]
+  },
+  {
+    "geoNodeId": 1276003001011,
+    "label": "Charlottenburg (Charlottenburg)",
+    "postcodes": [
+      "13627",
+      "10589",
+      "14059",
+      "10587",
+      "10787",
+      "10789",
+      "10623",
+      "10625",
+      "10585",
+      "10627",
+      "10719",
+      "10629",
+      "10707",
+      "14057",
+      "14055",
+      "14052",
+      "14050",
+      "14053"
+    ]
+  },
+  {
+    "geoNodeId": 1276003001012,
+    "label": "Dahlem (Zehlendorf)",
+    "postcodes": ["14195", "14169"]
+  },
+  {
+    "geoNodeId": 1276003001013,
+    "label": "Falkenberg (Hohenschönhausen)",
+    "postcodes": ["13057", "13059"]
+  },
+  {
+    "geoNodeId": 1276003001009,
+    "label": "Französisch Buchholz (Pankow)",
+    "postcodes": ["13127", "13159"]
+  },
+  {
+    "geoNodeId": 1276003001014,
+    "label": "Friedenau (Schöneberg)",
+    "postcodes": ["12161", "12159"]
+  },
+  {
+    "geoNodeId": 1276003001015,
+    "label": "Friedrichsfelde (Lichtenberg)",
+    "postcodes": ["10315", "10319", "10365"]
+  },
+  {
+    "geoNodeId": 1276003001016,
+    "label": "Friedrichshagen (Köpenick)",
+    "postcodes": ["12587"]
+  },
+  {
+    "geoNodeId": 1276003001017,
+    "label": "Friedrichshain (Friedrichshain)",
+    "postcodes": ["10245", "10317", "10243", "10249", "10247"]
+  },
+  {
+    "geoNodeId": 1276003001018,
+    "label": "Frohnau (Reinickendorf)",
+    "postcodes": ["13465"]
+  },
+  {
+    "geoNodeId": 1276003001019,
+    "label": "Gatow (Spandau)",
+    "postcodes": ["14089"]
+  },
+  {
+    "geoNodeId": 1276003001020,
+    "label": "Grunewald (Wilmersdorf)",
+    "postcodes": ["14193"]
+  },
+  {
+    "geoNodeId": 1276003001021,
+    "label": "Grünau (Köpenick)",
+    "postcodes": ["12527"]
+  },
+  {
+    "geoNodeId": 1276003001022,
+    "label": "Haselhorst (Spandau)",
+    "postcodes": ["13599"]
+  },
+  {
+    "geoNodeId": 1276003001023,
+    "label": "Heiligensee (Reinickendorf)",
+    "postcodes": ["13503"]
+  },
+  {
+    "geoNodeId": 1276003001024,
+    "label": "Heinersdorf (Weißensee)",
+    "postcodes": ["13089", "13088"]
+  },
+  {
+    "geoNodeId": 1276003001025,
+    "label": "Hellersdorf (Hellersdorf)",
+    "postcodes": ["12629", "12627"]
+  },
+  {
+    "geoNodeId": 1276003001026,
+    "label": "Hermsdorf (Reinickendorf)",
+    "postcodes": ["13467"]
+  },
+  {
+    "geoNodeId": 1276003001028,
+    "label": "Johannisthal (Treptow)",
+    "postcodes": ["12487"]
+  },
+  {
+    "geoNodeId": 1276003001029,
+    "label": "Karlshorst (Lichtenberg)",
+    "postcodes": ["10318"]
+  },
+  {
+    "geoNodeId": 1276003001030,
+    "label": "Karow (Weißensee)",
+    "postcodes": ["13125"]
+  },
+  {
+    "geoNodeId": 1276003001031,
+    "label": "Kaulsdorf (Hellersdorf)",
+    "postcodes": ["12619", "12621"]
+  },
+  {
+    "geoNodeId": 1276003001032,
+    "label": "Kladow (Spandau)",
+    "postcodes": ["14089"]
+  },
+  {
+    "geoNodeId": 1276003001033,
+    "label": "Konradshöhe (Reinickendorf)",
+    "postcodes": ["13505"]
+  },
+  {
+    "geoNodeId": 1276003001034,
+    "label": "Kreuzberg (Kreuzberg)",
+    "postcodes": ["10963", "10969", "10961", "10965", "10967", "10999", "10997"]
+  },
+  {
+    "geoNodeId": 1276003001035,
+    "label": "Köpenick (Köpenick)",
+    "postcodes": ["12557", "12555", "12559"]
+  },
+  {
+    "geoNodeId": 1276003001036,
+    "label": "Lankwitz (Steglitz)",
+    "postcodes": ["12247", "12249"]
+  },
+  {
+    "geoNodeId": 1276003001037,
+    "label": "Lichtenberg (Lichtenberg)",
+    "postcodes": ["10319", "10315", "10317", "10365", "10367", "10369", "10245"]
+  },
+  {
+    "geoNodeId": 1276003001038,
+    "label": "Lichtenrade (Tempelhof)",
+    "postcodes": ["12307", "12305", "12309"]
+  },
+  {
+    "geoNodeId": 1276003001039,
+    "label": "Lichterfelde (Steglitz)",
+    "postcodes": ["12209", "12207", "14167", "12205", "12203"]
+  },
+  {
+    "geoNodeId": 1276003001040,
+    "label": "Lübars (Reinickendorf)",
+    "postcodes": ["13469", "13435"]
+  },
+  {
+    "geoNodeId": 1276003001041,
+    "label": "Mahlsdorf (Hellersdorf)",
+    "postcodes": ["12623"]
+  },
+  {
+    "geoNodeId": 1276003001042,
+    "label": "Malchow (Hohenschönhausen)",
+    "postcodes": ["13051", "13088"]
+  },
+  {
+    "geoNodeId": 1276003001043,
+    "label": "Mariendorf (Tempelhof)",
+    "postcodes": ["12307", "12305", "12309"]
+  },
+  {
+    "geoNodeId": 1276003001044,
+    "label": "Marienfelde (Tempelhof)",
+    "postcodes": ["12277", "12279"]
+  },
+  {
+    "geoNodeId": 1276003001045,
+    "label": "Marzahn (Marzahn)",
+    "postcodes": ["12689", "12687", "12679", "12685", "12681", "13057"]
+  },
+  {
+    "geoNodeId": 1276003001046,
+    "label": "Mitte (Mitte)",
+    "postcodes": ["10119", "10115", "10117", "10179", "10178", "10435"]
+  },
+  {
+    "geoNodeId": 1276003001047,
+    "label": "Müggelheim (Köpenick)",
+    "postcodes": ["12559", "12527"]
+  },
+  {
+    "geoNodeId": 1276003001080,
+    "label": "Neu-Hohenschönhausen (Hohenschönhausen)",
+    "postcodes": ["13057", "13059", "13051", "13053"]
+  },
+  {
+    "geoNodeId": 1276003001048,
+    "label": "Neukölln (Neukölln)",
+    "postcodes": ["12045", "12047", "12043", "12053", "12049", "12051", "12057", "12055", "12059"]
+  },
+  {
+    "geoNodeId": 1276003001049,
+    "label": "Niederschöneweide (Treptow)",
+    "postcodes": ["12439"]
+  },
+  {
+    "geoNodeId": 1276003001050,
+    "label": "Niederschönhausen (Pankow)",
+    "postcodes": ["13156", "13158"]
+  },
+  {
+    "geoNodeId": 1276003001051,
+    "label": "Nikolassee (Zehlendorf)",
+    "postcodes": ["14129", "14163"]
+  },
+  {
+    "geoNodeId": 1276003001052,
+    "label": "Oberschöneweide (Köpenick)",
+    "postcodes": ["12459"]
+  },
+  {
+    "geoNodeId": 1276003001053,
+    "label": "Pankow (Pankow)",
+    "postcodes": ["13187", "13189"]
+  },
+  {
+    "geoNodeId": 1276003001081,
+    "label": "Plänterwald (Treptow)",
+    "postcodes": ["12435", "12437"]
+  },
+  {
+    "geoNodeId": 1276003001054,
+    "label": "Prenzlauer Berg (Prenzlauer Berg)",
+    "postcodes": ["10407", "10405", "10435", "10437", "10439", "10409", "10119"]
+  },
+  {
+    "geoNodeId": 1276003001055,
+    "label": "Rahnsdorf (Köpenick)",
+    "postcodes": ["12589", "12559", "12527"]
+  },
+  {
+    "geoNodeId": 1276003001056,
+    "label": "Reinickendorf (Reinickendorf)",
+    "postcodes": ["13407", "13403", "13405", "13409"]
+  },
+  {
+    "geoNodeId": 1276003001057,
+    "label": "Rosenthal (Pankow)",
+    "postcodes": ["13158"]
+  },
+  {
+    "geoNodeId": 1276003001058,
+    "label": "Rudow (Neukölln)",
+    "postcodes": ["12353", "12357", "12355"]
+  },
+  {
+    "geoNodeId": 1276003001082,
+    "label": "Rummelsburg (Lichtenberg)",
+    "postcodes": ["10317"]
+  },
+  {
+    "geoNodeId": 1276003001059,
+    "label": "Schmargendorf (Wilmersdorf)",
+    "postcodes": ["14199", "14195", "14197", "14193"]
+  },
+  {
+    "geoNodeId": 1276003001060,
+    "label": "Schmöckwitz (Köpenick)",
+    "postcodes": ["12527", "12559"]
+  },
+  {
+    "geoNodeId": 1276003001061,
+    "label": "Schöneberg (Schöneberg)",
+    "postcodes": [
+      "10829",
+      "10827",
+      "10823",
+      "12157",
+      "12103",
+      "10781",
+      "10783",
+      "10777",
+      "10787",
+      "10779",
+      "10825",
+      "12159",
+      "10789",
+      "10963"
+    ]
+  },
+  {
+    "geoNodeId": 1276003001062,
+    "label": "Siemensstadt (Spandau)",
+    "postcodes": ["13629", "13627"]
+  },
+  {
+    "geoNodeId": 1276003001063,
+    "label": "Spandau (Spandau)",
+    "postcodes": ["13587", "13589", "13583", "13581", "13585", "13597", "13595", "13593", "14053"]
+  },
+  {
+    "geoNodeId": 1276003001064,
+    "label": "Staaken (Spandau)",
+    "postcodes": ["13593", "13591"]
+  },
+  {
+    "geoNodeId": 1276003001065,
+    "label": "Steglitz (Steglitz)",
+    "postcodes": ["12169", "12165", "12163", "12167", "12157", "12161", "12247"]
+  },
+  {
+    "geoNodeId": 1276003001066,
+    "label": "Tegel (Reinickendorf)",
+    "postcodes": ["13507", "13509", "13405", "13403"]
+  },
+  {
+    "geoNodeId": 1276003001067,
+    "label": "Tempelhof (Tempelhof)",
+    "postcodes": ["12101", "12103", "12099", "12105", "12107"]
+  },
+  {
+    "geoNodeId": 1276003001068,
+    "label": "Tiergarten (Tiergarten)",
+    "postcodes": ["10785", "10787", "10557", "10559", "10555", "10551", "13353"]
+  },
+  {
+    "geoNodeId": 1276003001079,
+    "label": "Treptow (Treptow)",
+    "postcodes": ["12435"]
+  },
+  {
+    "geoNodeId": 1276003001070,
+    "label": "Waidmannslust (Reinickendorf)",
+    "postcodes": ["13469"]
+  },
+  {
+    "geoNodeId": 1276003001071,
+    "label": "Wannsee (Zehlendorf)",
+    "postcodes": ["14109"]
+  },
+  {
+    "geoNodeId": 1276003001083,
+    "label": "Wartenberg (Hohenschönhausen)",
+    "postcodes": ["13059", "13057"]
+  },
+  {
+    "geoNodeId": 1276003001073,
+    "label": "Wedding (Wedding)",
+    "postcodes": ["13347", "13349", "13351", "13353", "13359", "13357", "13355"]
+  },
+  {
+    "geoNodeId": 1276003001074,
+    "label": "Weißensee (Weißensee)",
+    "postcodes": ["13088", "13086"]
+  },
+  {
+    "geoNodeId": 1276003001076,
+    "label": "Wilmersdorf (Wilmersdorf)",
+    "postcodes": [
+      "10709",
+      "10711",
+      "10713",
+      "14197",
+      "14199",
+      "10707",
+      "10717",
+      "10719",
+      "10777",
+      "10779",
+      "10715"
+    ]
+  },
+  {
+    "geoNodeId": 1276003001077,
+    "label": "Wittenau (Reinickendorf)",
+    "postcodes": ["13439", "13435", "13437", "13509", "13403"]
+  },
+  {
+    "geoNodeId": 1276003001078,
+    "label": "Zehlendorf (Zehlendorf)",
+    "postcodes": ["14169", "14163", "14165", "14167"]
+  }
+]

@@ -16,7 +16,8 @@ import {
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
   WILL_CLICK,
-  PERFORM_SCROLL
+  PERFORM_SCROLL,
+  RETURN_TO_SEARCH_PAGE
 } from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
@@ -48,7 +49,7 @@ export function addView(
 
 export function click(selector: string) {
   return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().actionTypes.puppetView;
+    const { webContents } = getState().electron.views.puppet.browserView;
     webContents.focus();
     const boundingRect = await webContents.executeJavaScript(`
         JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()));
@@ -121,6 +122,13 @@ export function electronRouting(
     meta: {
       target: 'main'
     }
+  };
+}
+
+export function returnToSearchPage(): Action {
+  return {
+    type: RETURN_TO_SEARCH_PAGE,
+    payload: null
   };
 }
 

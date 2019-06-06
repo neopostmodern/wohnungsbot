@@ -6,13 +6,15 @@ import {
   PREVIOUS_STAGE,
   RESET_CONFIGURATION,
   SET_CONFIGURATION,
+  SET_SEARCH_URL,
   TOGGLE_POSTCODE
 } from '../constants/actionTypes';
 
 export type configurationStateType = {
   stage: number,
   loaded: boolean,
-  postcodes: Array<string>
+  postcodes: Array<string>,
+  searchUrl?: string
 };
 
 const configurationDefaultState: configurationStateType = {
@@ -49,6 +51,8 @@ export default function configuration(
       return Object.assign({}, state, { stage: state.stage + 1 });
     case PREVIOUS_STAGE:
       return Object.assign({}, state, { stage: state.stage - 1 });
+    case SET_SEARCH_URL:
+      return Object.assign({}, state, { searchUrl: action.payload.searchUrl });
     default:
       return state;
   }

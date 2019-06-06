@@ -1,27 +1,67 @@
 // @flow
 
 import { WAKE_UP } from '../actions/infrastructure';
-import { setConfiguration } from '../actions/configuration';
+import { setConfiguration, setSearchUrl } from '../actions/configuration';
 import persistentStore from '../utils/persistentStore';
 import { refreshVerdicts } from '../actions/data';
 import type { Action, Dispatch, Store } from '../reducers/types';
+import { SET_SEARCH_URL } from '../constants/actionTypes';
+import type { configurationStateType } from '../reducers/configuration';
+import districts from '../map/districts';
+
+function generateSearchUrl(configuration: configurationStateType): string {
+  let searchUrl =
+    'https://www.immobilienscout24.de/Suche/S-2/Wohnung-Miete/Berlin/Berlin/';
+  const overlappingDistricts = districts.filter(district =>
+    district.postcodes.some(postcode =>
+      configuration.postcodes.includes(postcode)
+    )
+  );
+
+  if (overlappingDistricts.length <= 10) {
+    searchUrl += overlappingDistricts
+      .map(district =>
+        district.label
+          .replace('(', '-')
+          .replace(/[) ]/g, '')
+          .replace(/ä/g, 'ae')
+          .replace(/ö/g, 'oe')
+          .replace(/ü/g, 'ue')
+          .replace(/ß/g, 'ss')
+      )
+      .join('_');
+  } else {
+    searchUrl += overlappingDistricts
+      .map(district => (district.geoNodeId - 1276003001000).toString())
+      .join('_');
+  }
+
+  searchUrl += '/1,00-3,00/-/EURO--1350,00';
+
+  return searchUrl;
+}
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {
     const configuration = persistentStore.get('configuration');
     configuration.loaded = true;
-    next(setConfiguration(configuration));
+    store.dispatch(setConfiguration(configuration));
   }
 
   if (action.meta && action.meta.configuration) {
+    const { configuration } = store.getState();
     process.nextTick(() => {
-      const configuration = Object.assign({}, store.getState().configuration);
-      delete configuration.loaded;
-      persistentStore.set('configuration', configuration);
+      const configurationToSave = Object.assign({}, configuration);
+      delete configurationToSave.loaded;
+      persistentStore.set('configuration', configurationToSave);
     });
 
     store.dispatch(refreshVerdicts());
+
+    if (action.type !== SET_SEARCH_URL) {
+      store.dispatch(setSearchUrl(generateSearchUrl(configuration)));
+    }
   }
 
   next(action);

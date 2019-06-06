@@ -5,6 +5,7 @@ import {
   PREVIOUS_STAGE,
   RESET_CONFIGURATION,
   SET_CONFIGURATION,
+  SET_SEARCH_URL,
   TOGGLE_POSTCODE
 } from '../constants/actionTypes';
 
@@ -40,10 +41,19 @@ export function previousStage(): Action {
     meta: { configuration: true }
   };
 }
+
 export function togglePostcode(postcode: string): Action {
   return {
     type: TOGGLE_POSTCODE,
     payload: { postcode },
+    meta: { configuration: true }
+  };
+}
+
+export function setSearchUrl(searchUrl: string): Action {
+  return {
+    type: SET_SEARCH_URL,
+    payload: { searchUrl },
     meta: { configuration: true }
   };
 }

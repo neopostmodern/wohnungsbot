@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { Map, GeoJSON, TileLayer, Marker } from 'react-leaflet';
-import { divIcon } from 'leaflet';
+import { divIcon, type Layer } from 'leaflet';
 import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo';
 import labels from '../map/labels';
@@ -24,13 +24,11 @@ const baseStyle = {
 };
 
 type PostcodeDescription = {
-  id: string
-};
-type Layer = {
-  // eslint-disable-next-line flowtype/no-weak-types
-  setStyle: (style: Object) => void,
-  // eslint-disable-next-line flowtype/no-weak-types
-  on: (eventName: string, callback: (event: any) => void) => void
+  id: string,
+  properties: {
+    name: string,
+    district: string
+  }
 };
 
 type Props = {
@@ -68,6 +66,17 @@ class PostcodeMap extends React.Component<Props> {
       const { togglePostcodeSelected } = this.props;
       togglePostcodeSelected(postcodeDescription.id);
     });
+    layer.bindTooltip(
+      `${postcodeDescription.id}
+<div class="map-tooltip-name">${postcodeDescription.properties.name}</div>
+${postcodeDescription.properties.district}`,
+      {
+        sticky: true,
+        className: 'map-tooltip',
+        offset: [30, 0],
+        direction: 'right'
+      }
+    );
   }
 
   style(postcodeDescription: PostcodeDescription) {

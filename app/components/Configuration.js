@@ -127,6 +127,7 @@ const stages: Array<StageDescription> = [
             dangerouslySetInnerHTML={{
               __html: JSON.stringify(configuration, null, 2)
             }}
+            style={{ maxHeight: 200 }}
           />
         </>
       )

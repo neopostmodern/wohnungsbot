@@ -3,6 +3,9 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
+// todo: package fonts
+$FONT_PRIMARY: Lunchtype22, sans-serif;
+$FONT_HIGHLIGHT: Lunchtype24, sans-serif;
 $BOT_DARK: #226798;
 
 body {
@@ -11,7 +14,7 @@ body {
   color: black;
   height: 100vh;
   background-color: transparent;
-  font-family: Lunchtype22, serif;
+  font-family: $FONT_PRIMARY;
   overflow-y: hidden;
 }
 
@@ -45,7 +48,7 @@ a:hover {
 }
 
 button {
-  font-family: Lunchtype24, sans-serif;
+  font-family: $FONT_HIGHLIGHT;
   //background: #eee;
   background: none;
   border: none;
@@ -78,6 +81,22 @@ button {
   background: none;
   border: none;
   pointer-events: none !important;
+  font-family: $FONT_HIGHLIGHT;
+  text-transform: uppercase;
   font-size: 20px;
   color: rgba(0, 0, 0, 0.7);
+}
+.map-tooltip {
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  min-width: 15em;
+
+  &::before {
+    display: none;
+  }
+}
+.map-tooltip-name {
+  font-size: 2em;
+  line-height: 100%;
 }
