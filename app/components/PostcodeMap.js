@@ -35,17 +35,28 @@ type Props = {
   selectedPostcodes: Array<string>,
   togglePostcodeSelected: (postcode: string) => void
 };
+type State = {
+  height?: number
+};
 
-class PostcodeMap extends React.Component<Props> {
+class PostcodeMap extends React.Component<Props, State> {
   props: Props;
+
+  state: State;
+
+  heightRef: HTMLElement;
 
   constructor() {
     super();
+
+    this.state = {};
 
     // eslint-disable-next-line flowtype/no-weak-types
     (this: any).handle = this.handle.bind(this);
     // eslint-disable-next-line flowtype/no-weak-types
     (this: any).style = this.style.bind(this);
+    // eslint-disable-next-line flowtype/no-weak-types
+    (this: any).setHeightRef = this.setHeightRef.bind(this);
   }
 
   handle(postcodeDescription: PostcodeDescription, layer: Layer) {
@@ -92,30 +103,57 @@ ${postcodeDescription.properties.district}`,
     return style;
   }
 
-  render() {
-    return (
-      <Map
-        center={[52.5234051, 13.4113999]}
-        zoom={11}
-        minZoom={10}
-        maxBounds={[[52.3202, 12.924], [52.6805, 13.8249]]}
-        style={{ height: 700 }}
-      >
-        <TileLayer url={tileUrl} attribution={tileAttribution} />
-        <GeoJSON
-          data={geoData}
-          onEachFeature={this.handle}
-          style={this.style}
-        />
+  setHeightRef(ref: ?HTMLElement) {
+    if (!ref) {
+      return;
+    }
 
-        {labels.map(([name, latitude, longitude]) => (
-          <Marker
-            position={[latitude, longitude]}
-            key={name}
-            icon={divIcon({ html: name, className: 'district-label' })}
-          />
-        ))}
-      </Map>
+    this.heightRef = ref;
+  }
+
+  calculateHeight() {
+    const height = this.heightRef.clientHeight;
+    console.log(height);
+    // eslint-disable-next-line react/destructuring-assignment
+    if (height !== this.state.height) {
+      this.setState({ height });
+    }
+  }
+
+  componentDidMount() {
+    setTimeout(() => this.calculateHeight(), 0);
+  }
+
+  render() {
+    const { height } = this.state;
+
+    return (
+      <div style={{ height: '100%' }} ref={this.setHeightRef}>
+        {height ? (
+          <Map
+            center={[52.5234051, 13.4113999]}
+            zoom={11}
+            minZoom={10}
+            maxBounds={[[52.3202, 12.924], [52.6805, 13.8249]]}
+            style={{ height }}
+          >
+            <TileLayer url={tileUrl} attribution={tileAttribution} />
+            <GeoJSON
+              data={geoData}
+              onEachFeature={this.handle}
+              style={this.style}
+            />
+
+            {labels.map(([name, latitude, longitude]) => (
+              <Marker
+                position={[latitude, longitude]}
+                key={name}
+                icon={divIcon({ html: name, className: 'district-label' })}
+              />
+            ))}
+          </Map>
+        ) : null}
+      </div>
     );
   }
 }

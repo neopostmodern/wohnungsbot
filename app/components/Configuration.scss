@@ -1,9 +1,15 @@
-.container {
+.wrapper {
   background-color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
 .innerContainer {
@@ -13,12 +19,15 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &.wide {
     width: 100%;
+    max-width: 100%;
   }
   &.high {
     height: 100%;
+    max-height: 100%;
   }
 }
 
@@ -37,11 +46,45 @@ main {
   font-size: 3em;
 }
 
-.buttons {
-  margin-top: auto;
-  padding-top: 2em;
+.floating {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  z-index: 1000;
+  background-color: white;
+  padding: 1em;
+}
+
+.navigation {
+  padding: 2em;
   display: flex;
-  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  .buttonContainer {
+    width: 10em;
+  }
+
+  .header {
+    width: 100%;
+    max-width: 1000px;
+
+    h2 {
+      margin: 0.2em 0 0.3em;
+    }
+  }
+
+  .buttonIcon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    & > span {
+      font-size: 3em;
+      padding-bottom: 1rem;
+    }
+  }
 }
 
 .fadeIn {

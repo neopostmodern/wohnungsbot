@@ -5,8 +5,9 @@ import styles from './Configuration.scss';
 import type { configurationStateType } from '../reducers/configuration';
 import PostcodeMap from './PostcodeMap';
 
+type FlexibleNode = string | Node | ((props: Props) => Node);
 type ElementDescription = {
-  text: string | Node | ((props: Props) => Node),
+  text: FlexibleNode,
   className?: string,
   style?: { [key: string]: string | number }
 };
@@ -15,8 +16,9 @@ type StageDescription = {
   container?: {
     className?: string
   },
-  title: ElementDescription,
-  body: ElementDescription,
+  title?: FlexibleNode,
+  subtitle?: FlexibleNode,
+  body: FlexibleNode,
   buttons: {
     forward: ButtonDescription & {
       validator?: configurationStateType => boolean
@@ -27,19 +29,26 @@ type StageDescription = {
 
 const stages: Array<StageDescription> = [
   {
-    title: {
-      text: 'Der Wohnungsbot.',
-      className: `${styles.fadeIn} ${styles.largeTitle}`,
-      style: { animationDuration: '4s', animationDelay: '1s' }
-    },
-    body: {
-      text: `Willkommen beim »Von einem der auszog eine Wohnung in Berlin zu
+    title: '',
+    body: (
+      <>
+        <h1
+          className={`${styles.fadeIn} ${styles.largeTitle}`}
+          style={{ animationDuration: '4s', animationDelay: '1s' }}
+        >
+          Der Wohnungsbot.
+        </h1>
+        <div
+          className={styles.fadeIn}
+          style={{ animationDuration: '2s', animationDelay: '3s' }}
+        >
+          Willkommen beim »Von einem der auszog eine Wohnung in Berlin zu
           finden. Ein Automatisierungs­drama in drei Akten — 2. Akt: Das
           Versprechen des Bots.«, einem Projekt von Clemens Schöll im Rahmen von
-          48 Stunden Neukölln 2019.`,
-      className: `${styles.fadeIn}`,
-      style: { animationDuration: '2s', animationDelay: '1s' }
-    },
+          48 Stunden Neukölln 2019.
+        </div>
+      </>
+    ),
     buttons: {
       forward: {
         text: `Los geht's`,
@@ -49,11 +58,10 @@ const stages: Array<StageDescription> = [
     }
   },
   {
-    title: {
-      text: 'Deinen Bot konfigurieren'
-    },
-    body: {
-      text: (
+    title: '',
+    body: (
+      <>
+        <h2>Deinen Bot konfigurieren</h2>
         <span>
           Bevor dein Bot beginnen kann für dich nach Wohnungen zu suchen, muss
           muss er ersteinmal wissen, wonach du eigentlich suchst!
@@ -72,53 +80,54 @@ const stages: Array<StageDescription> = [
           </a>{' '}
           schauen.
         </span>
-      )
-    },
+      </>
+    ),
     buttons: {
       forward: {
-        text: `Jetzt konfigurieren`
+        text: `Konfigurieren`
       }
     }
   },
   {
-    title: {
-      text: 'Suchbereich festlegen'
-    },
     container: {
       className: `${styles.wide} ${styles.high}`
     },
-    body: {
-      text: ({
-        togglePostcode,
-        resetPostcodes,
-        configuration: { postcodes }
-      }: Props) => (
-        <div>
-          <div style={{ display: 'flex' }}>
-            <div>
-              Wähle Bereiche in denen du nach Wohnungen suchen möchtest in dem
-              du auf sie klickst — {postcodes.length} Postleitzahl-Bezirke
-              ausgewählt
-              <br />
-              <small>{postcodes.join(', ')}&nbsp;</small>
-            </div>
-            <button
-              type="button"
-              style={{ marginLeft: 'auto' }}
-              onClick={resetPostcodes}
-            >
-              Zurücksetzen <span className="material-icons">replay</span>{' '}
-            </button>
+    title: 'Suchbereich festlegen',
+    subtitle:
+      'Wähle Bereiche in denen du nach Wohnungen suchen möchtest in dem du\n' +
+      '            auf sie klickst',
+    body: ({
+      togglePostcode,
+      resetPostcodes,
+      configuration: { postcodes }
+    }: Props) => (
+      <>
+        <PostcodeMap
+          togglePostcodeSelected={togglePostcode}
+          selectedPostcodes={postcodes}
+        />
+        <div className={styles.floating}>
+          <div>
+            {postcodes.length > 0 ? (
+              <>{postcodes.length} Postleitzahl-Bezirke ausgewählt</>
+            ) : (
+              <>Wähle mindestens einen Postleitzahl-Bezirk durch klicken aus</>
+            )}
+            <br />
+            <small>{postcodes.join(', ')}&nbsp;</small>
           </div>
-          <br />
-          <br />
-          <PostcodeMap
-            togglePostcodeSelected={togglePostcode}
-            selectedPostcodes={postcodes}
-          />
+
+          <button
+            type="button"
+            style={{ marginLeft: 'auto' }}
+            onClick={resetPostcodes}
+            disabled={postcodes.length === 0}
+          >
+            Zurücksetzen <span className="material-icons">replay</span>{' '}
+          </button>
         </div>
-      )
-    },
+      </>
+    ),
     buttons: {
       forward: {
         text: `Weiter`,
@@ -128,22 +137,19 @@ const stages: Array<StageDescription> = [
     }
   },
   {
-    title: {
-      text: 'Bereit für die Wohnungssuche?'
-    },
-    body: {
-      text: ({ configuration }: Props) => (
-        <>
-          Das ist dein Suchprofil:
-          <pre
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(configuration, null, 2)
-            }}
-            style={{ maxHeight: 200 }}
-          />
-        </>
-      )
-    },
+    title: 'Bereit für die Wohnungssuche?',
+    subtitle: 'Überprüfe deine Suchprofil und dann kann es los gehen.',
+    body: ({ configuration }: Props) => (
+      <>
+        Das ist dein Suchprofil:
+        <pre
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(configuration, null, 2)
+          }}
+          style={{ maxHeight: 200 }}
+        />
+      </>
+    ),
     buttons: {
       forward: {
         text: `Starten`
@@ -188,22 +194,43 @@ export default class Configuration extends Component<Props> {
       : true;
 
     return (
-      <div className={styles.container} data-tid="container">
-        <div
-          className={`${styles.innerContainer} ${
-            stage.container ? stage.container.className || '' : ''
-          }`}
-        >
-          <main>
-            <h2 className={stage.title.className} style={stage.title.style}>
-              {this.renderAmbiguous(stage.title.text)}
-            </h2>
+      <div className={styles.wrapper} data-tid="container">
+        <nav className={styles.navigation}>
+          <div className={styles.buttonContainer}>
+            <button
+              type="button"
+              style={{
+                opacity: configuration.stage > 0 ? 1 : 0,
+                pointerEvents: configuration.stage > 0 ? 'initial' : 'none'
+              }}
+              onClick={previousStage}
+            >
+              <div className={styles.buttonIcon}>
+                <span className="material-icons">arrow_backward</span>
+                Zurück
+              </div>
+            </button>
+          </div>
 
-            <div className={stage.body.className}>
-              {this.renderAmbiguous(stage.body.text)}
-            </div>
-          </main>
-          <div className={styles.buttons}>
+          <div className={styles.header}>
+            {configuration.stage > 1 &&
+            configuration.stage < stages.length - 1 ? (
+              <>
+                Schritt {configuration.stage - 1} von {stages.length - 3}
+              </>
+            ) : (
+              <>&nbsp;</>
+            )}
+            {stage.title ? <h2>{this.renderAmbiguous(stage.title)}</h2> : null}
+            {stage.subtitle ? (
+              <div>{this.renderAmbiguous(stage.subtitle)}</div>
+            ) : null}
+          </div>
+
+          <div
+            className={styles.buttonContainer}
+            style={{ textAlign: 'right' }}
+          >
             <button
               type="button"
               onClick={
@@ -215,19 +242,20 @@ export default class Configuration extends Component<Props> {
               style={stage.buttons.forward.style}
               disabled={!stageValid}
             >
-              {this.renderAmbiguous(stage.buttons.forward.text)}{' '}
-              <span className="material-icons">arrow_forward</span>
+              <div className={styles.buttonIcon}>
+                <span className="material-icons">arrow_forward</span>
+                {this.renderAmbiguous(stage.buttons.forward.text)}{' '}
+              </div>
             </button>
-            {configuration.stage > 0 ? (
-              <button
-                type="button"
-                style={{ marginRight: 'auto' }}
-                onClick={previousStage}
-              >
-                <span className="material-icons">arrow_backward</span>
-                Zurück
-              </button>
-            ) : null}
+          </div>
+        </nav>
+        <div className={styles.container}>
+          <div
+            className={`${styles.innerContainer} ${
+              stage.container ? stage.container.className || '' : ''
+            }`}
+          >
+            <main>{this.renderAmbiguous(stage.body)}</main>
           </div>
         </div>
       </div>
