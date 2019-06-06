@@ -5,6 +5,7 @@ import {
   NEXT_STAGE,
   PREVIOUS_STAGE,
   RESET_CONFIGURATION,
+  RESET_POSTCODES,
   SET_CONFIGURATION,
   SET_SEARCH_URL,
   TOGGLE_POSTCODE
@@ -53,6 +54,8 @@ export default function configuration(
       return Object.assign({}, state, { stage: state.stage - 1 });
     case SET_SEARCH_URL:
       return Object.assign({}, state, { searchUrl: action.payload.searchUrl });
+    case RESET_POSTCODES:
+      return Object.assign({}, state, { postcodes: [] });
     default:
       return state;
   }

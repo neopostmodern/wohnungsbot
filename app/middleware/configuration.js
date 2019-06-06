@@ -50,9 +50,11 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
   }
 
   if (action.meta && action.meta.configuration) {
-    const { configuration } = store.getState();
     process.nextTick(() => {
-      const configurationToSave = Object.assign({}, configuration);
+      const configurationToSave = Object.assign(
+        {},
+        store.getState().configuration
+      );
       delete configurationToSave.loaded;
       persistentStore.set('configuration', configurationToSave);
     });
@@ -60,7 +62,11 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     store.dispatch(refreshVerdicts());
 
     if (action.type !== SET_SEARCH_URL) {
-      store.dispatch(setSearchUrl(generateSearchUrl(configuration)));
+      process.nextTick(() => {
+        store.dispatch(
+          setSearchUrl(generateSearchUrl(store.getState().configuration))
+        );
+      });
     }
   }
 

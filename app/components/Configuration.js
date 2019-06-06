@@ -18,7 +18,9 @@ type StageDescription = {
   title: ElementDescription,
   body: ElementDescription,
   buttons: {
-    forward: ButtonDescription,
+    forward: ButtonDescription & {
+      validator?: configurationStateType => boolean
+    },
     backwards?: ButtonDescription
   }
 };
@@ -86,7 +88,11 @@ const stages: Array<StageDescription> = [
       className: `${styles.wide} ${styles.high}`
     },
     body: {
-      text: ({ togglePostcode, configuration: { postcodes } }: Props) => (
+      text: ({
+        togglePostcode,
+        resetPostcodes,
+        configuration: { postcodes }
+      }: Props) => (
         <div>
           <div style={{ display: 'flex' }}>
             <div>
@@ -94,9 +100,13 @@ const stages: Array<StageDescription> = [
               du auf sie klickst — {postcodes.length} Postleitzahl-Bezirke
               ausgewählt
               <br />
-              <small>{postcodes.join(', ')}</small>
+              <small>{postcodes.join(', ')}&nbsp;</small>
             </div>
-            <button type="button" style={{ marginLeft: 'auto' }}>
+            <button
+              type="button"
+              style={{ marginLeft: 'auto' }}
+              onClick={resetPostcodes}
+            >
               Zurücksetzen <span className="material-icons">replay</span>{' '}
             </button>
           </div>
@@ -111,7 +121,9 @@ const stages: Array<StageDescription> = [
     },
     buttons: {
       forward: {
-        text: `Weiter`
+        text: `Weiter`,
+        validator: (configuration: configurationStateType) =>
+          configuration.postcodes.length > 0
       }
     }
   },
@@ -145,6 +157,7 @@ type Props = {
   previousStage: () => void,
   hideConfiguration: () => void,
   togglePostcode: (postcode: string) => void,
+  resetPostcodes: () => void,
   configuration: configurationStateType
 };
 
@@ -170,6 +183,9 @@ export default class Configuration extends Component<Props> {
     } = this.props;
 
     const stage: StageDescription = stages[configuration.stage];
+    const stageValid = stage.buttons.forward.validator
+      ? stage.buttons.forward.validator(configuration)
+      : true;
 
     return (
       <div className={styles.container} data-tid="container">
@@ -197,6 +213,7 @@ export default class Configuration extends Component<Props> {
               }
               className={`primary ${stage.buttons.forward.className || ''}`}
               style={stage.buttons.forward.style}
+              disabled={!stageValid}
             >
               {this.renderAmbiguous(stage.buttons.forward.text)}{' '}
               <span className="material-icons">arrow_forward</span>

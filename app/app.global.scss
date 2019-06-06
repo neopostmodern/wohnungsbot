@@ -64,6 +64,10 @@ button {
   &.primary {
     color: $BOT_DARK;
   }
+
+  &:disabled {
+    color: lightgray;
+  }
 }
 
 // icons
