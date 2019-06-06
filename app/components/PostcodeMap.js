@@ -17,10 +17,9 @@ const tileAttribution = `
   <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`;
 
 const baseStyle = {
-  color: 'white',
+  color: 'black',
   weight: 1,
-  fillColor: 'navy',
-  fillOpacity: 0.2
+  fillColor: 'transparent'
 };
 
 type PostcodeDescription = {
@@ -36,7 +35,8 @@ type Props = {
   togglePostcodeSelected: (postcode: string) => void
 };
 type State = {
-  height?: number
+  height?: number,
+  zoom: number
 };
 
 class PostcodeMap extends React.Component<Props, State> {
@@ -46,20 +46,28 @@ class PostcodeMap extends React.Component<Props, State> {
 
   heightRef: HTMLElement;
 
+  static initialZoom = 11;
+
   constructor() {
     super();
 
-    this.state = {};
+    this.state = {
+      zoom: PostcodeMap.initialZoom
+    };
 
-    // eslint-disable-next-line flowtype/no-weak-types
-    (this: any).handle = this.handle.bind(this);
-    // eslint-disable-next-line flowtype/no-weak-types
-    (this: any).style = this.style.bind(this);
-    // eslint-disable-next-line flowtype/no-weak-types
+    /* eslint-disable flowtype/no-weak-types */
+    (this: any).eachFeature = this.eachFeature.bind(this);
+    (this: any).stylePostcodeOverlay = this.stylePostcodeOverlay.bind(this);
     (this: any).setHeightRef = this.setHeightRef.bind(this);
+    (this: any).handleZoom = this.handleZoom.bind(this);
+    /* eslint-enable flowtype/no-weak-types */
   }
 
-  handle(postcodeDescription: PostcodeDescription, layer: Layer) {
+  componentDidMount() {
+    setTimeout(() => this.calculateHeight(), 0);
+  }
+
+  eachFeature(postcodeDescription: PostcodeDescription, layer: Layer) {
     layer.on('mouseover', () => {
       const { selectedPostcodes } = this.props;
       const currentlySelected = selectedPostcodes.includes(
@@ -71,7 +79,7 @@ class PostcodeMap extends React.Component<Props, State> {
       });
     });
     layer.on('mouseout', () => {
-      layer.setStyle(this.style(postcodeDescription));
+      layer.setStyle(this.stylePostcodeOverlay(postcodeDescription));
     });
     layer.on('click', () => {
       const { togglePostcodeSelected } = this.props;
@@ -90,7 +98,7 @@ ${postcodeDescription.properties.district}`,
     );
   }
 
-  style(postcodeDescription: PostcodeDescription) {
+  stylePostcodeOverlay(postcodeDescription: PostcodeDescription) {
     const { selectedPostcodes } = this.props;
     const style = Object.assign({}, baseStyle);
     if (selectedPostcodes.includes(postcodeDescription.id)) {
@@ -113,35 +121,42 @@ ${postcodeDescription.properties.district}`,
 
   calculateHeight() {
     const height = this.heightRef.clientHeight;
-    console.log(height);
+
     // eslint-disable-next-line react/destructuring-assignment
     if (height !== this.state.height) {
       this.setState({ height });
     }
   }
 
-  componentDidMount() {
-    setTimeout(() => this.calculateHeight(), 0);
+  handleZoom(zoomEvent: { type: 'zoom', target: { _zoom: number } }) {
+    // eslint-disable-next-line no-underscore-dangle
+    this.setState({ zoom: zoomEvent.target._zoom });
   }
 
   render() {
-    const { height } = this.state;
+    const { height, zoom } = this.state;
 
     return (
-      <div style={{ height: '100%' }} ref={this.setHeightRef}>
+      <div
+        style={{ height: '100%' }}
+        ref={this.setHeightRef}
+        className={`zoom-${zoom}`}
+      >
         {height ? (
           <Map
             center={[52.5234051, 13.4113999]}
-            zoom={11}
+            zoom={PostcodeMap.initialZoom}
             minZoom={10}
+            maxZoom={16}
             maxBounds={[[52.3202, 12.924], [52.6805, 13.8249]]}
             style={{ height }}
+            onZoom={this.handleZoom}
           >
             <TileLayer url={tileUrl} attribution={tileAttribution} />
             <GeoJSON
               data={geoData}
-              onEachFeature={this.handle}
-              style={this.style}
+              onEachFeature={this.eachFeature}
+              style={this.stylePostcodeOverlay}
             />
 
             {labels.map(([name, latitude, longitude]) => (

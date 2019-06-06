@@ -24,4 +24,4 @@ export type GetState = () => stateType;
 
 export type Dispatch = ReduxDispatch<Action>;
 
-export type Store = ReduxStore<GetState, Action>;
+export type Store = ReduxStore<stateType, Action>;

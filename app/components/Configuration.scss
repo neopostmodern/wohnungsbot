@@ -1,3 +1,5 @@
+@import '../constants/styles';
+
 .wrapper {
   background-color: white;
   height: 100%;
@@ -52,7 +54,12 @@ main {
   right: 50px;
   z-index: 1000;
   background-color: white;
-  padding: 1em;
+  padding: 0.5em;
+
+  .resetButton {
+    margin-top: 1em;
+    text-align: right;
+  }
 }
 
 .navigation {
@@ -84,6 +91,17 @@ main {
       font-size: 3em;
       padding-bottom: 1rem;
     }
+  }
+
+  .validationError {
+    font-family: $FONT_PRIMARY;
+    text-transform: initial;
+    color: darkred;
+    font-size: 80%;
+    margin-left: -10em;
+    text-align: right;
+    margin-top: 1em;
+    height: 0;
   }
 }
 

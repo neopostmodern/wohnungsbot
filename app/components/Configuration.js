@@ -21,7 +21,7 @@ type StageDescription = {
   body: FlexibleNode,
   buttons: {
     forward: ButtonDescription & {
-      validator?: configurationStateType => boolean
+      checkInvalid?: configurationStateType => false | FlexibleNode
     },
     backwards?: ButtonDescription
   }
@@ -93,9 +93,14 @@ const stages: Array<StageDescription> = [
       className: `${styles.wide} ${styles.high}`
     },
     title: 'Suchbereich festlegen',
-    subtitle:
-      'Wähle Bereiche in denen du nach Wohnungen suchen möchtest in dem du\n' +
-      '            auf sie klickst',
+    subtitle: (
+      <>
+        Wähle Bereiche in denen du nach Wohnungen suchen möchtest, in dem du auf
+        sie klickst. Dein aktueller Suchbereich ist dunkelgrün hinterlegt.
+        <br />
+        (Durch erneutes Klicken kannst du sie wieder abwählen)
+      </>
+    ),
     body: ({
       togglePostcode,
       resetPostcodes,
@@ -108,31 +113,34 @@ const stages: Array<StageDescription> = [
         />
         <div className={styles.floating}>
           <div>
-            {postcodes.length > 0 ? (
-              <>{postcodes.length} Postleitzahl-Bezirke ausgewählt</>
-            ) : (
-              <>Wähle mindestens einen Postleitzahl-Bezirk durch klicken aus</>
-            )}
+            {postcodes.length} Postleitzahl-Bezirke ausgewählt
             <br />
             <small>{postcodes.join(', ')}&nbsp;</small>
           </div>
 
-          <button
-            type="button"
-            style={{ marginLeft: 'auto' }}
-            onClick={resetPostcodes}
-            disabled={postcodes.length === 0}
-          >
-            Zurücksetzen <span className="material-icons">replay</span>{' '}
-          </button>
+          <div className={styles.resetButton}>
+            <button
+              type="button"
+              style={{ marginLeft: 'auto' }}
+              onClick={resetPostcodes}
+              disabled={postcodes.length === 0}
+            >
+              Zurücksetzen <span className="material-icons">replay</span>{' '}
+            </button>
+          </div>
         </div>
       </>
     ),
     buttons: {
       forward: {
         text: `Weiter`,
-        validator: (configuration: configurationStateType) =>
-          configuration.postcodes.length > 0
+        checkInvalid: (configuration: configurationStateType) => {
+          if (configuration.postcodes.length === 0) {
+            return 'Wähle mindestens einen Bezirk aus';
+          }
+
+          return false;
+        }
       }
     }
   },
@@ -170,9 +178,11 @@ type Props = {
 export default class Configuration extends Component<Props> {
   props: Props;
 
-  renderAmbiguous(
-    text: string | Node | ((props: Props) => Node)
-  ): string | Node {
+  renderAmbiguous(text: ?FlexibleNode): string | Node {
+    if (text === null || text === undefined) {
+      return null;
+    }
+
     if (typeof text === 'function') {
       return text(this.props);
     }
@@ -189,9 +199,17 @@ export default class Configuration extends Component<Props> {
     } = this.props;
 
     const stage: StageDescription = stages[configuration.stage];
-    const stageValid = stage.buttons.forward.validator
-      ? stage.buttons.forward.validator(configuration)
-      : true;
+    let stageValid = true;
+    let validationMessage = null;
+    if (stage.buttons.forward.checkInvalid) {
+      const validationResult = stage.buttons.forward.checkInvalid(
+        configuration
+      );
+      stageValid = validationResult === false;
+      if (!stageValid) {
+        validationMessage = validationResult;
+      }
+    }
 
     return (
       <div className={styles.wrapper} data-tid="container">
@@ -245,6 +263,9 @@ export default class Configuration extends Component<Props> {
               <div className={styles.buttonIcon}>
                 <span className="material-icons">arrow_forward</span>
                 {this.renderAmbiguous(stage.buttons.forward.text)}{' '}
+                <div className={styles.validationError}>
+                  {this.renderAmbiguous(validationMessage)}
+                </div>
               </div>
             </button>
           </div>

@@ -3,10 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
-// todo: package fonts
-$FONT_PRIMARY: Lunchtype22, sans-serif;
-$FONT_HIGHLIGHT: Lunchtype24, sans-serif;
-$BOT_DARK: #226798;
+@import 'constants/styles';
 
 body {
   margin: 0;
@@ -87,8 +84,17 @@ button {
   pointer-events: none !important;
   font-family: $FONT_HIGHLIGHT;
   text-transform: uppercase;
-  font-size: 20px;
-  color: rgba(0, 0, 0, 0.7);
+  color: $BOT_DARK;
+  transition: font-size 0.1s;
+  line-height: 0.95;
+
+  // stylelint-disable-next-line at-rule-no-unknown
+  @for $zoomLevel from 10 through 16 {
+    .zoom-#{$zoomLevel} & {
+      font-size: #{($zoomLevel - 10) * 8 + 10}px;
+      opacity: #{1 - ($zoomLevel - 10) * 0.1};
+    }
+  }
 }
 .map-tooltip {
   border: none;
@@ -103,4 +109,9 @@ button {
 .map-tooltip-name {
   font-size: 2em;
   line-height: 100%;
+}
+.leaflet-control-attribution {
+  position: fixed;
+  bottom: 26px;
+  right: 0;
 }

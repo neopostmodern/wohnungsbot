@@ -152,8 +152,11 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   if (action.type === SET_BROWSER_WINDOW) {
     const { window } = action.payload;
     window.on('resize', () => {
-      resizeViews(store.getState().electron);
-      process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
+      const { electron } = store.getState();
+      resizeViews(electron);
+      if (electron.configurationHidden) {
+        process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
+      }
     });
   }
 
