@@ -20,12 +20,12 @@ import {
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION
 } from '../constants/actionTypes';
-import type { RawOverviewData } from '../reducers/data';
+import type { RawFlatData, RawOverviewData } from '../reducers/data';
 import {
   calculateOverviewBoundaries,
   setOverviewBoundaries
 } from '../actions/overlay';
-import { dataOverviewSet } from '../actions/data';
+import { setRawFlatData, setRawOverviewData } from '../actions/data';
 
 function resizeViews(
   electronState: electronStateType,
@@ -112,15 +112,31 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
   if (action.type === SET_BROWSER_VIEW_READY) {
     if (action.payload.name === 'puppet' && action.payload.ready) {
+      await sleep(10000);
+
       const { puppet } = store.getState().electron.views;
       if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
-        const rawData: RawOverviewData = await puppet.browserView.webContents.executeJavaScript(
+        const rawOverviewData: RawOverviewData = await puppet.browserView.webContents.executeJavaScript(
           `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
         );
-        store.dispatch(dataOverviewSet(rawData));
+        store.dispatch(setRawOverviewData(rawOverviewData));
         store.dispatch(calculateOverviewBoundaries());
         setTimeout(() => store.dispatch(calculateOverviewBoundaries()), 1000);
         setTimeout(() => store.dispatch(calculateOverviewBoundaries()), 5000);
+      }
+
+      if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
+        const rawFlatData: RawFlatData = await puppet.browserView.webContents.executeJavaScript(
+          `utag_data`
+        );
+
+        rawFlatData.additionalData = {
+          requiresWBS: await puppet.browserView.webContents.executeJavaScript(
+            `document.querySelector('.is24qa-wohnberechtigungsschein-erforderlich-label') !== null`
+          )
+        };
+
+        store.dispatch(setRawFlatData(rawFlatData));
       }
     }
   }
@@ -134,14 +150,15 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
     const { name, browserView, initialUrl } = action.payload;
 
-    // window.addBrowserView(browserView);
-
     browserView.webContents.on('did-finish-load', () => {
       store.dispatch(setBrowserViewReady(name, true));
     });
     browserView.webContents.on('new-window', (event, targetUrl) => {
       event.preventDefault();
       shell.openExternal(targetUrl);
+    });
+    browserView.webContents.on('did-navigate', (event, url) => {
+      store.dispatch(setBrowserViewUrl(name, url));
     });
 
     if (initialUrl) {

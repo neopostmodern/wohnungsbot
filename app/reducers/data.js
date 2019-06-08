@@ -2,7 +2,11 @@
 
 import dotProp from 'dot-prop-immutable';
 import type { Action } from './types';
-import { DATA_OVERVIEW_SET, SET_VERDICT } from '../constants/actionTypes';
+import {
+  SET_FLAT_DATA,
+  SET_OVERVIEW_DATA,
+  SET_VERDICT
+} from '../constants/actionTypes';
 
 export type StringBoolean = 'true' | 'false';
 export type PictureDescription = {
@@ -83,6 +87,30 @@ export type OverviewDataEntry = {|
   builtInKitchen: boolean
 |};
 
+export type RawFlatData = {
+  obj_scoutId: string,
+  obj_yearConstructed: string,
+  obj_totalRent: string,
+  obj_baseRent: string,
+  obj_serviceCharge: string,
+  obj_floor: string,
+  additionalData: {
+    requiresWBS: boolean
+  }
+};
+
+export type FlatData = {|
+  id: string,
+  yearConstructed: number,
+  rent: {
+    total: number,
+    base: number,
+    additional: number
+  },
+  floor: number,
+  requiresWBS: boolean
+|};
+
 function parseBoolean(stringBoolean: StringBoolean): boolean {
   return stringBoolean === 'true';
 }
@@ -109,34 +137,63 @@ function processOverviewDataEntry(
   return processedEntry;
 }
 
+function processFlatData(flatData: RawFlatData): FlatData {
+  return {
+    id: flatData.obj_scoutId,
+    yearConstructed: parseInt(flatData.obj_yearConstructed, 10),
+    floor: parseInt(flatData.obj_floor, 10),
+    rent: {
+      total: parseFloat(flatData.obj_totalRent),
+      base: parseFloat(flatData.obj_baseRent),
+      additional: parseFloat(flatData.obj_serviceCharge)
+    },
+    requiresWBS: flatData.additionalData.requiresWBS
+  };
+}
+
+export const FLAT_ACTION = {
+  APPLY: 'APPLY',
+  INVESTIGATE: 'INVESTIGATE',
+  NOTIFY_VIEWING_DATE: 'NOTIFY_VIEWING_DATE',
+  IGNORE: 'IGNORE'
+};
+export type FlatAction = $Keys<typeof FLAT_ACTION>;
 export type Verdict = {
   result: boolean,
   reasons: Array<{
     reason: string,
     result: boolean
-  }>
+  }>,
+  action?: FlatAction
 };
 export type Verdicts = { [key: string]: Verdict };
 
 export type dataStateType = {|
   overview?: Array<OverviewDataEntry>,
+  flat: { [key: string]: FlatData },
   verdicts: Verdicts
 |};
 
 const dataDefaultState: dataStateType = {
-  verdicts: {}
+  verdicts: {},
+  flat: {}
 };
 
 export default function data(
   state: dataStateType = dataDefaultState,
   action: Action
 ) {
-  if (action.type === DATA_OVERVIEW_SET) {
+  if (action.type === SET_OVERVIEW_DATA) {
     return Object.assign({}, state, {
       overview: action.payload.data.map(entry =>
         processOverviewDataEntry(entry)
       )
     });
+  }
+
+  if (action.type === SET_FLAT_DATA) {
+    const flatData = processFlatData(action.payload.flatData);
+    return dotProp.set(state, `flat.${flatData.id}`, flatData);
   }
 
   if (action.type === SET_VERDICT) {

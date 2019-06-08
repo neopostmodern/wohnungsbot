@@ -8,16 +8,16 @@ const registerAction = (type, action) => {
   actions[type] = action;
 };
 
-export function targetedAction(
+export function targetedAction<T>(
   type: string,
   target: targetType,
   action: Action
 ) {
   registerAction(type, action);
 
-  return () => ({
+  return (payload: T) => ({
     type,
-    payload: null,
+    payload,
     meta: {
       target
     }
@@ -38,7 +38,7 @@ export default (target: targetType) => (store: Store) => (next: Dispatch) => (
 
   const registeredAction = actions[action.type];
   if (registeredAction) {
-    next(registeredAction(next));
+    next(registeredAction(store.dispatch, action.payload));
   }
 
   next(action);

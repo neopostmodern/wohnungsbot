@@ -17,7 +17,8 @@ import {
   SHOW_CONFIGURATION,
   WILL_CLICK,
   PERFORM_SCROLL,
-  RETURN_TO_SEARCH_PAGE
+  RETURN_TO_SEARCH_PAGE,
+  NAVIGATE_TO_FLAT_PAGE
 } from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
@@ -51,9 +52,9 @@ export function click(selector: string) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { webContents } = getState().electron.views.puppet.browserView;
     webContents.focus();
-    const boundingRect = await webContents.executeJavaScript(`
-        JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()));
-      `);
+    const boundingRect = await webContents.executeJavaScript(
+      `JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()));`
+    );
 
     const x = boundingRect.x + boundingRect.width * Math.random();
     const y = boundingRect.y + boundingRect.height * Math.random();
@@ -78,6 +79,27 @@ export function click(selector: string) {
   };
 }
 
+export function scrollIntoView(
+  name: BrowserViewName,
+  selector: string,
+  smooth: boolean = true
+) {
+  return async (dispatch: Dispatch, getState: GetState) => {
+    const {
+      electron: { views }
+    } = getState();
+
+    await views[name].browserView.webContents.executeJavaScript(
+      `document.querySelector('${selector}').scrollIntoView({ behavior: ${
+        smooth ? "'smooth'" : "'auto'"
+      }, block: 'center'});`
+    );
+
+    // there is no way to know when the smooth scroll has finished
+    await sleep(1000);
+  };
+}
+
 export function willClick(x: number, y: number) {
   return {
     type: WILL_CLICK,
@@ -85,13 +107,13 @@ export function willClick(x: number, y: number) {
   };
 }
 
-export const clickLogin = targetedAction(
+export const clickLogin = targetedAction<void>(
   CLICK_LOGIN,
   MAIN,
-  next => async () => {
-    await next(click('#link_loginAccountLink'));
-    await sleep(100);
-    await next(click('#link_loginLinkInternal'));
+  (dispatch: Dispatch) => async () => {
+    await dispatch(click('#link_loginAccountLink'));
+    await sleep(1000);
+    await dispatch(click('#link_loginLinkInternal'));
   }
 );
 
@@ -105,6 +127,8 @@ export function setBrowserViewReady(
   };
 }
 
+// this function is _not_ intended for routing, it retro-actively adjusts the
+// URL in the store to reflect the BrowserView's URL
 export function setBrowserViewUrl(name: BrowserViewName, url: string): Action {
   return {
     type: SET_BROWSER_VIEW_URL,
@@ -158,3 +182,16 @@ export function performScroll(name: BrowserViewName, deltaY: number): Action {
     }
   };
 }
+
+export const navigateToFlatPage = targetedAction<string>(
+  NAVIGATE_TO_FLAT_PAGE,
+  MAIN,
+  (dispatch: Dispatch, flatId: string) => async () => {
+    // todo: refine timing, centralized scheduler
+    await sleep(5000);
+    // todo: does 'waiting' for a dispatched thunk actually wait?
+    await dispatch(scrollIntoView('puppet', `#result-${flatId}`));
+    await sleep(2000);
+    await dispatch(click(`#result-${flatId} .result-list-entry__brand-title`));
+  }
+);
