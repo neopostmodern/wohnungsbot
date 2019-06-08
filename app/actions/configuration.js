@@ -1,4 +1,8 @@
-import type { configurationStateType } from '../reducers/configuration';
+import type {
+  configurationBoolean,
+  configurationNumbers,
+  configurationStateType
+} from '../reducers/configuration';
 import type { Action } from '../reducers/types';
 import {
   NEXT_STAGE,
@@ -6,8 +10,11 @@ import {
   RESET_CONFIGURATION,
   RESET_POSTCODES,
   SET_CONFIGURATION,
+  SET_NUMBER,
   SET_SEARCH_URL,
-  TOGGLE_POSTCODE
+  TOGGLE_FLOOR,
+  TOGGLE_POSTCODE,
+  TOGGLE_BOOLEAN
 } from '../constants/actionTypes';
 
 export function setConfiguration(
@@ -55,6 +62,30 @@ export function resetPostcodes(): Action {
   return {
     type: RESET_POSTCODES,
     payload: null,
+    meta: { configuration: true }
+  };
+}
+
+export function toggleFloor(floor: number): Action {
+  return {
+    type: TOGGLE_FLOOR,
+    payload: { floor },
+    meta: { configuration: true }
+  };
+}
+
+export function toggleBoolean(name: configurationBoolean): Action {
+  return {
+    type: TOGGLE_BOOLEAN,
+    payload: { name },
+    meta: { configuration: true }
+  };
+}
+
+export function setNumber(name: configurationNumbers, value: ?number): Action {
+  return {
+    type: SET_NUMBER,
+    payload: { name, value },
     meta: { configuration: true }
   };
 }

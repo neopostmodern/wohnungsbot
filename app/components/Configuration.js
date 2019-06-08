@@ -2,8 +2,15 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import styles from './Configuration.scss';
-import type { configurationStateType } from '../reducers/configuration';
+import {
+  type configurationStateType,
+  AllFloors
+} from '../reducers/configuration';
 import PostcodeMap from './PostcodeMap';
+import type {
+  configurationBoolean,
+  configurationNumbers
+} from '../reducers/configuration';
 
 type FlexibleNode = string | Node | ((props: Props) => Node);
 type ElementDescription = {
@@ -26,6 +33,43 @@ type StageDescription = {
     backwards?: ButtonDescription
   }
 };
+
+const floorToName = (floor: number) => {
+  if (floor === 0) {
+    return 'Erdgeschoss';
+  }
+
+  let floorName = `${floor}. Stock`;
+  if (floor === 4) {
+    floorName += ' und höher';
+  }
+  return floorName;
+};
+
+const valueToInt = (value: string) => {
+  const parsedValue = parseFloat(value);
+
+  if (Number.isNaN(parsedValue)) {
+    return null;
+  }
+
+  return parsedValue;
+};
+const NumberField = ({
+  value,
+  onChange,
+  ...props
+}: {
+  value: ?number,
+  onChange: (value: ?number) => void
+}) => (
+  <input
+    type="number"
+    value={value === null ? '' : value}
+    onChange={event => onChange(valueToInt(event.target.value))}
+    {...props}
+  />
+);
 
 const stages: Array<StageDescription> = [
   {
@@ -92,7 +136,7 @@ const stages: Array<StageDescription> = [
     container: {
       className: `${styles.wide} ${styles.high}`
     },
-    title: 'Suchbereich festlegen',
+    title: 'Wo suchst du?',
     subtitle: (
       <>
         Wähle Bereiche in denen du nach Wohnungen suchen möchtest, in dem du auf
@@ -145,6 +189,162 @@ const stages: Array<StageDescription> = [
     }
   },
   {
+    container: {
+      className: styles.high
+    },
+    title: 'Was suchst du?',
+    subtitle: (
+      <>
+        Jetzt geht es darum die Wohnung nach der du suchst zu beschreiben —
+        zumindest das, was sich in Zahlen ausdrücken lässt.
+      </>
+    ),
+    body: ({
+      configuration: {
+        floors,
+        onlyOldBuilding,
+        hasWBS,
+        mustHaveBalcony,
+        mustHaveKitchenette,
+        noKitchenette,
+        maximumRent,
+        minimumArea,
+        minimumRooms,
+        maximumRooms
+      },
+      toggleFloor,
+      toggleBoolean,
+      setNumber
+    }: Props) => (
+      <div className={styles.row}>
+        <div className={styles.column}>
+          <h3>Preis und Größe</h3>
+          <div className={styles.searchParameter}>
+            Bis zu{' '}
+            <NumberField
+              value={maximumRent}
+              onChange={value => setNumber('maximumRent', value)}
+            />
+            € Kaltmiete
+          </div>
+          <div className={styles.searchParameter}>
+            Mindestens
+            <NumberField
+              value={minimumArea}
+              onChange={value => setNumber('minimumArea', value)}
+            />
+            m²
+          </div>
+          <div className={styles.searchParameter}>
+            <NumberField
+              value={minimumRooms}
+              onChange={value => setNumber('minimumRooms', value)}
+              step={0.5}
+            />
+            bis
+            <NumberField
+              value={maximumRooms}
+              onChange={value => setNumber('maximumRooms', value)}
+              step={0.5}
+            />{' '}
+            Zimmer
+          </div>
+          <h3 style={{ marginTop: '3rem' }}>
+            Hast du einen Wohnberechtigungsschein?
+          </h3>
+          <input
+            type="checkbox"
+            checked={hasWBS}
+            onChange={() => toggleBoolean('hasWBS')}
+          />{' '}
+          Ja &nbsp;&nbsp;
+          <input
+            type="checkbox"
+            checked={!hasWBS}
+            onChange={() => toggleBoolean('hasWBS')}
+          />{' '}
+          Nein
+          <div style={{ marginTop: '0.5em', lineHeight: 0.9 }}>
+            <small>
+              Aktuell kann der Bot leider nicht zwischen &quot;WBS&quot; und
+              &quot;WBS mit besonderem Wohnbedarf&quot; unterscheiden
+            </small>
+          </div>
+          <h3 style={{ marginTop: '3rem' }}>Sonstige Wünsche</h3>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={onlyOldBuilding}
+              onChange={() => toggleBoolean('onlyOldBuilding')}
+            />{' '}
+            Unbedingt Altbau (vor 1950 errichtet)
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={mustHaveBalcony}
+              onChange={() => toggleBoolean('mustHaveBalcony')}
+            />{' '}
+            Unbedingt mit Balkon / Terasse
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={mustHaveKitchenette}
+              onChange={() => toggleBoolean('mustHaveKitchenette')}
+            />{' '}
+            Unbedingt <em>mit</em> Einbauküche
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={noKitchenette}
+              onChange={() => toggleBoolean('noKitchenette')}
+            />{' '}
+            Unbedingt <em>ohne</em> Einbauküche
+          </div>
+          <small>
+            Die Verlässlichkeit dieser Angaben bei den Inseraten ist leider
+            nicht besonders hoch
+          </small>
+        </div>
+        <div className={styles.column}>
+          <h3>Stockwerk</h3>
+          <div className={styles.roof}>
+            <div className={styles.roofLeft} />
+            <div className={styles.roofMiddle} />
+            <div className={styles.roofRight} />
+          </div>
+          <div className={styles.house}>
+            {AllFloors.map(floor => (
+              <div
+                className={`${styles.floor} ${
+                  floors.includes(floor) ? styles.selected : ''
+                }`}
+                onClick={() => toggleFloor(floor)}
+                key={floor}
+              >
+                {floorToName(floor)}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+    buttons: {
+      forward: {
+        text: `Weiter`,
+        checkInvalid: (configuration: configurationStateType) => {
+          if (configuration.postcodes.length === 0) {
+            return 'Wähle mindestens einen Bezirk aus';
+          }
+
+          return false;
+        }
+      }
+    }
+  },
+  {
     title: 'Bereit für die Wohnungssuche?',
     subtitle: 'Überprüfe deine Suchprofil und dann kann es los gehen.',
     body: ({ configuration }: Props) => (
@@ -172,6 +372,9 @@ type Props = {
   hideConfiguration: () => void,
   togglePostcode: (postcode: string) => void,
   resetPostcodes: () => void,
+  toggleFloor: (floor: number) => void,
+  toggleBoolean: (name: configurationBoolean) => void,
+  setNumber: (name: configurationNumbers, value: ?number) => void,
   configuration: configurationStateType
 };
 

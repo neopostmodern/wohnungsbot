@@ -204,8 +204,8 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       );
 
       // eslint-disable-next-line no-restricted-syntax
-      for (const rawEntry of overview) {
-        const id = rawEntry['@id'];
+      for (const entry of overview) {
+        const { id } = entry;
         // eslint-disable-next-line no-await-in-loop
         const boundaries = await puppet.browserView.webContents.executeJavaScript(
           `JSON.parse(JSON.stringify(document.getElementById('result-${id}').getBoundingClientRect()))`

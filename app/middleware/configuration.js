@@ -9,6 +9,14 @@ import { SET_SEARCH_URL } from '../constants/actionTypes';
 import type { configurationStateType } from '../reducers/configuration';
 import districts from '../map/districts';
 
+function numberToGermanFloatString(value: ?number): string {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return value.toFixed(2).replace('.', ',');
+}
+
 function generateSearchUrl(configuration: configurationStateType): string {
   let searchUrl =
     'https://www.immobilienscout24.de/Suche/S-2/Wohnung-Miete/Berlin/Berlin/';
@@ -36,7 +44,13 @@ function generateSearchUrl(configuration: configurationStateType): string {
       .join('_');
   }
 
-  searchUrl += '/1,00-3,00/-/EURO--1350,00';
+  searchUrl += `/${numberToGermanFloatString(
+    configuration.minimumRooms
+  )}-${numberToGermanFloatString(
+    configuration.maximumRooms
+  )}/${numberToGermanFloatString(
+    configuration.minimumArea
+  )}-/EURO--${numberToGermanFloatString(configuration.maximumRent)}`;
 
   return searchUrl;
 }

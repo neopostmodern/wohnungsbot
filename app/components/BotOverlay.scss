@@ -79,6 +79,17 @@ $speech-bubble-anchor-width: 4vh;
   .summary {
     font-size: 5em;
   }
+
+  .reason {
+    width: 10em;
+    display: flex;
+    align-items: flex-start;
+  }
+  .reasonIcon {
+    margin-right: 0.5em;
+    position: relative;
+    bottom: 0.1em;
+  }
 }
 
 .bad {
@@ -86,4 +97,10 @@ $speech-bubble-anchor-width: 4vh;
 }
 .good {
   color: darkgreen;
+}
+
+.openInBrowser {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }

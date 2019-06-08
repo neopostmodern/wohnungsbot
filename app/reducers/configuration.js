@@ -7,21 +7,55 @@ import {
   RESET_CONFIGURATION,
   RESET_POSTCODES,
   SET_CONFIGURATION,
+  SET_NUMBER,
   SET_SEARCH_URL,
-  TOGGLE_POSTCODE
+  TOGGLE_FLOOR,
+  TOGGLE_POSTCODE,
+  TOGGLE_BOOLEAN
 } from '../constants/actionTypes';
+
+export const AllFloors = [4, 3, 2, 1, 0];
+
+export type configurationNumbers =
+  | 'maximumRent'
+  | 'minimumArea'
+  | 'minimumRooms'
+  | 'maximumRooms';
+
+export type configurationBoolean =
+  | 'hasWBS'
+  | 'mustHaveBalcony'
+  | 'mustHaveKitchenette'
+  | 'noKitchenette'
+  | 'onlyOldBuilding';
 
 export type configurationStateType = {
   stage: number,
   loaded: boolean,
+  searchUrl?: string,
   postcodes: Array<string>,
-  searchUrl?: string
+  maximumRent?: ?number,
+  minimumArea?: ?number,
+  minimumRooms?: ?number,
+  maximumRooms?: ?number,
+  onlyOldBuilding: boolean,
+  hasWBS: boolean,
+  mustHaveBalcony: boolean,
+  mustHaveKitchenette: boolean,
+  noKitchenette: boolean,
+  floors: Array<number>
 };
 
 const configurationDefaultState: configurationStateType = {
   stage: 0,
   loaded: false,
-  postcodes: []
+  floors: AllFloors.slice(),
+  postcodes: [],
+  onlyOldBuilding: false,
+  hasWBS: false,
+  mustHaveBalcony: false,
+  mustHaveKitchenette: false,
+  noKitchenette: false
 };
 
 export default function configuration(
@@ -43,6 +77,21 @@ export default function configuration(
     });
   }
 
+  if (action.type === TOGGLE_FLOOR) {
+    const { floor } = action.payload;
+    const { floors } = state;
+
+    if (floors.includes(floor)) {
+      return Object.assign({}, state, {
+        floors: floors.filter(z => z !== floor)
+      });
+    }
+
+    return Object.assign({}, state, {
+      floors: floors.concat([floor])
+    });
+  }
+
   switch (action.type) {
     case SET_CONFIGURATION:
       return action.payload.configuration;
@@ -56,6 +105,14 @@ export default function configuration(
       return Object.assign({}, state, { searchUrl: action.payload.searchUrl });
     case RESET_POSTCODES:
       return Object.assign({}, state, { postcodes: [] });
+    case TOGGLE_BOOLEAN:
+      return Object.assign({}, state, {
+        [action.payload.name]: !state[action.payload.name]
+      });
+    case SET_NUMBER:
+      return Object.assign({}, state, {
+        [action.payload.name]: action.payload.value
+      });
     default:
       return state;
   }

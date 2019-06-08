@@ -33,7 +33,6 @@ export default (target: targetType) => (store: Store) => (next: Dispatch) => (
   }
 
   if (action.meta.target !== target) {
-    console.log(`Killed action: ${action}`);
     return;
   }
 

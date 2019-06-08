@@ -56,6 +56,7 @@ export default class BotOverlay extends Component<Props> {
   render() {
     const { puppet, overlay, verdicts } = this.props;
 
+    // $FlowFixMe (flow can't handle Object.values)
     const matchedFlats = Object.values(verdicts).filter(({ result }) => result)
       .length;
 
@@ -80,7 +81,7 @@ export default class BotOverlay extends Component<Props> {
               >
                 <div className={styles.summary}>
                   <span
-                    className={`material-icons ${
+                    className={`material-icons standalone-icon ${
                       verdicts[id].result ? styles.good : styles.bad
                     }`}
                   >
@@ -89,18 +90,29 @@ export default class BotOverlay extends Component<Props> {
                 </div>
                 <div>
                   {verdicts[id].reasons.map(({ reason, result }) => (
-                    <div key={reason}>
-                      <span
-                        className={`material-icons ${
-                          result ? styles.good : styles.bad
-                        }`}
-                      >
-                        {result ? 'check' : 'block'}
-                      </span>
-                      &nbsp;
-                      {reason}
+                    <div key={reason} className={styles.reason}>
+                      <div className={styles.reasonIcon}>
+                        <span
+                          className={`material-icons standalone-icon ${
+                            result ? styles.good : styles.bad
+                          }`}
+                        >
+                          {result ? 'check' : 'block'}
+                        </span>
+                      </div>
+                      <div>{reason}</div>
                     </div>
                   ))}
+                </div>
+                <div className={styles.openInBrowser}>
+                  <a
+                    href={`https://www.immobilienscout24.de/expose/${id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Wohnung im Browser ansehen
+                    <span className="material-icons">open_in_new</span>
+                  </a>
                 </div>
               </div>
             ))

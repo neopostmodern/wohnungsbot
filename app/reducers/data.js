@@ -69,6 +69,46 @@ export type RawOverviewDataEntry = {
 // eslint-disable-next-line flowtype/no-weak-types
 export type RawOverviewData = Array<RawOverviewDataEntry>;
 
+export type OverviewDataEntry = {|
+  id: string,
+  title: string,
+  address: {
+    postcode: string,
+    description: string,
+    street?: string,
+    houseNumber?: string,
+    quarter: string
+  },
+  balcony: boolean,
+  builtInKitchen: boolean
+|};
+
+function parseBoolean(stringBoolean: StringBoolean): boolean {
+  return stringBoolean === 'true';
+}
+
+function processOverviewDataEntry(
+  entry: RawOverviewDataEntry
+): OverviewDataEntry {
+  const realEstate = entry['resultlist.realEstate'];
+  const processedEntry: OverviewDataEntry = {
+    id: entry['@id'],
+    title: realEstate.title,
+    address: {
+      postcode: realEstate.address.postcode,
+      description: realEstate.address.description.text,
+      quarter: realEstate.address.quarter
+    },
+    balcony: parseBoolean(realEstate.balcony),
+    builtInKitchen: parseBoolean(realEstate.builtInKitchen)
+  };
+  if (realEstate.address.preciseHouseNumber) {
+    processedEntry.address.houseNumber = ((realEstate.address
+      .houseNumber: any): string); // eslint-disable-line flowtype/no-weak-types
+  }
+  return processedEntry;
+}
+
 export type Verdict = {
   result: boolean,
   reasons: Array<{
@@ -79,7 +119,7 @@ export type Verdict = {
 export type Verdicts = { [key: string]: Verdict };
 
 export type dataStateType = {|
-  overview?: RawOverviewData,
+  overview?: Array<OverviewDataEntry>,
   verdicts: Verdicts
 |};
 
@@ -92,7 +132,11 @@ export default function data(
   action: Action
 ) {
   if (action.type === DATA_OVERVIEW_SET) {
-    return Object.assign({}, state, { overview: action.payload.data });
+    return Object.assign({}, state, {
+      overview: action.payload.data.map(entry =>
+        processOverviewDataEntry(entry)
+      )
+    });
   }
 
   if (action.type === SET_VERDICT) {

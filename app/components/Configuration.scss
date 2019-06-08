@@ -1,5 +1,7 @@
 @import '../constants/styles';
 
+$CONTENT_WIDTH: 1000px;
+
 .wrapper {
   background-color: white;
   height: 100%;
@@ -11,11 +13,11 @@
   flex-grow: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  //align-items: center;
 }
 
 .innerContainer {
-  width: 800px;
+  width: $CONTENT_WIDTH;
   max-width: 95vw;
   height: 400px;
   max-height: 90vh;
@@ -33,12 +35,27 @@
   }
 }
 
+$GUTTER: 2rem;
+@media (min-width: 50rem) {
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .column {
+    width: calc(50% - #{$GUTTER});
+  }
+}
+
 main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   font-size: 130%;
+
+  .high & {
+    justify-content: flex-start;
+  }
 }
 
 .title {
@@ -74,7 +91,7 @@ main {
 
   .header {
     width: 100%;
-    max-width: 1000px;
+    max-width: $CONTENT_WIDTH;
 
     h2 {
       margin: 0.2em 0 0.3em;
@@ -120,4 +137,64 @@ main {
   to {
     opacity: 1;
   }
+}
+
+.searchParameter {
+  margin-bottom: 0.8em;
+}
+
+// house
+$HOUSE_LINE: 2px solid black;
+.house, .roof {
+  max-width: 11em;
+  box-sizing: border-box;
+}
+.house {
+  border: $HOUSE_LINE;
+  border-bottom: none;
+
+  .floor {
+    border-bottom: $HOUSE_LINE;
+    padding: 0.4em 1em;
+    cursor: pointer;
+
+    &.selected {
+      background-color: darkgreen;
+    }
+
+    &:hover {
+      background-color: rgba(0, 100, 0, 0.3);
+
+      &.selected {
+        background-color: rgba(100, 0, 0, 0.3);
+      }
+    }
+  }
+}
+
+$ROOF_HEIGHT: 2em;
+.roof {
+  height: $ROOF_HEIGHT;
+  display: flex;
+  align-items: flex-start;
+}
+.roofLeft, .roofRight {
+  border-top: $HOUSE_LINE;
+  transform-origin: 0 0;
+  width: $ROOF_HEIGHT;
+  height: $ROOF_HEIGHT;
+}
+.roofLeft {
+  transform: rotate(-45deg) scaleX(1.41);
+  position: relative;
+  top: $ROOF_HEIGHT;
+}
+.roofRight {
+  transform: rotate(45deg) scaleX(1.41);
+}
+
+.roofMiddle {
+  border-top: $HOUSE_LINE;
+  flex-grow: 1;
+  height: $ROOF_HEIGHT;
 }

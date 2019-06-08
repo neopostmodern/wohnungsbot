@@ -7,7 +7,10 @@ import {
   nextStage,
   previousStage,
   togglePostcode,
-  resetPostcodes
+  resetPostcodes,
+  toggleFloor,
+  toggleBoolean,
+  setNumber
 } from '../actions/configuration';
 import { hideConfiguration } from '../actions/electron';
 
@@ -24,7 +27,10 @@ function mapDispatchToProps(dispatch) {
       previousStage,
       hideConfiguration,
       togglePostcode,
-      resetPostcodes
+      resetPostcodes,
+      toggleFloor,
+      toggleBoolean,
+      setNumber
     },
     dispatch
   );

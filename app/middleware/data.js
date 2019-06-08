@@ -2,20 +2,62 @@
 
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { DATA_OVERVIEW_SET, REFRESH_VERDICTS } from '../constants/actionTypes';
-import type { RawOverviewDataEntry, Verdict } from '../reducers/data';
+import type { OverviewDataEntry, Verdict } from '../reducers/data';
 import { refreshVerdicts, setVerdict } from '../actions/data';
 import type { configurationStateType } from '../reducers/configuration';
 
 function assessFlatFromOverviewEntry(
-  rawEntry: RawOverviewDataEntry,
+  entry: OverviewDataEntry,
   configuration: configurationStateType
 ): Verdict {
   const reasons = [];
-  const flatPostcode = rawEntry['resultlist.realEstate'].address.postcode;
+  const flatPostcode = entry.address.postcode;
   reasons.push({
     reason: `Postleitzahl: ${flatPostcode}`,
     result: configuration.postcodes.includes(flatPostcode)
   });
+
+  if (
+    entry.title.includes('WBS') ||
+    entry.title.toLowerCase().includes('wohnberechtigung')
+  ) {
+    reasons.push({
+      reason: `Wohnberechtigungsschein erforderlich`,
+      result: configuration.hasWBS
+    });
+  }
+
+  // todo: send mail
+  if (
+    entry.title.toLowerCase().includes('bes.') ||
+    entry.title.toLowerCase().includes('besichtigung')
+  ) {
+    reasons.push({
+      reason: `Besichtigungstermin im Titel`,
+      result: false
+    });
+  }
+
+  if (configuration.mustHaveBalcony) {
+    reasons.push({
+      reason: `Balkon / Terasse`,
+      result: entry.balcony
+    });
+  }
+
+  if (configuration.mustHaveKitchenette) {
+    reasons.push({
+      reason: `${entry.builtInKitchen ? '' : 'Keine '}Einbauküche`,
+      result: entry.builtInKitchen
+    });
+  }
+
+  if (configuration.noKitchenette) {
+    reasons.push({
+      reason: `${entry.builtInKitchen ? '' : 'Keine '}Einbauküche`,
+      result: !entry.builtInKitchen
+    });
+  }
 
   const result = reasons.every(reason => reason.result);
 
@@ -38,11 +80,9 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     } = store.getState();
 
     if (overview) {
-      overview.forEach(rawEntry => {
-        const flatId = rawEntry['@id'];
-
-        const verdict = assessFlatFromOverviewEntry(rawEntry, configuration);
-        store.dispatch(setVerdict(flatId, verdict));
+      overview.forEach(entry => {
+        const verdict = assessFlatFromOverviewEntry(entry, configuration);
+        store.dispatch(setVerdict(entry.id, verdict));
       });
     }
   }
