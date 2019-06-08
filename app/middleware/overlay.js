@@ -13,5 +13,5 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     setTimeout(() => next(clickAnimationClear(animationId)), 5000);
   }
 
-  next(action);
+  return next(action);
 };

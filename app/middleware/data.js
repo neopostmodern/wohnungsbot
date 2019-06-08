@@ -122,5 +122,5 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     });
   }
 
-  next(action);
+  return next(action);
 };

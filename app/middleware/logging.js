@@ -6,5 +6,5 @@ import type { Action, Dispatch, Store } from '../reducers/types';
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
   console.log(action);
 
-  next(action);
+  return next(action);
 };

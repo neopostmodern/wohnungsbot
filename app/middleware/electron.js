@@ -253,5 +253,5 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
   }
 
-  next(action);
+  return next(action);
 };

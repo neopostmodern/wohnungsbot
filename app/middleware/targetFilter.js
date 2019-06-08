@@ -41,5 +41,5 @@ export default (target: targetType) => (store: Store) => (next: Dispatch) => (
     next(registeredAction(store.dispatch, action.payload));
   }
 
-  next(action);
+  return next(action);
 };

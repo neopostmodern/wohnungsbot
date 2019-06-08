@@ -84,5 +84,5 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     }
   }
 
-  next(action);
+  return next(action);
 };
