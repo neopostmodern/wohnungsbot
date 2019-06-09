@@ -1,5 +1,6 @@
 // @flow
 
+import dotProp from 'dot-prop-immutable';
 import type { Action } from './types';
 import {
   NEXT_STAGE,
@@ -11,7 +12,8 @@ import {
   SET_SEARCH_URL,
   TOGGLE_FLOOR,
   TOGGLE_POSTCODE,
-  TOGGLE_BOOLEAN
+  TOGGLE_BOOLEAN,
+  SET_STRING
 } from '../constants/actionTypes';
 import { objectHash } from '../utils/hash';
 
@@ -31,6 +33,67 @@ export type configurationBoolean =
   | 'onlyOldBuilding'
   | 'onlyUnfurnished';
 
+export const SALUTATIONS = {
+  FRAU: 'Frau',
+  HERR: 'Herr'
+};
+export type Salutation = $Values<typeof SALUTATIONS>;
+
+export type ContactData = {
+  salutation: Salutation,
+  firstName: string,
+  lastName: string,
+  eMail: string,
+  telephone?: string,
+  street: string,
+  houseNumber: string,
+  postcode: string,
+  city: string
+};
+
+export type DataPolicies = {
+  flatViewingNotificationMails: boolean,
+  researchDataSharing: boolean
+};
+
+export const MOVE_IN_WHEN = {
+  NOW: 'Ab sofort',
+  FLEXIBLE: 'Flexibel'
+};
+export type MoveInWhen = $Values<typeof MOVE_IN_WHEN>;
+
+export const MOVE_IN_WHO = {
+  SINGLE: 'Einpersonenhaushalt',
+  TWO_ADULTS: 'Zwei Erwachsene',
+  FAMILY: 'Familie',
+  SHARED_FLAT: 'Wohngemeinschaft'
+};
+export type MoveInWho = $Values<typeof MOVE_IN_WHO>;
+
+export const EMPLOYMENT_STATUS = {
+  EMPLOYEE: 'Angestellte_r',
+  WORKER: 'Arbeiter_in',
+  SELF_EMPLOYED: 'Selbstständig',
+  CIVIL_SERVANT: 'Beamte_r',
+  TRAINEE: 'Auszubildende_r',
+  STUDENT: 'Student_in',
+  PHD_STUDENT: 'Doktorand_in',
+  HOUSEPERSON: 'Hausmensch',
+  UNEMPLOYED: 'Arbeitslos',
+  RETIRED: 'Renter_in',
+  OTHER: 'Sonstige'
+};
+export type EmploymentStatus = $Values<typeof EMPLOYMENT_STATUS>;
+
+export type AdditionalInformation = {
+  moveInWhen: MoveInWhen,
+  moveInWho: MoveInWho,
+  animals: string,
+  employmentStatus: EmploymentStatus,
+  income: ?number,
+  hasDocumentsReady: boolean
+};
+
 export type configurationStateType = {
   stage: number,
   loaded: boolean,
@@ -46,7 +109,10 @@ export type configurationStateType = {
   mustHaveBalcony: boolean,
   mustHaveKitchenette: boolean,
   noKitchenette: boolean,
-  floors: Array<number>
+  floors: Array<number>,
+  contactData: ContactData,
+  additionalInformation: AdditionalInformation,
+  policies: DataPolicies
 };
 
 export const getConfigurationHash = (
@@ -69,7 +135,29 @@ const configurationDefaultState: configurationStateType = {
   hasWBS: false,
   mustHaveBalcony: false,
   mustHaveKitchenette: false,
-  noKitchenette: false
+  noKitchenette: false,
+  contactData: {
+    salutation: SALUTATIONS.FRAU,
+    firstName: '',
+    lastName: '',
+    eMail: '',
+    street: '',
+    houseNumber: '',
+    postcode: '',
+    city: ''
+  },
+  additionalInformation: {
+    moveInWhen: MOVE_IN_WHEN.NOW,
+    moveInWho: MOVE_IN_WHO.SINGLE,
+    animals: '',
+    employmentStatus: EMPLOYMENT_STATUS.EMPLOYEE,
+    income: null,
+    hasDocumentsReady: true
+  },
+  policies: {
+    flatViewingNotificationMails: false,
+    researchDataSharing: false
+  }
 };
 
 export default function configuration(
@@ -120,13 +208,11 @@ export default function configuration(
     case RESET_POSTCODES:
       return Object.assign({}, state, { postcodes: [] });
     case TOGGLE_BOOLEAN:
-      return Object.assign({}, state, {
-        [action.payload.name]: !state[action.payload.name]
-      });
+      return dotProp.toggle(state, action.payload.name);
     case SET_NUMBER:
-      return Object.assign({}, state, {
-        [action.payload.name]: action.payload.value
-      });
+      return dotProp.set(state, action.payload.name, action.payload.value);
+    case SET_STRING:
+      return dotProp.set(state, action.payload.name, action.payload.value);
     default:
       return state;
   }

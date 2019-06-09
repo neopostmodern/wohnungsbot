@@ -14,6 +14,7 @@ $CONTENT_WIDTH: 1000px;
   display: flex;
   justify-content: center;
   //align-items: center;
+  overflow-y: scroll;
 }
 
 .innerContainer {
@@ -36,7 +37,7 @@ $CONTENT_WIDTH: 1000px;
 }
 
 $GUTTER: 2rem;
-@media (min-width: 50rem) {
+@media (min-width: $CONTENT_WIDTH) {
   .row {
     display: flex;
     justify-content: space-between;
@@ -55,6 +56,10 @@ main {
 
   .high & {
     justify-content: flex-start;
+  }
+
+  h3:not(:first-child) {
+    margin-top: 3rem;
   }
 }
 
@@ -141,6 +146,16 @@ main {
 
 .searchParameter {
   margin-bottom: 0.8em;
+}
+.comment, .disclaimer {
+  font-size: 70%;
+  margin-top: 0.5em;
+  line-height: 1;
+}
+.disclaimer {
+  text-align: center;
+  color: gray;
+  margin-top: 1.5em;
 }
 
 // house

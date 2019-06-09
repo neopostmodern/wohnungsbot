@@ -14,7 +14,8 @@ import {
   SET_SEARCH_URL,
   TOGGLE_FLOOR,
   TOGGLE_POSTCODE,
-  TOGGLE_BOOLEAN
+  TOGGLE_BOOLEAN,
+  SET_STRING
 } from '../constants/actionTypes';
 
 export function setConfiguration(
@@ -85,6 +86,14 @@ export function toggleBoolean(name: configurationBoolean): Action {
 export function setNumber(name: configurationNumbers, value: ?number): Action {
   return {
     type: SET_NUMBER,
+    payload: { name, value },
+    meta: { configuration: true }
+  };
+}
+
+export function setString(name: string, value: ?string): Action {
+  return {
+    type: SET_STRING,
     payload: { name, value },
     meta: { configuration: true }
   };

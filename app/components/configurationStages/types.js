@@ -11,6 +11,7 @@ export type InheritedProps = {
   toggleFloor: (floor: number) => void,
   toggleBoolean: (name: configurationBoolean) => void,
   setNumber: (name: configurationNumbers, value: ?number) => void,
+  setString: (name: string, value: ?string) => void,
   configuration: configurationStateType
 };
 export type FlexibleNode = string | Node | ((props: InheritedProps) => Node);

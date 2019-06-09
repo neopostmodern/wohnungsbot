@@ -47,9 +47,17 @@ a:hover {
   opacity: 0.7;
 }
 
+i {
+  font-family: $FONT_ITALIC;
+}
+
 em {
   font-style: normal;
   text-decoration: underline;
+}
+
+p {
+  margin: 0 0 0.5em;
 }
 
 button {
@@ -75,14 +83,29 @@ button {
   }
 }
 
-input[type="number"] {
+input[type="text"], input[type="number"] {
   border: none;
   border-bottom: 2px solid black;
-  max-width: 3em;
   font-size: inherit;
   font-family: inherit;
   padding-left: 0.5em;
+  padding-top: 0.3em;
+}
+input[type="number"] {
+  max-width: 3em;
   text-align: center;
+}
+.textinput-wrapper {
+  display: inline-flex;
+  flex-direction: column-reverse;
+}
+.textinput-placeholder {
+  color: gray;
+  font-size: 70%;
+  transition: 1s opacity;
+}
+.textinput__empty .textinput-placeholder {
+  opacity: 0;
 }
 
 input[type="checkbox"] {
@@ -115,6 +138,18 @@ input[type="checkbox"] {
     //left: 0.1em;
     top: 0.5em;
   }
+}
+
+.inline-enum-select {
+  display: inline-block;
+  margin-right: 1em;
+}
+.is-weird {
+  color: gray;
+  position: relative;
+  top: 0.1em;
+  left: 0.2em;
+  font-size: 50%;
 }
 
 // icons

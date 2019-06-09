@@ -26,6 +26,7 @@ export const RESET_POSTCODES = 'RESET_POSTCODES';
 export const TOGGLE_FLOOR = 'TOGGLE_FLOOR';
 export const TOGGLE_BOOLEAN = 'TOGGLE_BOOLEAN';
 export const SET_NUMBER = 'SET_NUMBER';
+export const SET_STRING = 'SET_STRING';
 
 // overlay
 export const CLICK_ANIMATION_SHOW = 'CLICK_ANIMATION_SHOW';
