@@ -6,9 +6,11 @@ import { performScroll } from '../actions/electron';
 
 function mapStateToProps(state) {
   return {
-    puppet: state.electron.views.puppet,
+    isPuppetLoading: !state.electron.views.puppet.ready,
     overlay: state.overlay,
-    verdicts: state.data.verdicts
+    verdicts: state.data.verdicts,
+    isBotActing: state.electron.isBotActing,
+    botMessage: state.electron.botMessage
   };
 }
 

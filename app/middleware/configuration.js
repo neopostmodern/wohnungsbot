@@ -8,14 +8,7 @@ import type { Action, Dispatch, Store } from '../reducers/types';
 import { SET_SEARCH_URL } from '../constants/actionTypes';
 import type { configurationStateType } from '../reducers/configuration';
 import districts from '../map/districts';
-
-function numberToGermanFloatString(value: ?number): string {
-  if (value === null || value === undefined) {
-    return '';
-  }
-
-  return value.toFixed(2).replace('.', ',');
-}
+import { numberToGermanFloatString } from '../utils/germanStrings';
 
 function generateSearchUrl(configuration: configurationStateType): string {
   let searchUrl =

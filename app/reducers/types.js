@@ -3,21 +3,28 @@ import type { electronStateType } from './electron';
 import type { overlayStateType } from './overlay';
 import type { dataStateType } from './data';
 import type { configurationStateType } from './configuration';
+import type { cacheStateType } from './cache';
 
 export type stateType = {
   electron: electronStateType,
   animations: overlayStateType,
   data: dataStateType,
-  configuration: configurationStateType
+  configuration: configurationStateType,
+  cache: cacheStateType
 };
 
 export type Action = {
   +type: string,
   // eslint-disable-next-line flowtype/no-weak-types
   payload: any,
-  meta?: {
-    target: string
-  }
+  meta?:
+    | {
+        target: string
+      }
+    | {
+        queue: true,
+        message: string
+      }
 };
 
 export type GetState = () => stateType;

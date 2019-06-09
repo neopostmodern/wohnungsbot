@@ -13,6 +13,7 @@ import {
   TOGGLE_POSTCODE,
   TOGGLE_BOOLEAN
 } from '../constants/actionTypes';
+import { objectHash } from '../utils/hash';
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -27,7 +28,8 @@ export type configurationBoolean =
   | 'mustHaveBalcony'
   | 'mustHaveKitchenette'
   | 'noKitchenette'
-  | 'onlyOldBuilding';
+  | 'onlyOldBuilding'
+  | 'onlyUnfurnished';
 
 export type configurationStateType = {
   stage: number,
@@ -39,11 +41,22 @@ export type configurationStateType = {
   minimumRooms?: ?number,
   maximumRooms?: ?number,
   onlyOldBuilding: boolean,
+  onlyUnfurnished: boolean,
   hasWBS: boolean,
   mustHaveBalcony: boolean,
   mustHaveKitchenette: boolean,
   noKitchenette: boolean,
   floors: Array<number>
+};
+
+export const getConfigurationHash = (
+  configurationState: configurationStateType
+): number => {
+  const staticConfigurationState = Object.assign({}, configurationState);
+  delete staticConfigurationState.loaded;
+  delete staticConfigurationState.stage;
+  delete staticConfigurationState.searchUrl;
+  return objectHash(staticConfigurationState);
 };
 
 const configurationDefaultState: configurationStateType = {
@@ -52,6 +65,7 @@ const configurationDefaultState: configurationStateType = {
   floors: AllFloors.slice(),
   postcodes: [],
   onlyOldBuilding: false,
+  onlyUnfurnished: false,
   hasWBS: false,
   mustHaveBalcony: false,
   mustHaveKitchenette: false,

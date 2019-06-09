@@ -34,6 +34,8 @@ export default class AppUpdater {
   }
 }
 
+let firstLaunch = true;
+
 const store = configureStore(MAIN);
 
 let mainWindow: ?BrowserWindow = null;
@@ -161,9 +163,13 @@ app.on('ready', async () => {
     if (!mainWindow.isVisible()) {
       mainWindow.show();
     }
-    // mainWindow.focus();
     if (!mainWindow.isMaximized()) {
       mainWindow.maximize();
+    }
+
+    if (firstLaunch) {
+      configurationView.webContents.focus();
+      firstLaunch = false;
     }
   });
 

@@ -155,11 +155,21 @@ export const FLAT_ACTION = {
   APPLY: 'APPLY',
   INVESTIGATE: 'INVESTIGATE',
   NOTIFY_VIEWING_DATE: 'NOTIFY_VIEWING_DATE',
-  IGNORE: 'IGNORE'
+  IGNORE: 'IGNORE',
+  DISCARD: 'DISCARD'
 };
 export type FlatAction = $Keys<typeof FLAT_ACTION>;
+
+export const VERDICT_SCOPE = {
+  OVERVIEW: 'OVERVIEW',
+  COMPLETE: 'COMPLETE'
+};
+export type VerdictScope = $Keys<typeof VERDICT_SCOPE>;
+
 export type Verdict = {
+  configurationHash: number,
   result: boolean,
+  scope: VerdictScope,
   reasons: Array<{
     reason: string,
     result: boolean

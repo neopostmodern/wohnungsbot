@@ -9,16 +9,18 @@ import type { BrowserViewName } from '../reducers/electron';
 import {
   CLICK_LOGIN,
   ELECTRON_ROUTING,
+  GENERATE_APPLICATION_TEXT_AND_SUBMIT,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
+  NAVIGATE_TO_FLAT_PAGE,
+  PERFORM_SCROLL,
+  RETURN_TO_SEARCH_PAGE,
+  SET_BOT_IS_ACTING,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_VIEW_URL,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
-  WILL_CLICK,
-  PERFORM_SCROLL,
-  RETURN_TO_SEARCH_PAGE,
-  NAVIGATE_TO_FLAT_PAGE
+  WILL_CLICK
 } from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
@@ -79,6 +81,44 @@ export function click(selector: string) {
   };
 }
 
+export function type(text: string) {
+  return async (dispatch: Dispatch, getState: GetState) => {
+    const { webContents } = getState().electron.views.puppet.browserView;
+    webContents.focus();
+
+    /* eslint-disable no-await-in-loop */
+    // eslint-disable-next-line no-restricted-syntax
+    for (const character of text) {
+      let keyCode = character;
+      if (character === '\n') {
+        keyCode = '\u000d';
+      }
+
+      webContents.sendInputEvent({
+        type: 'keyDown',
+        keyCode
+      });
+      await sleep(1 + Math.random() * 5);
+      webContents.sendInputEvent({
+        type: 'char',
+        keyCode
+      });
+
+      await sleep(10 + Math.random() * 50);
+      webContents.sendInputEvent({
+        type: 'keyUp',
+        keyCode
+      });
+      if (['.', '\n'].includes(character)) {
+        await sleep(100 + Math.random() * 300);
+      } else {
+        await sleep(20 + Math.random() * 50);
+      }
+    }
+    /* eslint-enable no-await-in-loop */
+  };
+}
+
 export function scrollIntoView(
   name: BrowserViewName,
   selector: string,
@@ -88,15 +128,39 @@ export function scrollIntoView(
     const {
       electron: { views }
     } = getState();
+    const { webContents } = views[name].browserView;
 
-    await views[name].browserView.webContents.executeJavaScript(
-      `document.querySelector('${selector}').scrollIntoView({ behavior: ${
-        smooth ? "'smooth'" : "'auto'"
-      }, block: 'center'});`
-    );
+    /* eslint-disable no-await-in-loop */
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      await webContents.executeJavaScript(
+        `document.querySelector('${selector}').scrollIntoView({ behavior: ${
+          smooth ? "'smooth'" : "'auto'"
+        }, block: 'center'});`
+      );
 
-    // there is no way to know when the smooth scroll has finished
-    await sleep(1000);
+      // there is no way to know when the smooth scroll has finished
+      await sleep(2000);
+
+      // check if it actually scrolled into view, if not repeat
+      const visibilityInformation = await webContents.executeJavaScript(
+        `(
+          () => ({ 
+            elementBoundingBoxTop: document.querySelector('${selector}').getBoundingClientRect().top,
+            innerHeight: window.innerHeight
+          })
+        )();`
+      );
+
+      if (
+        visibilityInformation.elementBoundingBoxTop > 0 &&
+        visibilityInformation.elementBoundingBoxTop <
+          visibilityInformation.innerHeight
+      ) {
+        break;
+      }
+    }
+    /* eslint-enable no-await-in-loop */
   };
 }
 
@@ -110,7 +174,7 @@ export function willClick(x: number, y: number) {
 export const clickLogin = targetedAction<void>(
   CLICK_LOGIN,
   MAIN,
-  (dispatch: Dispatch) => async () => {
+  () => async (dispatch: Dispatch) => {
     await dispatch(click('#link_loginAccountLink'));
     await sleep(1000);
     await dispatch(click('#link_loginLinkInternal'));
@@ -186,12 +250,33 @@ export function performScroll(name: BrowserViewName, deltaY: number): Action {
 export const navigateToFlatPage = targetedAction<string>(
   NAVIGATE_TO_FLAT_PAGE,
   MAIN,
-  (dispatch: Dispatch, flatId: string) => async () => {
-    // todo: refine timing, centralized scheduler
-    await sleep(5000);
-    // todo: does 'waiting' for a dispatched thunk actually wait?
+  (flatId: string) => async (dispatch: Dispatch) => {
     await dispatch(scrollIntoView('puppet', `#result-${flatId}`));
-    await sleep(2000);
+    await sleep(1000);
     await dispatch(click(`#result-${flatId} .result-list-entry__brand-title`));
+  }
+);
+
+export function setBotIsActing(isActing: boolean, message?: string): Action {
+  return {
+    type: SET_BOT_IS_ACTING,
+    payload: { isActing, message }
+  };
+}
+
+export const generateApplicationTextAndSubmit = targetedAction<string>(
+  GENERATE_APPLICATION_TEXT_AND_SUBMIT,
+  MAIN,
+  (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
+    await dispatch(click('#is24-expose-contact-box .button-primary'));
+    await sleep(2000);
+    await dispatch(click('#contactForm-Message'));
+    await sleep(1000);
+    // todo: generate text dynamically
+    await dispatch(
+      type(
+        'Hallo,\nich interessiere mich sehr für Ihre Wohnung in der Bülow-Straße!'
+      )
+    );
   }
 );

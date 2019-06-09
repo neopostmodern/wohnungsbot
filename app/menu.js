@@ -241,7 +241,7 @@ export default class MenuBuilder {
       },
 
       {
-        label: 'Developer Tools',
+        label: '&Developer Tools',
         submenu: [
           {
             label: 'Toggle &Main Window Developer Tools',
@@ -275,7 +275,7 @@ export default class MenuBuilder {
             }
           },
           {
-            label: 'Reset configuration',
+            label: '&Reset configuration',
             click: () => {
               this.dispatch(resetConfiguration());
             }

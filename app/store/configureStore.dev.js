@@ -19,6 +19,7 @@ import logging from '../middleware/logging';
 import electron from '../middleware/electron';
 import configuration from '../middleware/configuration';
 import data from '../middleware/data';
+import scheduler from '../middleware/scheduler';
 import * as counterActions from '../actions/electron';
 import type { stateType } from '../reducers/types';
 
@@ -32,22 +33,6 @@ const configureStore = (target: string, initialState?: stateType) => {
 
   // Thunk Middleware
   middleware.push(thunk);
-
-  // Logging Middleware
-  if (target === RENDERER) {
-    const logger = createLogger({
-      level: 'info',
-      collapsed: true
-    });
-
-    // Skip redux logs in console during the tests
-    if (process.env.NODE_ENV !== 'test') {
-      middleware.push(logger);
-    }
-  }
-  if (target === MAIN) {
-    middleware.unshift(logging);
-  }
 
   const history = getHistory(target);
 
@@ -90,6 +75,24 @@ const configureStore = (target: string, initialState?: stateType) => {
         })
       : compose;
   /* eslint-enable no-underscore-dangle */
+
+  middleware.unshift(scheduler);
+
+  // Logging Middleware
+  if (target === RENDERER) {
+    const logger = createLogger({
+      level: 'info',
+      collapsed: true
+    });
+
+    // Skip redux logs in console during the tests
+    if (process.env.NODE_ENV !== 'test') {
+      middleware.push(logger);
+    }
+  }
+  if (target === MAIN) {
+    middleware.unshift(logging);
+  }
 
   // Electron Redux
   middleware.unshift(targetFilter(target));

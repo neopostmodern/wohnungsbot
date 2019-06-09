@@ -1,16 +1,19 @@
 // @flow
 import React, { Component } from 'react';
 import styles from './BotOverlay.scss';
-// $FlowFixMe
+// $FlowFixMe - flow doesn't like SVG
 import BotIllustration from '../../resources/bot.svg';
-import type { BrowserViewState } from '../reducers/electron';
+// $FlowFixMe - flow doesn't like SVG
+import BotIllustrationActive from '../../resources/bot-active.svg';
 import type { overlayStateType, anyAnimation } from '../reducers/overlay';
 import type { Verdicts } from '../reducers/data';
 
 type Props = {
-  puppet: BrowserViewState,
+  isPuppetLoading: boolean,
   overlay: overlayStateType,
   verdicts: Verdicts,
+  isBotActing: boolean,
+  botMessage: string,
   performScroll: (name: 'puppet', deltaY: number) => void
 };
 
@@ -49,16 +52,39 @@ export default class BotOverlay extends Component<Props> {
   }
 
   handleWheel(event: WheelEvent) {
-    const { performScroll } = this.props;
+    const { isBotActing, performScroll } = this.props;
+
+    if (isBotActing) {
+      return;
+    }
+
     performScroll('puppet', Math.sign(event.deltaY) * 30);
   }
 
-  render() {
-    const { puppet, overlay, verdicts } = this.props;
+  botTalk(): string {
+    const { isPuppetLoading, botMessage, verdicts } = this.props;
+
+    if (isPuppetLoading) {
+      return `Website lädt...`;
+    }
+
+    if (botMessage) {
+      return botMessage;
+    }
 
     // $FlowFixMe (flow can't handle Object.values)
     const matchedFlats = Object.values(verdicts).filter(({ result }) => result)
       .length;
+
+    if (matchedFlats > 0) {
+      return `${matchedFlats} passende Wohnungen gefunden.`;
+    }
+
+    return 'Ich bin bereit.';
+  }
+
+  render() {
+    const { overlay, verdicts, isBotActing } = this.props;
 
     return (
       <div
@@ -67,7 +93,7 @@ export default class BotOverlay extends Component<Props> {
         onWheel={this.handleWheel}
       >
         {BotOverlay.renderAnimations(overlay.animations)}
-        {overlay.overviewBoundaries
+        {!isBotActing && overlay.overviewBoundaries
           ? overlay.overviewBoundaries.map(({ id, boundaries }) => (
               <div
                 key={id}
@@ -118,17 +144,11 @@ export default class BotOverlay extends Component<Props> {
             ))
           : null}
         <img
-          src={BotIllustration}
+          src={isBotActing ? BotIllustrationActive : BotIllustration}
           alt="bot"
           className={styles.botIllustration}
         />
-        <div className={styles.speechBubble}>
-          {puppet.ready
-            ? matchedFlats > 0
-              ? `${matchedFlats} passende Wohnungen gefunden.`
-              : 'Ich bin bereit.'
-            : `Website lädt, gleich geht's los...`}
-        </div>
+        <div className={styles.speechBubble}>{this.botTalk()}</div>
       </div>
     );
   }

@@ -1,16 +1,17 @@
 // @flow
-import React, { Component } from 'react';
 import type { Node } from 'react';
+import React, { Component } from 'react';
 import styles from './Configuration.scss';
-import {
-  type configurationStateType,
-  AllFloors
-} from '../reducers/configuration';
-import PostcodeMap from './PostcodeMap';
 import type {
   configurationBoolean,
   configurationNumbers
 } from '../reducers/configuration';
+import {
+  AllFloors,
+  type configurationStateType
+} from '../reducers/configuration';
+import PostcodeMap from './PostcodeMap';
+import { floorToName } from '../utils/germanStrings';
 
 type FlexibleNode = string | Node | ((props: Props) => Node);
 type ElementDescription = {
@@ -32,18 +33,6 @@ type StageDescription = {
     },
     backwards?: ButtonDescription
   }
-};
-
-const floorToName = (floor: number) => {
-  if (floor === 0) {
-    return 'Erdgeschoss';
-  }
-
-  let floorName = `${floor}. Stock`;
-  if (floor === 4) {
-    floorName += ' und höher';
-  }
-  return floorName;
 };
 
 const valueToInt = (value: string) => {
@@ -203,6 +192,7 @@ const stages: Array<StageDescription> = [
       configuration: {
         floors,
         onlyOldBuilding,
+        onlyUnfurnished,
         hasWBS,
         mustHaveBalcony,
         mustHaveKitchenette,
@@ -303,6 +293,14 @@ const stages: Array<StageDescription> = [
             />{' '}
             Unbedingt <em>ohne</em> Einbauküche
           </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={onlyUnfurnished}
+              onChange={() => toggleBoolean('onlyUnfurnished')}
+            />{' '}
+            Unbedingt unmöbliert
+          </div>
           <small>
             Die Verlässlichkeit dieser Angaben bei den Inseraten ist leider
             nicht besonders hoch
@@ -324,7 +322,7 @@ const stages: Array<StageDescription> = [
                 onClick={() => toggleFloor(floor)}
                 key={floor}
               >
-                {floorToName(floor)}
+                {floorToName(floor, 4)}
               </div>
             ))}
           </div>
@@ -381,6 +379,69 @@ type Props = {
 export default class Configuration extends Component<Props> {
   props: Props;
 
+  constructor() {
+    super();
+
+    // eslint-disable-next-line flowtype/no-weak-types
+    (this: any).handleKeyDown = this.handleKeyDown.bind(this);
+    // eslint-disable-next-line flowtype/no-weak-types
+    (this: any).goToNext = this.goToNext.bind(this);
+  }
+
+  componentDidMount() {
+    // $FlowFixMe - flow thinks document.body could be undefined
+    document.body.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    // $FlowFixMe - flow thinks document.body could be undefined
+    document.body.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    // todo: alternatively could confirm it's not currently targeting any input
+    if (
+      event.target === document.body &&
+      event.key === 'Enter' &&
+      this.checkStageValid().stageValid
+    ) {
+      this.goToNext();
+    }
+  }
+
+  goToNext() {
+    const {
+      configuration: { stage },
+      hideConfiguration,
+      nextStage
+    } = this.props;
+    if (stage === stages.length - 1) {
+      hideConfiguration();
+    } else {
+      nextStage();
+    }
+  }
+
+  checkStageValid(): { stageValid: boolean, validationMessage: ?FlexibleNode } {
+    const { configuration } = this.props;
+
+    const stage: StageDescription = stages[configuration.stage];
+
+    let stageValid = true;
+    let validationMessage = null;
+    if (stage.buttons.forward.checkInvalid) {
+      const validationResult = stage.buttons.forward.checkInvalid(
+        configuration
+      );
+      stageValid = validationResult === false;
+      if (!stageValid) {
+        validationMessage = validationResult;
+      }
+    }
+
+    return { stageValid, validationMessage };
+  }
+
   renderAmbiguous(text: ?FlexibleNode): string | Node {
     if (text === null || text === undefined) {
       return null;
@@ -394,28 +455,17 @@ export default class Configuration extends Component<Props> {
   }
 
   render() {
-    const {
-      nextStage,
-      previousStage,
-      hideConfiguration,
-      configuration
-    } = this.props;
+    const { previousStage, configuration } = this.props;
 
     const stage: StageDescription = stages[configuration.stage];
-    let stageValid = true;
-    let validationMessage = null;
-    if (stage.buttons.forward.checkInvalid) {
-      const validationResult = stage.buttons.forward.checkInvalid(
-        configuration
-      );
-      stageValid = validationResult === false;
-      if (!stageValid) {
-        validationMessage = validationResult;
-      }
-    }
+    const { stageValid, validationMessage } = this.checkStageValid();
 
     return (
-      <div className={styles.wrapper} data-tid="container">
+      <div
+        className={styles.wrapper}
+        data-tid="container"
+        id="configurationContainer"
+      >
         <nav className={styles.navigation}>
           <div className={styles.buttonContainer}>
             <button
@@ -454,11 +504,7 @@ export default class Configuration extends Component<Props> {
           >
             <button
               type="button"
-              onClick={
-                configuration.stage === stages.length - 1
-                  ? hideConfiguration
-                  : nextStage
-              }
+              onClick={this.goToNext}
               className={`primary ${stage.buttons.forward.className || ''}`}
               style={stage.buttons.forward.style}
               disabled={!stageValid}
