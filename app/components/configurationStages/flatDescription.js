@@ -1,11 +1,13 @@
 import React from 'react';
 import styles from '../Configuration.scss';
-import { EnumField, NumberField, TextField } from './util';
 import { AllFloors, MOVE_IN_WHO } from '../../reducers/configuration';
 import { floorToName } from '../../utils/germanStrings';
 import type { configurationStateType } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 import Disclaimer from './disclaimer';
+import TextField from '../inputs/TextInput';
+import NumberField from '../inputs/NumberField';
+import EnumField from '../inputs/EnumField';
 
 const flatDescriptionStage: StageDescription = {
   container: {

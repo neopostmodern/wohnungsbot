@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export function objectHash(object) {
   const jsonString = JSON.stringify(object);
   let hash = 0;

@@ -73,16 +73,26 @@ export type RawOverviewDataEntry = {
 // eslint-disable-next-line flowtype/no-weak-types
 export type RawOverviewData = Array<RawOverviewDataEntry>;
 
+export type FlatAddress = {|
+  postcode: string,
+  description: string,
+  street?: string,
+  houseNumber?: string,
+  neighborhood: string
+|};
+
+export type FlatContactDetails = {|
+  company?: string,
+  firstName?: string,
+  lastName?: string,
+  salutation: 'MALE' | 'FEMALE' | 'NO_SALUTATION'
+|};
+
 export type OverviewDataEntry = {|
   id: string,
   title: string,
-  address: {
-    postcode: string,
-    description: string,
-    street?: string,
-    houseNumber?: string,
-    quarter: string
-  },
+  address: FlatAddress,
+  contactDetails: FlatContactDetails,
   balcony: boolean,
   builtInKitchen: boolean
 |};
@@ -125,7 +135,13 @@ function processOverviewDataEntry(
     address: {
       postcode: realEstate.address.postcode,
       description: realEstate.address.description.text,
-      quarter: realEstate.address.quarter
+      neighborhood: realEstate.address.quarter
+    },
+    contactDetails: {
+      salutation: realEstate.contactDetails.salutation,
+      firstName: realEstate.contactDetails.firstname,
+      lastName: realEstate.contactDetails.lastname,
+      company: realEstate.contactDetails.company
     },
     balcony: parseBoolean(realEstate.balcony),
     builtInKitchen: parseBoolean(realEstate.builtInKitchen)

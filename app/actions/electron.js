@@ -23,6 +23,7 @@ import {
   SHOW_DEV_TOOLS,
   WILL_CLICK
 } from '../constants/actionTypes';
+import applicationTextBuilder from '../flat/applicationTextBuilder';
 
 export function setWindow(window: BrowserWindow): Action {
   return {
@@ -271,14 +272,17 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
   (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(click('#is24-expose-contact-box .button-primary'));
     await sleep(2000);
+    // todo: check if application is possible (e.g. premium-only)
     await dispatch(click('#contactForm-Message'));
     await sleep(1000);
-    // todo: generate text dynamically
-    await dispatch(
-      type(
-        'Hallo,\nich interessiere mich sehr für Ihre Wohnung in der Bülow-Straße!'
-      )
+    const { configuration, data } = getState();
+    const flatOverview = data.overview[flatId];
+    const applicationText = applicationTextBuilder(
+      configuration.applicationText,
+      flatOverview.address,
+      flatOverview.contactDetails
     );
+    await dispatch(type(applicationText));
   }
 );
 

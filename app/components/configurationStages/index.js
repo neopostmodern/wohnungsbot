@@ -5,6 +5,7 @@ import flatDescriptionStage from './flatDescription';
 import personalDataStage from './personalData';
 import reviewStage from './review';
 import type { StageDescription } from './types';
+import applicationTextStage from './applicationText';
 
 const stages: Array<StageDescription> = [
   welcomeStage,
@@ -12,6 +13,7 @@ const stages: Array<StageDescription> = [
   areaSelectionStage,
   flatDescriptionStage,
   personalDataStage,
+  applicationTextStage,
   reviewStage
 ];
 

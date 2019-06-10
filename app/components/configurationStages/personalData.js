@@ -1,10 +1,12 @@
 import React from 'react';
 import styles from '../Configuration.scss';
-import { EnumField, NumberField, TextField } from './util';
 import { EMPLOYMENT_STATUS, SALUTATIONS } from '../../reducers/configuration';
 import type { configurationStateType } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 import Disclaimer from './disclaimer';
+import TextField from '../inputs/TextInput';
+import NumberField from '../inputs/NumberField';
+import EnumField from '../inputs/EnumField';
 
 const twoTextFieldsInLineStyles = { width: '200px' };
 

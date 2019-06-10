@@ -9,6 +9,7 @@ import type {
 import { FLAT_ACTION, VERDICT_SCOPE } from '../reducers/data';
 import { floorToName } from '../utils/germanStrings';
 
+// eslint-disable-next-line import/prefer-default-export
 export function assessFlat(
   configuration: configurationStateType,
   overviewDataEntry: OverviewDataEntry,

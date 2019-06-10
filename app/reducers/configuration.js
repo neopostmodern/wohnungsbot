@@ -16,6 +16,7 @@ import {
   SET_STRING
 } from '../constants/actionTypes';
 import { objectHash } from '../utils/hash';
+import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -110,6 +111,7 @@ export type configurationStateType = {
   mustHaveKitchenette: boolean,
   noKitchenette: boolean,
   floors: Array<number>,
+  applicationText: string,
   contactData: ContactData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies
@@ -136,6 +138,7 @@ const configurationDefaultState: configurationStateType = {
   mustHaveBalcony: false,
   mustHaveKitchenette: false,
   noKitchenette: false,
+  applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   contactData: {
     salutation: SALUTATIONS.FRAU,
     firstName: '',

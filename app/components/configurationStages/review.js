@@ -108,7 +108,9 @@ const reviewStage: StageDescription = {
         </div>
         <div className={styles.column}>
           <h3>...und schreibt...</h3>
-          {/* todo: show application text */}
+          <pre className={styles.applicationTextReview}>
+            {configuration.applicationText}
+          </pre>
           <h3>Der Bot wird dabei...</h3>
           {configuration.policies.flatViewingNotificationMails ? null : (
             <>

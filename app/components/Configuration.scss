@@ -37,6 +37,16 @@ $CONTENT_WIDTH: 1000px;
 }
 
 $GUTTER: 2rem;
+@media (max-width: $CONTENT_WIDTH) {
+  .row {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .column {
+    width: $CONTENT_WIDTH / 2;
+  }
+}
 @media (min-width: $CONTENT_WIDTH) {
   .row {
     display: flex;
@@ -160,6 +170,20 @@ main {
   text-align: center;
   color: gray;
   margin-top: 1.5em;
+}
+
+.replacement {
+  background-color: $BOT_LIGHT;
+  padding: 0.2em 0.1em 0;
+}
+
+.applicationTextPreview {
+  padding: 0.5em;
+  background-color: $BOT_LIGHT;
+  border: 2px solid $BOT_LIGHT;
+}
+.applicationTextReview {
+  font-family: $FONT_ITALIC;
 }
 
 // house
