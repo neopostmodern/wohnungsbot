@@ -38,7 +38,7 @@ const flatDescriptionStage: StageDescription = {
     setNumber,
     setString
   }: InheritedProps) => (
-    <>
+    <div className={styles.marginBottom}>
       <div className={styles.row}>
         <div className={styles.column}>
           <h3>Preis und Größe</h3>
@@ -181,7 +181,7 @@ const flatDescriptionStage: StageDescription = {
       </div>
 
       <Disclaimer />
-    </>
+    </div>
   ),
   buttons: {
     forward: {

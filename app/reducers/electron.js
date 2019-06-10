@@ -15,17 +15,20 @@ export type BrowserViewName =
   | 'puppet'
   | 'sidebar'
   | 'botOverlay'
-  | 'configuration';
+  | 'configuration'
+  | 'devMenu';
 export type BrowserViewState = {
   browserView: BrowserView,
   url: string,
   ready: boolean
 };
+export type Views = {
+  [key: BrowserViewName]: BrowserViewState
+};
+
 export type electronStateType = {
   window: ?BrowserWindow,
-  views: {
-    [key: BrowserViewName]: BrowserViewState
-  },
+  views: Views,
   configurationHidden: boolean,
   isBotActing: boolean
 };

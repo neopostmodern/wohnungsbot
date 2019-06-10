@@ -18,7 +18,8 @@ import {
   RETURN_TO_SEARCH_PAGE,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_WINDOW,
-  SHOW_CONFIGURATION
+  SHOW_CONFIGURATION,
+  SHOW_DEV_TOOLS
 } from '../constants/actionTypes';
 import type { RawFlatData, RawOverviewData } from '../reducers/data';
 import {
@@ -33,7 +34,7 @@ function resizeViews(
 ) {
   const {
     window,
-    views: { puppet, sidebar, botOverlay, configuration }
+    views: { puppet, sidebar, botOverlay, configuration, devMenu }
   } = electronState;
   if (window === undefined || window === null) {
     console.error('Main window not defined!');
@@ -73,6 +74,16 @@ function resizeViews(
     width: windowWidth,
     height: windowHeight
   });
+
+  // only exists if in dev environment
+  if (devMenu) {
+    devMenu.browserView.setBounds({
+      x: 0,
+      y: windowHeight - 30,
+      width: windowWidth,
+      height: 30
+    });
+  }
 }
 
 // credit: https://github.com/danro/jquery-easing/blob/master/jquery.easing.js#L38
@@ -251,6 +262,19 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     );
 
     process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
+  }
+
+  if (action.type === SHOW_DEV_TOOLS) {
+    const {
+      electron: { views }
+    } = store.getState();
+    const { webContents } = views[action.payload.name].browserView;
+
+    if (webContents.isDevToolsOpened()) {
+      webContents.closeDevTools();
+    }
+
+    webContents.openDevTools();
   }
 
   return next(action);

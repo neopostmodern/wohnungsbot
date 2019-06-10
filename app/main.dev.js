@@ -18,7 +18,6 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
 import configureStore from './store/configureStore';
 import { addView, setWindow } from './actions/electron';
 import { MAIN } from './constants/targets';
@@ -34,6 +33,8 @@ export default class AppUpdater {
   }
 }
 
+const isDevelopment =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 let firstLaunch = true;
 
 const store = configureStore(MAIN);
@@ -45,10 +46,7 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.DEBUG_PROD === 'true'
-) {
+if (isDevelopment) {
   require('electron-debug')();
 }
 
@@ -110,7 +108,7 @@ app.on('ready', async () => {
     return browserView;
   };
 
-  const sidebarView = newView(
+  newView(
     'sidebar',
     {
       webPreferences: {
@@ -119,7 +117,7 @@ app.on('ready', async () => {
     },
     `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
   );
-  const puppetView = newView(
+  newView(
     'puppet',
     {
       webPreferences: {
@@ -130,7 +128,7 @@ app.on('ready', async () => {
     'https://example.com/'
   );
 
-  const botOverlayView = newView(
+  newView(
     'botOverlay',
     {
       webPreferences: {
@@ -151,6 +149,20 @@ app.on('ready', async () => {
     },
     `file://${__dirname}/app.html#${ROUTES.CONFIGURATION}`
   );
+
+  if (isDevelopment) {
+    newView(
+      'devMenu',
+      {
+        webPreferences: {
+          nodeIntegration: true,
+          experimentalFeatures: true
+        },
+        transparent: true
+      },
+      `file://${__dirname}/app.html#${ROUTES.DEV_MENU}`
+    );
+  }
 
   configurationView.webContents.on('did-finish-load', () => {
     if (mainWindow === undefined || mainWindow === null) {
@@ -177,15 +189,7 @@ app.on('ready', async () => {
     mainWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(
-    mainWindow,
-    configurationView,
-    sidebarView,
-    botOverlayView,
-    puppetView,
-    store.dispatch
-  );
-  menuBuilder.buildMenu();
+  mainWindow.setMenuBarVisibility(false);
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

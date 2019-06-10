@@ -40,7 +40,7 @@ const personalDataStage: StageDescription = {
     setNumber,
     setString
   }: InheritedProps) => (
-    <>
+    <div className={styles.marginBottom}>
       <div className={styles.row}>
         <div className={styles.column}>
           <h3>Deine aktuellen Kontaktdaten</h3>
@@ -197,7 +197,7 @@ const personalDataStage: StageDescription = {
       </div>
 
       <Disclaimer />
-    </>
+    </div>
   ),
   buttons: {
     forward: {

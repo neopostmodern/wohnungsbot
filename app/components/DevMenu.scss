@@ -1,0 +1,28 @@
+.container {
+  backdrop-filter: blur(5px);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.menu {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 1em;
+}
+
+.menuItem {
+  margin-right: 2em;
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+
+  button {
+    font-size: 80%;
+    color: inherit;
+  }
+}
+
+.entryName {
+  margin-right: 0.5em;
+}

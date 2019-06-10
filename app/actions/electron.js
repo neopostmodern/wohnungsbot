@@ -20,6 +20,7 @@ import {
   SET_BROWSER_VIEW_URL,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
+  SHOW_DEV_TOOLS,
   WILL_CLICK
 } from '../constants/actionTypes';
 
@@ -280,3 +281,15 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
     );
   }
 );
+
+export function showDevTools(name: BrowserViewName): Action {
+  return {
+    type: SHOW_DEV_TOOLS,
+    payload: {
+      name
+    },
+    meta: {
+      target: MAIN
+    }
+  };
+}
