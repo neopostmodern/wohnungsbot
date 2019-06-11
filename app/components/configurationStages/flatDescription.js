@@ -1,6 +1,10 @@
 import React from 'react';
 import styles from '../Configuration.scss';
-import { AllFloors, MOVE_IN_WHO } from '../../reducers/configuration';
+import {
+  AllFloors,
+  MOVE_IN_WHEN,
+  MOVE_IN_WHO
+} from '../../reducers/configuration';
 import { floorToName } from '../../utils/germanStrings';
 import type { configurationStateType } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
@@ -33,7 +37,7 @@ const flatDescriptionStage: StageDescription = {
       minimumArea,
       minimumRooms,
       maximumRooms,
-      additionalInformation: { moveInWho, animals }
+      additionalInformation: { moveInWho, animals, moveInWhen }
     },
     toggleFloor,
     toggleBoolean,
@@ -158,6 +162,16 @@ const flatDescriptionStage: StageDescription = {
             }
             placeholder="Beschreibung der Tiere"
             style={{ width: '300px' }}
+          />
+
+          <h3>Ab wann?</h3>
+          <EnumField
+            value={moveInWhen}
+            options={MOVE_IN_WHEN}
+            onChange={value =>
+              setString('additionalInformation.moveInWhen', value)
+            }
+            inline
           />
 
           <h3>Stockwerk</h3>

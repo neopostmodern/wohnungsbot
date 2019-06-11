@@ -41,6 +41,12 @@ const reviewStage: StageDescription = {
           ) : (
             <>ohne Tiere</>
           )}
+          <br />
+          <br />
+          Einzug{' '}
+          <span style={{ textTransform: 'lowercase' }}>
+            {configuration.additionalInformation.moveInWhen}
+          </span>
           <h3>...nach einer Wohnung mit...</h3>
           {configuration.maximumRent ? (
             <>maximal {configuration.maximumRent}€</>
