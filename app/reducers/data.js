@@ -135,7 +135,8 @@ function processOverviewDataEntry(
     address: {
       postcode: realEstate.address.postcode,
       description: realEstate.address.description.text,
-      neighborhood: realEstate.address.quarter
+      neighborhood: realEstate.address.quarter.split('(')[0].trim(),
+      street: realEstate.address.street
     },
     contactDetails: {
       salutation: realEstate.contactDetails.salutation,
@@ -195,12 +196,13 @@ export type Verdict = {
 export type Verdicts = { [key: string]: Verdict };
 
 export type dataStateType = {|
-  overview?: Array<OverviewDataEntry>,
+  overview: { [key: string]: OverviewDataEntry },
   flat: { [key: string]: FlatData },
   verdicts: Verdicts
 |};
 
 const dataDefaultState: dataStateType = {
+  overview: {},
   verdicts: {},
   flat: {}
 };
@@ -210,11 +212,12 @@ export default function data(
   action: Action
 ) {
   if (action.type === SET_OVERVIEW_DATA) {
-    return Object.assign({}, state, {
-      overview: action.payload.data.map(entry =>
-        processOverviewDataEntry(entry)
-      )
+    const overview = {};
+    action.payload.data.forEach(entry => {
+      const processedEntry = processOverviewDataEntry(entry);
+      overview[processedEntry.id] = processedEntry;
     });
+    return Object.assign({}, state, { overview });
   }
 
   if (action.type === SET_FLAT_DATA) {

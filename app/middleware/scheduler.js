@@ -1,9 +1,9 @@
 // @flow
 
 import type { Action, Dispatch, Store } from '../reducers/types';
-import { navigateToFlatPage, setBotIsActing } from '../actions/electron';
 import { INVESTIGATE_FLAT, SET_BOT_IS_ACTING } from '../constants/actionTypes';
 import { sleep } from '../utils/async';
+import { navigateToFlatPage, setBotIsActing } from '../actions/bot';
 
 const queue = [];
 

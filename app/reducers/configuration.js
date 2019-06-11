@@ -133,7 +133,7 @@ const configurationDefaultState: configurationStateType = {
   floors: AllFloors.slice(),
   postcodes: [],
   onlyOldBuilding: false,
-  onlyUnfurnished: false,
+  onlyUnfurnished: true,
   hasWBS: false,
   mustHaveBalcony: false,
   mustHaveKitchenette: false,

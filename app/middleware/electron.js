@@ -21,7 +21,11 @@ import {
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS
 } from '../constants/actionTypes';
-import type { RawFlatData, RawOverviewData } from '../reducers/data';
+import type {
+  OverviewDataEntry,
+  RawFlatData,
+  RawOverviewData
+} from '../reducers/data';
 import {
   calculateOverviewBoundaries,
   setOverviewBoundaries
@@ -231,12 +235,16 @@ export default (store: Store) => (next: (action: Action) => void) => async (
         `window.innerHeight`
       );
 
+      const flatIdsInOverview = Object.values(overview).map(
+        // $FlowFixMe -- Object.values
+        (entry: OverviewDataEntry) => entry.id
+      );
+
       // eslint-disable-next-line no-restricted-syntax
-      for (const entry of overview) {
-        const { id } = entry;
+      for (const flatId of flatIdsInOverview) {
         // eslint-disable-next-line no-await-in-loop
         const boundaries = await puppet.browserView.webContents.executeJavaScript(
-          `JSON.parse(JSON.stringify(document.getElementById('result-${id}').getBoundingClientRect()))`
+          `JSON.parse(JSON.stringify(document.getElementById('result-${flatId}').getBoundingClientRect()))`
         );
         if (boundaries.top > innerHeight) {
           break;
@@ -245,7 +253,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
           // eslint-disable-next-line no-continue
           continue;
         }
-        overviewBoundaries.push({ id, boundaries });
+        overviewBoundaries.push({ id: flatId, boundaries });
       }
 
       store.dispatch(setOverviewBoundaries(overviewBoundaries));

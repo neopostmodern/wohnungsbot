@@ -10,12 +10,13 @@ import {
 import { FLAT_ACTION, VERDICT_SCOPE } from '../reducers/data';
 import { refreshVerdicts, setVerdict } from '../actions/data';
 import { getConfigurationHash } from '../reducers/configuration';
-import { queueInvestigateFlat } from '../actions/bot';
 import {
-  electronRouting,
-  generateApplicationTextAndSubmit
-} from '../actions/electron';
+  generateApplicationTextAndSubmit,
+  queueInvestigateFlat
+} from '../actions/bot';
+import { electronRouting } from '../actions/electron';
 import { assessFlat } from '../flat/assessment';
+import type { OverviewDataEntry } from '../reducers/data';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -32,8 +33,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     if (overview) {
       const configurationHash = getConfigurationHash(configuration);
 
-      // eslint-disable-next-line no-restricted-syntax
-      for (const entry of overview) {
+      // $FlowFixMe -- Object.values
+      Object.values(overview).forEach((entry: OverviewDataEntry) => {
         const cachedVerdict = verdicts[entry.id];
         const flatData = flat[entry.id];
         const currentScope = flatData
@@ -45,14 +46,13 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
           cachedVerdict.scope === currentScope &&
           cachedVerdict.configurationHash === configurationHash
         ) {
-          // eslint-disable-next-line no-continue
-          continue;
+          return;
         }
 
         const verdict = assessFlat(configuration, entry, flatData);
 
         store.dispatch(setVerdict(entry.id, verdict));
-      }
+      });
     }
   }
 
@@ -74,12 +74,12 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         // todo: send mail
         break;
       case FLAT_ACTION.INVESTIGATE:
-        if (!cache.applications.includes(flatId)) {
+        if (!cache.applications[flatId]) {
           store.dispatch(queueInvestigateFlat(flatId));
         }
         break;
       case FLAT_ACTION.APPLY:
-        if (!cache.applications.includes(flatId)) {
+        if (!cache.applications[flatId]) {
           // todo: set bot message
 
           await store.dispatch(generateApplicationTextAndSubmit(flatId));

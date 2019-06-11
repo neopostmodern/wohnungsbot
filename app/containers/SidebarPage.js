@@ -1,11 +1,8 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
-import {
-  clickLogin,
-  returnToSearchPage,
-  showConfiguration
-} from '../actions/electron';
+import { showConfiguration } from '../actions/electron';
+import { clickLogin, returnToSearchPage } from '../actions/bot';
 
 function mapStateToProps(state) {
   return {
