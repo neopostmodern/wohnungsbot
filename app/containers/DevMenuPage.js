@@ -5,6 +5,7 @@ import { showDevTools } from '../actions/electron';
 import DevMenu from '../components/DevMenu';
 import type { stateType } from '../reducers/types';
 import { resetConfiguration } from '../actions/configuration';
+import { resetCache } from '../actions/cache';
 
 function mapStateToProps(state: stateType) {
   return {
@@ -13,7 +14,10 @@ function mapStateToProps(state: stateType) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ showDevTools, resetConfiguration }, dispatch);
+  return bindActionCreators(
+    { showDevTools, resetConfiguration, resetCache },
+    dispatch
+  );
 }
 
 export default connect(

@@ -6,14 +6,15 @@ import type { BrowserViewName, Views } from '../reducers/electron';
 type Props = {
   views: Views,
   showDevTools: (name: BrowserViewName) => void,
-  resetConfiguration: () => void
+  resetConfiguration: () => void,
+  resetCache: () => void
 };
 
 export default class BotOverlay extends Component<Props> {
   props: Props;
 
   render() {
-    const { views, showDevTools, resetConfiguration } = this.props;
+    const { views, showDevTools, resetConfiguration, resetCache } = this.props;
 
     return (
       <div className={styles.container}>
@@ -28,6 +29,11 @@ export default class BotOverlay extends Component<Props> {
           ))}
 
           <div className={styles.menuItem} style={{ marginLeft: 'auto' }}>
+            <button type="button" onClick={resetCache}>
+              Reset cache <span className="material-icons">replay</span>
+            </button>
+          </div>
+          <div className={styles.menuItem}>
             <button type="button" onClick={resetConfiguration}>
               Reset configuration <span className="material-icons">replay</span>
             </button>

@@ -49,4 +49,5 @@ export const DISCARD_FLAT = 'DISCARD_FLAT';
 
 // cache
 export const SET_CACHE = 'SET_CACHE';
+export const RESET_CACHE = 'RESET_CACHE';
 export const MARK_COMPLETED = 'MARK_COMPLETED';
