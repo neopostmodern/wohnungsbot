@@ -27,7 +27,6 @@
     "postinstall": "npm run-script flow-typed && electron-builder install-app-deps package.json && npm run-script build-dll && opencollective-postinstall",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
-    "preinstall": "node ./internals/scripts/CheckYarn.js",
     "prestart": "npm run-script build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development TARGET=main electron -r @babel/register ./app/main.dev.js",
