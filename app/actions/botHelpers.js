@@ -1,7 +1,11 @@
 import type { WebContents } from 'electron';
 import type { Action, Dispatch, GetState } from '../reducers/types';
 import { sleep } from '../utils/async';
-import { WILL_CLICK, WILL_PRESS_KEY, WILL_TYPE } from '../constants/actionTypes';
+import {
+  WILL_CLICK,
+  WILL_PRESS_KEY,
+  WILL_TYPE
+} from '../constants/actionTypes';
 import type { BrowserViewName } from '../reducers/electron';
 
 export function click(selector: string) {
