@@ -218,6 +218,10 @@ export default merge.smart(baseConfig, {
 
     new webpack.LoaderOptionsPlugin({
       debug: true
+    }),
+
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
     })
   ],
 

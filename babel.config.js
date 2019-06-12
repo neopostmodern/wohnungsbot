@@ -17,13 +17,17 @@ module.exports = api => {
   // see docs about api at https://babeljs.io/docs/en/config-files#apicache
 
   const development = api.env(developmentEnvironments);
+  const targets =
+    process.env.TARGET === 'web'
+      ? 'iOS 5'
+      : { electron: require('electron/package.json').version };
 
   return {
     presets: [
       [
         require('@babel/preset-env'),
         {
-          targets: { electron: require('electron/package.json').version },
+          targets,
           useBuiltIns: 'usage',
           corejs: 2
         }
@@ -62,7 +66,8 @@ module.exports = api => {
       [require('@babel/plugin-proposal-class-properties'), { loose: true }],
       require('@babel/plugin-proposal-json-strings'),
 
-      ...(development ? developmentPlugins : productionPlugins)
+      ...(development ? developmentPlugins : productionPlugins),
+      ...(process.env.TARGET === 'main' ? ['dynamic-import-node'] : [])
     ]
   };
 };

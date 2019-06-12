@@ -1,5 +1,5 @@
 /**
- * Build config for electron renderer process
+ * Build config for an independent web distribution
  */
 
 import path from 'path';
@@ -13,19 +13,21 @@ import baseConfig from './webpack.config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 CheckNodeEnv('production');
-export default merge.smart(baseConfig, {
+const mergedConfig = merge.smart(baseConfig, {
   devtool: 'source-map',
 
   mode: 'production',
 
-  target: 'electron-renderer',
+  target: 'web',
 
   entry: path.join(__dirname, '..', 'app/index'),
 
   output: {
-    path: path.join(__dirname, '..', 'app/dist'),
-    publicPath: './dist/',
-    filename: 'renderer.prod.js'
+    path: path.join(__dirname, '..', 'app/web'),
+    publicPath: './',
+    filename: 'web.prod.js',
+    chunkFilename: '[name].bundle.js',
+    libraryTarget: 'var'
   },
 
   module: {
@@ -169,23 +171,25 @@ export default merge.smart(baseConfig, {
   },
 
   optimization: {
-    minimizer: process.env.E2E_BUILD
-      ? []
-      : [
-          new TerserPlugin({
-            parallel: true,
-            sourceMap: true,
-            cache: true
-          }),
-          new OptimizeCSSAssetsPlugin({
-            cssProcessorOptions: {
-              map: {
-                inline: false,
-                annotation: true
-              }
-            }
-          })
-        ]
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        sourceMap: true,
+        cache: true
+      }),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorOptions: {
+          map: {
+            inline: false,
+            annotation: true
+          }
+        }
+      })
+    ],
+    splitChunks: {
+      chunks: 'async',
+      name: true
+    }
   },
 
   plugins: [
@@ -198,6 +202,30 @@ export default merge.smart(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain
      * development checks
      */
+
+    new webpack.DefinePlugin({
+      __TARGET__: '"web"'
+    }),
+
+    // block everything with 'electron' in it (except in folder `actions` or
+    // `reducers`, which is just redux infrastructure) or 'persist'(ance)
+    new webpack.IgnorePlugin({
+      checkResource(resource: string) {
+        if (/electron/.test(resource)) {
+          return !/actions/.test(resource);
+        }
+
+        if (/persist/.test(resource)) {
+          return true;
+        }
+
+        return false;
+      },
+      checkContext(context: string) {
+        return !/reducers/.test(context);
+      }
+    }),
+
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production'
     }),
@@ -210,10 +238,11 @@ export default merge.smart(baseConfig, {
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
       openAnalyzer: process.env.OPEN_ANALYZER === 'true'
-    }),
-
-    new webpack.optimize.LimitChunkCountPlugin({
-      maxChunks: 1
     })
   ]
 });
+
+// override
+mergedConfig.externals = {};
+
+export default mergedConfig;

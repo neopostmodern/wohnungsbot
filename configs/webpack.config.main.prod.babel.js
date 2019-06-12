@@ -58,6 +58,10 @@ export default merge.smart(baseConfig, {
       NODE_ENV: 'production',
       DEBUG_PROD: false,
       START_MINIMIZED: false
+    }),
+
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
     })
   ],
 

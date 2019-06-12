@@ -16,8 +16,8 @@ import {
   BrowserView,
   type BrowserViewConstructorOptions
 } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
+// import { autoUpdater } from 'electron-updater';
+// import log from 'electron-log';
 import configureStore from './store/configureStore';
 import { addView, setWindow } from './actions/electron';
 import { MAIN } from './constants/targets';
@@ -25,21 +25,18 @@ import ROUTES from './constants/routes';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
+// todo: set up auto updater
+// export default class AppUpdater {
+//   constructor() {
+//     log.transports.file.level = 'info';
+//     autoUpdater.logger = log;
+//     autoUpdater.checkForUpdatesAndNotify();
+//   }
+// }
 
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 let firstLaunch = true;
-
-const store = configureStore(MAIN);
-
-let mainWindow: ?BrowserWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -50,148 +47,156 @@ if (isDevelopment) {
   require('electron-debug')();
 }
 
-// todo: extensions don't seem to load in BrowserView?
-const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+configureStore(MAIN, isDevelopment)
+  // eslint-disable-next-line promise/always-return
+  .then(store => {
+    let mainWindow: ?BrowserWindow = null;
 
-  return Promise.all(
-    extensions.map(name => installer.default(installer[name], forceDownload))
-  ).catch(console.log);
-};
+    // todo: extensions don't seem to load in BrowserView?
+    const installExtensions = async () => {
+      const installer = require('electron-devtools-installer');
+      const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+      const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
-/**
- * Add event listeners...
- */
+      return Promise.all(
+        extensions.map(name =>
+          installer.default(installer[name], forceDownload)
+        )
+      ).catch(console.log);
+    };
 
-app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+    /**
+     * Add event listeners...
+     */
 
-app.on('ready', async () => {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
-  ) {
-    await installExtensions();
-  }
+    app.on('window-all-closed', () => {
+      app.quit();
+    });
 
-  mainWindow = new BrowserWindow({
-    show: false,
-    width: 1000,
-    height: 500,
-    webPreferences: {
-      // devTools: false
-    }
-  });
-
-  store.dispatch(setWindow(mainWindow));
-
-  const newView = (
-    name: BrowserViewName,
-    options: BrowserViewConstructorOptions,
-    initialUrl: string
-  ): BrowserView => {
-    if (mainWindow === undefined || mainWindow === null) {
-      console.error('Main window not defined!');
-      return;
-    }
-
-    const browserView = new BrowserView(options);
-    mainWindow.addBrowserView(browserView);
-    store.dispatch(addView(name, browserView, initialUrl));
-    return browserView;
-  };
-
-  newView(
-    'sidebar',
-    {
-      webPreferences: {
-        nodeIntegration: true
+    app.on('ready', async () => {
+      if (
+        process.env.NODE_ENV === 'development' ||
+        process.env.DEBUG_PROD === 'true'
+      ) {
+        await installExtensions();
       }
-    },
-    `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
-  );
-  newView(
-    'puppet',
-    {
-      webPreferences: {
-        sandbox: true
-      }
-    },
-    // todo: create landingpage
-    'https://example.com/'
-  );
 
-  newView(
-    'botOverlay',
-    {
-      webPreferences: {
-        nodeIntegration: true
-      },
-      transparent: true
-    },
-    `file://${__dirname}/app.html#${ROUTES.BOT_OVERLAY}`
-  );
-
-  const configurationView = newView(
-    'configuration',
-    {
-      webPreferences: {
-        nodeIntegration: true
-      },
-      transparent: true
-    },
-    `file://${__dirname}/app.html#${ROUTES.CONFIGURATION}`
-  );
-
-  if (isDevelopment) {
-    newView(
-      'devMenu',
-      {
+      mainWindow = new BrowserWindow({
+        show: false,
+        width: 1000,
+        height: 500,
         webPreferences: {
-          nodeIntegration: true,
-          experimentalFeatures: true
+          // devTools: false
+        }
+      });
+
+      store.dispatch(setWindow(mainWindow));
+
+      const newView = (
+        name: BrowserViewName,
+        options: BrowserViewConstructorOptions,
+        initialUrl: string
+      ): BrowserView => {
+        if (mainWindow === undefined || mainWindow === null) {
+          console.error('Main window not defined!');
+          return;
+        }
+
+        const browserView = new BrowserView(options);
+        mainWindow.addBrowserView(browserView);
+        store.dispatch(addView(name, browserView, initialUrl));
+        return browserView;
+      };
+
+      newView(
+        'sidebar',
+        {
+          webPreferences: {
+            nodeIntegration: true
+          }
         },
-        transparent: true
-      },
-      `file://${__dirname}/app.html#${ROUTES.DEV_MENU}`
-    );
-  }
+        `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
+      );
+      newView(
+        'puppet',
+        {
+          webPreferences: {
+            sandbox: true,
+            contextIsolation: true,
+            enableRemoteModule: false
+          }
+        },
+        // todo: create landingpage
+        'https://example.com/'
+      );
 
-  configurationView.webContents.on('did-finish-load', () => {
-    if (mainWindow === undefined || mainWindow === null) {
-      console.error('Main window not defined!');
-      return;
-    }
+      newView(
+        'botOverlay',
+        {
+          webPreferences: {
+            nodeIntegration: true,
+            experimentalFeatures: true
+          },
+          transparent: true
+        },
+        `file://${__dirname}/app.html#${ROUTES.BOT_OVERLAY}`
+      );
 
-    store.dispatch(wakeUp());
+      const configurationView = newView(
+        'configuration',
+        {
+          webPreferences: {
+            nodeIntegration: true
+          },
+          transparent: true
+        },
+        `file://${__dirname}/app.html#${ROUTES.CONFIGURATION}`
+      );
 
-    if (!mainWindow.isVisible()) {
-      mainWindow.show();
-    }
-    if (!mainWindow.isMaximized()) {
-      mainWindow.maximize();
-    }
+      if (isDevelopment) {
+        newView(
+          'devMenu',
+          {
+            webPreferences: {
+              nodeIntegration: true,
+              experimentalFeatures: true
+            },
+            transparent: true
+          },
+          `file://${__dirname}/app.html#${ROUTES.DEV_MENU}`
+        );
+      }
 
-    if (firstLaunch) {
-      configurationView.webContents.focus();
-      firstLaunch = false;
-    }
-  });
+      configurationView.webContents.on('did-finish-load', () => {
+        if (mainWindow === undefined || mainWindow === null) {
+          console.error('Main window not defined!');
+          return;
+        }
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+        store.dispatch(wakeUp());
 
-  mainWindow.setMenuBarVisibility(false);
+        if (!mainWindow.isVisible()) {
+          mainWindow.show();
+        }
+        if (!mainWindow.isMaximized()) {
+          mainWindow.maximize();
+        }
 
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  new AppUpdater();
-});
+        if (firstLaunch) {
+          configurationView.webContents.focus();
+          firstLaunch = false;
+        }
+      });
+
+      mainWindow.on('closed', () => {
+        mainWindow = null;
+      });
+
+      mainWindow.setMenuBarVisibility(false);
+
+      // Remove this if your app does not use auto updates
+      // eslint-disable-next-line
+      // new AppUpdater();
+    });
+  })
+  .catch(error => console.error(error));
