@@ -1,7 +1,7 @@
 import type {
   configurationBoolean,
   configurationNumbers,
-  configurationStateType
+  Configuration
 } from '../reducers/configuration';
 import type { Action } from '../reducers/types';
 import {
@@ -18,9 +18,7 @@ import {
   SET_STRING
 } from '../constants/actionTypes';
 
-export function setConfiguration(
-  configuration: configurationStateType
-): Action {
+export function setConfiguration(configuration: Configuration): Action {
   return {
     type: SET_CONFIGURATION,
     payload: { configuration }

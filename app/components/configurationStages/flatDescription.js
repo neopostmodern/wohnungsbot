@@ -6,7 +6,7 @@ import {
   MOVE_IN_WHO
 } from '../../reducers/configuration';
 import { floorToName } from '../../utils/germanStrings';
-import type { configurationStateType } from '../../reducers/configuration';
+import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 import Disclaimer from './disclaimer';
 import TextField from '../inputs/TextInput';
@@ -26,17 +26,19 @@ const flatDescriptionStage: StageDescription = {
   ),
   body: ({
     configuration: {
-      floors,
-      onlyOldBuilding,
-      onlyUnfurnished,
-      hasWBS,
-      mustHaveBalcony,
-      mustHaveKitchenette,
-      noKitchenette,
-      maximumRent,
-      minimumArea,
-      minimumRooms,
-      maximumRooms,
+      filter: {
+        floors,
+        onlyOldBuilding,
+        onlyUnfurnished,
+        hasWBS,
+        mustHaveBalcony,
+        mustHaveKitchenette,
+        noKitchenette,
+        maximumRent,
+        minimumArea,
+        minimumRooms,
+        maximumRooms
+      },
       additionalInformation: { moveInWho, animals, moveInWhen }
     },
     toggleFloor,
@@ -52,7 +54,7 @@ const flatDescriptionStage: StageDescription = {
             Bis zu{' '}
             <NumberField
               value={maximumRent}
-              onChange={value => setNumber('maximumRent', value)}
+              onChange={value => setNumber('filter.maximumRent', value)}
             />
             € Kaltmiete
           </div>
@@ -60,20 +62,20 @@ const flatDescriptionStage: StageDescription = {
             Mindestens
             <NumberField
               value={minimumArea}
-              onChange={value => setNumber('minimumArea', value)}
+              onChange={value => setNumber('filter.minimumArea', value)}
             />
             m²
           </div>
           <div className={styles.searchParameter}>
             <NumberField
               value={minimumRooms}
-              onChange={value => setNumber('minimumRooms', value)}
+              onChange={value => setNumber('filter.minimumRooms', value)}
               step={0.5}
             />
             bis
             <NumberField
               value={maximumRooms}
-              onChange={value => setNumber('maximumRooms', value)}
+              onChange={value => setNumber('filter.maximumRooms', value)}
               step={0.5}
             />{' '}
             Zimmer
@@ -82,13 +84,13 @@ const flatDescriptionStage: StageDescription = {
           <input
             type="checkbox"
             checked={hasWBS}
-            onChange={() => toggleBoolean('hasWBS')}
+            onChange={() => toggleBoolean('filter.hasWBS')}
           />{' '}
           Ja &nbsp;&nbsp;
           <input
             type="checkbox"
             checked={!hasWBS}
-            onChange={() => toggleBoolean('hasWBS')}
+            onChange={() => toggleBoolean('filter.hasWBS')}
           />{' '}
           Nein
           <div style={{ marginTop: '0.5em', lineHeight: 0.9 }}>
@@ -102,7 +104,7 @@ const flatDescriptionStage: StageDescription = {
             <input
               type="checkbox"
               checked={onlyOldBuilding}
-              onChange={() => toggleBoolean('onlyOldBuilding')}
+              onChange={() => toggleBoolean('filter.onlyOldBuilding')}
             />{' '}
             Unbedingt Altbau (vor 1950 errichtet)
           </div>
@@ -110,7 +112,7 @@ const flatDescriptionStage: StageDescription = {
             <input
               type="checkbox"
               checked={mustHaveBalcony}
-              onChange={() => toggleBoolean('mustHaveBalcony')}
+              onChange={() => toggleBoolean('filter.mustHaveBalcony')}
             />{' '}
             Unbedingt mit Balkon / Terasse
           </div>
@@ -118,7 +120,7 @@ const flatDescriptionStage: StageDescription = {
             <input
               type="checkbox"
               checked={mustHaveKitchenette}
-              onChange={() => toggleBoolean('mustHaveKitchenette')}
+              onChange={() => toggleBoolean('filter.mustHaveKitchenette')}
             />{' '}
             Unbedingt <em>mit</em> Einbauküche
           </div>
@@ -126,7 +128,7 @@ const flatDescriptionStage: StageDescription = {
             <input
               type="checkbox"
               checked={noKitchenette}
-              onChange={() => toggleBoolean('noKitchenette')}
+              onChange={() => toggleBoolean('filter.noKitchenette')}
             />{' '}
             Unbedingt <em>ohne</em> Einbauküche
           </div>
@@ -134,7 +136,7 @@ const flatDescriptionStage: StageDescription = {
             <input
               type="checkbox"
               checked={onlyUnfurnished}
-              onChange={() => toggleBoolean('onlyUnfurnished')}
+              onChange={() => toggleBoolean('filter.onlyUnfurnished')}
             />{' '}
             Unbedingt unmöbliert
           </div>
@@ -202,8 +204,8 @@ const flatDescriptionStage: StageDescription = {
   buttons: {
     forward: {
       text: `Weiter`,
-      checkInvalid: (configuration: configurationStateType) => {
-        if (configuration.floors.length === 0) {
+      checkInvalid: (configuration: Configuration) => {
+        if (configuration.filter.floors.length === 0) {
           return 'Wähle mindestens ein Stockwerk aus';
         }
 

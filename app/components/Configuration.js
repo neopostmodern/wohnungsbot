@@ -6,7 +6,7 @@ import type {
   configurationBoolean,
   configurationNumbers
 } from '../reducers/configuration';
-import { type configurationStateType } from '../reducers/configuration';
+import { type Configuration as ConfigurationType } from '../reducers/configuration';
 import stages from './configurationStages';
 import type {
   FlexibleNode,
@@ -23,7 +23,7 @@ type Props = {
   toggleBoolean: (name: configurationBoolean) => void,
   setNumber: (name: configurationNumbers, value: ?number) => void,
   setString: (name: string, value: ?string) => void,
-  configuration: configurationStateType
+  configuration: ConfigurationType
 };
 
 export default class Configuration extends Component<Props> {

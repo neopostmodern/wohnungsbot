@@ -10,11 +10,15 @@ import { setCache } from '../actions/cache';
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {
     const configuration = persistentStore.get('configuration');
-    configuration.loaded = true;
-    store.dispatch(setConfiguration(configuration));
+    if (configuration) {
+      configuration.loaded = true;
+      store.dispatch(setConfiguration(configuration));
+    }
 
     const cache = persistentStore.get('cache');
-    store.dispatch(setCache(cache));
+    if (cache) {
+      store.dispatch(setCache(cache));
+    }
   }
 
   if (action.meta && action.meta.configuration) {

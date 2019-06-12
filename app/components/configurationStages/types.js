@@ -2,7 +2,7 @@ import type { Node } from 'react';
 import type {
   configurationBoolean,
   configurationNumbers,
-  configurationStateType
+  Configuration
 } from '../../reducers/configuration';
 
 export type InheritedProps = {
@@ -12,7 +12,7 @@ export type InheritedProps = {
   toggleBoolean: (name: configurationBoolean) => void,
   setNumber: (name: configurationNumbers, value: ?number) => void,
   setString: (name: string, value: ?string) => void,
-  configuration: configurationStateType
+  configuration: Configuration
 };
 export type FlexibleNode = string | Node | ((props: InheritedProps) => Node);
 type ElementDescription = {
@@ -30,7 +30,7 @@ export type StageDescription = {
   body: FlexibleNode,
   buttons: {
     forward: ButtonDescription & {
-      checkInvalid?: configurationStateType => false | FlexibleNode
+      checkInvalid?: Configuration => false | FlexibleNode
     },
     backwards?: ButtonDescription
   }

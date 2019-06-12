@@ -34,13 +34,28 @@ export type configurationBoolean =
   | 'onlyOldBuilding'
   | 'onlyUnfurnished';
 
+export type Filter = {|
+  postcodes: Array<string>,
+  maximumRent?: ?number,
+  minimumArea?: ?number,
+  minimumRooms?: ?number,
+  maximumRooms?: ?number,
+  onlyOldBuilding: boolean,
+  onlyUnfurnished: boolean,
+  hasWBS: boolean,
+  mustHaveBalcony: boolean,
+  mustHaveKitchenette: boolean,
+  noKitchenette: boolean,
+  floors: Array<number>
+|};
+
 export const SALUTATIONS = {
   FRAU: 'Frau',
   HERR: 'Herr'
 };
 export type Salutation = $Values<typeof SALUTATIONS>;
 
-export type ContactData = {
+export type ContactData = {|
   salutation: Salutation,
   firstName: string,
   lastName: string,
@@ -50,7 +65,7 @@ export type ContactData = {
   houseNumber: string,
   postcode: string,
   city: string
-};
+|};
 
 export type DataPolicies = {
   flatViewingNotificationMails: boolean,
@@ -86,58 +101,45 @@ export const EMPLOYMENT_STATUS = {
 };
 export type EmploymentStatus = $Values<typeof EMPLOYMENT_STATUS>;
 
-export type AdditionalInformation = {
+export type AdditionalInformation = {|
   moveInWhen: MoveInWhen,
   moveInWho: MoveInWho,
   animals: string,
   employmentStatus: EmploymentStatus,
   income: ?number,
   hasDocumentsReady: boolean
-};
+|};
 
-export type configurationStateType = {
+export type Configuration = {|
   stage: number,
   loaded: boolean,
+  filter: Filter,
   searchUrl?: string,
-  postcodes: Array<string>,
-  maximumRent?: ?number,
-  minimumArea?: ?number,
-  minimumRooms?: ?number,
-  maximumRooms?: ?number,
-  onlyOldBuilding: boolean,
-  onlyUnfurnished: boolean,
-  hasWBS: boolean,
-  mustHaveBalcony: boolean,
-  mustHaveKitchenette: boolean,
-  noKitchenette: boolean,
-  floors: Array<number>,
   applicationText: string,
   contactData: ContactData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies
-};
+|};
 
-export const getConfigurationHash = (
-  configurationState: configurationStateType
+export const getConfigurationFilterHash = (
+  configurationState: Configuration
 ): number => {
-  const staticConfigurationState = Object.assign({}, configurationState);
-  delete staticConfigurationState.loaded;
-  delete staticConfigurationState.stage;
-  delete staticConfigurationState.searchUrl;
-  return objectHash(staticConfigurationState);
+  return objectHash(configurationState.filter);
 };
 
-const configurationDefaultState: configurationStateType = {
+const defaultConfiguration: Configuration = {
   stage: 0,
   loaded: false,
-  floors: AllFloors.slice(),
-  postcodes: [],
-  onlyOldBuilding: false,
-  onlyUnfurnished: true,
-  hasWBS: false,
-  mustHaveBalcony: false,
-  mustHaveKitchenette: false,
-  noKitchenette: false,
+  filter: {
+    floors: AllFloors.slice(),
+    postcodes: [],
+    onlyOldBuilding: false,
+    onlyUnfurnished: true,
+    hasWBS: false,
+    mustHaveBalcony: false,
+    mustHaveKitchenette: false,
+    noKitchenette: false
+  },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   contactData: {
     salutation: SALUTATIONS.FRAU,
@@ -164,52 +166,46 @@ const configurationDefaultState: configurationStateType = {
 };
 
 export default function configuration(
-  state: configurationStateType = configurationDefaultState,
+  state: Configuration = defaultConfiguration,
   action: Action
-): configurationStateType {
+): Configuration {
   if (action.type === TOGGLE_POSTCODE) {
     const { postcode } = action.payload;
-    const { postcodes } = state;
+    const { postcodes } = state.filter;
 
-    if (postcodes.includes(postcode)) {
-      return Object.assign({}, state, {
-        postcodes: postcodes.filter(z => z !== postcode)
-      });
+    const postcodeIndex = postcodes.indexOf(postcode);
+    if (postcodeIndex !== -1) {
+      return dotProp.delete(state, `filter.postcodes.${postcodeIndex}`);
     }
 
-    return Object.assign({}, state, {
-      postcodes: postcodes.concat([postcode])
-    });
+    return dotProp.merge(state, 'filter.postcodes', [postcode]);
   }
 
   if (action.type === TOGGLE_FLOOR) {
     const { floor } = action.payload;
-    const { floors } = state;
+    const { floors } = state.filter;
 
-    if (floors.includes(floor)) {
-      return Object.assign({}, state, {
-        floors: floors.filter(z => z !== floor)
-      });
+    const floorIndex = floors.indexOf(floor);
+    if (floorIndex !== -1) {
+      return dotProp.delete(state, `filter.floors.${floorIndex}`);
     }
 
-    return Object.assign({}, state, {
-      floors: floors.concat([floor])
-    });
+    return dotProp.merge(state, 'filter.floors', [floor]);
   }
 
   switch (action.type) {
     case SET_CONFIGURATION:
       return action.payload.configuration;
     case RESET_CONFIGURATION:
-      return configurationDefaultState;
+      return defaultConfiguration;
     case NEXT_STAGE:
-      return Object.assign({}, state, { stage: state.stage + 1 });
+      return dotProp.set(state, 'stage', state.stage + 1);
     case PREVIOUS_STAGE:
-      return Object.assign({}, state, { stage: state.stage - 1 });
+      return dotProp.set(state, 'stage', state.stage - 1);
     case SET_SEARCH_URL:
-      return Object.assign({}, state, { searchUrl: action.payload.searchUrl });
+      return dotProp.set(state, 'searchUrl', action.payload.searchUrl);
     case RESET_POSTCODES:
-      return Object.assign({}, state, { postcodes: [] });
+      return dotProp.set(state, 'postcodes', []);
     case TOGGLE_BOOLEAN:
       return dotProp.toggle(state, action.payload.name);
     case SET_NUMBER:

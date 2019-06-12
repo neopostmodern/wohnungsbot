@@ -4,16 +4,17 @@ import { setSearchUrl } from '../actions/configuration';
 import { refreshVerdicts } from '../actions/data';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { SET_SEARCH_URL } from '../constants/actionTypes';
-import type { configurationStateType } from '../reducers/configuration';
+import type { Configuration } from '../reducers/configuration';
 import districts from '../map/districts';
 import { numberToGermanFloatString } from '../utils/germanStrings';
+import { getConfigurationFilterHash } from '../reducers/configuration';
 
-function generateSearchUrl(configuration: configurationStateType): string {
+function generateSearchUrl(configuration: Configuration): string {
   let searchUrl =
     'https://www.immobilienscout24.de/Suche/S-2/Wohnung-Miete/Berlin/Berlin/';
   const overlappingDistricts = districts.filter(district =>
     district.postcodes.some(postcode =>
-      configuration.postcodes.includes(postcode)
+      configuration.filter.postcodes.includes(postcode)
     )
   );
 
@@ -36,19 +37,32 @@ function generateSearchUrl(configuration: configurationStateType): string {
   }
 
   searchUrl += `/${numberToGermanFloatString(
-    configuration.minimumRooms
+    configuration.filter.minimumRooms
   )}-${numberToGermanFloatString(
-    configuration.maximumRooms
+    configuration.filter.maximumRooms
   )}/${numberToGermanFloatString(
-    configuration.minimumArea
-  )}-/EURO--${numberToGermanFloatString(configuration.maximumRent)}`;
+    configuration.filter.minimumArea
+  )}-/EURO--${numberToGermanFloatString(configuration.filter.maximumRent)}`;
 
   return searchUrl;
 }
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
-  if (action.meta && action.meta.configuration) {
+  if (!action.meta || !action.meta.configuration) {
+    return next(action);
+  }
+
+  const filterBeforeUpdate = getConfigurationFilterHash(
+    store.getState().configuration
+  );
+
+  const result = next(action);
+
+  if (
+    getConfigurationFilterHash(store.getState().configuration) !==
+    filterBeforeUpdate
+  ) {
     store.dispatch(refreshVerdicts());
 
     if (action.type !== SET_SEARCH_URL) {
@@ -60,5 +74,5 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     }
   }
 
-  return next(action);
+  return result;
 };

@@ -1,5 +1,5 @@
-import type { configurationStateType } from '../reducers/configuration';
-import { getConfigurationHash } from '../reducers/configuration';
+import type { Configuration } from '../reducers/configuration';
+import { getConfigurationFilterHash } from '../reducers/configuration';
 import type {
   FlatAction,
   FlatData,
@@ -11,7 +11,7 @@ import { floorToName } from '../utils/germanStrings';
 
 // eslint-disable-next-line import/prefer-default-export
 export function assessFlat(
-  configuration: configurationStateType,
+  configuration: Configuration,
   overviewDataEntry: OverviewDataEntry,
   flatData?: FlatData
 ): Verdict {
@@ -21,7 +21,7 @@ export function assessFlat(
   const flatPostcode = overviewDataEntry.address.postcode;
   reasons.push({
     reason: `Postleitzahl: ${flatPostcode}`,
-    result: configuration.postcodes.includes(flatPostcode)
+    result: configuration.filter.postcodes.includes(flatPostcode)
   });
 
   if (
@@ -30,7 +30,7 @@ export function assessFlat(
   ) {
     reasons.push({
       reason: `Wohnberechtigungsschein erforderlich`,
-      result: configuration.hasWBS
+      result: configuration.filter.hasWBS
     });
   }
 
@@ -45,28 +45,28 @@ export function assessFlat(
     action = FLAT_ACTION.NOTIFY_VIEWING_DATE;
   }
 
-  if (configuration.onlyUnfurnished) {
+  if (configuration.filter.onlyUnfurnished) {
     reasons.push({
       reason: `Unmöbliert`,
       result: !overviewDataEntry.title.toLowerCase().includes('öbliert')
     });
   }
 
-  if (configuration.mustHaveBalcony) {
+  if (configuration.filter.mustHaveBalcony) {
     reasons.push({
       reason: `Balkon / Terasse`,
       result: overviewDataEntry.balcony
     });
   }
 
-  if (configuration.mustHaveKitchenette) {
+  if (configuration.filter.mustHaveKitchenette) {
     reasons.push({
       reason: `${overviewDataEntry.builtInKitchen ? '' : 'Keine '}Einbauküche`,
       result: overviewDataEntry.builtInKitchen
     });
   }
 
-  if (configuration.noKitchenette) {
+  if (configuration.filter.noKitchenette) {
     reasons.push({
       reason: `${overviewDataEntry.builtInKitchen ? '' : 'Keine '}Einbauküche`,
       result: !overviewDataEntry.builtInKitchen
@@ -78,17 +78,17 @@ export function assessFlat(
 
     reasons.push({
       reason: floorToName(flatData.floor),
-      result: configuration.floors.includes(normalizedFloor)
+      result: configuration.filter.floors.includes(normalizedFloor)
     });
 
     if (flatData.requiresWBS) {
       reasons.push({
         reason: `Wohnberechtigungsschein erforderlich`,
-        result: configuration.hasWBS
+        result: configuration.filter.hasWBS
       });
     }
 
-    if (configuration.onlyOldBuilding) {
+    if (configuration.filter.onlyOldBuilding) {
       reasons.push({
         reason: `Altbau`,
         result: flatData.yearConstructed < 1950
@@ -116,7 +116,7 @@ export function assessFlat(
   }
 
   return {
-    configurationHash: getConfigurationHash(configuration),
+    configurationHash: getConfigurationFilterHash(configuration),
     scope,
     result,
     reasons,

@@ -19,7 +19,7 @@ import { MAIN } from '../constants/targets';
 import applicationTextBuilder from '../flat/applicationTextBuilder';
 import { markCompleted } from './cache';
 import { CACHE_NAMES } from '../reducers/cache';
-import type { configurationStateType } from '../reducers/configuration';
+import type { Configuration } from '../reducers/configuration';
 import type { dataStateType } from '../reducers/data';
 import {
   fillForm,
@@ -138,7 +138,7 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
       configuration,
       data
     }: {
-      configuration: configurationStateType,
+      configuration: Configuration,
       data: dataStateType
     } = getState();
     const flatOverview = data.overview[flatId];

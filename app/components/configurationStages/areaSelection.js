@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../Configuration.scss';
 import PostcodeMap from '../PostcodeMap';
-import type { configurationStateType } from '../../reducers/configuration';
+import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 
 const areaSelectionStage: StageDescription = {
@@ -20,7 +20,9 @@ const areaSelectionStage: StageDescription = {
   body: ({
     togglePostcode,
     resetPostcodes,
-    configuration: { postcodes }
+    configuration: {
+      filter: { postcodes }
+    }
   }: InheritedProps) => (
     <>
       <PostcodeMap
@@ -50,8 +52,8 @@ const areaSelectionStage: StageDescription = {
   buttons: {
     forward: {
       text: `Weiter`,
-      checkInvalid: (configuration: configurationStateType) => {
-        if (configuration.postcodes.length === 0) {
+      checkInvalid: (configuration: Configuration) => {
+        if (configuration.filter.postcodes.length === 0) {
           return 'Wähle mindestens einen Bezirk aus';
         }
 

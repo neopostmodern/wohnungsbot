@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../Configuration.scss';
 import { EMPLOYMENT_STATUS, SALUTATIONS } from '../../reducers/configuration';
-import type { configurationStateType } from '../../reducers/configuration';
+import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 import Disclaimer from './disclaimer';
 import TextField from '../inputs/TextInput';
@@ -204,7 +204,7 @@ const personalDataStage: StageDescription = {
   buttons: {
     forward: {
       text: `Weiter`,
-      checkInvalid: (configuration: configurationStateType) => {
+      checkInvalid: (configuration: Configuration) => {
         const checks = {
           contactData: {
             firstName: 'deinen Vornamen',

@@ -48,64 +48,66 @@ const reviewStage: StageDescription = {
             {configuration.additionalInformation.moveInWhen}
           </span>
           <h3>...nach einer Wohnung mit...</h3>
-          {configuration.maximumRent ? (
-            <>maximal {configuration.maximumRent}€</>
+          {configuration.filter.maximumRent ? (
+            <>maximal {configuration.filter.maximumRent}€</>
           ) : (
             <i>beliebig teurer</i>
           )}{' '}
           Kaltmiete
           <br />
-          {configuration.minimumArea ? (
-            <>mindestens {configuration.minimumArea}m²</>
+          {configuration.filter.minimumArea ? (
+            <>mindestens {configuration.filter.minimumArea}m²</>
           ) : (
             <i>beliebig großer</i>
           )}{' '}
           Wohnfläche
           <br />
-          {configuration.minimumRooms || configuration.maximumRooms ? (
+          {configuration.filter.minimumRooms ||
+          configuration.filter.maximumRooms ? (
             <>
-              {configuration.minimumRooms}&ndash;{configuration.maximumRooms}
+              {configuration.filter.minimumRooms}&ndash;
+              {configuration.filter.maximumRooms}
             </>
           ) : (
             <i>beliebig vielen</i>
           )}{' '}
           Zimmern
           <br />
-          in {configuration.postcodes.join(', ')}
+          in {configuration.filter.postcodes.join(', ')}
           <br />
           im{' '}
-          {configuration.floors
+          {configuration.filter.floors
             .slice()
             .reverse()
             .map(floor => floorToName(floor, 4))
             .join(', ')}
           <br />
           <br />
-          {configuration.mustHaveBalcony ? (
+          {configuration.filter.mustHaveBalcony ? (
             <>
               mit Balkon
               <br />
             </>
           ) : null}{' '}
-          {configuration.mustHaveKitchenette ? (
+          {configuration.filter.mustHaveKitchenette ? (
             <>
               mit Einbauküche
               <br />
             </>
           ) : null}{' '}
-          {configuration.noKitchenette ? (
+          {configuration.filter.noKitchenette ? (
             <>
               ohne Einbauküche
               <br />
             </>
           ) : null}{' '}
-          {configuration.onlyOldBuilding ? (
+          {configuration.filter.onlyOldBuilding ? (
             <>
               Altbau
               <br />
             </>
           ) : null}{' '}
-          {configuration.onlyUnfurnished ? (
+          {configuration.filter.onlyUnfurnished ? (
             <>
               unmöbliert
               <br />

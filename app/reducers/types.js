@@ -2,14 +2,14 @@ import type { Dispatch as ReduxDispatch, Store as ReduxStore } from 'redux';
 import type { electronStateType } from './electron';
 import type { overlayStateType } from './overlay';
 import type { dataStateType } from './data';
-import type { configurationStateType } from './configuration';
+import type { Configuration } from './configuration';
 import type { cacheStateType } from './cache';
 
 export type stateType = {
   electron: electronStateType,
   animations: overlayStateType,
   data: dataStateType,
-  configuration: configurationStateType,
+  configuration: Configuration,
   cache: cacheStateType
 };
 

@@ -9,7 +9,7 @@ import {
 } from '../constants/actionTypes';
 import { FLAT_ACTION, VERDICT_SCOPE } from '../reducers/data';
 import { refreshVerdicts, setVerdict } from '../actions/data';
-import { getConfigurationHash } from '../reducers/configuration';
+import { getConfigurationFilterHash } from '../reducers/configuration';
 import {
   generateApplicationTextAndSubmit,
   queueInvestigateFlat
@@ -31,7 +31,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     } = store.getState();
 
     if (overview) {
-      const configurationHash = getConfigurationHash(configuration);
+      const configurationHash = getConfigurationFilterHash(configuration);
 
       // $FlowFixMe -- Object.values
       Object.values(overview).forEach((entry: OverviewDataEntry) => {
