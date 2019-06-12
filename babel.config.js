@@ -19,7 +19,7 @@ module.exports = api => {
   const development = api.env(developmentEnvironments);
   const targets =
     process.env.TARGET === 'web'
-      ? 'iOS 5'
+      ? ['defaults']
       : { electron: require('electron/package.json').version };
 
   return {
