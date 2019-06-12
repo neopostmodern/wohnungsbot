@@ -1,8 +1,6 @@
 // @flow
 
-import { WAKE_UP } from '../actions/infrastructure';
-import { setConfiguration, setSearchUrl } from '../actions/configuration';
-import persistentStore from '../utils/persistentStore';
+import { setSearchUrl } from '../actions/configuration';
 import { refreshVerdicts } from '../actions/data';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { SET_SEARCH_URL } from '../constants/actionTypes';
@@ -50,22 +48,7 @@ function generateSearchUrl(configuration: configurationStateType): string {
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
-  if (action.type === WAKE_UP) {
-    const configuration = persistentStore.get('configuration');
-    configuration.loaded = true;
-    store.dispatch(setConfiguration(configuration));
-  }
-
   if (action.meta && action.meta.configuration) {
-    process.nextTick(() => {
-      const configurationToSave = Object.assign(
-        {},
-        store.getState().configuration
-      );
-      delete configurationToSave.loaded;
-      persistentStore.set('configuration', configurationToSave);
-    });
-
     store.dispatch(refreshVerdicts());
 
     if (action.type !== SET_SEARCH_URL) {
