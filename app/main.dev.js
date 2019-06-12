@@ -24,6 +24,7 @@ import { MAIN } from './constants/targets';
 import ROUTES from './constants/routes';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
+import getRandomUserAgent from './utils/randomUserAgent';
 
 // todo: set up auto updater
 // export default class AppUpdater {
@@ -117,7 +118,7 @@ configureStore(MAIN, isDevelopment)
         },
         `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
       );
-      newView(
+      const puppetView = newView(
         'puppet',
         {
           webPreferences: {
@@ -129,6 +130,7 @@ configureStore(MAIN, isDevelopment)
         // todo: create landingpage
         'https://example.com/'
       );
+      puppetView.webContents.setUserAgent(getRandomUserAgent());
 
       newView(
         'botOverlay',
