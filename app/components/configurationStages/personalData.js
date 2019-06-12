@@ -209,7 +209,7 @@ const personalDataStage: StageDescription = {
           contactData: {
             firstName: 'deinen Vornamen',
             lastName: 'deinen Nachnamen',
-            street: 'deinen Straße',
+            street: 'deine Straße',
             houseNumber: 'deine Hausnummer',
             postcode: 'deine Postleitzahl',
             city: 'deine Stadt',
