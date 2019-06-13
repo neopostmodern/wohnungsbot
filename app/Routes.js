@@ -6,6 +6,7 @@ import ConfigurationPage from './containers/ConfigurationPage';
 import SidebarPage from './containers/SidebarPage';
 import BotOverlayPage from './containers/BotOverlayPage';
 import DevMenuPage from './containers/DevMenuPage';
+import PlaceholderPage from './containers/PlaceholderPage';
 
 export default () => (
   <App>
@@ -14,6 +15,7 @@ export default () => (
       <Route path={routes.BOT_OVERLAY} component={BotOverlayPage} />
       <Route path={routes.CONFIGURATION} component={ConfigurationPage} />
       <Route path={routes.DEV_MENU} component={DevMenuPage} />
+      <Route path={routes.PLACEHOLDER} component={PlaceholderPage} />
     </Switch>
   </App>
 );
