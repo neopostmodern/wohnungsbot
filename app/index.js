@@ -4,7 +4,7 @@ import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import { RENDERER } from './constants/targets';
 import Root from './containers/Root';
 import getHistory from './store/history';
-import './app.global.scss';
+import './styles/app.global.scss';
 
 // eslint-disable-next-line no-undef
 const target = typeof __TARGET__ === 'undefined' ? RENDERER : __TARGET__;

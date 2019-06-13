@@ -3,7 +3,7 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
-@import 'constants/styles';
+@import 'constants';
 
 body {
   margin: 0;
@@ -170,7 +170,7 @@ pre {
 }
 
 // icons
-@import '~material-design-icons/iconfont/material-icons.css';
+@import '../../node_modules/material-design-icons/iconfont/material-icons.css';
 .material-icons {
   font-size: inherit;
   max-width: 1.4em; // todo: why?!
@@ -182,7 +182,7 @@ pre {
 }
 
 // map
-@import '~leaflet/dist/leaflet.css';
+@import '../../node_modules/leaflet/dist/leaflet.css';
 .district-label {
   background: none;
   border: none;
