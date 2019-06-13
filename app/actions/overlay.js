@@ -2,12 +2,18 @@
 
 import { RENDERER } from '../constants/targets';
 import {
-  CALCULATE_OVERVIEW_BOUNDARIES,
+  CALCULATE_BOUNDING_BOX,
+  CALCULATE_OVERVIEW_BOUNDING_BOXES,
   CLICK_ANIMATION_CLEAR,
   CLICK_ANIMATION_SHOW,
-  SET_OVERVIEW_BOUNDARIES
+  SET_BOUNDING_BOX,
+  REMOVE_BOUNDING_BOXES_IN_GROUP,
+  REFRESH_BOUNDING_BOXES
 } from '../constants/actionTypes';
 import type { Action } from '../reducers/types';
+import type { AttachedInformation } from '../reducers/overlay';
+import type { BoundingBoxGroup } from '../constants/boundingBoxGroups';
+import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 
 export function clickAnimationShow(
   animationId: string,
@@ -40,16 +46,59 @@ export function clickAnimationClear(animationId: string): Action {
   };
 }
 
-export function calculateOverviewBoundaries(): Action {
+export function calculateOverviewBoundingBoxes(): Action {
   return {
-    type: CALCULATE_OVERVIEW_BOUNDARIES,
+    type: CALCULATE_OVERVIEW_BOUNDING_BOXES,
     payload: null
   };
 }
 
-export function setOverviewBoundaries(overviewBoundaries): Action {
+export function refreshBoundingBoxes(): Action {
   return {
-    type: SET_OVERVIEW_BOUNDARIES,
-    payload: { overviewBoundaries }
+    type: REFRESH_BOUNDING_BOXES,
+    payload: null
   };
+}
+
+export function calculateBoundingBox(
+  selector: string,
+  {
+    group,
+    attachedInformation
+  }: { group?: BoundingBoxGroup, attachedInformation?: AttachedInformation }
+): Action {
+  return {
+    type: CALCULATE_BOUNDING_BOX,
+    payload: { selector, group, attachedInformation }
+  };
+}
+
+export function setBoundingBox(
+  boundingBox: ClientRect,
+  selector: string,
+  {
+    group,
+    attachedInformation
+  }: {
+    group?: BoundingBoxGroup,
+    attachedInformation?: AttachedInformation
+  }
+): Action {
+  return {
+    type: SET_BOUNDING_BOX,
+    payload: { boundingBox, selector, group, attachedInformation }
+  };
+}
+
+export function removeBoundingBoxesInGroup(group: BoundingBoxGroup) {
+  return {
+    type: REMOVE_BOUNDING_BOXES_IN_GROUP,
+    payload: { group }
+  };
+}
+
+export function requestPrivacyMask(selector: string): Action {
+  return calculateBoundingBox(selector, {
+    group: BOUNDING_BOX_GROUPS.PRIVACY_MASK
+  });
 }

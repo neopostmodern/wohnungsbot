@@ -12,11 +12,13 @@ import { refreshVerdicts, setVerdict } from '../actions/data';
 import { getConfigurationFilterHash } from '../reducers/configuration';
 import {
   generateApplicationTextAndSubmit,
+  markApplicationComplete,
   queueInvestigateFlat
 } from '../actions/bot';
 import { electronRouting } from '../actions/electron';
 import { assessFlat } from '../flat/assessment';
 import type { OverviewDataEntry } from '../reducers/data';
+import { sleep } from '../utils/async';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -75,6 +77,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         break;
       case FLAT_ACTION.INVESTIGATE:
         if (!cache.applications[flatId]) {
+          await sleep(10000);
+
           store.dispatch(queueInvestigateFlat(flatId));
         }
         break;
@@ -88,6 +92,14 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         }
         break;
       case FLAT_ACTION.DISCARD:
+        await store.dispatch(
+          // $FlowFixMe - it's too generic / HOF for flow
+          markApplicationComplete({
+            flatId,
+            success: false,
+            reason: 'Wohnung leider doch unpassend.'
+          })
+        );
         // todo: set bot message
 
         returnToHomePage();

@@ -10,11 +10,13 @@ import type { Action, Store } from '../reducers/types';
 import type { electronStateType } from '../reducers/electron';
 import { sleep } from '../utils/async';
 import {
-  CALCULATE_OVERVIEW_BOUNDARIES,
+  CALCULATE_BOUNDING_BOX,
+  CALCULATE_OVERVIEW_BOUNDING_BOXES,
   ELECTRON_ROUTING,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
   PERFORM_SCROLL,
+  REFRESH_BOUNDING_BOXES,
   RETURN_TO_SEARCH_PAGE,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_WINDOW,
@@ -27,10 +29,14 @@ import type {
   RawOverviewData
 } from '../reducers/data';
 import {
-  calculateOverviewBoundaries,
-  setOverviewBoundaries
+  calculateOverviewBoundingBoxes,
+  calculateBoundingBox,
+  setBoundingBox,
+  refreshBoundingBoxes
 } from '../actions/overlay';
 import { setRawFlatData, setRawOverviewData } from '../actions/data';
+import { getBoundingBox, isElementInViewport } from '../actions/botHelpers';
+import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 
 function resizeViews(
   electronState: electronStateType,
@@ -135,9 +141,15 @@ export default (store: Store) => (next: (action: Action) => void) => async (
           `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
         );
         store.dispatch(setRawOverviewData(rawOverviewData));
-        store.dispatch(calculateOverviewBoundaries());
-        setTimeout(() => store.dispatch(calculateOverviewBoundaries()), 1000);
-        setTimeout(() => store.dispatch(calculateOverviewBoundaries()), 5000);
+        store.dispatch(calculateOverviewBoundingBoxes());
+        setTimeout(
+          () => store.dispatch(calculateOverviewBoundingBoxes()),
+          1000
+        );
+        setTimeout(
+          () => store.dispatch(calculateOverviewBoundingBoxes()),
+          5000
+        );
       }
 
       if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
@@ -187,7 +199,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       const { electron } = store.getState();
       resizeViews(electron);
       if (electron.configurationHidden) {
-        process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
+        process.nextTick(() => store.dispatch(refreshBoundingBoxes()));
       }
     });
   }
@@ -220,7 +232,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
   // todo: invalidate / remove boundaries on URL change etc.
 
-  if (action.type === CALCULATE_OVERVIEW_BOUNDARIES) {
+  if (action.type === CALCULATE_OVERVIEW_BOUNDING_BOXES) {
     const {
       electron: {
         views: { puppet }
@@ -228,36 +240,57 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       data: { overview }
     } = store.getState();
 
+    const { webContents } = puppet.browserView;
+
     if (overview) {
-      const overviewBoundaries = [];
-
-      const innerHeight = await puppet.browserView.webContents.executeJavaScript(
-        `window.innerHeight`
-      );
-
-      const flatIdsInOverview = Object.values(overview).map(
+      Object.values(overview).forEach(
         // $FlowFixMe -- Object.values
-        (entry: OverviewDataEntry) => entry.id
+        async (entry: OverviewDataEntry) => {
+          const selector = `#result-${entry.id}`;
+          if (await isElementInViewport(webContents, selector, false, false)) {
+            store.dispatch(
+              calculateBoundingBox(selector, {
+                group: BOUNDING_BOX_GROUPS.OVERVIEW,
+                attachedInformation: { flatId: entry.id }
+              })
+            );
+          }
+        }
       );
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const flatId of flatIdsInOverview) {
-        // eslint-disable-next-line no-await-in-loop
-        const boundaries = await puppet.browserView.webContents.executeJavaScript(
-          `JSON.parse(JSON.stringify(document.getElementById('result-${flatId}').getBoundingClientRect()))`
-        );
-        if (boundaries.top > innerHeight) {
-          break;
-        }
-        if (boundaries.top + boundaries.height < 0) {
-          // eslint-disable-next-line no-continue
-          continue;
-        }
-        overviewBoundaries.push({ id: flatId, boundaries });
-      }
-
-      store.dispatch(setOverviewBoundaries(overviewBoundaries));
     }
+  }
+
+  if (action.type === REFRESH_BOUNDING_BOXES) {
+    const {
+      overlay: { boundingBoxes }
+    } = store.getState();
+
+    boundingBoxes.forEach(boundingBox => {
+      const { selector, group, attachedInformation } = boundingBox;
+      store.dispatch(
+        calculateBoundingBox(selector, { group, attachedInformation })
+      );
+    });
+  }
+
+  if (action.type === CALCULATE_BOUNDING_BOX) {
+    const {
+      electron: {
+        views: {
+          puppet: {
+            browserView: { webContents }
+          }
+        }
+      }
+    } = store.getState();
+
+    const { selector, group, attachedInformation } = action.payload;
+
+    const boundingBox = await getBoundingBox(webContents, selector);
+
+    store.dispatch(
+      setBoundingBox(boundingBox, selector, { group, attachedInformation })
+    );
   }
 
   if (action.type === PERFORM_SCROLL) {
@@ -269,7 +302,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       `window.scrollBy(0, ${action.payload.deltaY});`
     );
 
-    process.nextTick(() => store.dispatch(calculateOverviewBoundaries()));
+    process.nextTick(() => store.dispatch(calculateOverviewBoundingBoxes()));
   }
 
   if (action.type === SHOW_DEV_TOOLS) {

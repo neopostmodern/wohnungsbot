@@ -27,13 +27,14 @@ import {
   generatePersonalDataFormFillingDescription
 } from './formFiller';
 import {
-  click,
+  clickAction,
   elementExists,
   fillText,
-  getElementValue,
-  pressKey,
-  scrollIntoView
+  scrollIntoViewAction
 } from './botHelpers';
+import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import { removeBoundingBoxesInGroup } from './overlay';
+import ElectronUtils from '../utils/electronUtils';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return {
@@ -90,18 +91,20 @@ export const clickLogin = targetedAction<void>(
   CLICK_LOGIN,
   MAIN,
   () => async (dispatch: Dispatch) => {
-    await dispatch(click('#link_loginAccountLink'));
+    await dispatch(clickAction('#link_loginAccountLink'));
     await sleep(1000);
-    await dispatch(click('#link_loginLinkInternal'));
+    await dispatch(clickAction('#link_loginLinkInternal'));
   }
 );
 export const navigateToFlatPage = targetedAction<string>(
   NAVIGATE_TO_FLAT_PAGE,
   MAIN,
   (flatId: string) => async (dispatch: Dispatch) => {
-    await dispatch(scrollIntoView('puppet', `#result-${flatId}`));
+    await dispatch(scrollIntoViewAction('puppet', `#result-${flatId}`));
     await sleep(1000);
-    await dispatch(click(`#result-${flatId} .result-list-entry__brand-title`));
+    await dispatch(
+      clickAction(`#result-${flatId} .result-list-entry__brand-title`)
+    );
   }
 );
 
@@ -116,9 +119,12 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
   GENERATE_APPLICATION_TEXT_AND_SUBMIT,
   MAIN,
   (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
+    const { webContents } = getState().electron.views.puppet.browserView;
+    const electronUtils = new ElectronUtils(webContents);
+
     const formTimeout = setTimeout(
       async () => markComplete(false, 'Technischer Fehler (Timeout)'),
-      60000
+      120000
     );
 
     const markComplete = async (success: boolean, reason?: string) => {
@@ -142,14 +148,19 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
       data: dataStateType
     } = getState();
     const flatOverview = data.overview[flatId];
-    console.log(flatOverview);
+
     const applicationText = applicationTextBuilder(
       configuration.applicationText,
       flatOverview.address,
       flatOverview.contactDetails
     );
 
-    await dispatch(click('#is24-expose-contact-box .button-primary'));
+    await dispatch(
+      clickAction(
+        await electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
+        'always'
+      )
+    );
     await sleep(2000);
     if (
       await dispatch(elementExists('[data-qa="get-premium-membership-button"]'))
@@ -171,7 +182,11 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
     if (
       !(await dispatch(elementExists('#contactForm-privacyPolicyAccepted')))
     ) {
-      await dispatch(click('#is24-expose-modal button.button-primary'));
+      await dispatch(clickAction('#is24-expose-modal button.button-primary'));
+
+      await sleep(100);
+
+      dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
 
       await sleep(3000);
 
@@ -186,9 +201,13 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
       await sleep(1000);
     }
 
-    await dispatch(click('#contactForm-privacyPolicyAccepted'));
+    await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
 
     // todo: hit submit
+
+    await sleep(1000);
+
+    dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
 
     await sleep(5000);
     // await markComplete(true);

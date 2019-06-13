@@ -3,7 +3,8 @@ import type { Action } from './types';
 import {
   CLICK_ANIMATION_CLEAR,
   CLICK_ANIMATION_SHOW,
-  SET_OVERVIEW_BOUNDARIES
+  REMOVE_BOUNDING_BOXES_IN_GROUP,
+  SET_BOUNDING_BOX
 } from '../constants/actionTypes';
 
 export type baseAnimation = {
@@ -16,13 +17,23 @@ export type clickAnimation = {
 } & baseAnimation;
 export type anyAnimation = clickAnimation;
 
+// eslint-disable-next-line flowtype/no-weak-types
+export type AttachedInformation = { [key: string]: any };
+export type ElementBoundingBox = {
+  selector: string,
+  group?: string,
+  attachedInformation: AttachedInformation,
+  boundingBox: ClientRect
+};
+
 export type overlayStateType = {
   animations: Array<anyAnimation>,
-  overviewBoundaries?: Array<{ id: string, boundaries: ClientRect }>
+  boundingBoxes: Array<ElementBoundingBox>
 };
 
 const overlayDefaultState: overlayStateType = {
-  animations: []
+  animations: [],
+  boundingBoxes: []
 };
 
 export default function overlay(
@@ -43,9 +54,19 @@ export default function overlay(
     });
   }
 
-  if (action.type === SET_OVERVIEW_BOUNDARIES) {
+  if (action.type === SET_BOUNDING_BOX) {
     return Object.assign({}, state, {
-      overviewBoundaries: action.payload.overviewBoundaries
+      boundingBoxes: state.boundingBoxes
+        .filter(({ selector }) => selector !== action.payload.selector)
+        .concat([action.payload])
+    });
+  }
+
+  if (action.type === REMOVE_BOUNDING_BOXES_IN_GROUP) {
+    return Object.assign({}, state, {
+      boundingBoxes: state.boundingBoxes.filter(
+        ({ group }) => group !== action.payload.group
+      )
     });
   }
 

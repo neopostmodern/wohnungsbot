@@ -1,10 +1,12 @@
+@import '../constants/styles';
+
 .container {
   position: fixed;
   top: 0;
   left: 0;
   height: 100%;
   right: 0;
-  border: 10px solid #226798;
+  border: 10px solid $BOT_DARK;
   box-sizing: border-box;
 }
 
@@ -17,7 +19,7 @@ $bot-illustration-width: 15vh;
   width: $bot-illustration-width;
 }
 
-$speech-bubble-color: #58aeec;
+$speech-bubble-color: $BOT_LIGHT;
 $speech-bubble-anchor-width: 4vh;
 .speechBubble {
   position: absolute;
@@ -38,7 +40,7 @@ $speech-bubble-anchor-width: 4vh;
   height: 0;
   border: 0 solid transparent;
   border-top-width: 2vh;
-  border-left: 4vh #58aeec solid;
+  border-left: 4vh $speech-bubble-color solid;
   margin-right: -4vh;
 }
 
@@ -52,20 +54,24 @@ $speech-bubble-anchor-width: 4vh;
 .clickAnimation {
   width: 0;
   height: 0;
-  border: 10px solid deeppink;
+  border: 10px solid $BOT_DARK;
   border-radius: 50%;
   position: absolute;
   animation: click 2s forwards;
+  z-index: 100;
 }
 @keyframes click {
   0% {
+    opacity: 1;
     transform: scale(0);
   }
   50% {
+    opacity: 1;
     transform: scale(1);
   }
   100% {
     opacity: 0;
+    transform: scale(1);
   }
 }
 
@@ -103,4 +109,10 @@ $speech-bubble-anchor-width: 4vh;
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+
+.privacyMask {
+  position: absolute;
+  backdrop-filter: blur(5px);
+  transform: scale(0.95, 0.7);
 }

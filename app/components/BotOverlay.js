@@ -5,12 +5,14 @@ import styles from './BotOverlay.scss';
 import BotIllustration from '../../resources/bot.svg';
 // $FlowFixMe - flow doesn't like SVG
 import BotIllustrationActive from '../../resources/bot-active.svg';
-import type { overlayStateType, anyAnimation } from '../reducers/overlay';
+import type { anyAnimation, ElementBoundingBox } from '../reducers/overlay';
 import type { Verdicts } from '../reducers/data';
 
 type Props = {
   isPuppetLoading: boolean,
-  overlay: overlayStateType,
+  animations: Array<anyAnimation>,
+  overviewBoundingBoxes: Array<ElementBoundingBox>,
+  privacyMaskBoundingBoxes: Array<ElementBoundingBox>,
   verdicts: Verdicts,
   isBotActing: boolean,
   botMessage: string,
@@ -84,7 +86,13 @@ export default class BotOverlay extends Component<Props> {
   }
 
   render() {
-    const { overlay, verdicts, isBotActing } = this.props;
+    const {
+      animations,
+      overviewBoundingBoxes,
+      privacyMaskBoundingBoxes,
+      verdicts,
+      isBotActing
+    } = this.props;
 
     return (
       <div
@@ -92,57 +100,81 @@ export default class BotOverlay extends Component<Props> {
         data-tid="container"
         onWheel={this.handleWheel}
       >
-        {BotOverlay.renderAnimations(overlay.animations)}
-        {!isBotActing && overlay.overviewBoundaries
-          ? overlay.overviewBoundaries.map(({ id, boundaries }) => (
-              <div
-                key={id}
-                className={styles.verdictOverlay}
-                style={{
-                  top: boundaries.top,
-                  left: boundaries.left,
-                  width: boundaries.width,
-                  height: boundaries.height
-                }}
-              >
-                <div className={styles.summary}>
-                  <span
-                    className={`material-icons standalone-icon ${
-                      verdicts[id].result ? styles.good : styles.bad
-                    }`}
-                  >
-                    {verdicts[id].result ? 'thumb_up_alt' : 'thumb_down_alt'}
-                  </span>
-                </div>
-                <div>
-                  {verdicts[id].reasons.map(({ reason, result }) => (
-                    <div key={reason} className={styles.reason}>
-                      <div className={styles.reasonIcon}>
+        {BotOverlay.renderAnimations(animations)}
+        {!isBotActing
+          ? overviewBoundingBoxes.map(
+              ({ boundingBox, attachedInformation: { flatId } }) => (
+                <div
+                  key={flatId}
+                  className={styles.verdictOverlay}
+                  style={{
+                    top: boundingBox.top,
+                    left: boundingBox.left,
+                    width: boundingBox.width,
+                    height: boundingBox.height
+                  }}
+                >
+                  {verdicts[flatId] ? (
+                    <>
+                      <div className={styles.summary}>
                         <span
                           className={`material-icons standalone-icon ${
-                            result ? styles.good : styles.bad
+                            verdicts[flatId].result ? styles.good : styles.bad
                           }`}
                         >
-                          {result ? 'check' : 'block'}
+                          {verdicts[flatId].result
+                            ? 'thumb_up_alt'
+                            : 'thumb_down_alt'}
                         </span>
                       </div>
-                      <div>{reason}</div>
-                    </div>
-                  ))}
+                      <div>
+                        {verdicts[flatId].reasons.map(({ reason, result }) => (
+                          <div key={reason} className={styles.reason}>
+                            <div className={styles.reasonIcon}>
+                              <span
+                                className={`material-icons standalone-icon ${
+                                  result ? styles.good : styles.bad
+                                }`}
+                              >
+                                {result ? 'check' : 'block'}
+                              </span>
+                            </div>
+                            <div>{reason}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <i>Keine Informationen</i>
+                  )}
+                  <div className={styles.openInBrowser}>
+                    <a
+                      href={`https://www.immobilienscout24.de/expose/${flatId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Wohnung im Browser ansehen
+                      <span className="material-icons">open_in_new</span>
+                    </a>
+                  </div>
                 </div>
-                <div className={styles.openInBrowser}>
-                  <a
-                    href={`https://www.immobilienscout24.de/expose/${id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Wohnung im Browser ansehen
-                    <span className="material-icons">open_in_new</span>
-                  </a>
-                </div>
-              </div>
-            ))
+              )
+            )
           : null}
+
+        {privacyMaskBoundingBoxes.map(({ selector, boundingBox }) => (
+          <div
+            key={selector}
+            className={styles.privacyMask}
+            style={{
+              top: boundingBox.top,
+              left: boundingBox.left,
+              width: boundingBox.width,
+              height: boundingBox.height
+            }}
+          />
+        ))}
+
         <img
           src={isBotActing ? BotIllustrationActive : BotIllustration}
           alt="bot"

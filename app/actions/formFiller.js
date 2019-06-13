@@ -10,21 +10,28 @@ import {
   SALUTATIONS
 } from '../reducers/configuration';
 import { sleep } from '../utils/async';
-import type { Dispatch } from '../reducers/types';
+import type { Dispatch, GetState } from '../reducers/types';
+import type { ScrollIntoViewPolicy } from './botHelpers';
 import {
-  click,
+  clickAction,
   elementExists,
   fillText,
   getElementValue,
-  pressKey
+  pressKey,
+  scrollIntoViewByPolicy
 } from './botHelpers';
+import { requestPrivacyMask } from './overlay';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
   [SALUTATIONS.HERR]: 'MALE'
 };
 
-type BaseField = { selector: string };
+type BaseField = {
+  selector: string,
+  protectPrivacy?: boolean,
+  scrollIntoView?: ScrollIntoViewPolicy
+};
 type TextField = BaseField & { type: 'text', value: ?string };
 type SelectField = BaseField & { type: 'select', value: string };
 type AnyInputField = TextField | SelectField;
@@ -40,22 +47,26 @@ export const generatePersonalDataFormFillingDescription = (
   {
     selector: '#contactForm-firstName',
     type: 'text',
-    value: contactData.firstName
+    value: contactData.firstName,
+    protectPrivacy: true
   },
   {
     selector: '#contactForm-lastName',
     type: 'text',
-    value: contactData.lastName
+    value: contactData.lastName,
+    protectPrivacy: true
   },
   {
     selector: '#contactForm-emailAddress',
     type: 'text',
-    value: contactData.eMail
+    value: contactData.eMail,
+    protectPrivacy: true
   },
   {
     selector: '#contactForm-phoneNumber',
     type: 'text',
-    value: contactData.telephone
+    value: contactData.telephone,
+    protectPrivacy: true
   },
   {
     selector: '#contactForm-street',
@@ -107,25 +118,25 @@ const mapIncomeToValue = (income: ?number): string => {
     console.error('No income has been defined.');
     return '';
   }
-  if (income > 5000) {
+  if (income >= 5000) {
     return 'OVER_5000';
   }
-  if (income > 4000) {
+  if (income >= 4000) {
     return 'OVER_4000_UPTO_5000';
   }
-  if (income > 3000) {
+  if (income >= 3000) {
     return 'OVER_3000_UPTO_4000';
   }
-  if (income > 2000) {
+  if (income >= 2000) {
     return 'OVER_2000_UPTO_3000';
   }
-  if (income > 1500) {
+  if (income >= 1500) {
     return 'OVER_1500_UPTO_2000';
   }
-  if (income > 1000) {
+  if (income >= 1000) {
     return 'OVER_1000_UPTO_1500';
   }
-  if (income > 500) {
+  if (income >= 500) {
     return 'OVER_500_UPTO_1000';
   }
   return 'BELOW_500';
@@ -167,7 +178,9 @@ export const generateAdditionalDataFormFillingDescription = (
 ];
 
 export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
-  return async (dispatch: Dispatch) => {
+  return async (dispatch: Dispatch, getState: GetState) => {
+    const { webContents } = getState().electron.views.puppet.browserView;
+
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
     for (const field of fieldFillingDescription) {
@@ -177,13 +190,19 @@ export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
         continue;
       }
 
+      await scrollIntoViewByPolicy(webContents, field.selector);
+
+      if (field.protectPrivacy) {
+        dispatch(requestPrivacyMask(field.selector));
+      }
+
       if (field.type === 'text') {
         if (field.value) {
           await dispatch(fillText(field.selector, field.value));
           await sleep(1000);
         }
       } else if (field.type === 'select') {
-        await dispatch(click(field.selector));
+        await dispatch(clickAction(field.selector));
         await sleep(500);
 
         // need to close the pop-up such that each subsequent keystroke changes
