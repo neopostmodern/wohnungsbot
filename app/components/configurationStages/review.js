@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../Configuration.scss';
 import type { InheritedProps, StageDescription } from './types';
 import { floorToName } from '../../utils/germanStrings';
+import JsonExport from '../util/JsonExport';
 
 const reviewStage: StageDescription = {
   container: {
@@ -137,6 +138,7 @@ const reviewStage: StageDescription = {
           <br />
         </div>
       </div>
+      <JsonExport serializableObject={configuration} />
     </div>
   ),
   buttons: {
