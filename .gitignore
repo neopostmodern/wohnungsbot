@@ -53,3 +53,4 @@ npm-debug.log.*
 
 ### PROJECT
 .env
+/app/constants/keys.json

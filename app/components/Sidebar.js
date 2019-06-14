@@ -1,50 +1,88 @@
 // @flow
 import React, { Component } from 'react';
-import styles from './Sidebar.css';
-import type { BrowserViewState } from '../reducers/electron';
-import type { dataStateType } from '../reducers/data';
+import styles from './Sidebar.scss';
+import type { ApplicationData } from '../reducers/cache';
+import { flatPageUrl } from '../flat/urlBuilder';
 
 type Props = {
-  clickLogin: () => void,
   showConfiguration: () => void,
   returnToSearchPage: () => void,
-  puppet: BrowserViewState,
-  // eslint-disable-next-line react/no-unused-prop-types
-  data: dataStateType
+  applications: Array<ApplicationData>
+};
+type State = {
+  announcement?: string
 };
 
-export default class Sidebar extends Component<Props> {
+export default class Sidebar extends Component<Props, State> {
   props: Props;
 
-  renderContent() {
-    const { clickLogin, showConfiguration, returnToSearchPage } = this.props;
+  state: State = {};
+
+  async componentWillMount() {
+    const response = await fetch(
+      'https://wohnung.neopostmodern.com/announcement.html'
+    );
+    const announcement = await response.text();
+
+    this.setState({ announcement });
+  }
+
+  render() {
+    const { showConfiguration, returnToSearchPage, applications } = this.props;
+    const { announcement } = this.state;
 
     return (
-      <>
-        <button onClick={clickLogin} type="button">
-          Login
-        </button>
-        <br />
-        <br />
-        <br />
+      <div className={styles.container}>
+        <h3>Letzte Bewerbungen</h3>
+        {applications.map(({ flatId, success, reason, addressDescription }) => (
+          <div key={flatId} className={styles.entry}>
+            <div className={styles.symbol}>
+              <span
+                className={`material-icons standalone-icon ${
+                  success ? styles.good : 'bad'
+                }`}
+              >
+                {success ? 'check' : 'clear'}
+              </span>
+            </div>
+            <div>
+              <div>{addressDescription}</div>
+              <div>
+                {success ? (
+                  <a
+                    href={flatPageUrl(flatId)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Wohnung im Browser ansehen
+                    <span className="material-icons">open_in_new</span>
+                  </a>
+                ) : (
+                  reason
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        <div
+          id={styles.announcement}
+          dangerouslySetInnerHTML={{ __html: announcement || '' }}
+        />
         <button onClick={showConfiguration} type="button">
+          <span className="material-icons">arrow_backward</span>
           Suchfilter anpassen
         </button>
         <br />
         <br />
         <button onClick={returnToSearchPage} type="button">
-          Seite erneut laden
+          <span className="material-icons">replay</span> Bot zurücksetzen
         </button>
-      </>
-    );
-  }
-
-  render() {
-    const { puppet } = this.props;
-
-    return (
-      <div className={styles.container}>
-        {puppet && puppet.ready ? this.renderContent() : <i>Loading...</i>}
+        <div className={styles.comment}>
+          Zurücksetzen hilft eventuell, wenn der Bot nicht mehr funktioniert.
+          Wenn das nicht hilft, die App schließen und erneut öffnen.
+          <br />
+          Deine Daten bleiben erhalten!
+        </div>
       </div>
     );
   }

@@ -7,6 +7,7 @@ import BotIllustration from '../../resources/bot.svg';
 import BotIllustrationActive from '../../resources/bot-active.svg';
 import type { anyAnimation, ElementBoundingBox } from '../reducers/overlay';
 import type { Verdicts } from '../reducers/data';
+import { flatPageUrl } from '../flat/urlBuilder';
 
 type Props = {
   isPuppetLoading: boolean,
@@ -119,7 +120,7 @@ export default class BotOverlay extends Component<Props> {
                       <div className={styles.summary}>
                         <span
                           className={`material-icons standalone-icon ${
-                            verdicts[flatId].result ? styles.good : styles.bad
+                            verdicts[flatId].result ? 'good' : 'bad'
                           }`}
                         >
                           {verdicts[flatId].result
@@ -133,7 +134,7 @@ export default class BotOverlay extends Component<Props> {
                             <div className={styles.reasonIcon}>
                               <span
                                 className={`material-icons standalone-icon ${
-                                  result ? styles.good : styles.bad
+                                  result ? 'good' : 'bad'
                                 }`}
                               >
                                 {result ? 'check' : 'block'}
@@ -149,7 +150,7 @@ export default class BotOverlay extends Component<Props> {
                   )}
                   <div className={styles.openInBrowser}>
                     <a
-                      href={`https://www.immobilienscout24.de/expose/${flatId}`}
+                      href={flatPageUrl(flatId)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

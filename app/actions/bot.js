@@ -16,8 +16,11 @@ import {
 import { sleep } from '../utils/async';
 import { targetedAction } from '../middleware/targetFilter';
 import { MAIN } from '../constants/targets';
-import applicationTextBuilder from '../flat/applicationTextBuilder';
+import applicationTextBuilder, {
+  generateInPlaceDescription
+} from '../flat/applicationTextBuilder';
 import { markCompleted } from './cache';
+import type { ApplicationData } from '../reducers/cache';
 import { CACHE_NAMES } from '../reducers/cache';
 import type { Configuration } from '../reducers/configuration';
 import type { dataStateType } from '../reducers/data';
@@ -35,6 +38,9 @@ import {
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { removeBoundingBoxesInGroup } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
+import { flatPageUrl } from '../flat/urlBuilder';
+import sendMail from '../utils/email';
+import type { electronStateType } from '../reducers/electron';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return {
@@ -119,8 +125,20 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
   GENERATE_APPLICATION_TEXT_AND_SUBMIT,
   MAIN,
   (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
+    const {
+      configuration,
+      data,
+      electron
+    }: {
+      configuration: Configuration,
+      data: dataStateType,
+      electron: electronStateType
+    } = getState();
+
+    const { webContents } = electron.views.puppet.browserView;
     const electronUtils = new ElectronUtils(webContents);
+
+    const flatOverview = data.overview[flatId];
 
     const formTimeout = setTimeout(
       async () => markComplete(false, 'Technischer Fehler (Timeout)'),
@@ -135,19 +153,11 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
         markApplicationComplete({
           flatId,
           success,
+          addressDescription: flatOverview.address.description,
           reason
         })
       );
     };
-
-    const {
-      configuration,
-      data
-    }: {
-      configuration: Configuration,
-      data: dataStateType
-    } = getState();
-    const flatOverview = data.overview[flatId];
 
     const applicationText = applicationTextBuilder(
       configuration.applicationText,
@@ -201,16 +211,39 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
       await sleep(1000);
     }
 
-    await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
+    // todo: seems unnecessary?
+    // await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
 
-    // todo: hit submit
+    await sleep(1000);
+
+    await dispatch(clickAction('#is24-expose-modal .button-primary'));
 
     await sleep(1000);
 
     dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
 
+    await sendMail(
+      configuration.contactData.eMail,
+      '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
+      `Hallo ${configuration.contactData.firstName},
+
+der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
+        flatOverview.address
+      )} für dich angeschrieben!
+
+Schau sie dir hier an: ${flatPageUrl(flatOverview.id)}
+${flatOverview.address.description}
+${flatOverview.area}m²
+${flatOverview.rent}€ Kalt
+
+Du (also der Bot) hast geschrieben:
+${applicationText}
+
+Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
+    );
+
     await sleep(5000);
-    // await markComplete(true);
+    await markComplete(true);
   }
 );
 
@@ -221,17 +254,12 @@ export function returnToSearchPage(): Action {
   };
 }
 
-type applicationData = {
-  flatId: string,
-  success: boolean,
-  reason?: string
-};
-export const markApplicationComplete = targetedAction<applicationData>(
+export const markApplicationComplete = targetedAction<ApplicationData>(
   MARK_APPLICATION_COMPLETE,
   MAIN,
-  (data: applicationData) => async (dispatch: Dispatch) => {
-    const { flatId, ...flatData } = data;
-    dispatch(markCompleted(CACHE_NAMES.APPLICATIONS, flatId, flatData));
+  (data: ApplicationData) => async (dispatch: Dispatch) => {
+    const { flatId } = data;
+    dispatch(markCompleted(CACHE_NAMES.APPLICATIONS, flatId, data));
     dispatch(returnToSearchPage());
     // todo: bot messages
     await sleep(20000);

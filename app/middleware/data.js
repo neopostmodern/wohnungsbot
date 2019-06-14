@@ -19,6 +19,9 @@ import { electronRouting } from '../actions/electron';
 import { assessFlat } from '../flat/assessment';
 import type { OverviewDataEntry } from '../reducers/data';
 import { sleep } from '../utils/async';
+import sendMail from '../utils/email';
+import { generateInPlaceDescription } from '../flat/applicationTextBuilder';
+import { flatPageUrl } from '../flat/urlBuilder';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -62,8 +65,10 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     const { flatId, verdict } = action.payload;
     const {
       cache,
-      configuration: { searchUrl }
+      configuration: { searchUrl, contactData },
+      data: { overview }
     } = store.getState();
+    const flatOverview = overview[flatId];
 
     const returnToHomePage = () => {
       store.dispatch(electronRouting('puppet', searchUrl));
@@ -72,8 +77,22 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     // eslint-disable-next-line default-case
     switch (verdict.action) {
       case FLAT_ACTION.NOTIFY_VIEWING_DATE:
-        // todo: check against previous mails
-        // todo: send mail
+        if (!cache.mail[flatId]) {
+          await sendMail(
+            contactData.eMail,
+            '[Wohnungsbot] Öffentlicher Wohnungsbesichtigungstermin',
+            `Hallo ${contactData.firstName},
+
+der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
+              flatOverview.address
+            )} mit einem öffentlichen Besichtigungstermin gefunden.
+Er hat natürlich keine Bewerbung abgeschickt, aber du kannst hier den Termin heraussuchen: ${flatPageUrl(
+              flatId
+            )}
+
+Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
+          );
+        }
         break;
       case FLAT_ACTION.INVESTIGATE:
         if (!cache.applications[flatId]) {
@@ -97,7 +116,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
           markApplicationComplete({
             flatId,
             success: false,
-            reason: 'Wohnung leider doch unpassend.'
+            addressDescription: flatOverview.address.description,
+            reason: 'UNSUITABLE' // this won't show up in the sidebar
           })
         );
         // todo: set bot message

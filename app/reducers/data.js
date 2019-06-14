@@ -94,7 +94,9 @@ export type OverviewDataEntry = {|
   address: FlatAddress,
   contactDetails: FlatContactDetails,
   balcony: boolean,
-  builtInKitchen: boolean
+  builtInKitchen: boolean,
+  rent: number,
+  area: number
 |};
 
 export type RawFlatData = {
@@ -144,6 +146,8 @@ function processOverviewDataEntry(
       lastName: realEstate.contactDetails.lastname,
       company: realEstate.contactDetails.company
     },
+    rent: parseFloat(realEstate.price.value),
+    area: parseFloat(realEstate.livingSpace),
     balcony: parseBoolean(realEstate.balcony),
     builtInKitchen: parseBoolean(realEstate.builtInKitchen)
   };

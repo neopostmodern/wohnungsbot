@@ -1,0 +1,41 @@
+.container {
+  background-color: #226798;
+  padding: 2vh;
+  height: 100vh;
+  box-sizing: border-box;
+  color: white;
+  display: flex;
+  flex-direction: column;
+
+  button, a {
+    color: inherit;
+  }
+}
+
+.entry {
+  display: flex;
+  align-items: center;
+}
+
+.symbol {
+  font-size: 200%;
+  margin-right: 0.5rem;
+}
+.good {
+  color: forestgreen;
+}
+
+.link {
+  color: inherit;
+}
+
+#announcement {
+  margin-top: auto;
+  margin-bottom: 5rem;
+}
+
+.comment {
+  font-size: 70%;
+  margin-top: 0.5em;
+  line-height: 1;
+}

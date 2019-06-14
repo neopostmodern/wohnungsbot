@@ -49,7 +49,7 @@ function getStreetPrefix(street: string): string {
   return 'in der';
 }
 
-function generateInPlaceDescription(address: FlatAddress): string {
+export function generateInPlaceDescription(address: FlatAddress): string {
   const { street, neighborhood } = address;
   if (street !== undefined && street !== null) {
     return `${getStreetPrefix(street)} ${street

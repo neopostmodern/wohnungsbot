@@ -8,9 +8,19 @@ import {
   SET_CACHE
 } from '../constants/actionTypes';
 
-type Cache = {
-  // eslint-disable-next-line flowtype/no-weak-types
-  [identifier: string]: any
+export type BaseCacheEntry = {
+  timestamp: number
+};
+
+export type ApplicationData = {
+  flatId: string,
+  success: boolean,
+  addressDescription: string,
+  reason?: string
+};
+
+export type Cache<T> = {
+  [identifier: string]: BaseCacheEntry & T
 };
 
 export const CACHE_NAMES = {
@@ -20,7 +30,8 @@ export const CACHE_NAMES = {
 export type CacheName = $Values<typeof CACHE_NAMES>;
 
 export type cacheStateType = {
-  [name: CacheName]: Cache
+  applications: Cache<ApplicationData>,
+  mail: Cache<any>
 };
 
 const cacheDefaultState: cacheStateType = {
@@ -34,14 +45,12 @@ export default function cache(
 ): cacheStateType {
   if (action.type === MARK_COMPLETED) {
     const { name, identifier, data } = action.payload;
-    //
-    // if (list.includes(identifier)) {
-    //   return Object.assign({}, state, {
-    //     floors: floors.filter(z => z !== floor)
-    //   });
-    // }
 
-    return dotProp.set(state, `${name}.${identifier}`, data);
+    return dotProp.set(
+      state,
+      `${name}.${identifier}`,
+      Object.assign({}, data, { timestamp: new Date().getTime() })
+    );
   }
 
   if (action.type === SET_CACHE) {

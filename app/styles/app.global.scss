@@ -157,6 +157,13 @@ pre {
   white-space: pre-wrap;
 }
 
+.bad {
+  color: darkred;
+}
+.good {
+  color: darkgreen;
+}
+
 .inline-enum-select {
   display: inline-block;
   margin-right: 1em;

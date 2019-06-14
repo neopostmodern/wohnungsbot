@@ -2,18 +2,22 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
 import { showConfiguration } from '../actions/electron';
-import { clickLogin, returnToSearchPage } from '../actions/bot';
+import { returnToSearchPage } from '../actions/bot';
 
 function mapStateToProps(state) {
+  const applications = Object.values(state.cache.applications).filter(
+    ({ reason }) => reason !== 'UNSUITABLE'
+  );
+  applications.sort((a, b) => a.timestamp > b.timestamp);
+
   return {
-    puppet: state.electron.views.puppet,
-    data: state.data
+    applications: applications.slice(0, 10)
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { clickLogin, returnToSearchPage, showConfiguration },
+    { returnToSearchPage, showConfiguration },
     dispatch
   );
 }
