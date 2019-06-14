@@ -212,10 +212,14 @@ const mergedConfig = merge.smart(baseConfig, {
     new webpack.IgnorePlugin({
       checkResource(resource: string) {
         if (/electron/.test(resource)) {
-          return !/actions/.test(resource);
+          return !/actions/.test(resource) && !/Utils/.test(resource);
         }
 
         if (/persist/.test(resource)) {
+          return true;
+        }
+
+        if (/middleware\/helpers/.test(resource)) {
           return true;
         }
 

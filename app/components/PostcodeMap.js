@@ -141,6 +141,7 @@ ${postcodeDescription.properties.district}`,
         style={{ height: '100%' }}
         ref={this.setHeightRef}
         className={`zoom-${zoom}`}
+        data-type="map"
       >
         {height ? (
           <Map

@@ -60,3 +60,6 @@ export const WILL_TYPE = 'WILL_TYPE';
 export const SET_CACHE = 'SET_CACHE';
 export const RESET_CACHE = 'RESET_CACHE';
 export const MARK_COMPLETED = 'MARK_COMPLETED';
+
+// helpers
+export const SEND_MAIL = 'SEND_MAIL';

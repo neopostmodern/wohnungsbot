@@ -59,6 +59,11 @@ const configureStore = async (
     middleware.push(data);
   }
 
+  if (target === MAIN) {
+    const helpers = (await import('../middleware/helpers')).default;
+    middleware.push(helpers);
+  }
+
   const rootReducer = createRootReducer(history);
 
   // Redux DevTools Configuration

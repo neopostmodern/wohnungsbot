@@ -130,7 +130,9 @@ export default class Configuration extends Component<Props> {
 
     return (
       <div
-        className={styles.wrapper}
+        className={`${styles.wrapper} ${
+          stage.rootContainer ? stage.rootContainer.className : ''
+        }`}
         data-tid="container"
         id="configurationContainer"
       >

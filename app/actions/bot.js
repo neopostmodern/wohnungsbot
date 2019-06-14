@@ -39,7 +39,6 @@ import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { removeBoundingBoxesInGroup } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
 import { flatPageUrl } from '../flat/urlBuilder';
-import sendMail from '../utils/email';
 import type { electronStateType } from '../reducers/electron';
 
 export function queueInvestigateFlat(flatId: string): Action {
@@ -222,14 +221,15 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
 
     dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
 
-    await sendMail(
-      configuration.contactData.eMail,
-      '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
-      `Hallo ${configuration.contactData.firstName},
+    dispatch(
+      sendMail(
+        configuration.contactData.eMail,
+        '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
+        `Hallo ${configuration.contactData.firstName},
 
 der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
-        flatOverview.address
-      )} für dich angeschrieben!
+          flatOverview.address
+        )} für dich angeschrieben!
       
 Am besten tust du jetzt nichts. Warte erstmal ob du angeschrieben wirst für eine Besichtigung.
 
@@ -244,6 +244,7 @@ Du (also der Bot) hast geschrieben:
 ${applicationText}
 
 Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
+      )
     );
 
     await sleep(5000);

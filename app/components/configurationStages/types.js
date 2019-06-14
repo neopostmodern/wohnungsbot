@@ -22,6 +22,9 @@ type ElementDescription = {
 };
 type ButtonDescription = ElementDescription;
 export type StageDescription = {
+  rootContainer?: {
+    className?: string
+  },
   container?: {
     className?: string
   },

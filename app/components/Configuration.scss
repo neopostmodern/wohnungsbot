@@ -15,6 +15,10 @@ $CONTENT_WIDTH: 1000px;
   justify-content: center;
   //align-items: center;
   overflow-y: auto;
+
+  .flexboxHack & {
+    position: relative;
+  }
 }
 
 .innerContainer {
@@ -34,6 +38,27 @@ $CONTENT_WIDTH: 1000px;
     height: 100%;
     max-height: 100%;
   }
+  .flexboxHack & {
+    height: unset;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: unset;
+    max-width: unset;
+  }
+}
+
+.flexboxHack [data-type="map"] {
+  height: unset;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: unset;
+  max-width: unset;
 }
 
 $GUTTER: 2rem;

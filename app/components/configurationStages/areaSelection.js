@@ -5,8 +5,8 @@ import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 
 const areaSelectionStage: StageDescription = {
-  container: {
-    className: `${styles.wide} ${styles.high}`
+  rootContainer: {
+    className: `${styles.flexboxHack}`
   },
   title: 'Wo suchst du?',
   subtitle: (

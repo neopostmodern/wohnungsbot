@@ -19,9 +19,9 @@ import { electronRouting } from '../actions/electron';
 import { assessFlat } from '../flat/assessment';
 import type { OverviewDataEntry } from '../reducers/data';
 import { sleep } from '../utils/async';
-import sendMail from '../utils/email';
 import { generateInPlaceDescription } from '../flat/applicationTextBuilder';
 import { flatPageUrl } from '../flat/urlBuilder';
+import { sendMail } from '../actions/helpers';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -78,19 +78,21 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     switch (verdict.action) {
       case FLAT_ACTION.NOTIFY_VIEWING_DATE:
         if (!cache.mail[flatId]) {
-          await sendMail(
-            contactData.eMail,
-            '[Wohnungsbot] Öffentlicher Wohnungsbesichtigungstermin',
-            `Hallo ${contactData.firstName},
+          store.dispatch(
+            sendMail(
+              contactData.eMail,
+              '[Wohnungsbot] Öffentlicher Wohnungsbesichtigungstermin',
+              `Hallo ${contactData.firstName},
 
 der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
-              flatOverview.address
-            )} mit einem öffentlichen Besichtigungstermin gefunden.
+                flatOverview.address
+              )} mit einem öffentlichen Besichtigungstermin gefunden.
 Er hat natürlich keine Bewerbung abgeschickt, aber du kannst hier den Termin heraussuchen: ${flatPageUrl(
-              flatId
-            )}
+                flatId
+              )}
 
 Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
+            )
           );
         }
         break;
