@@ -40,6 +40,8 @@ import { removeBoundingBoxesInGroup } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
 import { flatPageUrl } from '../flat/urlBuilder';
 import type { electronStateType } from '../reducers/electron';
+import ElectronUtilsRedux from '../utils/electronUtilsRedux';
+import { printToPDF, sendMail } from './helpers';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return {
@@ -135,7 +137,9 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
     } = getState();
 
     const { webContents } = electron.views.puppet.browserView;
-    const electronUtils = new ElectronUtils(webContents);
+    const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
+
+    dispatch(printToPDF('puppet', flatId));
 
     const flatOverview = data.overview[flatId];
 
