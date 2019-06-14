@@ -221,6 +221,24 @@ main {
   font-family: $FONT_ITALIC;
 }
 
+.pending {
+  margin-top: 1.5rem;
+  border: 2px black solid;
+  padding: 1rem;
+  opacity: 0.6;
+  background-color: #ddd;
+  pointer-events: none;
+
+  input {
+    background: none;
+  }
+
+  &::before {
+    content: "Diese Funktion ist noch nicht fertig geworden";
+    font-size: 70%;
+  }
+}
+
 // house
 $HOUSE_LINE: 2px solid black;
 .house, .roof {

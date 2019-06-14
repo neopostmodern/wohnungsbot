@@ -7,6 +7,7 @@ import Disclaimer from './disclaimer';
 import TextField from '../inputs/TextInput';
 import NumberField from '../inputs/NumberField';
 import EnumField from '../inputs/EnumField';
+import YesNo from '../inputs/YesNo';
 
 const twoTextFieldsInLineStyles = { width: '200px' };
 
@@ -36,7 +37,11 @@ const personalDataStage: StageDescription = {
         telephone
       },
       additionalInformation: { employmentStatus, income },
-      policies: { flatViewingNotificationMails, researchDataSharing }
+      policies: {
+        flatViewingNotificationMails,
+        researchDataSharing,
+        applicationNotificationMails
+      }
     },
     toggleBoolean,
     setNumber,
@@ -112,26 +117,50 @@ const personalDataStage: StageDescription = {
               style={twoTextFieldsInLineStyles}
             />
           </div>
+
+          <div className={styles.pending}>
+            <h3>ImmobilienScout24-Account</h3>
+            <TextField
+              value=""
+              onChange={() => {}}
+              placeholder="E-Mail Addresse"
+              style={{ width: '190px' }}
+            />{' '}
+            <TextField
+              value=""
+              onChange={() => {}}
+              placeholder="Passwort"
+              style={{ width: '190px' }}
+            />
+            <div className={styles.comment}>
+              Falls du einen ImmobilienScout24-Account hast, kannst du diesen
+              hier angeben und der Bot meldet sich für dich an.
+              <br />
+              Derzeit funktioniert der Bot ausschließlich für ImmobilienScout24.
+            </div>
+          </div>
+          <h3>
+            Möchtest du über erfolgte Bewerbungen per E-Mail informiert werden?
+          </h3>
+          <YesNo
+            value={applicationNotificationMails}
+            onChange={() =>
+              toggleBoolean('policies.applicationNotificationMails')
+            }
+          />
+          <div className={styles.comment}>
+            Du kannst diese Einstellung hier jederzeit wieder ändern.
+          </div>
           <h3>
             Soll der Bot dich per E-Mail über öffentliche Termine für
             Massenbesichtigungen informieren?
           </h3>
-          <input
-            type="checkbox"
-            checked={flatViewingNotificationMails}
+          <YesNo
+            value={flatViewingNotificationMails}
             onChange={() =>
               toggleBoolean('policies.flatViewingNotificationMails')
             }
-          />{' '}
-          Ja &nbsp;&nbsp;
-          <input
-            type="checkbox"
-            checked={!flatViewingNotificationMails}
-            onChange={() =>
-              toggleBoolean('policies.flatViewingNotificationMails')
-            }
-          />{' '}
-          Nein
+          />
           <div className={styles.comment}>
             Manchmal ist der Besichtigungstermin bereits aus dem Inserat der
             Wohnung ersichtlich. Eine Bewerbung zu schicken ist dann natürlich
@@ -162,39 +191,35 @@ const personalDataStage: StageDescription = {
             }
             isWeird
           />
-          <h3>Dürfen anonyme Daten zu deiner Wohnungsnot gesammelt werden?</h3>
-          <input
-            type="checkbox"
-            checked={researchDataSharing}
-            onChange={() => toggleBoolean('policies.researchDataSharing')}
-          />{' '}
-          Ja &nbsp;&nbsp;
-          <input
-            type="checkbox"
-            checked={!researchDataSharing}
-            onChange={() => toggleBoolean('policies.researchDataSharing')}
-          />{' '}
-          Nein
-          <div className={styles.comment}>
-            <p>
-              Um nicht nur im künstlerischen sondern auch im wissenschaftlichen
-              Rahmen eine Aussage zur Wohnungsnot machen zu können, möchte der
-              Bot folgende Informationen sammeln: (1) Wie viele Wohnungen in
-              deinem Suchverlauf deinen Vorstellungen entsprechen, aber zu teuer
-              sind; (2) Wie viel Prozent des Haushaltseinkommens du für deine
-              Wohnung bereit bist zu zahlen.
-            </p>
-            <p>
-              Es werden keinerlei persönliche Daten übertragen. Alles was der
-              Bot an den Server sendet ist der Preis der Wohnung, dein
-              Preislimit (im Falle von 1) und das Haushaltseinkommen (im Falle
-              von 2).
-            </p>
-            <p>
-              Die Daten werden sorgfältig behandelt, nicht weitergegeben und
-              ausschließlich zu wissenschaftlichen und/oder aktivistischen
-              Zwecken verwendet, die die Wohnungsnot thematisieren.
-            </p>
+          <div className={styles.pending}>
+            <h3>
+              Dürfen anonyme Daten zu deiner Wohnungsnot gesammelt werden?
+            </h3>
+            <YesNo
+              value={researchDataSharing}
+              onChange={() => toggleBoolean('policies.researchDataSharing')}
+            />
+            <div className={styles.comment}>
+              <p>
+                Um nicht nur im künstlerischen sondern auch im
+                wissenschaftlichen Rahmen eine Aussage zur Wohnungsnot machen zu
+                können, möchte der Bot folgende Informationen sammeln: (1) Wie
+                viele Wohnungen in deinem Suchverlauf deinen Vorstellungen
+                entsprechen, aber zu teuer sind; (2) Wie viel Prozent des
+                Haushaltseinkommens du für deine Wohnung bereit bist zu zahlen.
+              </p>
+              <p>
+                Es werden keinerlei persönliche Daten übertragen. Alles was der
+                Bot an den Server sendet ist der Preis der Wohnung, dein
+                Preislimit (im Falle von 1) und das Haushaltseinkommen (im Falle
+                von 2).
+              </p>
+              <p>
+                Die Daten werden sorgfältig behandelt, nicht weitergegeben und
+                ausschließlich zu wissenschaftlichen und/oder aktivistischen
+                Zwecken verwendet, die die Wohnungsnot thematisieren.
+              </p>
+            </div>
           </div>
         </div>
       </div>

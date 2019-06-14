@@ -72,7 +72,7 @@ export type DataPolicies = {|
   researchDataSharing: boolean,
   dataHandlingExhibition?: boolean,
   artConsent: boolean,
-  generalConsentAndMail: boolean
+  applicationNotificationMails: boolean
 |};
 
 export const MOVE_IN_WHEN = {
@@ -167,7 +167,7 @@ const defaultConfiguration: Configuration = {
     flatViewingNotificationMails: false,
     researchDataSharing: false,
     artConsent: false,
-    generalConsentAndMail: false
+    applicationNotificationMails: false
   },
   configurationVersion: 1
 };

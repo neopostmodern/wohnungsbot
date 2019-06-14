@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../Configuration.scss';
 import type { InheritedProps, StageDescription } from './types';
+import type { Configuration } from '../../reducers/configuration';
 
 const configurationExplanationStage: StageDescription = {
   title: '',
@@ -69,7 +70,13 @@ const configurationExplanationStage: StageDescription = {
   ),
   buttons: {
     forward: {
-      text: `Konfigurieren`
+      text: `Zur Konfiguration`,
+      checkInvalid: (configuration: Configuration) => {
+        if (!configuration.policies.artConsent) {
+          return 'Bitte stimme zu.';
+        }
+        return false;
+      }
     }
   }
 };

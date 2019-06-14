@@ -152,6 +152,8 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
           reason
         })
       );
+
+      dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
     };
 
     await dispatch(
@@ -237,17 +239,16 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
 
     await sleep(1000);
 
-    dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
-
-    dispatch(
-      sendMail(
-        configuration.contactData.eMail,
-        '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
-        `Hallo ${configuration.contactData.firstName},
+    if (configuration.policies.applicationNotificationMails) {
+      dispatch(
+        sendMail(
+          configuration.contactData.eMail,
+          '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
+          `Hallo ${configuration.contactData.firstName},
 
 der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
-          flatOverview.address
-        )} für dich angeschrieben!
+            flatOverview.address
+          )} für dich angeschrieben!
       
 Am besten tust du jetzt nichts. Warte erstmal ob du angeschrieben wirst für eine Besichtigung.
 
@@ -262,8 +263,9 @@ Du (also der Bot) hast geschrieben:
 ${applicationText}
 
 Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
-      )
-    );
+        )
+      );
+    }
 
     await sleep(5000);
     await markComplete(true);

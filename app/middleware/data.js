@@ -65,7 +65,11 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     const { flatId, verdict } = action.payload;
     const {
       cache,
-      configuration: { searchUrl, contactData },
+      configuration: {
+        searchUrl,
+        contactData,
+        policies: { flatViewingNotificationMails }
+      },
       data: { overview }
     } = store.getState();
     const flatOverview = overview[flatId];
@@ -77,7 +81,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     // eslint-disable-next-line default-case
     switch (verdict.action) {
       case FLAT_ACTION.NOTIFY_VIEWING_DATE:
-        if (!cache.mail[flatId]) {
+        if (flatViewingNotificationMails && !cache.mail[flatId]) {
           store.dispatch(
             sendMail(
               contactData.eMail,
