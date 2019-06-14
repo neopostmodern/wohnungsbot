@@ -1,7 +1,7 @@
 {
   "name": "wohnungsbot",
   "productName": "Wohnungsbot",
-  "version": "0.99.1",
+  "version": "0.99.2",
   "description": "Der Wohnungsbot - Teil des 2. Akts aus 'Von einem der auszog eine Wohnung in Berlin zu finden'von Clemens Schöll",
   "scripts": {
     "build": "concurrently \"npm run-script build-main\" \"npm run-script build-renderer\"",
