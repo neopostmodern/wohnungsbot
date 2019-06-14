@@ -4,13 +4,17 @@ import type { overlayStateType } from './overlay';
 import type { dataStateType } from './data';
 import type { Configuration } from './configuration';
 import type { cacheStateType } from './cache';
+import type { schedulerStateType } from './scheduler';
+import type { botStateType } from './bot';
 
 export type stateType = {
   electron: electronStateType,
-  animations: overlayStateType,
+  overlay: overlayStateType,
   data: dataStateType,
   configuration: Configuration,
-  cache: cacheStateType
+  cache: cacheStateType,
+  scheduler: schedulerStateType,
+  bot: botStateType
 };
 
 export type Action = {

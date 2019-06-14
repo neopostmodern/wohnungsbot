@@ -5,14 +5,15 @@ import { createLogger } from 'redux-logger';
 
 import getHistory from './history';
 import createRootReducer from '../reducers';
+import type { stateType } from '../reducers/types';
 import { MAIN, RENDERER, WEB } from '../constants/targets';
-import targetFilter from '../middleware/targetFilter';
-import overlay from '../middleware/overlay';
+import overlay from '../middleware/overlayRenderer';
 import logging from '../middleware/logging';
 import configuration from '../middleware/configuration';
 import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
-import type { stateType } from '../reducers/types';
+import bot from '../middleware/bot';
+import targetFilter from '../middleware/targetFilter';
 
 const configureStore = async (
   target: string,
@@ -51,8 +52,12 @@ const configureStore = async (
     middleware.push(persistence);
   }
 
-  if (target === RENDERER) {
+  if (target === MAIN) {
     middleware.push(overlay);
+  }
+
+  if (target === MAIN) {
+    middleware.push(bot);
   }
 
   if (target === MAIN) {
@@ -83,7 +88,9 @@ const configureStore = async (
       : compose;
   /* eslint-enable no-underscore-dangle */
 
-  middleware.unshift(scheduler);
+  if (target === MAIN) {
+    middleware.unshift(scheduler);
+  }
 
   // Logging Middleware
   if (isDevelopment) {
@@ -104,7 +111,6 @@ const configureStore = async (
   }
 
   // Electron Redux
-  middleware.unshift(targetFilter(target));
   if (target === MAIN) {
     const { forwardToRenderer } = await import('electron-redux');
     middleware.push(forwardToRenderer);

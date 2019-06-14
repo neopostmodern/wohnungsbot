@@ -38,7 +38,7 @@ export default (target: targetType) => (store: Store) => (next: Dispatch) => (
 
   const registeredAction = actions[action.type];
   if (registeredAction) {
-    next(registeredAction(action.payload));
+    return store.dispatch(registeredAction(action.payload));
   }
 
   return next(action);

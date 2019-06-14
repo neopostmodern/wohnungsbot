@@ -202,6 +202,11 @@ export async function isElementInViewport(
   mustIncludeBottom: boolean = false
 ): Promise<boolean> {
   try {
+    if (!new ElectronUtils(webContents).elementExists(selector)) {
+      console.log('isEleme');
+      return false;
+    }
+
     const elementBoundingBox = await getBoundingBox(webContents, selector);
     const viewportSize = await getViewportSize(webContents);
 

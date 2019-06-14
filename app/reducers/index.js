@@ -6,6 +6,8 @@ import overlay from './overlay';
 import data from './data';
 import configuration from './configuration';
 import cache from './cache';
+import scheduler from './scheduler';
+import bot from './bot';
 
 export default function createRootReducer(history: History) {
   // eslint-disable-next-line flowtype/no-weak-types
@@ -14,7 +16,9 @@ export default function createRootReducer(history: History) {
     overlay,
     data,
     configuration,
-    cache
+    cache,
+    scheduler,
+    bot
   };
   if (history) {
     reducers.router = connectRouter(history);

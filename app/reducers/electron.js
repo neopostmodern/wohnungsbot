@@ -4,7 +4,6 @@ import type { BrowserWindow, BrowserView } from 'electron';
 import {
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
-  SET_BOT_IS_ACTING,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_VIEW_URL,
   SET_BROWSER_WINDOW
@@ -29,15 +28,13 @@ export type Views = {
 export type electronStateType = {
   window: ?BrowserWindow,
   views: Views,
-  configurationHidden: boolean,
-  isBotActing: boolean
+  configurationHidden: boolean
 };
 
 const electronDefaultState: electronStateType = {
   views: {},
   window: null,
-  configurationHidden: false,
-  isBotActing: false
+  configurationHidden: false
 };
 
 export default function electron(
@@ -61,12 +58,6 @@ export default function electron(
   }
   if (action.type === HIDE_CONFIGURATION) {
     return Object.assign({}, state, { configurationHidden: true });
-  }
-  if (action.type === SET_BOT_IS_ACTING) {
-    return Object.assign({}, state, {
-      isBotActing: action.payload.isActing,
-      botMessage: action.payload.isActing ? action.payload.message : ''
-    });
   }
 
   return state;

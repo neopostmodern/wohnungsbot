@@ -10,8 +10,8 @@ const sendMail = async (to: string, subject: string, text: string) => {
   const message = {
     to,
     from: 'bot@wohnung.neopostmodern.com',
-    subject: utf8.decode(subject),
-    text: utf8.decode(text)
+    subject: utf8.encode(subject),
+    text: utf8.encode(text)
   };
 
   await sendgrid.send(message);

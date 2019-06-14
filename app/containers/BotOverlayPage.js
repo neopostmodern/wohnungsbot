@@ -4,8 +4,9 @@ import { bindActionCreators } from 'redux';
 import BotOverlay from '../components/BotOverlay';
 import { performScroll } from '../actions/electron';
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import type { stateType } from '../reducers/types';
 
-function mapStateToProps(state) {
+function mapStateToProps(state: stateType) {
   return {
     isPuppetLoading: !state.electron.views.puppet.ready,
     animations: state.overlay.animations,
@@ -16,8 +17,9 @@ function mapStateToProps(state) {
       ({ group }) => group === BOUNDING_BOX_GROUPS.PRIVACY_MASK
     ),
     verdicts: state.data.verdicts,
-    isBotActing: state.electron.isBotActing,
-    botMessage: state.electron.botMessage
+    isBotActing: state.bot.isActive,
+    botMessage: state.bot.message,
+    showOverlay: state.bot.showOverlay
   };
 }
 

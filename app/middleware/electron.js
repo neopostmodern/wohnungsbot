@@ -10,33 +10,19 @@ import type { Action, Store } from '../reducers/types';
 import type { electronStateType } from '../reducers/electron';
 import { sleep } from '../utils/async';
 import {
-  CALCULATE_BOUNDING_BOX,
-  CALCULATE_OVERVIEW_BOUNDING_BOXES,
   ELECTRON_ROUTING,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
   PERFORM_SCROLL,
-  REFRESH_BOUNDING_BOXES,
-  RETURN_TO_SEARCH_PAGE,
-  SET_BROWSER_VIEW_READY,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS
 } from '../constants/actionTypes';
-import type {
-  OverviewDataEntry,
-  RawFlatData,
-  RawOverviewData
-} from '../reducers/data';
 import {
   calculateOverviewBoundingBoxes,
-  calculateBoundingBox,
-  setBoundingBox,
   refreshBoundingBoxes
 } from '../actions/overlay';
-import { setRawFlatData, setRawOverviewData } from '../actions/data';
-import { getBoundingBox, isElementInViewport } from '../actions/botHelpers';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import { easeInOutCubic } from '../utils/easing';
 
 function resizeViews(
   electronState: electronStateType,
@@ -96,29 +82,9 @@ function resizeViews(
   }
 }
 
-// credit: https://github.com/danro/jquery-easing/blob/master/jquery.easing.js#L38
-/* eslint-disable */
-const easeInOutCubic = (currentTime, startValue, valueChange, duration) => {
-  if ((currentTime /= duration / 2) < 1)
-    return (
-      (valueChange / 2) * currentTime * currentTime * currentTime + startValue
-    );
-  return (
-    (valueChange / 2) * ((currentTime -= 2) * currentTime * currentTime + 2) +
-    startValue
-  );
-};
-/* eslint-enable */
-
 export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
 ) => {
-  if (action.type === RETURN_TO_SEARCH_PAGE) {
-    store.dispatch(
-      electronRouting('puppet', store.getState().configuration.searchUrl)
-    );
-  }
-
   if (action.type === ELECTRON_ROUTING) {
     const { name, targetUrl } = action.payload;
     store.dispatch(setBrowserViewReady(name, false));
@@ -128,43 +94,6 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       console.error(`No view registered for ${name}!`);
     } else {
       viewState.browserView.webContents.loadURL(targetUrl);
-    }
-  }
-
-  if (action.type === SET_BROWSER_VIEW_READY) {
-    if (action.payload.name === 'puppet' && action.payload.ready) {
-      await sleep(10000);
-
-      const { puppet } = store.getState().electron.views;
-      if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
-        const rawOverviewData: RawOverviewData = await puppet.browserView.webContents.executeJavaScript(
-          `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
-        );
-        store.dispatch(setRawOverviewData(rawOverviewData));
-        store.dispatch(calculateOverviewBoundingBoxes());
-        setTimeout(
-          () => store.dispatch(calculateOverviewBoundingBoxes()),
-          1000
-        );
-        setTimeout(
-          () => store.dispatch(calculateOverviewBoundingBoxes()),
-          5000
-        );
-      }
-
-      if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
-        const rawFlatData: RawFlatData = await puppet.browserView.webContents.executeJavaScript(
-          `utag_data`
-        );
-
-        rawFlatData.additionalData = {
-          requiresWBS: await puppet.browserView.webContents.executeJavaScript(
-            `document.querySelector('.is24qa-wohnberechtigungsschein-erforderlich-label') !== null`
-          )
-        };
-
-        store.dispatch(setRawFlatData(rawFlatData));
-      }
     }
   }
 
@@ -228,69 +157,6 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       // eslint-disable-next-line no-await-in-loop
       await sleep(5);
     }
-  }
-
-  // todo: invalidate / remove boundaries on URL change etc.
-
-  if (action.type === CALCULATE_OVERVIEW_BOUNDING_BOXES) {
-    const {
-      electron: {
-        views: { puppet }
-      },
-      data: { overview }
-    } = store.getState();
-
-    const { webContents } = puppet.browserView;
-
-    if (overview) {
-      Object.values(overview).forEach(
-        // $FlowFixMe -- Object.values
-        async (entry: OverviewDataEntry) => {
-          const selector = `#result-${entry.id}`;
-          if (await isElementInViewport(webContents, selector, false, false)) {
-            store.dispatch(
-              calculateBoundingBox(selector, {
-                group: BOUNDING_BOX_GROUPS.OVERVIEW,
-                attachedInformation: { flatId: entry.id }
-              })
-            );
-          }
-        }
-      );
-    }
-  }
-
-  if (action.type === REFRESH_BOUNDING_BOXES) {
-    const {
-      overlay: { boundingBoxes }
-    } = store.getState();
-
-    boundingBoxes.forEach(boundingBox => {
-      const { selector, group, attachedInformation } = boundingBox;
-      store.dispatch(
-        calculateBoundingBox(selector, { group, attachedInformation })
-      );
-    });
-  }
-
-  if (action.type === CALCULATE_BOUNDING_BOX) {
-    const {
-      electron: {
-        views: {
-          puppet: {
-            browserView: { webContents }
-          }
-        }
-      }
-    } = store.getState();
-
-    const { selector, group, attachedInformation } = action.payload;
-
-    const boundingBox = await getBoundingBox(webContents, selector);
-
-    store.dispatch(
-      setBoundingBox(boundingBox, selector, { group, attachedInformation })
-    );
   }
 
   if (action.type === PERFORM_SCROLL) {

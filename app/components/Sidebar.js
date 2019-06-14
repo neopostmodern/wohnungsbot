@@ -46,7 +46,7 @@ export default class Sidebar extends Component<Props, State> {
               </span>
             </div>
             <div>
-              <div>{addressDescription}</div>
+              <div>{addressDescription.split('(')[0]}</div>
               <div>
                 {success ? (
                   <a

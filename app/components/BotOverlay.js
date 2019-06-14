@@ -17,6 +17,7 @@ type Props = {
   verdicts: Verdicts,
   isBotActing: boolean,
   botMessage: string,
+  showOverlay: boolean,
   performScroll: (name: 'puppet', deltaY: number) => void
 };
 
@@ -92,7 +93,8 @@ export default class BotOverlay extends Component<Props> {
       overviewBoundingBoxes,
       privacyMaskBoundingBoxes,
       verdicts,
-      isBotActing
+      isBotActing,
+      showOverlay
     } = this.props;
 
     return (
@@ -102,7 +104,7 @@ export default class BotOverlay extends Component<Props> {
         onWheel={this.handleWheel}
       >
         {BotOverlay.renderAnimations(animations)}
-        {!isBotActing
+        {showOverlay
           ? overviewBoundingBoxes.map(
               ({ boundingBox, attachedInformation: { flatId } }) => (
                 <div
