@@ -131,7 +131,7 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
     } = getState();
 
     const { webContents } = electron.views.puppet.browserView;
-    const electronUtils = new ElectronUtilsRedux(webContents);
+    const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
     const flatOverview = data.overview[flatId];
 

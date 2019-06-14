@@ -216,10 +216,22 @@ export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
         await dispatch(pressKey('Escape'));
         await sleep(500);
 
-        while (
-          (await dispatch(getElementValue(field.selector))) !== field.value
-        ) {
-          await dispatch(pressKey('Down'));
+        let previousValue = null;
+        let down = true;
+
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+          const currentValue = await dispatch(getElementValue(field.selector));
+          if (currentValue === field.value) {
+            break;
+          }
+          // switch direction if value stops changing
+          if (previousValue && previousValue === currentValue) {
+            down = !down;
+          }
+          previousValue = currentValue;
+
+          await dispatch(pressKey(down ? 'Down' : 'Up'));
           await sleep(1000);
         }
 
