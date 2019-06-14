@@ -43,7 +43,9 @@ export default class JsonExport extends React.Component<
           <span className="material-icons">expand_less</span>
         </div>
         <pre
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(serializableObject, null, 2) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(serializableObject, null, 2)
+          }}
           className={styles.exportArea}
         />
       </>
