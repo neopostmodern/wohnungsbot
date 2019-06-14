@@ -230,13 +230,17 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
 der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
         flatOverview.address
       )} für dich angeschrieben!
+      
+Am besten tust du jetzt nichts. Warte erstmal ob du angeschrieben wirst für eine Besichtigung.
 
-Schau sie dir hier an: ${flatPageUrl(flatOverview.id)}
+Dann kannst du dir hier die Wohnung anschauen: ${flatPageUrl(flatOverview.id)}
+${flatOverview.title}
 ${flatOverview.address.description}
 ${flatOverview.area}m²
 ${flatOverview.rent}€ Kalt
 
 Du (also der Bot) hast geschrieben:
+
 ${applicationText}
 
 Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
