@@ -15,12 +15,11 @@ import type { ScrollIntoViewPolicy } from './botHelpers';
 import {
   clickAction,
   elementExists,
-  fillText,
   getElementValue,
   pressKey,
   scrollIntoViewByPolicy
 } from './botHelpers';
-import { requestPrivacyMask } from './overlay';
+import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
@@ -180,6 +179,7 @@ export const generateAdditionalDataFormFillingDescription = (
 export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { webContents } = getState().electron.views.puppet.browserView;
+    const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
@@ -190,15 +190,21 @@ export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
         continue;
       }
 
-      await scrollIntoViewByPolicy(webContents, field.selector);
+      await scrollIntoViewByPolicy(
+        webContents,
+        field.selector,
+        'auto',
+        'center'
+      );
 
-      if (field.protectPrivacy) {
-        dispatch(requestPrivacyMask(field.selector));
+      if ((await electronUtils.getValue(field.selector)) === field.value) {
+        // eslint-disable-next-line no-continue
+        continue;
       }
 
       if (field.type === 'text') {
         if (field.value) {
-          await dispatch(fillText(field.selector, field.value));
+          await electronUtils.fillText(field.selector, field.value);
           await sleep(1000);
         }
       } else if (field.type === 'select') {

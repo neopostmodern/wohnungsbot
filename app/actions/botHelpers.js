@@ -50,38 +50,13 @@ export function clickAction(
   };
 }
 
-async function performPressKey(webContents: WebContents, keyCode: string) {
-  // const eventDescription = keyCode === 'Shift' ? { key: keyCode } : { keyCode };
-  const eventDescription = { keyCode };
-
-  webContents.sendInputEvent(
-    Object.assign({}, eventDescription, {
-      type: 'keyDown'
-    })
-  );
-
-  if (eventDescription.keyCode) {
-    await sleep(1 + Math.random() * 5);
-    webContents.sendInputEvent(
-      Object.assign({}, eventDescription, {
-        type: 'char'
-      })
-    );
-  }
-
-  await sleep(10 + Math.random() * 50);
-  webContents.sendInputEvent(
-    Object.assign({}, eventDescription, {
-      type: 'keyUp'
-    })
-  );
-}
-
 export function type(text: string) {
   return async (dispatch: Dispatch, getState: GetState) => {
     dispatch(willType(text));
 
     const { webContents } = getState().electron.views.puppet.browserView;
+
+    const electronUtils = new ElectronUtils(webContents);
 
     if (!webContents.isFocused()) {
       webContents.focus();
@@ -96,7 +71,7 @@ export function type(text: string) {
         keyCode = '\u000d';
       }
 
-      await performPressKey(webContents, keyCode);
+      await electronUtils.performPressKey(keyCode);
 
       if (['.', '\n'].includes(character)) {
         await sleep(100 + Math.random() * 300);
@@ -118,15 +93,7 @@ export function pressKey(keyCode: string) {
       webContents.focus();
     }
 
-    await performPressKey(webContents, keyCode);
-  };
-}
-
-export function fillText(selector: string, text: string) {
-  return async (dispatch: Dispatch) => {
-    await dispatch(clickAction(selector));
-    await sleep(500);
-    await dispatch(type(text));
+    await new ElectronUtils(webContents).performPressKey(keyCode);
   };
 }
 
@@ -134,9 +101,7 @@ export function elementExists(selector: string) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { webContents } = getState().electron.views.puppet.browserView;
 
-    return webContents.executeJavaScript(
-      `document.querySelector('${selector}') !== null`
-    );
+    return new ElectronUtils(webContents).elementExists(selector);
   };
 }
 
@@ -197,19 +162,20 @@ export type ScrollIntoViewPolicy = 'always' | 'auto' | 'none';
 export async function scrollIntoViewByPolicy(
   webContents: WebContents,
   selector: string,
-  scrollIntoViewPolicy?: ScrollIntoViewPolicy = 'auto'
+  scrollIntoViewPolicy?: ScrollIntoViewPolicy = 'auto',
+  overrideStrategy?: ScrollIntoViewStrategy
 ) {
   if (scrollIntoViewPolicy === 'none') {
     return;
   }
 
   if (scrollIntoViewPolicy === 'always') {
-    await scrollIntoView(webContents, selector, 'center');
+    await scrollIntoView(webContents, selector, overrideStrategy || 'center');
     return;
   }
 
   if (!(await isElementInViewport(webContents, selector))) {
-    await scrollIntoView(webContents, selector, 'nearest');
+    await scrollIntoView(webContents, selector, overrideStrategy || 'nearest');
   }
 }
 

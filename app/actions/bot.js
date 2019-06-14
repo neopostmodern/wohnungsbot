@@ -29,17 +29,13 @@ import {
   generateAdditionalDataFormFillingDescription,
   generatePersonalDataFormFillingDescription
 } from './formFiller';
-import {
-  clickAction,
-  elementExists,
-  fillText,
-  scrollIntoViewAction
-} from './botHelpers';
+import { clickAction, elementExists, scrollIntoViewAction } from './botHelpers';
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
-import { removeBoundingBoxesInGroup } from './overlay';
-import ElectronUtils from '../utils/electronUtils';
+import { removeBoundingBoxesInGroup, requestPrivacyMask } from './overlay';
 import { flatPageUrl } from '../flat/urlBuilder';
 import type { electronStateType } from '../reducers/electron';
+import ElectronUtilsRedux from '../utils/electronUtilsRedux';
+import { sendMail } from './helpers';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return {
@@ -135,7 +131,7 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
     } = getState();
 
     const { webContents } = electron.views.puppet.browserView;
-    const electronUtils = new ElectronUtils(webContents);
+    const electronUtils = new ElectronUtilsRedux(webContents);
 
     const flatOverview = data.overview[flatId];
 
@@ -158,33 +154,55 @@ export const generateApplicationTextAndSubmit = targetedAction<string>(
       );
     };
 
-    const applicationText = applicationTextBuilder(
-      configuration.applicationText,
-      flatOverview.address,
-      flatOverview.contactDetails
-    );
-
     await dispatch(
       clickAction(
         await electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
         'always'
       )
     );
-    await sleep(2000);
-    if (
-      await dispatch(elementExists('[data-qa="get-premium-membership-button"]'))
-    ) {
-      await markComplete(false, 'Bewerbung nur mit "Premium"-Account möglich');
-      return;
+
+    /* eslint-disable no-await-in-loop */
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (
+        await electronUtils.elementExists(
+          '[data-qa="get-premium-membership-button"]'
+        )
+      ) {
+        await markComplete(
+          false,
+          'Bewerbung nur mit "Premium"-Account möglich'
+        );
+        return;
+      }
+
+      if (await electronUtils.elementExists('#contactForm-firstName')) {
+        break;
+      }
+
+      await sleep(50);
     }
+    /* eslint-ensable no-await-in-loop */
 
-    await dispatch(fillText('#contactForm-Message', applicationText));
-
-    await dispatch(
-      fillForm(
-        generatePersonalDataFormFillingDescription(configuration.contactData)
-      )
+    const personalDataFormFillingDescription = generatePersonalDataFormFillingDescription(
+      configuration.contactData
     );
+
+    personalDataFormFillingDescription
+      .filter(field => field.protectPrivacy)
+      .forEach(field => {
+        dispatch(requestPrivacyMask(field.selector));
+      });
+
+    const applicationText = applicationTextBuilder(
+      configuration.applicationText,
+      flatOverview.address,
+      flatOverview.contactDetails
+    );
+
+    await electronUtils.fillText('#contactForm-Message', applicationText);
+
+    await dispatch(fillForm(personalDataFormFillingDescription));
 
     await sleep(1000);
 
