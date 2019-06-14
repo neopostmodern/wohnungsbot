@@ -7,8 +7,8 @@ const configurationExplanationStage: StageDescription = {
     <>
       <h2>Deinen Bot konfigurieren</h2>
       <span>
-        Bevor dein Bot beginnen kann für dich nach Wohnungen zu suchen, muss
-        muss er ersteinmal wissen, wonach du eigentlich suchst!
+        Um für dich nach Wohnungen zu suchen, muss dein Bot erst einmal wissen,
+        wonach du eigentlich suchst!
         <br />
         In den nächsten Schritten hilft er dir, dein Suchprofil zu erstellen.
         <br /> <br />
@@ -23,6 +23,8 @@ const configurationExplanationStage: StageDescription = {
         </a>{' '}
         schauen.
       </span>
+
+      {/* todo: exhibition check box */}
     </>
   ),
   buttons: {

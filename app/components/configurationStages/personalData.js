@@ -135,8 +135,8 @@ const personalDataStage: StageDescription = {
           <div className={styles.comment}>
             Manchmal ist der Besichtigungstermin bereits aus dem Inserat der
             Wohnung ersichtlich. Eine Bewerbung zu schicken ist dann natürlich
-            sinnlos, aber der Bot kann dich per E-Mail über den Termin
-            benachrichtigen.
+            sinnlos, aber der Bot kann dich stattdessen per E-Mail über den
+            Termin benachrichtigen.
           </div>
         </div>
         <div className={styles.column}>
@@ -177,17 +177,18 @@ const personalDataStage: StageDescription = {
           Nein
           <div className={styles.comment}>
             <p>
-              Um nicht nur im künstlerischen sondern auch wissenschaftlichen
-              Rahmen eine Aussage zur Wohnungsnot machen zu können möchte der
+              Um nicht nur im künstlerischen sondern auch im wissenschaftlichen
+              Rahmen eine Aussage zur Wohnungsnot machen zu können, möchte der
               Bot folgende Informationen sammeln: (1) Wie viele Wohnungen in
-              deiner Suche deinen Vorstellungen entsprechen, aber zu teuer sind;
-              (2) Wie viel Prozent deines Einkommens du für deine Wohnung bereit
-              bist zu zahlen.
+              deinem Suchverlauf deinen Vorstellungen entsprechen, aber zu teuer
+              sind; (2) Wie viel Prozent des Haushaltseinkommens du für deine
+              Wohnung bereit bist zu zahlen.
             </p>
             <p>
               Es werden keinerlei persönliche Daten übertragen. Alles was der
-              Bot an den Server sendet ist der Preis der Wohnung und dein
-              Preislimit (im Falle von 1) oder dein Einkommen (im Falle von 2).
+              Bot an den Server sendet ist der Preis der Wohnung, dein
+              Preislimit (im Falle von 1) und das Haushaltseinkommen (im Falle
+              von 2).
             </p>
             <p>
               Die Daten werden sorgfältig behandelt, nicht weitergegeben und

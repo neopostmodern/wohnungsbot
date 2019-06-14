@@ -108,8 +108,13 @@ const applicationTextStage: StageDescription = {
   subtitle: (
     <>
       Ein persönlich wirkendes Anschreiben ist sehr wichtig. Der Bot kann das
-      teilweise für dich übernehmen — verwende dafür die bereitgestellten
-      Ersetzungen!
+      teilweise für dich übernehmen — verwende dafür die bereitgestellten, sich
+      dynamisch anpassenden Textbausteine!
+      <br />
+      Und so funktioniert&apos;s: Du gibst <em>links</em> deinen Bewerbungstext{' '}
+      <i>mit</i> Textbausteinen ein und kannst dann <em>rechts</em> Beispiele
+      sehen, wie er an die entsprechenden Wohnungen und Ansprechpartner_innen
+      angepasst wird.
     </>
   ),
   body: ({ configuration: { applicationText }, setString }: InheritedProps) => (
@@ -121,7 +126,7 @@ const applicationTextStage: StageDescription = {
             onChange={text => setString('applicationText', text)}
             value={applicationText}
           />
-          <h3>Verfügbare Ersetzungen</h3>
+          <h3>Verfügbare Textbausteine</h3>
           <div className={styles.searchParameter}>
             Anrede:{' '}
             <span className={styles.replacement}>
@@ -154,6 +159,11 @@ const applicationTextStage: StageDescription = {
             <div className={styles.comment}>
               Beispiele: &quot;Neukölln&quot;, &quot;Kreuzberg&quot;
             </div>
+          </div>
+          <div className={styles.comment} style={{ marginTop: '3rem' }}>
+            Allgemeiner Tipp: Du kannst deine Bewerbungsunterlagen bei einem
+            Cloud-Anbieter deiner Wahl hochladen und hier einen Link
+            mitschicken!
           </div>
         </div>
         <div className={styles.column}>

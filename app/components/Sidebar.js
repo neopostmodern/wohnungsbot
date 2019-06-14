@@ -79,7 +79,8 @@ export default class Sidebar extends Component<Props, State> {
         </button>
         <div className={styles.comment}>
           Zurücksetzen hilft eventuell, wenn der Bot nicht mehr funktioniert.
-          Wenn das nicht hilft, die App schließen und erneut öffnen.
+          Wenn das Zurücksetzen nicht hilft, versuche die App zu schließen und
+          erneut zu öffnen.
           <br />
           Deine Daten bleiben erhalten!
         </div>

@@ -61,6 +61,16 @@ $CONTENT_WIDTH: 1000px;
   max-width: unset;
 }
 
+.checkboxWithLabel {
+  display: flex;
+  align-items: baseline;
+  margin-top: 0.3em;
+
+  > div:first-child {
+    margin-right: 0.5em;
+  }
+}
+
 $GUTTER: 2rem;
 @media (max-width: $CONTENT_WIDTH) {
   .row {

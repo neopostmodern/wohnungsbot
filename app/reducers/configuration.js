@@ -67,10 +67,13 @@ export type ContactData = {|
   city: string
 |};
 
-export type DataPolicies = {
+export type DataPolicies = {|
   flatViewingNotificationMails: boolean,
-  researchDataSharing: boolean
-};
+  researchDataSharing: boolean,
+  dataHandlingExhibition?: boolean,
+  artConsent: boolean,
+  generalConsentAndMail: boolean
+|};
 
 export const MOVE_IN_WHEN = {
   NOW: 'Ab sofort',
@@ -118,7 +121,8 @@ export type Configuration = {|
   applicationText: string,
   contactData: ContactData,
   additionalInformation: AdditionalInformation,
-  policies: DataPolicies
+  policies: DataPolicies,
+  configurationVersion: number
 |};
 
 export const getConfigurationFilterHash = (
@@ -161,8 +165,11 @@ const defaultConfiguration: Configuration = {
   },
   policies: {
     flatViewingNotificationMails: false,
-    researchDataSharing: false
-  }
+    researchDataSharing: false,
+    artConsent: false,
+    generalConsentAndMail: false
+  },
+  configurationVersion: 1
 };
 
 export default function configuration(

@@ -11,10 +11,9 @@ const areaSelectionStage: StageDescription = {
   title: 'Wo suchst du?',
   subtitle: (
     <>
-      Wähle Bereiche in denen du nach Wohnungen suchen möchtest, in dem du auf
-      sie klickst. Dein aktueller Suchbereich ist dunkelgrün hinterlegt.
-      <br />
-      (Durch erneutes Klicken kannst du sie wieder abwählen)
+      Wähle Bereiche, in denen du nach Wohnungen suchen möchtest, in dem du auf
+      sie klickst. Dein aktueller Suchbereich ist dunkelgrün markiert. (Durch
+      erneutes Klicken kannst du sie wieder abwählen.)
     </>
   ),
   body: ({

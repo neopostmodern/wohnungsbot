@@ -20,7 +20,7 @@ const flatDescriptionStage: StageDescription = {
   title: 'Was suchst du?',
   subtitle: (
     <>
-      Jetzt geht es darum die Wohnung nach der du suchst zu beschreiben —
+      Jetzt geht es darum die Wohnung, nach der du suchst, zu beschreiben —
       zumindest das, was sich in Zahlen ausdrücken lässt.
     </>
   ),
@@ -96,7 +96,7 @@ const flatDescriptionStage: StageDescription = {
           <div style={{ marginTop: '0.5em', lineHeight: 0.9 }}>
             <small>
               Aktuell kann der Bot leider nicht zwischen &quot;WBS&quot; und
-              &quot;WBS mit besonderem Wohnbedarf&quot; unterscheiden
+              &quot;WBS mit besonderem Wohnbedarf&quot; unterscheiden.
             </small>
           </div>
           <h3>Sonstige Wünsche</h3>
@@ -142,7 +142,7 @@ const flatDescriptionStage: StageDescription = {
           </div>
           <div className={styles.comment}>
             Die Verlässlichkeit dieser Angaben bei den Inseraten ist leider
-            nicht besonders hoch
+            nicht besonders hoch.
           </div>
         </div>
         <div className={styles.column}>
