@@ -31,7 +31,9 @@ This is the code that caused the error:
 ${code}
 // END OF CODE
 `);
-      throw error;
+      if (process.env.NODE_ENV === 'development') {
+        throw error;
+      }
     }
   }
 
