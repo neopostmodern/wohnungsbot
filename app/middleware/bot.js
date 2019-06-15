@@ -29,30 +29,32 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
   if (action.type === SET_BROWSER_VIEW_READY) {
     if (action.payload.name === 'puppet' && action.payload.ready) {
-      await sleep(5000);
+      setImmediate(async () => {
+        await sleep(5000);
 
-      const { puppet } = store.getState().electron.views;
-      if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
-        setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
-        setTimeout(
-          () => store.dispatch(calculateOverviewBoundingBoxes()),
-          1000
-        );
-        setTimeout(
-          () => store.dispatch(calculateOverviewBoundingBoxes()),
-          5000
-        );
+        const { puppet } = store.getState().electron.views;
+        if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
+          setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
+          setTimeout(
+            () => store.dispatch(calculateOverviewBoundingBoxes()),
+            1000
+          );
+          setTimeout(
+            () => store.dispatch(calculateOverviewBoundingBoxes()),
+            5000
+          );
 
-        await store.dispatch(getOverviewData());
-        await store.dispatch(refreshVerdicts());
-        await sleep(20000);
-        store.dispatch(launchNextTask());
-      }
+          await store.dispatch(getOverviewData());
+          await store.dispatch(refreshVerdicts());
+          await sleep(20000);
+          store.dispatch(launchNextTask());
+        }
 
-      if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
-        await store.dispatch(getFlatData());
-        store.dispatch(refreshVerdicts());
-      }
+        if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
+          await store.dispatch(getFlatData());
+          store.dispatch(refreshVerdicts());
+        }
+      });
     }
   }
 
