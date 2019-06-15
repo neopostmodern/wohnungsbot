@@ -178,6 +178,7 @@ export const markApplicationComplete = (data: ApplicationData) => async (
 
   // this kicks of next queued action, if any
   dispatch(setBotIsActing(false));
+  dispatch(setShowOverlay(true));
   // todo: check how this times against re-loading the startpage
 };
 

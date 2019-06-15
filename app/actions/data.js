@@ -58,15 +58,18 @@ export function getOverviewData() {
     const electronUtils = new ElectronUtils(
       getState().electron.views.puppet.browserView.webContents
     );
-    const rawOverviewData: RawOverviewData = await electronUtils.execute(
+    // is null if there were zero results
+    const rawOverviewData: ?RawOverviewData = await electronUtils.execute(
       `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
     );
 
     const data = {};
-    rawOverviewData.forEach(entry => {
-      const processedEntry = processOverviewDataEntry(entry);
-      data[processedEntry.id] = processedEntry;
-    });
+    if (rawOverviewData) {
+      rawOverviewData.forEach(entry => {
+        const processedEntry = processOverviewDataEntry(entry);
+        data[processedEntry.id] = processedEntry;
+      });
+    }
 
     dispatch({
       type: SET_OVERVIEW_DATA,

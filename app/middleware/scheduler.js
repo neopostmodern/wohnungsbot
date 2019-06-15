@@ -2,7 +2,12 @@
 
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
-import { navigateToFlatPage, noop, popFlatFromQueue } from '../actions/bot';
+import {
+  navigateToFlatPage,
+  noop,
+  popFlatFromQueue,
+  returnToSearchPage
+} from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
 
 // eslint-disable-next-line no-unused-vars
@@ -15,6 +20,10 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       return next(noop());
     }
     if (scheduler.queuedFlatIds.length === 0) {
+      setTimeout(
+        () => store.dispatch(returnToSearchPage()),
+        120000 + Math.random() * 60000
+      );
       return next(noop());
     }
 
