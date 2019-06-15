@@ -76,4 +76,8 @@ ${code}
       })
     );
   }
+
+  async scrollBy(deltaX: number, deltaY: number) {
+    return this.execute(`window.scrollBy(${deltaX}, ${deltaY})`);
+  }
 }

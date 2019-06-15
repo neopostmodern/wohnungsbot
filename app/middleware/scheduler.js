@@ -6,14 +6,23 @@ import {
   navigateToFlatPage,
   noop,
   popFlatFromQueue,
-  returnToSearchPage
+  returnToSearchPage,
+  scrollWhileIdle,
+  stopScrollingWhileIdle
 } from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
 import { pullWebConfiguration } from '../actions/configuration';
+import type { Configuration } from '../reducers/configuration';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
-  const { scheduler }: { scheduler: schedulerStateType } = store.getState();
+  const {
+    scheduler,
+    configuration: { exhibitionIdentifier }
+  }: {
+    scheduler: schedulerStateType,
+    configuration: Configuration
+  } = store.getState();
 
   if (action.type === LAUNCH_NEXT_TASK) {
     if (scheduler.isActive === true) {
@@ -21,10 +30,17 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       return next(noop());
     }
     if (scheduler.queuedFlatIds.length === 0) {
-      setTimeout(
-        () => store.dispatch(returnToSearchPage()),
-        120000 + Math.random() * 60000
-      );
+      if (exhibitionIdentifier) {
+        store.dispatch(scrollWhileIdle());
+      }
+
+      setTimeout(() => {
+        if (exhibitionIdentifier) {
+          store.dispatch(stopScrollingWhileIdle());
+        }
+
+        store.dispatch(returnToSearchPage());
+      }, 120000 + Math.random() * 60000);
       if (store.getState().configuration.exhibitionIdentifier) {
         store.dispatch(pullWebConfiguration());
       }

@@ -7,80 +7,28 @@ import {
   setBrowserViewUrl
 } from '../actions/electron';
 import type { Action, Store } from '../reducers/types';
-import type { electronStateType } from '../reducers/electron';
 import { sleep } from '../utils/async';
 import {
   ELECTRON_ROUTING,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
   PERFORM_SCROLL,
+  SCROLL_WHILE_IDLE,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
-  SHOW_DEV_TOOLS
+  SHOW_DEV_TOOLS,
+  STOP_SCROLLING_WHILE_IDLE
 } from '../constants/actionTypes';
 import {
   calculateOverviewBoundingBoxes,
   refreshBoundingBoxes
 } from '../actions/overlay';
 import { easeInOutCubic } from '../utils/easing';
+import resizeViews from '../utils/resizeViews';
+import scrollWhileIdle from '../utils/scrollWhileIdle';
+import ElectronUtils from '../utils/electronUtils';
 
-function resizeViews(
-  electronState: electronStateType,
-  configurationVisibility: ?number = null
-) {
-  const {
-    window,
-    views: { puppet, sidebar, botOverlay, configuration, devMenu }
-  } = electronState;
-  if (window === undefined || window === null) {
-    console.error('Main window not defined!');
-    return;
-  }
-
-  const [windowWidth, windowHeight] = window.getSize();
-  const sideBarWidth = Math.min(400, Math.round(windowWidth * 0.3));
-  sidebar.browserView.setBounds({
-    x: 0,
-    y: 0,
-    width: sideBarWidth,
-    height: windowHeight
-  });
-  puppet.browserView.setBounds({
-    x: sideBarWidth + 10,
-    y: 10,
-    width: windowWidth - sideBarWidth, // - 20, // by not subtracting the offset we push the scrollbar out of view
-    height: windowHeight - 20
-  });
-  botOverlay.browserView.setBounds({
-    x: sideBarWidth,
-    y: 0,
-    width: windowWidth - sideBarWidth,
-    height: windowHeight
-  });
-  let configurationY = electronState.configurationHidden ? windowHeight : 0;
-  if (
-    configurationVisibility !== undefined &&
-    configurationVisibility !== null
-  ) {
-    configurationY = Math.round(windowHeight * (1 - configurationVisibility));
-  }
-  configuration.browserView.setBounds({
-    x: 0,
-    y: configurationY,
-    width: windowWidth,
-    height: windowHeight
-  });
-
-  // only exists if in dev environment
-  if (devMenu) {
-    devMenu.browserView.setBounds({
-      x: 0,
-      y: windowHeight - 30,
-      width: windowWidth,
-      height: 30
-    });
-  }
-}
+let stopScrollingWhileIdle;
 
 export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
@@ -160,15 +108,30 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   }
 
   if (action.type === PERFORM_SCROLL) {
-    const {
-      electron: { views }
-    } = store.getState();
-
-    await views[action.payload.name].browserView.webContents.executeJavaScript(
-      `window.scrollBy(0, ${action.payload.deltaY});`
+    const electronUtils = new ElectronUtils(
+      store.getState().electron.views[
+        action.payload.name
+      ].browserView.webContents
     );
 
+    await electronUtils.scrollBy(0, action.payload.deltaY);
+
     process.nextTick(() => store.dispatch(calculateOverviewBoundingBoxes()));
+  }
+
+  if (action.type === SCROLL_WHILE_IDLE) {
+    if (stopScrollingWhileIdle) {
+      // stop any previous instance
+      stopScrollingWhileIdle();
+    }
+    stopScrollingWhileIdle = scrollWhileIdle(store.getState, store.dispatch);
+  }
+  if (action.type === STOP_SCROLLING_WHILE_IDLE) {
+    if (!stopScrollingWhileIdle) {
+      throw Error("Can't stop scrolling before it was started");
+    }
+    stopScrollingWhileIdle();
+    stopScrollingWhileIdle = null;
   }
 
   if (action.type === SHOW_DEV_TOOLS) {

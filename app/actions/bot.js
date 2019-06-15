@@ -10,7 +10,9 @@ import {
   NOOP,
   POP_FLAT_FROM_QUEUE,
   SET_SHOW_OVERLAY,
-  TASK_FINISHED
+  TASK_FINISHED,
+  SCROLL_WHILE_IDLE,
+  STOP_SCROLLING_WHILE_IDLE
 } from '../constants/actionTypes';
 import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
@@ -102,6 +104,20 @@ export function returnToSearchPage(): Action {
 export function noop(): Action {
   return {
     type: NOOP,
+    payload: null
+  };
+}
+
+export function scrollWhileIdle(): Action {
+  return {
+    type: SCROLL_WHILE_IDLE,
+    payload: null
+  };
+}
+
+export function stopScrollingWhileIdle(): Action {
+  return {
+    type: STOP_SCROLLING_WHILE_IDLE,
     payload: null
   };
 }
