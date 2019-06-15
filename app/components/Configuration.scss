@@ -251,18 +251,22 @@ $HOUSE_LINE: 2px solid black;
 
   .floor {
     border-bottom: $HOUSE_LINE;
-    padding: 0.4em 1em;
+    padding: 0.4em 1em 0.2em;
     cursor: pointer;
+    color: white;
 
     &.selected {
       background-color: darkgreen;
     }
+    &.notSelected {
+      background-color: $BAD_RED;
+    }
 
     &:hover {
-      background-color: rgba(0, 100, 0, 0.3);
+      background-color: rgba(0, 100, 0, 0.5);
 
       &.selected {
-        background-color: rgba(100, 0, 0, 0.3);
+        background-color: rgba(100, 0, 0, 0.5);
       }
     }
   }

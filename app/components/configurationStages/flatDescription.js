@@ -186,7 +186,7 @@ const flatDescriptionStage: StageDescription = {
             {AllFloors.map(floor => (
               <div
                 className={`${styles.floor} ${
-                  floors.includes(floor) ? styles.selected : ''
+                  floors.includes(floor) ? styles.selected : styles.notSelected
                 }`}
                 onClick={() => toggleFloor(floor)}
                 key={floor}
@@ -194,6 +194,16 @@ const flatDescriptionStage: StageDescription = {
                 {floorToName(floor, 4)}
               </div>
             ))}
+          </div>
+          <div className={styles.comment}>
+            Aktuelle Auswahl:{' '}
+            {floors.length === AllFloors.length
+              ? 'Alle Stockwerke'
+              : floors
+                  .slice()
+                  .reverse()
+                  .map(floor => floorToName(floor, 4))
+                  .join(', ')}
           </div>
         </div>
       </div>
