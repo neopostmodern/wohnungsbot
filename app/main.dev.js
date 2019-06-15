@@ -127,8 +127,7 @@ configureStore(MAIN, isDevelopment)
             enableRemoteModule: false
           }
         },
-        // todo: create landingpage
-        'https://example.com/'
+        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
       );
       puppetView.webContents.setUserAgent(getRandomUserAgent());
 

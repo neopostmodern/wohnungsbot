@@ -203,7 +203,9 @@ export async function isElementInViewport(
 ): Promise<boolean> {
   try {
     if (!new ElectronUtils(webContents).elementExists(selector)) {
-      console.log('isEleme');
+      console.log(
+        `isElementInViewport(${selector}) called on non-existent element`
+      );
       return false;
     }
 
