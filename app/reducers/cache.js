@@ -19,6 +19,10 @@ export type ApplicationData = {
   reason?: string
 };
 
+export type EmailData = {
+  flatId: string
+};
+
 export type Cache<T> = {
   [identifier: string]: BaseCacheEntry & T
 };
@@ -31,7 +35,7 @@ export type CacheName = $Values<typeof CACHE_NAMES>;
 
 export type cacheStateType = {
   applications: Cache<ApplicationData>,
-  mail: Cache<any>
+  mail: Cache<EmailData>
 };
 
 const cacheDefaultState: cacheStateType = {

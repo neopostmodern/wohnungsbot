@@ -7,6 +7,8 @@ import { flatPageUrl } from '../flat/urlBuilder';
 import type { ContactData } from '../reducers/configuration';
 import type { OverviewDataEntry } from '../reducers/data';
 import type { Dispatch, GetState } from '../reducers/types';
+import { markCompleted } from './cache';
+import { CACHE_NAMES } from '../reducers/cache';
 
 // eslint-disable-next-line import/prefer-default-export
 export const sendMail = (to: string, subject: string, text: string) => ({
@@ -14,6 +16,12 @@ export const sendMail = (to: string, subject: string, text: string) => ({
   payload: { to, subject, text },
   meta: { target: MAIN }
 });
+
+const flatDescriptionSnippet = (flatOverview: OverviewDataEntry) =>
+  `${flatOverview.title}
+${flatOverview.address.description}
+${flatOverview.area}m²
+${flatOverview.rent}€ Kalt`;
 
 export const sendFlatViewingNotificationMail = (
   contactData: ContactData,
@@ -39,13 +47,47 @@ export const sendFlatViewingNotificationMail = (
 
 der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
           flatOverview.address
-        )} mit einem öffentlichen Besichtigungstermin gefunden.
-Er hat natürlich keine Bewerbung abgeschickt, aber du kannst hier den Termin heraussuchen: ${flatPageUrl(
+        )} mit einem öffentlichen Besichtigungstermin gefunden:
+${flatDescriptionSnippet(flatOverview)}
+
+Er hat natürlich keine Bewerbung abgeschickt. Hier kannst du dir die Wohnung anschauen: ${flatPageUrl(
           flatOverview.id
         )}
 
 Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
       )
     );
+
+    dispatch(
+      markCompleted(CACHE_NAMES.MAIL, flatOverview.id, {
+        flatId: flatOverview.id
+      })
+    );
   };
 };
+
+export const sendApplicationNotificationEmail = (
+  contactData: ContactData,
+  flatOverview: OverviewDataEntry,
+  applicationText: string
+) =>
+  sendMail(
+    contactData.eMail,
+    '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
+    `Hallo ${contactData.firstName},
+
+der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
+      flatOverview.address
+    )} für dich angeschrieben!
+      
+Am besten tust du jetzt nichts. Warte erstmal ob du angeschrieben wirst für eine Besichtigung.
+
+Dann kannst du dir hier die Wohnung anschauen: ${flatPageUrl(flatOverview.id)}
+${flatDescriptionSnippet(flatOverview)}
+
+Du (also der Bot) hast geschrieben:
+
+${applicationText}
+
+Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
+  );

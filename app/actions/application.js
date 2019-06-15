@@ -17,15 +17,13 @@ import {
   generateAdditionalDataFormFillingDescription,
   generatePersonalDataFormFillingDescription
 } from './formFiller';
-import applicationTextBuilder, {
-  generateInPlaceDescription
-} from '../flat/applicationTextBuilder';
-import { sendMail } from './email';
-import { flatPageUrl } from '../flat/urlBuilder';
+import applicationTextBuilder from '../flat/applicationTextBuilder';
+import { sendApplicationNotificationEmail } from './email';
 import {
   returnToSearchPage,
   setBotIsActing,
   setBotMessage,
+  setShowOverlay,
   taskFinished
 } from './bot';
 
@@ -155,28 +153,10 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
 
   if (configuration.policies.applicationNotificationMails) {
     dispatch(
-      sendMail(
-        configuration.contactData.eMail,
-        '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',
-        `Hallo ${configuration.contactData.firstName},
-
-der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
-          flatOverview.address
-        )} für dich angeschrieben!
-      
-Am besten tust du jetzt nichts. Warte erstmal ob du angeschrieben wirst für eine Besichtigung.
-
-Dann kannst du dir hier die Wohnung anschauen: ${flatPageUrl(flatOverview.id)}
-${flatOverview.title}
-${flatOverview.address.description}
-${flatOverview.area}m²
-${flatOverview.rent}€ Kalt
-
-Du (also der Bot) hast geschrieben:
-
-${applicationText}
-
-Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
+      sendApplicationNotificationEmail(
+        configuration.contactData,
+        flatOverview,
+        applicationText
       )
     );
   }
