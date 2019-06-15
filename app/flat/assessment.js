@@ -18,6 +18,14 @@ export function assessFlat(
   let action: FlatAction = FLAT_ACTION.IGNORE;
 
   const reasons = [];
+
+  if (overviewDataEntry.rent / overviewDataEntry.area < 4) {
+    reasons.push({
+      reason: 'Angebot is fake',
+      result: false
+    });
+  }
+
   const flatPostcode = overviewDataEntry.address.postcode;
   reasons.push({
     reason: `Postleitzahl: ${flatPostcode}`,
