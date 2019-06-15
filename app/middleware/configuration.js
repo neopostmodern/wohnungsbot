@@ -36,7 +36,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     action.type === SET_STRING &&
     action.payload.name === 'exhibitionIdentifier'
   ) {
-    store.dispatch(pullWebConfiguration());
+    setImmediate(() => store.dispatch(pullWebConfiguration()));
   }
 
   if (action.type === PULL_WEB_CONFIGURATION) {
