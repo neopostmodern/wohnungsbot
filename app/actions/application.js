@@ -31,7 +31,6 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
   dispatch: Dispatch,
   getState: GetState
 ) => {
-  console.log('apply!');
   const {
     configuration,
     data,
@@ -115,7 +114,12 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
 
   await electronUtils.fillText('#contactForm-Message', applicationText);
 
-  await dispatch(fillForm(personalDataFormFillingDescription));
+  await dispatch(
+    fillForm(
+      personalDataFormFillingDescription,
+      configuration.policies.fillAsLittleAsPossible
+    )
+  );
 
   await sleep(1000);
 
@@ -134,7 +138,8 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
       fillForm(
         generateAdditionalDataFormFillingDescription(
           configuration.additionalInformation
-        )
+        ),
+        configuration.policies.fillAsLittleAsPossible
       )
     );
 
@@ -174,18 +179,16 @@ export const markApplicationComplete = (data: ApplicationData) => async (
   dispatch(returnToSearchPage());
   dispatch(setBotMessage(null));
   dispatch(taskFinished());
-  await sleep(20000);
+  await sleep(5000);
 
   // this kicks of next queued action, if any
   dispatch(setBotIsActing(false));
   dispatch(setShowOverlay(true));
-  // todo: check how this times against re-loading the startpage
 };
 
 export const discardApplicationProcess = (
   flatOverview: OverviewDataEntry
 ) => async (dispatch: Dispatch) => {
-  // todo: set bot message
   dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
   await sleep(5000);
   dispatch(

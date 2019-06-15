@@ -105,16 +105,6 @@ export function elementExists(selector: string) {
   };
 }
 
-export function getElementValue(selector: string) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
-
-    return webContents.executeJavaScript(
-      `document.querySelector('${selector}').value`
-    );
-  };
-}
-
 export type ScrollIntoViewStrategy = 'start' | 'center' | 'end' | 'nearest';
 // todo: scrollIntoView has to request an update of bounding boxes
 export async function scrollIntoView(

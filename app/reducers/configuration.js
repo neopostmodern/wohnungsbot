@@ -18,6 +18,8 @@ import {
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 
+export const ConfigurationVersion = 2;
+
 export const AllFloors = [4, 3, 2, 1, 0];
 
 export type configurationNumbers =
@@ -72,7 +74,8 @@ export type DataPolicies = {|
   researchDataSharing: boolean,
   dataHandlingExhibition?: boolean,
   artConsent: boolean,
-  applicationNotificationMails: boolean
+  applicationNotificationMails: boolean,
+  fillAsLittleAsPossible: boolean
 |};
 
 export const MOVE_IN_WHEN = {
@@ -168,10 +171,29 @@ const defaultConfiguration: Configuration = {
     flatViewingNotificationMails: false,
     researchDataSharing: false,
     artConsent: false,
-    applicationNotificationMails: false
+    applicationNotificationMails: false,
+    fillAsLittleAsPossible: true
   },
-  configurationVersion: 1
+  configurationVersion: ConfigurationVersion
 };
+
+function configurationMigrations(
+  oldConfiguration: Configuration
+): Configuration {
+  let migratedConfiguration = oldConfiguration;
+  if (oldConfiguration.configurationVersion < 2) {
+    migratedConfiguration = dotProp.set(
+      migratedConfiguration,
+      'policies.fillAsLittleAsPossible',
+      true
+    );
+  }
+  return dotProp.set(
+    migratedConfiguration,
+    'configurationVersion',
+    ConfigurationVersion
+  );
+}
 
 export default function configuration(
   state: Configuration = defaultConfiguration,
@@ -203,7 +225,7 @@ export default function configuration(
 
   switch (action.type) {
     case SET_CONFIGURATION:
-      return action.payload.configuration;
+      return configurationMigrations(action.payload.configuration);
     case RESET_CONFIGURATION:
       return defaultConfiguration;
     case NEXT_STAGE:

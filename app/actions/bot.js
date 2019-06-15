@@ -16,6 +16,11 @@ import {
 } from '../constants/actionTypes';
 import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
+import {
+  calculateOverviewBoundingBoxes,
+  removeBoundingBoxesInGroup
+} from './overlay';
+import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return async (dispatch: Dispatch, getState: GetState) => {
@@ -52,6 +57,9 @@ export const navigateToFlatPage = (flatId: string) => async (
   dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
   dispatch(setShowOverlay(false));
   await dispatch(scrollIntoViewAction('puppet', `#result-${flatId}`));
+  // todo: replace by a one-step smooth transition
+  dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.OVERVIEW));
+  dispatch(calculateOverviewBoundingBoxes());
   dispatch(setShowOverlay(true));
   await sleep(5000);
   dispatch(setShowOverlay(false));

@@ -40,7 +40,8 @@ const personalDataStage: StageDescription = {
       policies: {
         flatViewingNotificationMails,
         researchDataSharing,
-        applicationNotificationMails
+        applicationNotificationMails,
+        fillAsLittleAsPossible
       }
     },
     toggleBoolean,
@@ -191,6 +192,16 @@ const personalDataStage: StageDescription = {
             }
             isWeird
           />
+          <h3>Möglichst wenig Daten angeben?</h3>
+          <YesNo
+            value={fillAsLittleAsPossible}
+            onChange={() => toggleBoolean('policies.fillAsLittleAsPossible')}
+          />
+          <div className={styles.comment}>
+            Nicht alle Felder sind im Formular der Wohnungsplattform
+            verpflichtend. Der Bot kann die freiwilligen Felder leer lassen um
+            deine Daten zu schützen.
+          </div>
           <div className={styles.pending}>
             <h3>
               Dürfen anonyme Daten zu deiner Wohnungsnot gesammelt werden?

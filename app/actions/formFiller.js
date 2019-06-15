@@ -15,7 +15,6 @@ import type { ScrollIntoViewPolicy } from './botHelpers';
 import {
   clickAction,
   elementExists,
-  getElementValue,
   pressKey,
   scrollIntoViewByPolicy
 } from './botHelpers';
@@ -75,7 +74,8 @@ export const generatePersonalDataFormFillingDescription = (
   {
     selector: '#contactForm-houseNumber',
     type: 'text',
-    value: contactData.houseNumber
+    value: contactData.houseNumber,
+    protectPrivacy: true
   },
   {
     selector: '#contactForm-postcode',
@@ -176,7 +176,10 @@ export const generateAdditionalDataFormFillingDescription = (
   }
 ];
 
-export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
+export function fillForm(
+  fieldFillingDescription: FieldFillingDesciption,
+  fillAsLittleAsPossible: boolean = true
+) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { webContents } = getState().electron.views.puppet.browserView;
     const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
@@ -202,12 +205,33 @@ export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
         continue;
       }
 
+      const skipField =
+        field.selector.startsWith('#') &&
+        fillAsLittleAsPossible &&
+        (await electronUtils.elementExists(
+          `.label-optional[for="${field.selector.substr(1)}"]`
+        ));
+
       if (field.type === 'text') {
-        if (field.value) {
+        if (skipField) {
+          await electronUtils.fillText(field.selector, '');
+          await sleep(300);
+        } else if (field.value) {
           await electronUtils.fillText(field.selector, field.value);
           await sleep(1000);
         }
       } else if (field.type === 'select') {
+        let sanitizedValue = field.value;
+
+        if (skipField) {
+          if (electronUtils.getValue(field.selector)) {
+            sanitizedValue = '';
+          } else {
+            // eslint-disable-next-line no-continue
+            continue;
+          }
+        }
+
         await dispatch(clickAction(field.selector));
         await sleep(500);
 
@@ -221,8 +245,8 @@ export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
 
         // eslint-disable-next-line no-constant-condition
         while (true) {
-          const currentValue = await dispatch(getElementValue(field.selector));
-          if (currentValue === field.value) {
+          const currentValue = await electronUtils.getValue(field.selector);
+          if (currentValue === sanitizedValue) {
             break;
           }
           // switch direction if value stops changing
