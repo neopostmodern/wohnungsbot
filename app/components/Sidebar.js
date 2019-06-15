@@ -16,6 +16,8 @@ type State = {
 export default class Sidebar extends Component<Props, State> {
   props: Props;
 
+  static RecentApplicationsShowCount = 7;
+
   state: State = {};
 
   async componentWillMount() {
@@ -34,36 +36,45 @@ export default class Sidebar extends Component<Props, State> {
     return (
       <div className={styles.container}>
         <h3>Letzte Bewerbungen</h3>
-        {applications.map(({ flatId, success, reason, addressDescription }) => (
-          <div key={flatId} className={styles.entry}>
-            <div className={styles.symbol}>
-              <span
-                className={`material-icons standalone-icon ${
-                  success ? styles.good : 'bad'
-                }`}
-              >
-                {success ? 'check' : 'clear'}
-              </span>
-            </div>
-            <div>
-              <div>{addressDescription.split('(')[0]}</div>
+        {applications
+          .slice(0, Sidebar.RecentApplicationsShowCount)
+          .map(({ flatId, success, reason, addressDescription }) => (
+            <div key={flatId} className={styles.entry}>
+              <div className={styles.symbol}>
+                <span
+                  className={`material-icons standalone-icon ${
+                    success ? styles.good : 'bad'
+                  }`}
+                >
+                  {success ? 'check' : 'clear'}
+                </span>
+              </div>
               <div>
-                {success ? (
-                  <a
-                    href={flatPageUrl(flatId)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Wohnung im Browser ansehen
-                    <span className="material-icons">open_in_new</span>
-                  </a>
-                ) : (
-                  reason
-                )}
+                <div>{addressDescription.split('(')[0]}</div>
+                <div>
+                  {success ? (
+                    <a
+                      href={flatPageUrl(flatId)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Wohnung ansehen
+                      <span className="material-icons">open_in_new</span>
+                    </a>
+                  ) : (
+                    reason
+                  )}
+                </div>
               </div>
             </div>
+          ))}
+        {applications.length > Sidebar.RecentApplicationsShowCount ? (
+          <div>
+            und {applications.length - Sidebar.RecentApplicationsShowCount}{' '}
+            vorherige
           </div>
-        ))}
+        ) : null}
+
         <div
           id={styles.announcement}
           dangerouslySetInnerHTML={{ __html: announcement || '' }}

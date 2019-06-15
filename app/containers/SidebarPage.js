@@ -8,10 +8,10 @@ function mapStateToProps(state) {
   const applications = Object.values(state.cache.applications).filter(
     ({ reason }) => reason !== 'UNSUITABLE'
   );
-  applications.sort((a, b) => a.timestamp > b.timestamp);
+  applications.sort((a, b) => a.timestamp < b.timestamp);
 
   return {
-    applications: applications.slice(0, 10)
+    applications
   };
 }
 

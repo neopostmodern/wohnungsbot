@@ -138,7 +138,8 @@ export const VERDICT_SCOPE = {
 };
 export type VerdictScope = $Keys<typeof VERDICT_SCOPE>;
 
-export type Verdict = {
+export type Verdict = {|
+  flatId: string,
   configurationHash: number,
   result: boolean,
   scope: VerdictScope,
@@ -147,7 +148,7 @@ export type Verdict = {
     result: boolean
   }>,
   action?: FlatAction
-};
+|};
 export type Verdicts = { [key: string]: Verdict };
 
 export type dataStateType = {|

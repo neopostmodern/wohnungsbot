@@ -19,7 +19,8 @@ function mapStateToProps(state: stateType) {
     verdicts: state.data.verdicts,
     isBotActing: state.bot.isActive,
     botMessage: state.bot.message,
-    showOverlay: state.bot.showOverlay
+    showOverlay: state.bot.showOverlay,
+    alreadyAppliedFlatIds: Object.keys(state.cache.applications)
   };
 }
 

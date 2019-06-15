@@ -30,6 +30,7 @@ $speech-bubble-anchor-width: 4vh;
   color: #333;
   font-size: calc(20px + 1vh);
   padding: 0.5em 0.7em 0.4em;
+  margin-left: 0.5em;
 }
 .speechBubble::after {
   content: '';

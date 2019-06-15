@@ -116,6 +116,7 @@ export function assessFlat(
   }
 
   return {
+    flatId: overviewDataEntry.id,
     configurationHash: getConfigurationFilterHash(configuration),
     scope,
     result,
