@@ -50,11 +50,13 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
 
   const formTimeout = setTimeout(
     async () => markComplete(false, 'Technischer Fehler (Timeout)'),
-    120000
+    300000
   );
 
   const markComplete = async (success: boolean, reason?: string) => {
     clearTimeout(formTimeout);
+
+    dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
 
     await dispatch(
       markApplicationComplete({
@@ -64,8 +66,6 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
         reason
       })
     );
-
-    dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
   };
 
   dispatch(setBotMessage('Anfrage schreiben!'));

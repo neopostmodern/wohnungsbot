@@ -232,7 +232,7 @@ export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
           previousValue = currentValue;
 
           await dispatch(pressKey(down ? 'Down' : 'Up'));
-          await sleep(1000);
+          await sleep(300);
         }
 
         await sleep(1000);
