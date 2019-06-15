@@ -7,13 +7,12 @@ import getHistory from './history';
 import createRootReducer from '../reducers';
 import type { stateType } from '../reducers/types';
 import { MAIN, RENDERER, WEB } from '../constants/targets';
-import overlay from '../middleware/overlayRenderer';
+import overlay from '../middleware/overlay';
 import logging from '../middleware/logging';
 import configuration from '../middleware/configuration';
 import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
 import bot from '../middleware/bot';
-import targetFilter from '../middleware/targetFilter';
 
 const configureStore = async (
   target: string,

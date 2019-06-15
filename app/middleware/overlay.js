@@ -14,15 +14,32 @@ import {
   CALCULATE_BOUNDING_BOX,
   CALCULATE_OVERVIEW_BOUNDING_BOXES,
   REFRESH_BOUNDING_BOXES,
+  SET_BOT_MESSAGE,
+  SET_BROWSER_VIEW_READY,
   SET_SHOW_OVERLAY,
   WILL_CLICK
 } from '../constants/actionTypes';
 import type { OverviewDataEntry } from '../reducers/data';
 import { getBoundingBox, isElementInViewport } from '../actions/botHelpers';
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import { setBotMessage } from '../actions/bot';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
+  if (action.type === WILL_CLICK) {
+    const animationId = uniqueId();
+    next(clickAnimationShow(animationId, action.payload.x, action.payload.y));
+    setTimeout(() => next(clickAnimationClear(animationId)), 5000);
+  }
+
+  if (action.type === SET_BOT_MESSAGE && action.payload.timeout) {
+    setTimeout(() => {
+      if (store.getState().bot.message === action.payload.message) {
+        store.dispatch(setBotMessage(null));
+      }
+    });
+  }
+
   // todo: invalidate / remove boundaries on URL change etc.
 
   if (action.type === CALCULATE_OVERVIEW_BOUNDING_BOXES) {
@@ -88,7 +105,14 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
   if (action.type === SET_SHOW_OVERLAY && action.payload.showOverlay) {
     store.dispatch(calculateOverviewBoundingBoxes());
-    setTimeout(() => store.dispatch(calculateOverviewBoundingBoxes()), 1000);
+  }
+
+  if (
+    action.type === SET_BROWSER_VIEW_READY &&
+    action.payload.ready &&
+    action.payload.name === 'puppet'
+  ) {
+    store.dispatch(refreshBoundingBoxes());
   }
 
   return next(action);
