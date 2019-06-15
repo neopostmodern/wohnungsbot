@@ -26,7 +26,9 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   if (action.type === WAKE_UP) {
     // allow the configuration to be loaded from persistence, i.e. the exhibitionIdentifier
     const result = next(action);
-    await store.dispatch(pullWebConfiguration(true));
+    if (store.getState().configuration.exhibitionIdentifier) {
+      await store.dispatch(pullWebConfiguration(true));
+    }
     return result;
   }
 
@@ -62,7 +64,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       }
     } catch (error) {
       console.error(error);
-      setTimeout(() => store.dispatch(pullWebConfiguration(isWakeUp)));
+      setTimeout(() => store.dispatch(pullWebConfiguration(isWakeUp)), 60000);
     }
   }
 
