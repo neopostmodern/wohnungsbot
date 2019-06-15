@@ -76,33 +76,8 @@ $speech-bubble-anchor-width: 4vh;
   }
 }
 
-.verdictOverlay {
+.verdictOverlayWrapper {
   position: absolute;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.6);
-
-  .summary {
-    font-size: 5em;
-  }
-
-  .reason {
-    width: 10em;
-    display: flex;
-    align-items: flex-start;
-  }
-  .reasonIcon {
-    margin-right: 0.5em;
-    position: relative;
-    bottom: 0.1em;
-  }
-}
-
-.openInBrowser {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
 }
 
 .privacyMask {

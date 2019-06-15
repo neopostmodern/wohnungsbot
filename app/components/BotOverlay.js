@@ -7,7 +7,7 @@ import BotIllustration from '../../resources/bot.svg';
 import BotIllustrationActive from '../../resources/bot-active.svg';
 import type { anyAnimation, ElementBoundingBox } from '../reducers/overlay';
 import type { Verdict, Verdicts } from '../reducers/data';
-import { flatPageUrl } from '../flat/urlBuilder';
+import VerdictComponent from './util/Verdict';
 
 type Props = {
   isPuppetLoading: boolean,
@@ -107,7 +107,8 @@ export default class BotOverlay extends Component<Props> {
       privacyMaskBoundingBoxes,
       verdicts,
       isBotActing,
-      showOverlay
+      showOverlay,
+      alreadyAppliedFlatIds
     } = this.props;
 
     return (
@@ -122,7 +123,7 @@ export default class BotOverlay extends Component<Props> {
               ({ boundingBox, attachedInformation: { flatId } }) => (
                 <div
                   key={flatId}
-                  className={styles.verdictOverlay}
+                  className={styles.verdictOverlayWrapper}
                   style={{
                     top: boundingBox.top,
                     left: boundingBox.left,
@@ -130,49 +131,11 @@ export default class BotOverlay extends Component<Props> {
                     height: boundingBox.height
                   }}
                 >
-                  {verdicts[flatId] ? (
-                    <>
-                      <div className={styles.summary}>
-                        <span
-                          className={`material-icons standalone-icon ${
-                            verdicts[flatId].result ? 'good' : 'bad'
-                          }`}
-                        >
-                          {verdicts[flatId].result
-                            ? 'thumb_up_alt'
-                            : 'thumb_down_alt'}
-                        </span>
-                      </div>
-                      <div>
-                        {verdicts[flatId].reasons.map(({ reason, result }) => (
-                          <div key={reason} className={styles.reason}>
-                            <div className={styles.reasonIcon}>
-                              <span
-                                className={`material-icons standalone-icon ${
-                                  result ? 'good' : 'bad'
-                                }`}
-                              >
-                                {result ? 'check' : 'block'}
-                              </span>
-                            </div>
-                            <div>{reason}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <i>Keine Informationen</i>
-                  )}
-                  <div className={styles.openInBrowser}>
-                    <a
-                      href={flatPageUrl(flatId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Wohnung im Browser ansehen
-                      <span className="material-icons">open_in_new</span>
-                    </a>
-                  </div>
+                  <VerdictComponent
+                    flatId={flatId}
+                    verdict={verdicts[flatId]}
+                    isAlreadyApplied={alreadyAppliedFlatIds.includes(flatId)}
+                  />
                 </div>
               )
             )
