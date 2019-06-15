@@ -9,6 +9,7 @@ import {
   returnToSearchPage
 } from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
+import { pullWebConfiguration } from '../actions/configuration';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -24,6 +25,9 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         () => store.dispatch(returnToSearchPage()),
         120000 + Math.random() * 60000
       );
+      if (store.getState().configuration.exhibitionIdentifier) {
+        store.dispatch(pullWebConfiguration());
+      }
       return next(noop());
     }
 

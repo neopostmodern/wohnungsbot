@@ -11,7 +11,9 @@ import {
   toggleFloor,
   toggleBoolean,
   setNumber,
-  setString
+  setString,
+  resetConfiguration,
+  pushWebConfiguration
 } from '../actions/configuration';
 import { hideConfiguration } from '../actions/electron';
 
@@ -32,7 +34,9 @@ function mapDispatchToProps(dispatch) {
       toggleFloor,
       toggleBoolean,
       setNumber,
-      setString
+      setString,
+      resetConfiguration,
+      pushWebConfiguration
     },
     dispatch
   );

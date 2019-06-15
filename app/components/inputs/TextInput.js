@@ -3,7 +3,9 @@ import React from 'react';
 type TextFieldProps = {
   value: ?string,
   onChange: (value: ?string) => void,
-  placeholder: string
+  placeholder: string,
+  containerStyle?: any,
+  onlyChangeOnSubmit?: boolean
 };
 type TextFieldState = {
   value: ?string
@@ -14,6 +16,11 @@ export default class TextField extends React.Component<
   TextFieldState
 > {
   props: TextFieldProps;
+
+  static defaultProps = {
+    containerStyle: {},
+    onlyChangeOnSubmit: false
+  };
 
   state: TextFieldState;
 
@@ -26,19 +33,37 @@ export default class TextField extends React.Component<
 
     // eslint-disable-next-line flowtype/no-weak-types
     (this: any).handleChange = this.handleChange.bind(this);
+    // eslint-disable-next-line flowtype/no-weak-types
+    (this: any).handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   handleChange(event: SyntheticInputEvent<EventTarget>) {
-    const { onChange } = this.props;
+    const { onChange, onlyChangeOnSubmit } = this.props;
     const { value } = event.target;
 
     this.setState({ value });
 
-    onChange(value.trim());
+    if (!onlyChangeOnSubmit) {
+      onChange(value.trim());
+    }
+  }
+
+  handleKeyPress(event: SyntheticInputEvent<EventTarget>) {
+    const { onChange } = this.props;
+    if (event.key === 'Enter') {
+      onChange(event.target.value.trim());
+    }
   }
 
   render() {
-    const { value: propsValue, onChange, placeholder, ...props } = this.props;
+    const {
+      value: propsValue,
+      onChange,
+      placeholder,
+      containerStyle,
+      onlyChangeOnSubmit,
+      ...props
+    } = this.props;
     const { value } = this.state;
 
     return (
@@ -46,10 +71,12 @@ export default class TextField extends React.Component<
         className={`textinput-wrapper ${
           !value || value.length === 0 ? 'textinput__empty' : ''
         }`}
+        style={containerStyle || {}}
       >
         <input
           type="text"
           value={value === null ? '' : value}
+          onKeyPress={this.handleKeyPress}
           onChange={this.handleChange}
           placeholder={placeholder}
           {...props}

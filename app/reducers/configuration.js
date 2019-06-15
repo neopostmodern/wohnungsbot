@@ -122,7 +122,8 @@ export type Configuration = {|
   contactData: ContactData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies,
-  configurationVersion: number
+  configurationVersion: number,
+  exhibitionIdentifier?: string
 |};
 
 export const getConfigurationFilterHash = (

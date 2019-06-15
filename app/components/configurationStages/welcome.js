@@ -1,16 +1,25 @@
 import React from 'react';
 import styles from '../Configuration.scss';
-import type { StageDescription } from './types';
+import type { InheritedProps, StageDescription } from './types';
+import HiddenInput from '../util/HiddenInput';
 
 const welcomeStage: StageDescription = {
   title: '',
-  body: (
+  body: ({
+    resetConfiguration,
+    setString,
+    configuration: { exhibitionIdentifier }
+  }: InheritedProps) => (
     <>
       <h1
         className={`${styles.fadeIn} ${styles.largeTitle}`}
         style={{ animationDuration: '4s', animationDelay: '1s' }}
       >
-        Der Wohnungsbot.
+        De<span onClick={resetConfiguration}>r</span> Wohnungsbot
+        <HiddenInput
+          onChange={value => setString('exhibitionIdentifier', value)}
+          value={exhibitionIdentifier}
+        />
       </h1>
       <div
         className={styles.fadeIn}

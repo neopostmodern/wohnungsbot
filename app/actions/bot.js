@@ -65,10 +65,10 @@ export function setBotIsActing(isActing: boolean): Action {
     payload: { isActing }
   };
 }
-export function setBotMessage(message: ?string): Action {
+export function setBotMessage(message: ?string, timeout?: number): Action {
   return {
     type: SET_BOT_MESSAGE,
-    payload: { message }
+    payload: { message, timeout }
   };
 }
 export function setShowOverlay(showOverlay: boolean): Action {
