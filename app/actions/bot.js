@@ -21,6 +21,7 @@ import {
   removeBoundingBoxesInGroup
 } from './overlay';
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import ElectronUtils from '../utils/electronUtils';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return async (dispatch: Dispatch, getState: GetState) => {
@@ -50,7 +51,8 @@ export const clickLogin = () => async (dispatch: Dispatch) => {
 };
 
 export const navigateToFlatPage = (flatId: string) => async (
-  dispatch: Dispatch
+  dispatch: Dispatch,
+  getState: GetState
 ) => {
   await sleep(10000);
   dispatch(setBotIsActing(true));
@@ -64,9 +66,23 @@ export const navigateToFlatPage = (flatId: string) => async (
   await sleep(5000);
   dispatch(setShowOverlay(false));
   dispatch(setBotMessage(`Wohnung ${flatId} genauer anschauen!`));
-  await dispatch(
-    clickAction(`#result-${flatId} .result-list-entry__brand-title`)
+
+  const puppetView = new ElectronUtils(
+    getState().electron.views.puppet.browserView.webContents
   );
+
+  const flatTitleSelector = `#result-${flatId} .result-list-entry__brand-title`;
+
+  /* eslint-disable no-await-in-loop */
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    if (!(await puppetView.elementExists(flatTitleSelector))) {
+      break;
+    }
+    await dispatch(clickAction(flatTitleSelector));
+    await sleep(5000);
+  }
+  /* eslint-enable no-await-in-loop */
 };
 
 export function setBotIsActing(isActing: boolean): Action {
