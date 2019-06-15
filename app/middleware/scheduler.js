@@ -40,7 +40,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         }
 
         store.dispatch(returnToSearchPage());
-      }, 120000 + Math.random() * 60000);
+      }, 60000 + Math.random() * 300000);
       if (store.getState().configuration.exhibitionIdentifier) {
         store.dispatch(pullWebConfiguration());
       }
