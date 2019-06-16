@@ -26,16 +26,17 @@
     "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
     "lint-styles-fix": "npm run-script --silent lint-styles --fix; exit 0",
     "package-all": "npm run-script build && electron-builder build -mwl",
-    "package-linux": "npm run-script build && electron-builder build --linux",
+    "package-linux": "npm run-script build && electron-builder build --linux --x64",
     "package-linux-32": "npm run-script build && electron-builder build --linux --ia32",
     "package-linux-arm": "npm run-script build && electron-builder build --linux --armv7l",
-    "package-win": "npm run-script build && electron-builder build --win --x64",
+    "package-win": "npm run-script build && electron-builder build --win",
     "package-macos": "npm run-script build && electron-builder build --mac",
+    "package-publish": "npm run-script build && electron-builder build -wl --publish always",
+    "package-publish-macos": "npm run-script build && electron-builder build -m --publish always",
     "postinstall": "npm run-script flow-typed && electron-builder install-app-deps package.json && npm run-script build-dll && opencollective-postinstall",
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "npm run-script build",
-    "release": "npm run-script build && electron-builder build -wml --publish",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development TARGET=main electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
@@ -95,7 +96,6 @@
         {
           "target": "nsis",
           "arch": [
-            "ia32",
             "x64"
           ]
         }
