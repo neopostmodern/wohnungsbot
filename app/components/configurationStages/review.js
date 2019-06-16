@@ -17,11 +17,14 @@ const reviewStage: StageDescription = {
         <h3>Wichtige Hinweise</h3>
         Der Bot funktioniert natürlich nur, solange dein Rechner eingeschaltet
         ist und das Programm &quot;Wohnungsbot&quot; läuft. Außerdem kann der
-        Bot leider nur im Vordergrund laufen — das heißt du kannst das Fenster
-        leider nicht minimieren und nebenbei etwas anderes machen.
+        Bot leider nur im Vordergrund aktiv sein — das heißt, dass das Fenster
+        sich in den Vordergrund drängen wird{' '}
+        <em>und während der Anfrage bleiben muss</em> um Wohnungen anschreiben
+        zu können.
         <br />
         Da es aber oft wichtig ist unter den ersten Bewerber_innen zu sein,
-        solltest du den Bot tagsüber am beste durchgehend arbeiten lassen.
+        solltest du den Bot tagsüber (circa 7 — 23 Uhr) am besten durchgehend
+        arbeiten lassen.
       </div>
       <br />
       <br />
