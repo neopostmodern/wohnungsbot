@@ -16,8 +16,8 @@ import {
   BrowserView,
   type BrowserViewConstructorOptions
 } from 'electron';
-// import { autoUpdater } from 'electron-updater';
-// import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
+import log from 'electron-log';
 import configureStore from './store/configureStore';
 import { addView, setWindow } from './actions/electron';
 import { MAIN } from './constants/targets';
@@ -26,14 +26,13 @@ import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
 
-// todo: set up auto updater
-// export default class AppUpdater {
-//   constructor() {
-//     log.transports.file.level = 'info';
-//     autoUpdater.logger = log;
-//     autoUpdater.checkForUpdatesAndNotify();
-//   }
-// }
+export default class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -195,9 +194,8 @@ configureStore(MAIN, isDevelopment)
 
       mainWindow.setMenuBarVisibility(false);
 
-      // Remove this if your app does not use auto updates
-      // eslint-disable-next-line
-      // new AppUpdater();
+      // eslint-disable-next-line no-new
+      new AppUpdater();
     });
   })
   .catch(error => console.error(error));
