@@ -23,8 +23,6 @@ const configurationExplanationStage: StageDescription = {
         </a>{' '}
         schauen.
       </span>
-
-      {/* todo: exhibition check box */}
     </>
   ),
   buttons: {
