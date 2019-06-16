@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import styles from './Sidebar.scss';
 import type { ApplicationData } from '../reducers/cache';
 import { flatPageUrl } from '../flat/urlBuilder';
+import { homepage, version, bugs } from '../../package.json';
 
 type Props = {
   showConfiguration: () => void,
@@ -94,6 +95,18 @@ export default class Sidebar extends Component<Props, State> {
           erneut zu öffnen.
           <br />
           Deine Daten bleiben erhalten!
+        </div>
+        <div className={styles.softwareInformation}>
+          <div>
+            <a href={homepage} target="_blank" rel="noopener noreferrer">
+              Wohnungsbot {version}
+            </a>
+          </div>
+          <div>
+            <a href={bugs.url} target="_blank" rel="noopener noreferrer">
+              Problem melden <span className="material-icons">open_in_new</span>
+            </a>
+          </div>
         </div>
       </div>
     );
