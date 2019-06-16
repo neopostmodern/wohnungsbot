@@ -3,6 +3,7 @@ import styles from '../Configuration.scss';
 import type { InheritedProps, StageDescription } from './types';
 import { floorToName } from '../../utils/germanStrings';
 import JsonExport from '../util/JsonExport';
+import ApplicationTextPreviews from '../util/ApplicationTextPreviews';
 
 const reviewStage: StageDescription = {
   container: {
@@ -12,6 +13,18 @@ const reviewStage: StageDescription = {
   subtitle: 'Überprüfe deine Suchprofil und dann kann es los gehen.',
   body: ({ configuration }: InheritedProps) => (
     <div className={styles.marginBottom}>
+      <div className={styles.announcement}>
+        <h3>Wichtige Hinweise</h3>
+        Der Bot funktioniert natürlich nur, solange dein Rechner eingeschaltet
+        ist und das Programm &quot;Wohnungsbot&quot; läuft. Außerdem kann der
+        Bot leider nur im Vordergrund laufen — das heißt du kannst das Fenster
+        leider nicht minimieren und nebenbei etwas anderes machen.
+        <br />
+        Da es aber oft wichtig ist unter den ersten Bewerber_innen zu sein,
+        solltest du den Bot tagsüber am beste durchgehend arbeiten lassen.
+      </div>
+      <br />
+      <br />
       <div className={styles.row}>
         <div className={styles.column}>
           <h3>Es sucht...</h3>
@@ -117,24 +130,41 @@ const reviewStage: StageDescription = {
         </div>
         <div className={styles.column}>
           <h3>...und schreibt...</h3>
-          <pre className={styles.applicationTextReview}>
-            {configuration.applicationText}
-          </pre>
+          <ApplicationTextPreviews
+            applicationText={configuration.applicationText}
+            className={styles.applicationTextReview}
+          />
           <h3>Der Bot wird dabei...</h3>
+          {configuration.policies.fillAsLittleAsPossible ? (
+            <em>möglichst wenig</em>
+          ) : (
+            <em>alle</em>
+          )}{' '}
+          Daten in Bewerbungsformulare eintragen
+          <br />
+          <br />
+          {configuration.policies.applicationNotificationMails ? null : (
+            <>
+              <em>keine</em>{' '}
+            </>
+          )}
+          E-Mails mit Benachrichtiungen über erfolgte Bewerbungen verschicken
+          <br />
+          <br />
           {configuration.policies.flatViewingNotificationMails ? null : (
             <>
               <em>keine</em>{' '}
             </>
           )}
           E-Mails mit Terminen für Massenbesichtigungen verschicken
-          <br />
-          <br />
-          {configuration.policies.flatViewingNotificationMails ? null : (
-            <>
-              <em>keine</em>{' '}
-            </>
-          )}
-          anonymen Daten zur Wohnungsnot sammeln
+          {/* <br /> */}
+          {/* <br /> */}
+          {/* {configuration.policies.researchDataSharing ? null : ( */}
+          {/*  <> */}
+          {/*    <em>keine</em>{' '} */}
+          {/*  </> */}
+          {/* )} */}
+          {/* anonymen Daten zur Wohnungsnot sammeln */}
           <br />
         </div>
       </div>

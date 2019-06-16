@@ -239,6 +239,14 @@ main {
   }
 }
 
+.announcement {
+  border: 2px solid black;
+  padding: 1em;
+  width: calc(100% + 2em);
+  margin-left: -1em;
+  box-sizing: border-box;
+}
+
 // house
 $HOUSE_LINE: 2px solid black;
 .house, .roof {
