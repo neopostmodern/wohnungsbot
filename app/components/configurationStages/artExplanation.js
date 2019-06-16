@@ -41,10 +41,10 @@ const configurationExplanationStage: StageDescription = {
         Außerdem muss natürlich klar sein, dass der Bot dir nicht magisch zu
         einer Wohnung verhelfen kann:
         <br />
-        Er behebt weder den Wohnungsmangel, noch dass eventuell Vermieter_innen
-        und Hausverwaltungen dich bei der Auswahl diskriminieren, noch die
-        vielen anderen Probleme, die es zur Zeit mit dem Wohnungsmarkt in Berlin
-        gibt.
+        Er behebt weder den Wohnungsmangel noch, dass eventuell Vermieter_innen
+        und Hausverwaltungen dich bei der Auswahl diskriminieren — um nur zwei
+        der vielen anderen Probleme zu nennen, die es zur Zeit mit dem
+        Wohnungsmarkt in Berlin gibt.
         <br />
         <br />
         Aber er kann uns zeigen, dass eine andere Form der Automatisierung
@@ -65,7 +65,7 @@ const configurationExplanationStage: StageDescription = {
           <div>
             Ich habe verstanden, dass der Wohnungsbot ein Kunstprojekt ist. Ich
             habe keinen Anspruch darauf, dass der Bot funktioniert. Ich bin
-            selbst verantwortlich, falls der Bot warum auch immer rechtswidrig
+            selbst verantwortlich, falls der Bot, warum auch immer, rechtswidrig
             handelt.
             <br />
             Eltern haften für ihre Kinder und ihre Bots.
