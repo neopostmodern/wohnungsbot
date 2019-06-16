@@ -151,6 +151,9 @@ const personalDataStage: StageDescription = {
           />
           <div className={styles.comment}>
             Du kannst diese Einstellung hier jederzeit wieder ändern.
+            <br />
+            Die Plattform schickt dir unabhängig davon auch noch eine E-Mail,
+            allerdings eventuell mit anderen / weniger Informationen.
           </div>
           <h3>
             Soll der Bot dich per E-Mail über öffentliche Termine für
@@ -200,7 +203,9 @@ const personalDataStage: StageDescription = {
           <div className={styles.comment}>
             Nicht alle Felder sind im Formular der Wohnungsplattform
             verpflichtend. Der Bot kann die freiwilligen Felder leer lassen um
-            deine Daten zu schützen.
+            deine Daten zu schützen. Datenschutz ist zwar gut, aber viele
+            Vermieter_innen wollen dich anhand dieser Daten bewerten. Daher gilt
+            leider teilweise: weniger Datenschutz = größere Chancen.
           </div>
           <div className={styles.pending}>
             <h3>

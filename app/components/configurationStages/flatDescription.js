@@ -143,6 +143,10 @@ const flatDescriptionStage: StageDescription = {
           <div className={styles.comment}>
             Die Verlässlichkeit dieser Angaben bei den Inseraten ist leider
             nicht besonders hoch.
+            <br />
+            Außerdem grenzt jeder weitere Filter natürlich die Treffer weiter
+            ein — wenn du zu wenig Wohnungen findest solltest du also in
+            Erwägung ziehen, hier etwas flexibler zu sein.
           </div>
         </div>
         <div className={styles.column}>
