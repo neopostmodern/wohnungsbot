@@ -73,7 +73,10 @@ const applicationTextStage: StageDescription = {
         </div>
         <div className={styles.column}>
           <h3>Wie der Bot ihn abgeschickt</h3>
-          <ApplicationTextPreviews applicationText={applicationText} className={styles.applicationTextPreview} />
+          <ApplicationTextPreviews
+            applicationText={applicationText}
+            className={styles.applicationTextPreview}
+          />
         </div>
       </div>
     </div>
