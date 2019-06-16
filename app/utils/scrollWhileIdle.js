@@ -32,14 +32,14 @@ export default function scrollWhileIdle(
 
     if (
       direction > 0 &&
-      (await electronUtils.execute(
+      (await electronUtils.evaluate(
         `window.scrollY + window.innerHeight > document.body.scrollHeight * 0.95`
       ))
     ) {
       direction = -1;
     } else if (
       direction < 0 &&
-      (await electronUtils.execute(`window.scrollY < 50`))
+      (await electronUtils.evaluate(`window.scrollY < 50`))
     ) {
       direction = 1;
     }

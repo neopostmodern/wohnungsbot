@@ -59,7 +59,7 @@ export function getOverviewData() {
       getState().electron.views.puppet.browserView.webContents
     );
     // is null if there were zero results
-    const rawOverviewData: ?RawOverviewData = await electronUtils.execute(
+    const rawOverviewData: ?RawOverviewData = await electronUtils.evaluate(
       `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
     );
 
@@ -99,7 +99,7 @@ export function getFlatData(): Action {
     const electronUtils = new ElectronUtils(
       getState().electron.views.puppet.browserView.webContents
     );
-    const rawFlatData: RawFlatData = await electronUtils.execute(`utag_data`);
+    const rawFlatData: RawFlatData = await electronUtils.evaluate(`utag_data`);
 
     rawFlatData.additionalData = {
       requiresWBS: await electronUtils.elementExists(

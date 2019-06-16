@@ -20,9 +20,9 @@ import {
   WILL_CLICK
 } from '../constants/actionTypes';
 import type { OverviewDataEntry } from '../reducers/data';
-import { getBoundingBox, isElementInViewport } from '../actions/botHelpers';
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
+import ElectronUtils from '../utils/electronUtils';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -51,13 +51,14 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     } = store.getState();
 
     const { webContents } = puppet.browserView;
+    const electronUtils = new ElectronUtils(webContents);
 
     if (overview) {
       Object.values(overview).forEach(
         // $FlowFixMe -- Object.values
         async (entry: OverviewDataEntry) => {
           const selector = `#result-${entry.id}`;
-          if (await isElementInViewport(webContents, selector, false, false)) {
+          if (await electronUtils.isElementInViewport(selector, false, false)) {
             store.dispatch(
               calculateBoundingBox(selector, {
                 group: BOUNDING_BOX_GROUPS.OVERVIEW,
@@ -96,7 +97,9 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
     const { selector, group, attachedInformation } = action.payload;
 
-    const boundingBox = await getBoundingBox(webContents, selector);
+    const boundingBox = await new ElectronUtils(webContents).getBoundingBox(
+      selector
+    );
 
     store.dispatch(
       setBoundingBox(boundingBox, selector, { group, attachedInformation })

@@ -24,7 +24,9 @@ export function clickAction(
 
     await scrollIntoViewByPolicy(webContents, selector, scrollIntoViewPolicy);
 
-    const boundingRect = await getBoundingBox(webContents, selector);
+    const boundingRect = await new ElectronUtils(webContents).getBoundingBox(
+      selector
+    );
     const x = boundingRect.x + boundingRect.width * Math.random();
     const y = boundingRect.y + boundingRect.height * Math.random();
 
@@ -117,7 +119,7 @@ export async function scrollIntoView(
   /* eslint-disable no-await-in-loop */
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    await electronUtils.execute(
+    await electronUtils.evaluate(
       `document.querySelector('${selector}').scrollIntoView({ behavior: ${
         smooth ? "'smooth'" : "'auto'"
       }, block: '${strategy}'})`
@@ -126,7 +128,7 @@ export async function scrollIntoView(
     // there is no way to know when the smooth scroll has finished
     await sleep(2000);
 
-    if (await isElementInViewport(webContents, selector)) {
+    if (await electronUtils.isElementInViewport(selector)) {
       break;
     }
   }
@@ -164,64 +166,8 @@ export async function scrollIntoViewByPolicy(
     return;
   }
 
-  if (!(await isElementInViewport(webContents, selector))) {
+  if (!(await new ElectronUtils(webContents).isElementInViewport(selector))) {
     await scrollIntoView(webContents, selector, overrideStrategy || 'nearest');
-  }
-}
-
-export async function getBoundingBox(
-  webContents: WebContents,
-  selector: string
-): Promise<ClientRect & { x: number, y: number }> {
-  return (new ElectronUtils(webContents).execute(
-    `JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()))`
-    // eslint-disable-next-line flowtype/no-weak-types
-  ): any);
-}
-
-export async function getViewportSize(webContents: WebContents) {
-  return webContents.executeJavaScript(
-    `JSON.parse(JSON.stringify({ height: window.innerHeight, width: window.innerWidth }))`
-  );
-}
-
-export async function isElementInViewport(
-  webContents: WebContents,
-  selector: string,
-  mustIncludeTop: boolean = true,
-  mustIncludeBottom: boolean = false
-): Promise<boolean> {
-  try {
-    if (!new ElectronUtils(webContents).elementExists(selector)) {
-      console.log(
-        `isElementInViewport(${selector}) called on non-existent element`
-      );
-      return false;
-    }
-
-    const elementBoundingBox = await getBoundingBox(webContents, selector);
-    const viewportSize = await getViewportSize(webContents);
-
-    if (
-      (elementBoundingBox.top < 0 ||
-        elementBoundingBox.top > viewportSize.height) &&
-      (elementBoundingBox.bottom < 0 ||
-        elementBoundingBox.bottom > viewportSize.height)
-    ) {
-      return false;
-    }
-
-    return (
-      (!mustIncludeTop ||
-        (elementBoundingBox.top > 0 &&
-          elementBoundingBox.top < viewportSize.height)) &&
-      (!mustIncludeBottom ||
-        (elementBoundingBox.bottom > 0 &&
-          elementBoundingBox.bottom < viewportSize.height))
-    );
-  } catch (error) {
-    console.error(`isElementInViewport(${selector}) failed.`);
-    return false;
   }
 }
 

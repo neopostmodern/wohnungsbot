@@ -4,6 +4,8 @@ import { type WebContents } from 'electron';
 import { uniqueId } from './random';
 import { sleep } from './async';
 
+export type ViewportSize = { height: number, width: number };
+
 export default class ElectronUtils {
   webContents: WebContents;
 
@@ -12,7 +14,7 @@ export default class ElectronUtils {
   }
 
   // eslint-disable-next-line flowtype/no-weak-types
-  async execute(javaScript: string): any {
+  async evaluate(javaScript: string): any {
     const code = `new Promise((resolve, reject) => {
        try {
           resolve(${javaScript})
@@ -41,7 +43,7 @@ ${code}
   // returns a selector unique to the first element of passed in selector
   async selectorForVisibleElement(selector: string): Promise<string> {
     const id = uniqueId();
-    await this.execute(
+    await this.evaluate(
       `Array.from(document.querySelectorAll('${selector}'))
         .filter(element => element.offsetParent)[0].id = '${id}'`
     );
@@ -49,11 +51,11 @@ ${code}
   }
 
   async elementExists(selector: string): Promise<boolean> {
-    return this.execute(`document.querySelector('${selector}') !== null`);
+    return this.evaluate(`document.querySelector('${selector}') !== null`);
   }
 
   async getValue(selector: string): Promise<string> {
-    return this.execute(`document.querySelector('${selector}').value`);
+    return this.evaluate(`document.querySelector('${selector}').value`);
   }
 
   async performPressKey(keyCode: string, modifiers?: Array<string>) {
@@ -81,6 +83,60 @@ ${code}
   }
 
   async scrollBy(deltaX: number, deltaY: number) {
-    return this.execute(`window.scrollBy(${deltaX}, ${deltaY})`);
+    return this.evaluate(`window.scrollBy(${deltaX}, ${deltaY})`);
+  }
+
+  async getBoundingBox(
+    selector: string
+  ): Promise<ClientRect & { x: number, y: number }> {
+    return (this.evaluate(
+      `JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()))`
+      // eslint-disable-next-line flowtype/no-weak-types
+    ): any);
+  }
+
+  async getViewportSize(): Promise<ViewportSize> {
+    return this.evaluate(
+      `JSON.parse(JSON.stringify({ height: window.innerHeight, width: window.innerWidth }))`
+    );
+  }
+
+  async isElementInViewport(
+    selector: string,
+    mustIncludeTop: boolean = true,
+    mustIncludeBottom: boolean = false
+  ): Promise<boolean> {
+    try {
+      if (!this.elementExists(selector)) {
+        console.log(
+          `isElementInViewport(${selector}) called on non-existent element`
+        );
+        return false;
+      }
+
+      const elementBoundingBox = await this.getBoundingBox(selector);
+      const viewportSize = await this.getViewportSize();
+
+      if (
+        (elementBoundingBox.top < 0 ||
+          elementBoundingBox.top > viewportSize.height) &&
+        (elementBoundingBox.bottom < 0 ||
+          elementBoundingBox.bottom > viewportSize.height)
+      ) {
+        return false;
+      }
+
+      return (
+        (!mustIncludeTop ||
+          (elementBoundingBox.top > 0 &&
+            elementBoundingBox.top < viewportSize.height)) &&
+        (!mustIncludeBottom ||
+          (elementBoundingBox.bottom > 0 &&
+            elementBoundingBox.bottom < viewportSize.height))
+      );
+    } catch (error) {
+      console.error(`isElementInViewport(${selector}) failed.`);
+      return false;
+    }
   }
 }
