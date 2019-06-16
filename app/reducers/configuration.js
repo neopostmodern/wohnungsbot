@@ -172,7 +172,7 @@ const defaultConfiguration: Configuration = {
     researchDataSharing: false,
     artConsent: false,
     applicationNotificationMails: false,
-    fillAsLittleAsPossible: true
+    fillAsLittleAsPossible: false
   },
   configurationVersion: ConfigurationVersion
 };
