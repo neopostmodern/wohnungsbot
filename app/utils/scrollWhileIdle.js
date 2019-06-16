@@ -23,8 +23,6 @@ export default function scrollWhileIdle(
   const scroll = async () => {
     if (getState().bot.isActive === false) {
       electronUtils.scrollBy(0, 100 * direction);
-      // todo: replace by a one-step smooth transition
-      dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.OVERVIEW));
       dispatch(calculateOverviewBoundingBoxes());
     }
 

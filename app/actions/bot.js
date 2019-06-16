@@ -59,8 +59,6 @@ export const navigateToFlatPage = (flatId: string) => async (
   dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
   dispatch(setShowOverlay(false));
   await dispatch(scrollIntoViewAction('puppet', `#result-${flatId}`));
-  // todo: replace by a one-step smooth transition
-  dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.OVERVIEW));
   dispatch(calculateOverviewBoundingBoxes());
   dispatch(setShowOverlay(true));
   await sleep(5000);

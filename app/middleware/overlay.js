@@ -6,7 +6,8 @@ import {
   clickAnimationClear,
   clickAnimationShow,
   refreshBoundingBoxes,
-  setBoundingBox
+  setBoundingBox,
+  setBoundingBoxGroup
 } from '../actions/overlay';
 import { uniqueId } from '../utils/random';
 import type { Action, Dispatch, Store } from '../reducers/types';
@@ -54,19 +55,30 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     const electronUtils = new ElectronUtils(webContents);
 
     if (overview) {
-      Object.values(overview).forEach(
-        // $FlowFixMe -- Object.values
-        async (entry: OverviewDataEntry) => {
-          const selector = `#result-${entry.id}`;
-          if (await electronUtils.isElementInViewport(selector, false, false)) {
-            store.dispatch(
-              calculateBoundingBox(selector, {
-                group: BOUNDING_BOX_GROUPS.OVERVIEW,
-                attachedInformation: { flatId: entry.id }
-              })
-            );
-          }
-        }
+      const boundingBoxes = (await Promise.all(
+        Object.values(overview)
+          // $FlowFixMe -- Object.values
+          .map(async (entry: OverviewDataEntry) => {
+            const selector = `#result-${entry.id}`;
+
+            if (
+              await electronUtils.isElementInViewport(selector, false, false)
+            ) {
+              return null;
+            }
+
+            return {
+              selector,
+              boundingBox: await electronUtils.getBoundingBox(selector),
+              attachedInformation: { flatId: entry.id },
+              group: BOUNDING_BOX_GROUPS.OVERVIEW
+            };
+          })
+      )).filter(entry => entry !== null);
+
+      store.dispatch(
+        // $FlowFixMe the filter call doesn't seem to be understood
+        setBoundingBoxGroup(BOUNDING_BOX_GROUPS.OVERVIEW, boundingBoxes)
       );
     }
   }
