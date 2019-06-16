@@ -3,10 +3,18 @@
   "productName": "Wohnungsbot",
   "version": "0.99.4-2",
   "description": "Der Wohnungsbot - Teil des 2. Akts aus 'Von einem der auszog eine Wohnung in Berlin zu finden'von Clemens Schöll",
+  "homepage": "https://wohnung.neopostmodern.com/",
+  "bugs": {
+    "url": "https://github.com/neopostmodern/wohnungsbot/issues"
+  },
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "Clemens Schöll",
+    "url": "http://neopostmodern.com/"
+  },
   "scripts": {
     "build": "concurrently \"npm run-script build-main\" \"npm run-script build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
-    "build-e2e": "cross-env E2E_BUILD=true npm build",
     "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
     "build-renderer": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.babel.js --colors",
     "build-web": "cross-env NODE_ENV=production TARGET=web webpack --config ./configs/webpack.config.web.prod.babel.js --colors",
@@ -31,12 +39,7 @@
     "prestart": "npm run-script build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development TARGET=main electron -r @babel/register ./app/main.dev.js",
-    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js",
-    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 jest",
-    "test-all": "npm run-script lint && npm run-script flow && npm run-script build && npm run-script test && npm run-script build-e2e && npm run-script test-e2e",
-    "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuiltsExist.js && cross-env NODE_ENV=test testcafe electron:./ ./test/e2e/HomePage.e2e.js",
-    "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuiltsExist.js && cross-env NODE_ENV=test testcafe-live electron:./ ./test/e2e/HomePage.e2e.js",
-    "test-watch": "npm run-script test --watch"
+    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -106,7 +109,8 @@
     "afterSign": "internals/build/notarize.js"
   },
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "github:neopostmodern/wohnungsbot"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
