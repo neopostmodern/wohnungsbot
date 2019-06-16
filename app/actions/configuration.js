@@ -3,7 +3,7 @@ import type {
   configurationNumbers,
   Configuration
 } from '../reducers/configuration';
-import type { Action, Dispatch } from '../reducers/types';
+import type { Action } from '../reducers/types';
 import {
   NEXT_STAGE,
   PREVIOUS_STAGE,
@@ -15,9 +15,7 @@ import {
   TOGGLE_FLOOR,
   TOGGLE_POSTCODE,
   TOGGLE_BOOLEAN,
-  SET_STRING,
-  PULL_WEB_CONFIGURATION,
-  PUSH_WEB_CONFIGURATION
+  SET_STRING
 } from '../constants/actionTypes';
 
 export function setConfiguration(configuration: Configuration): Action {
@@ -104,21 +102,5 @@ export function setSearchUrl(searchUrl: string): Action {
     type: SET_SEARCH_URL,
     payload: { searchUrl },
     meta: { configuration: true }
-  };
-}
-
-export function pullWebConfiguration(isWakeUp: boolean) {
-  return {
-    type: PULL_WEB_CONFIGURATION,
-    payload: { isWakeUp }
-  };
-}
-
-export function pushWebConfiguration() {
-  return async (dispatch: Dispatch) => {
-    await dispatch({
-      type: PUSH_WEB_CONFIGURATION,
-      payload: null
-    });
   };
 }

@@ -8,11 +8,7 @@ const reviewStage: StageDescription = {
   container: {
     className: styles.high
   },
-  title: ({ pushWebConfiguration }: InheritedProps) => (
-    <>
-      Bereit für die Wohnungssuche<span onClick={pushWebConfiguration}>?</span>
-    </>
-  ),
+  title: 'Bereit für die Wohnungssuche?',
   subtitle: 'Überprüfe deine Suchprofil und dann kann es los gehen.',
   body: ({ configuration }: InheritedProps) => (
     <div className={styles.marginBottom}>

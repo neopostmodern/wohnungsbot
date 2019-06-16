@@ -11,7 +11,6 @@ import {
   stopScrollingWhileIdle
 } from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
-import { pullWebConfiguration } from '../actions/configuration';
 import type { Configuration } from '../reducers/configuration';
 
 // eslint-disable-next-line no-unused-vars
@@ -41,9 +40,6 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
         store.dispatch(returnToSearchPage());
       }, 60000 + Math.random() * 300000);
-      if (store.getState().configuration.exhibitionIdentifier) {
-        store.dispatch(pullWebConfiguration());
-      }
       return next(noop());
     }
 
