@@ -235,7 +235,7 @@ export default function configuration(
     case SET_SEARCH_URL:
       return dotProp.set(state, 'searchUrl', action.payload.searchUrl);
     case RESET_POSTCODES:
-      return dotProp.set(state, 'postcodes', []);
+      return dotProp.set(state, 'filter.postcodes', []);
     case TOGGLE_BOOLEAN:
       return dotProp.toggle(state, action.payload.name);
     case SET_NUMBER:
