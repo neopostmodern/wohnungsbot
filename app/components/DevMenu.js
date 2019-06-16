@@ -24,7 +24,9 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
     const { expanded } = this.state;
 
     return (
-      <div className={`${styles.container} ${expanded ? '' : styles.collapsed}`}>
+      <div
+        className={`${styles.container} ${expanded ? '' : styles.collapsed}`}
+      >
         <div className={styles.menu}>
           {Object.keys(views).map(viewName => (
             <div key={viewName} className={styles.menuItem}>

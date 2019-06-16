@@ -4,6 +4,7 @@ type TextFieldProps = {
   value: ?string,
   onChange: (value: ?string) => void,
   placeholder: string,
+  // eslint-disable-next-line flowtype/no-weak-types
   containerStyle?: any,
   onlyChangeOnSubmit?: boolean
 };

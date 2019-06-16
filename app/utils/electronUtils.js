@@ -11,7 +11,8 @@ export default class ElectronUtils {
     this.webContents = webContents;
   }
 
-  async execute(javaScript: string) {
+  // eslint-disable-next-line flowtype/no-weak-types
+  async execute(javaScript: string): any {
     const code = `new Promise((resolve, reject) => {
        try {
           resolve(${javaScript})
