@@ -27,7 +27,6 @@ const SALUTATION_VALUES = {
 
 type BaseField = {
   selector: string,
-  protectPrivacy?: boolean,
   scrollIntoView?: ScrollIntoViewPolicy
 };
 type TextField = BaseField & { type: 'text', value: ?string };
@@ -45,26 +44,22 @@ export const generatePersonalDataFormFillingDescription = (
   {
     selector: '#contactForm-firstName',
     type: 'text',
-    value: contactData.firstName,
-    protectPrivacy: true
+    value: contactData.firstName
   },
   {
     selector: '#contactForm-lastName',
     type: 'text',
-    value: contactData.lastName,
-    protectPrivacy: true
+    value: contactData.lastName
   },
   {
     selector: '#contactForm-emailAddress',
     type: 'text',
-    value: contactData.eMail,
-    protectPrivacy: true
+    value: contactData.eMail
   },
   {
     selector: '#contactForm-phoneNumber',
     type: 'text',
-    value: contactData.telephone,
-    protectPrivacy: true
+    value: contactData.telephone
   },
   {
     selector: '#contactForm-street',
@@ -74,8 +69,7 @@ export const generatePersonalDataFormFillingDescription = (
   {
     selector: '#contactForm-houseNumber',
     type: 'text',
-    value: contactData.houseNumber,
-    protectPrivacy: true
+    value: contactData.houseNumber
   },
   {
     selector: '#contactForm-postcode',

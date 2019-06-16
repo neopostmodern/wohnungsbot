@@ -1,6 +1,5 @@
 const BOUNDING_BOX_GROUPS = {
-  OVERVIEW: 'OVERVIEW',
-  PRIVACY_MASK: 'PRIVACY_MASK'
+  OVERVIEW: 'OVERVIEW'
 };
 
 export type BoundingBoxGroup = $Values<typeof BOUNDING_BOX_GROUPS>;

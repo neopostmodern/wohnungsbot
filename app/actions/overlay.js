@@ -110,9 +110,3 @@ export function removeBoundingBoxesInGroup(group: BoundingBoxGroup) {
     payload: { group }
   };
 }
-
-export function requestPrivacyMask(selector: string): Action {
-  return calculateBoundingBox(selector, {
-    group: BOUNDING_BOX_GROUPS.PRIVACY_MASK
-  });
-}

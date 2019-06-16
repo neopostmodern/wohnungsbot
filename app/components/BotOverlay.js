@@ -13,7 +13,6 @@ type Props = {
   isPuppetLoading: boolean,
   animations: Array<anyAnimation>,
   overviewBoundingBoxes: Array<ElementBoundingBox>,
-  privacyMaskBoundingBoxes: Array<ElementBoundingBox>,
   verdicts: Verdicts,
   isBotActing: boolean,
   botMessage: string,
@@ -104,7 +103,6 @@ export default class BotOverlay extends Component<Props> {
     const {
       animations,
       overviewBoundingBoxes,
-      privacyMaskBoundingBoxes,
       verdicts,
       isBotActing,
       showOverlay,
@@ -140,19 +138,6 @@ export default class BotOverlay extends Component<Props> {
               )
             )
           : null}
-
-        {privacyMaskBoundingBoxes.map(({ selector, boundingBox }) => (
-          <div
-            key={selector}
-            className={styles.privacyMask}
-            style={{
-              top: boundingBox.top,
-              left: boundingBox.left,
-              width: boundingBox.width,
-              height: boundingBox.height
-            }}
-          />
-        ))}
 
         <img
           src={isBotActing ? BotIllustrationActive : BotIllustration}

@@ -9,8 +9,6 @@ import type { Configuration } from '../reducers/configuration';
 import type { dataStateType, OverviewDataEntry } from '../reducers/data';
 import type { electronStateType } from '../reducers/electron';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
-import { removeBoundingBoxesInGroup, requestPrivacyMask } from './overlay';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { clickAction, elementExists } from './botHelpers';
 import {
   fillForm,
@@ -55,8 +53,6 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
   const markComplete = async (success: boolean, reason?: string) => {
     clearTimeout(formTimeout);
 
-    dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
-
     await dispatch(
       markApplicationComplete({
         flatId,
@@ -100,12 +96,6 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
     configuration.contactData
   );
 
-  personalDataFormFillingDescription
-    .filter(field => field.protectPrivacy)
-    .forEach(field => {
-      dispatch(requestPrivacyMask(field.selector));
-    });
-
   const applicationText = applicationTextBuilder(
     configuration.applicationText,
     flatOverview.address,
@@ -127,10 +117,6 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
     dispatch(setBotMessage('Und noch eine Seite...'));
 
     await dispatch(clickAction('#is24-expose-modal button.button-primary'));
-
-    await sleep(100);
-
-    dispatch(removeBoundingBoxesInGroup(BOUNDING_BOX_GROUPS.PRIVACY_MASK));
 
     await sleep(3000);
 

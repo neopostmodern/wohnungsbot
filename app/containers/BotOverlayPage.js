@@ -13,9 +13,6 @@ function mapStateToProps(state: stateType) {
     overviewBoundingBoxes: state.overlay.boundingBoxes.filter(
       ({ group }) => group === BOUNDING_BOX_GROUPS.OVERVIEW
     ),
-    privacyMaskBoundingBoxes: state.overlay.boundingBoxes.filter(
-      ({ group }) => group === BOUNDING_BOX_GROUPS.PRIVACY_MASK
-    ),
     verdicts: state.data.verdicts,
     isBotActing: state.bot.isActive,
     botMessage: state.bot.message,
