@@ -25,9 +25,7 @@
     "lint-fix": "npm run-script --silent lint --fix; exit 0",
     "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
     "lint-styles-fix": "npm run-script --silent lint-styles --fix; exit 0",
-    "package": "npm run-script build && electron-builder build --publish never",
     "package-all": "npm run-script build && electron-builder build -mwl",
-    "package-ci": "npm run-script postinstall && npm run-script build && electron-builder --publish always",
     "package-linux": "npm run-script build && electron-builder build --linux",
     "package-linux-32": "npm run-script build && electron-builder build --linux --ia32",
     "package-linux-arm": "npm run-script build && electron-builder build --linux --armv7l",
@@ -37,6 +35,7 @@
     "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "npm run-script build",
+    "release": "npm run-script build && electron-builder build -wml --publish",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development TARGET=main electron -r @babel/register ./app/main.dev.js",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
@@ -93,20 +92,31 @@
     },
     "win": {
       "target": [
-        "nsis"
+        {
+          "target": "nsis",
+          "arch": ["ia32", "x64"]
+        }
       ]
     },
     "linux": {
       "target": [
-        "AppImage"
+        {
+          "target": "AppImage",
+          "arch": ["ia32", "x64", "armv7l"]
+        }
       ],
-      "category": "Development"
+      "category": "Education, Art"
     },
     "directories": {
       "buildResources": "resources",
       "output": "release"
     },
-    "afterSign": "internals/build/notarize.js"
+    "afterSign": "internals/build/notarize.js",
+    "publish": [{
+      "provider": "github",
+      "owner": "neopostmodern",
+      "repo": "wohnungsbot"
+    }]
   },
   "repository": {
     "type": "git",
