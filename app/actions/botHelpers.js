@@ -24,6 +24,10 @@ export function clickAction(
 
     await scrollIntoViewByPolicy(webContents, selector, scrollIntoViewPolicy);
 
+    // reset zoom factor, just in case someone (accidentally) changed it
+    // when zoomed the coordinates are returned unscaled, so clicks miss
+    webContents.setZoomFactor(1.0);
+
     const boundingRect = await new ElectronUtils(webContents).getBoundingBox(
       selector
     );
