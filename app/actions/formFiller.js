@@ -170,6 +170,66 @@ export const generateAdditionalDataFormFillingDescription = (
   }
 ];
 
+async function fillSelectField(
+  dispatch: Dispatch,
+  electronUtils: ElectronUtilsRedux,
+  field: SelectField,
+  skipField = false
+) {
+  let sanitizedValue = field.value;
+
+  if (skipField) {
+    if (electronUtils.getValue(field.selector)) {
+      sanitizedValue = '';
+    } else {
+      return;
+    }
+  }
+
+  // some macOS versions render select field pop-ups 'natively', making them
+  // inaccessible to the keystrokes necessary to change the value –
+  // thus on macOS the value is set directly via JavaScript
+  if (process.platform === 'darwin') {
+    await electronUtils.setValue(field.selector, sanitizedValue);
+    await electronUtils.evaluate(
+      `document.querySelector('${field.selector}')
+                          .dispatchEvent(new Event('change', { 'bubbles': true, 'isTrusted': true }))`,
+      true
+    );
+  } else {
+    await dispatch(clickAction(field.selector));
+    await sleep(500);
+
+    // need to close the pop-up such that each subsequent keystroke changes
+    // the fields value immediately
+    await dispatch(pressKey('Escape'));
+    await sleep(500);
+
+    let previousValue = null;
+    let down = true;
+
+    /* eslint-disable no-await-in-loop */
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const currentValue = await electronUtils.getValue(field.selector);
+      if (currentValue === sanitizedValue) {
+        break;
+      }
+      // switch direction if value stops changing
+      if (previousValue && previousValue === currentValue) {
+        down = !down;
+      }
+      previousValue = currentValue;
+
+      await dispatch(pressKey(down ? 'Down' : 'Up'));
+      await sleep(300);
+    }
+    /* eslint-enable no-await-in-loop */
+  }
+
+  await sleep(1000);
+}
+
 export function fillForm(
   fieldFillingDescription: FieldFillingDesciption,
   fillAsLittleAsPossible: boolean = true
@@ -215,45 +275,7 @@ export function fillForm(
           await sleep(1000);
         }
       } else if (field.type === 'select') {
-        let sanitizedValue = field.value;
-
-        if (skipField) {
-          if (electronUtils.getValue(field.selector)) {
-            sanitizedValue = '';
-          } else {
-            // eslint-disable-next-line no-continue
-            continue;
-          }
-        }
-
-        await dispatch(clickAction(field.selector));
-        await sleep(500);
-
-        // need to close the pop-up such that each subsequent keystroke changes
-        // the fields value immediately
-        await dispatch(pressKey('Escape'));
-        await sleep(500);
-
-        let previousValue = null;
-        let down = true;
-
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          const currentValue = await electronUtils.getValue(field.selector);
-          if (currentValue === sanitizedValue) {
-            break;
-          }
-          // switch direction if value stops changing
-          if (previousValue && previousValue === currentValue) {
-            down = !down;
-          }
-          previousValue = currentValue;
-
-          await dispatch(pressKey(down ? 'Down' : 'Up'));
-          await sleep(300);
-        }
-
-        await sleep(1000);
+        await fillSelectField(dispatch, electronUtils, field, skipField);
       } else {
         console.error(`Unknown field type: ${field.type}`);
       }

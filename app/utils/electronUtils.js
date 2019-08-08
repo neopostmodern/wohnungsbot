@@ -14,7 +14,7 @@ export default class ElectronUtils {
   }
 
   // eslint-disable-next-line flowtype/no-weak-types
-  async evaluate(javaScript: string): any {
+  async evaluate(javaScript: string, isUserGesture = false): any {
     const code = `new Promise((resolve, reject) => {
        try {
           resolve(${javaScript})
@@ -24,7 +24,7 @@ export default class ElectronUtils {
     })`;
 
     try {
-      return await this.webContents.executeJavaScript(code);
+      return await this.webContents.executeJavaScript(code, isUserGesture);
     } catch (error) {
       console.error(`Error executing JavaScript in Electron:
 [${error.name}] ${error.message}
@@ -58,8 +58,20 @@ ${code}
     return this.evaluate(`document.querySelector('${selector}').value`);
   }
 
+  // eslint-disable-next-line flowtype/no-weak-types
+  async setValue(selector: string, value: any): Promise<string> {
+    return this.evaluate(
+      `document.querySelector('${selector}').value = ${JSON.stringify(value)}`
+    );
+  }
+
   async performPressKey(keyCode: string, modifiers?: Array<string>) {
     const eventDescription = { keyCode, modifiers };
+
+    if (eventDescription.keyCode === 'Return') {
+      eventDescription.keyCode = '\u000d';
+      eventDescription.charCode = 13;
+    }
 
     this.webContents.sendInputEvent(
       Object.assign({}, eventDescription, {
