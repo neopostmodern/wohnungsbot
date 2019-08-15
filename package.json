@@ -2,7 +2,7 @@
   "name": "wohnungsbot",
   "productName": "Wohnungsbot",
   "version": "1.0.1",
-  "description": "Der Wohnungsbot - Teil des 2. Akts aus 'Von einem der auszog eine Wohnung in Berlin zu finden'von Clemens Schöll",
+  "description": "Der Wohnungsbot - Teil des 2. Akts aus 'Von einem der auszog eine Wohnung in Berlin zu finden' von Clemens Schöll",
   "homepage": "https://wohnung.neopostmodern.com/",
   "bugs": {
     "url": "https://github.com/neopostmodern/wohnungsbot/issues"

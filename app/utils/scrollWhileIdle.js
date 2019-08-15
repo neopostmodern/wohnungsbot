@@ -3,11 +3,7 @@
 import { sleep } from './async';
 import ElectronUtils from './electronUtils';
 import type { Dispatch, GetState } from '../reducers/types';
-import {
-  calculateOverviewBoundingBoxes,
-  removeBoundingBoxesInGroup
-} from '../actions/overlay';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import { calculateOverviewBoundingBoxes } from '../actions/overlay';
 
 export default function scrollWhileIdle(
   getState: GetState,
