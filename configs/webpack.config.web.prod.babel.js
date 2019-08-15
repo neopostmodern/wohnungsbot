@@ -60,8 +60,9 @@ const mergedConfig = merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]'
+              },
               sourceMap: true
             }
           }
@@ -99,9 +100,10 @@ const mergedConfig = merge.smart(baseConfig, {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]'
+              },
               importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
               sourceMap: true
             }
           },
