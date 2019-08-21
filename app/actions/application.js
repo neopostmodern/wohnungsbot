@@ -9,7 +9,7 @@ import type { Configuration } from '../reducers/configuration';
 import type { dataStateType, OverviewDataEntry } from '../reducers/data';
 import type { electronStateType } from '../reducers/electron';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
-import { clickAction, elementExists } from './botHelpers';
+import { clickAction } from './botHelpers';
 import {
   fillForm,
   generateAdditionalDataFormFillingDescription,
@@ -113,7 +113,9 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
 
   await sleep(1000);
 
-  if (!(await dispatch(elementExists('#contactForm-privacyPolicyAccepted')))) {
+  if (
+    !(await electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
+  ) {
     dispatch(setBotMessage('Und noch eine Seite...'));
 
     await dispatch(clickAction('#is24-expose-modal button.button-primary'));
@@ -138,9 +140,14 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
   dispatch(setBotMessage('Abschicken :)'));
   await sleep(3000);
 
-  await dispatch(clickAction('#is24-expose-modal .button-primary'));
+  // make sure the submit button gets clicked, if not re-try
+  while (
+    await electronUtils.elementExists('#is24-expose-modal .button-primary')
+  ) {
+    await dispatch(clickAction('#is24-expose-modal .button-primary', 'always'));
 
-  await sleep(1000);
+    await sleep(1000);
+  }
 
   if (configuration.policies.applicationNotificationMails) {
     dispatch(

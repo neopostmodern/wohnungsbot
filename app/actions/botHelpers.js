@@ -103,14 +103,6 @@ export function pressKey(keyCode: string) {
   };
 }
 
-export function elementExists(selector: string) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
-
-    return new ElectronUtils(webContents).elementExists(selector);
-  };
-}
-
 export type ScrollIntoViewStrategy = 'start' | 'center' | 'end' | 'nearest';
 // todo: scrollIntoView has to request an update of bounding boxes
 export async function scrollIntoView(

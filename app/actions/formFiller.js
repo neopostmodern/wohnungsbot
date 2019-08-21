@@ -12,12 +12,7 @@ import {
 import { sleep } from '../utils/async';
 import type { Dispatch, GetState } from '../reducers/types';
 import type { ScrollIntoViewPolicy } from './botHelpers';
-import {
-  clickAction,
-  elementExists,
-  pressKey,
-  scrollIntoViewByPolicy
-} from './botHelpers';
+import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 
 const SALUTATION_VALUES = {
@@ -242,8 +237,17 @@ export function fillForm(
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
     for (const field of fieldFillingDescription) {
-      // sometimes the fields don't exist - skip them
-      if (!(await dispatch(elementExists(field.selector)))) {
+      // sometimes the fields don't exist or is hidden - skip them
+      if (!(await electronUtils.elementExists(field.selector))) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // this is a way if the element was hidden (see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent)
+      if (
+        await electronUtils.evaluate(
+          `document.querySelector('${field.selector}').offsetParent === null`
+        )
+      ) {
         // eslint-disable-next-line no-continue
         continue;
       }

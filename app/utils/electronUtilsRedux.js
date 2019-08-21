@@ -15,6 +15,15 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     this.dispatch = dispatch;
   }
 
+  async clickAndEnsureFocused(selector: string) {
+    /* eslint-disable no-await-in-loop */
+    while (!(await this.isElementSelected(selector))) {
+      await this.dispatch(clickAction(selector));
+      await sleep(800);
+    }
+    /* eslint-enable no-await-in-loop */
+  }
+
   async fillText(selector: string, text: string) {
     const currentValue = await this.getValue(selector);
     if (currentValue) {
@@ -22,13 +31,12 @@ export default class ElectronUtilsRedux extends ElectronUtils {
         return;
       }
 
-      await this.dispatch(clickAction(selector));
-      await sleep(800);
+      await this.clickAndEnsureFocused(selector);
       this.webContents.selectAll();
       await sleep(300);
       this.webContents.delete();
     } else {
-      await this.dispatch(clickAction(selector));
+      await this.clickAndEnsureFocused(selector);
     }
 
     await sleep(500);

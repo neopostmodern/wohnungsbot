@@ -55,6 +55,12 @@ ${code}
     return this.evaluate(`document.querySelector('${selector}') !== null`);
   }
 
+  async isElementSelected(selector: string): Promise<boolean> {
+    return this.evaluate(
+      `document.querySelector(':focus') === document.querySelector('${selector}')`
+    );
+  }
+
   async getValue(selector: string): Promise<string> {
     return this.evaluate(`document.querySelector('${selector}').value`);
   }
