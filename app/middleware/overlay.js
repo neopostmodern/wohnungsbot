@@ -62,7 +62,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
             const selector = `#result-${entry.id}`;
 
             if (
-              await electronUtils.isElementInViewport(selector, false, false)
+              !(await electronUtils.isElementInViewport(selector, false, false))
             ) {
               return null;
             }
