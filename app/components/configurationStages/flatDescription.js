@@ -36,6 +36,7 @@ const flatDescriptionStage: StageDescription = {
         noKitchenette,
         maximumRent,
         minimumArea,
+        maximumRentPerSquareMeter,
         minimumRooms,
         maximumRooms
       },
@@ -59,7 +60,7 @@ const flatDescriptionStage: StageDescription = {
             € Kaltmiete
           </div>
           <div className={styles.searchParameter}>
-            Mindestens
+            Mindestens{' '}
             <NumberField
               value={minimumArea}
               onChange={value => setNumber('filter.minimumArea', value)}
@@ -67,18 +68,29 @@ const flatDescriptionStage: StageDescription = {
             m²
           </div>
           <div className={styles.searchParameter}>
+            Maximal{' '}
+            <NumberField
+              value={maximumRentPerSquareMeter}
+              onChange={value => setNumber('filter.maximumRentPerSquareMeter', value)}
+            />
+            € / m² (Kaltmiete)
+          </div>
+          <div className={styles.searchParameter}>
             <NumberField
               value={minimumRooms}
               onChange={value => setNumber('filter.minimumRooms', value)}
               step={0.5}
             />
-            bis
+            {' '}bis{' '}
             <NumberField
               value={maximumRooms}
               onChange={value => setNumber('filter.maximumRooms', value)}
               step={0.5}
             />{' '}
             Zimmer
+          </div>
+          <div className={styles.comment}>
+            Nicht alle Felder müssen ausgefüllt werden.
           </div>
           <h3>Hast du einen Wohnberechtigungsschein?</h3>
           <input

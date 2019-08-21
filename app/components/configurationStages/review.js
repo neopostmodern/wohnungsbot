@@ -79,6 +79,14 @@ const reviewStage: StageDescription = {
           )}{' '}
           Wohnfläche
           <br />
+          {configuration.filter.maximumRentPerSquareMeter ? (
+            <>maximal {configuration.filter.maximumRentPerSquareMeter}€/m²</>
+          ) : (
+            <i>beliebiger</i>
+          )}{' '}
+          Quadratmeterpreis (kalt)
+          <br/>
+          <br />
           {configuration.filter.minimumRooms ||
           configuration.filter.maximumRooms ? (
             <>

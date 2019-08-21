@@ -40,6 +40,7 @@ export type Filter = {|
   postcodes: Array<string>,
   maximumRent?: ?number,
   minimumArea?: ?number,
+  maximumRentPerSquareMeter?: ?number,
   minimumRooms?: ?number,
   maximumRooms?: ?number,
   onlyOldBuilding: boolean,
