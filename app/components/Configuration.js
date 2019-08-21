@@ -23,6 +23,7 @@ type Props = {
   toggleBoolean: (name: configurationBoolean) => void,
   setNumber: (name: configurationNumbers, value: ?number) => void,
   setString: (name: string, value: ?string) => void,
+  resetConfiguration: () => void,
   configuration: ConfigurationType
 };
 
@@ -104,6 +105,7 @@ export default class Configuration extends Component<Props> {
       toggleBoolean,
       setNumber,
       setString,
+      resetConfiguration,
       configuration
     } = this.props;
 
@@ -115,6 +117,7 @@ export default class Configuration extends Component<Props> {
         setNumber,
         setString,
         resetPostcodes,
+        resetConfiguration,
         configuration
       });
     }

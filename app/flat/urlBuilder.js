@@ -19,8 +19,8 @@ export function generateSearchUrl(configuration: Configuration): string {
     searchUrl += overlappingDistricts
       .map(district =>
         district.label
-          .replace('(', '-')
-          .replace(/[) ]/g, '')
+          .replace(/[()]/g, '')
+          .replace(/ /g, '-')
           .replace(/ä/g, 'ae')
           .replace(/ö/g, 'oe')
           .replace(/ü/g, 'ue')

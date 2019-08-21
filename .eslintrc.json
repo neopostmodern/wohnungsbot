@@ -6,5 +6,10 @@
         "config": "configs/webpack.config.eslint.js"
       }
     }
+  },
+  "rules": {
+    "no-console": "warn",
+    "react/static-property-placement": "off",
+    "react/state-in-constructor": "off"
   }
 }

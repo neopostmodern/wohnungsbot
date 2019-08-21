@@ -1,104 +1,9 @@
 import React from 'react';
 import styles from '../Configuration.scss';
 import type { InheritedProps, StageDescription } from './types';
-import applicationTextBuilder from '../../flat/applicationTextBuilder';
 import APPLICATION_TEMPLATES from '../../constants/applicationTemplates';
-import type { FlatAddress, FlatContactDetails } from '../../reducers/data';
 import Textarea from '../inputs/Textarea';
-
-type ApplicationTextPreviewsProps = {
-  applicationText: string
-};
-type ApplicationTextPreviewsState = {
-  previewIndex: number
-};
-class ApplicationTextPreviews extends React.Component<
-  ApplicationTextPreviewsProps,
-  ApplicationTextPreviewsState
-> {
-  props: ApplicationTextPreviewsProps;
-
-  state: ApplicationTextPreviewsState;
-
-  static TestFlats: Array<{
-    address: FlatAddress,
-    contact: FlatContactDetails
-  }> = [
-    {
-      address: {
-        street: 'Hermannstr.',
-        houseNumber: '177',
-        neighborhood: 'Neukölln',
-        postcode: '12051'
-      },
-      contact: {
-        firstName: 'Helga',
-        lastName: 'Schneider',
-        salutation: 'FEMALE'
-      }
-    },
-    {
-      address: {
-        street: 'Richardplatz',
-        neighborhood: 'Neukölln',
-        postcode: '12055'
-      },
-      contact: {
-        salutation: 'NO_SALUTATION'
-      }
-    },
-    {
-      address: {
-        neighborhood: 'Neukölln',
-        postcode: '12049'
-      },
-      contact: {
-        salutation: 'MALE',
-        firstName: 'Richard',
-        lastName: 'Meier'
-      }
-    }
-  ];
-
-  constructor() {
-    super();
-
-    this.state = {
-      previewIndex: 0
-    };
-
-    setInterval(
-      () =>
-        this.setState((previousState: ApplicationTextPreviewsState) => ({
-          previewIndex:
-            (previousState.previewIndex + 1) %
-            ApplicationTextPreviews.TestFlats.length
-        })),
-      5000
-    );
-  }
-
-  render() {
-    const { applicationText } = this.props;
-    const { previewIndex } = this.state;
-
-    return (
-      <>
-        <pre className={styles.applicationTextPreview}>
-          {applicationTextBuilder(
-            applicationText,
-            ApplicationTextPreviews.TestFlats[previewIndex].address,
-            ApplicationTextPreviews.TestFlats[previewIndex].contact
-          )}
-        </pre>
-        <div className={styles.comment}>
-          Beispiel {previewIndex + 1} von{' '}
-          {ApplicationTextPreviews.TestFlats.length}
-        </div>
-      </>
-    );
-  }
-}
+import ApplicationTextPreviews from '../util/ApplicationTextPreviews';
 
 const applicationTextStage: StageDescription = {
   container: {
@@ -108,8 +13,13 @@ const applicationTextStage: StageDescription = {
   subtitle: (
     <>
       Ein persönlich wirkendes Anschreiben ist sehr wichtig. Der Bot kann das
-      teilweise für dich übernehmen — verwende dafür die bereitgestellten
-      Ersetzungen!
+      teilweise für dich übernehmen — verwende dafür die bereitgestellten, sich
+      dynamisch anpassenden Textbausteine!
+      <br />
+      Und so funktioniert&apos;s: Du gibst <em>links</em> deinen Bewerbungstext{' '}
+      <i>mit</i> Textbausteinen ein und kannst dann <em>rechts</em> Beispiele
+      sehen, wie er an die entsprechenden Wohnungen und Ansprechpartner_innen
+      angepasst wird.
     </>
   ),
   body: ({ configuration: { applicationText }, setString }: InheritedProps) => (
@@ -121,7 +31,7 @@ const applicationTextStage: StageDescription = {
             onChange={text => setString('applicationText', text)}
             value={applicationText}
           />
-          <h3>Verfügbare Ersetzungen</h3>
+          <h3>Verfügbare Textbausteine</h3>
           <div className={styles.searchParameter}>
             Anrede:{' '}
             <span className={styles.replacement}>
@@ -155,10 +65,18 @@ const applicationTextStage: StageDescription = {
               Beispiele: &quot;Neukölln&quot;, &quot;Kreuzberg&quot;
             </div>
           </div>
+          <div className={styles.comment} style={{ marginTop: '3rem' }}>
+            Allgemeiner Tipp: Du kannst deine Bewerbungsunterlagen bei einem
+            Cloud-Anbieter deiner Wahl hochladen und hier einen Link
+            mitschicken!
+          </div>
         </div>
         <div className={styles.column}>
           <h3>Wie der Bot ihn abgeschickt</h3>
-          <ApplicationTextPreviews applicationText={applicationText} />
+          <ApplicationTextPreviews
+            applicationText={applicationText}
+            className={styles.applicationTextPreview}
+          />
         </div>
       </div>
     </div>

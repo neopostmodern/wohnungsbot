@@ -20,7 +20,7 @@ const flatDescriptionStage: StageDescription = {
   title: 'Was suchst du?',
   subtitle: (
     <>
-      Jetzt geht es darum die Wohnung nach der du suchst zu beschreiben —
+      Jetzt geht es darum die Wohnung, nach der du suchst, zu beschreiben —
       zumindest das, was sich in Zahlen ausdrücken lässt.
     </>
   ),
@@ -36,6 +36,7 @@ const flatDescriptionStage: StageDescription = {
         noKitchenette,
         maximumRent,
         minimumArea,
+        maximumRentPerSquareMeter,
         minimumRooms,
         maximumRooms
       },
@@ -59,7 +60,7 @@ const flatDescriptionStage: StageDescription = {
             € Kaltmiete
           </div>
           <div className={styles.searchParameter}>
-            Mindestens
+            Mindestens{' '}
             <NumberField
               value={minimumArea}
               onChange={value => setNumber('filter.minimumArea', value)}
@@ -67,18 +68,31 @@ const flatDescriptionStage: StageDescription = {
             m²
           </div>
           <div className={styles.searchParameter}>
+            Maximal{' '}
+            <NumberField
+              value={maximumRentPerSquareMeter}
+              onChange={value =>
+                setNumber('filter.maximumRentPerSquareMeter', value)
+              }
+            />
+            € / m² (Kaltmiete)
+          </div>
+          <div className={styles.searchParameter}>
             <NumberField
               value={minimumRooms}
               onChange={value => setNumber('filter.minimumRooms', value)}
               step={0.5}
-            />
-            bis
+            />{' '}
+            bis{' '}
             <NumberField
               value={maximumRooms}
               onChange={value => setNumber('filter.maximumRooms', value)}
               step={0.5}
             />{' '}
             Zimmer
+          </div>
+          <div className={styles.comment}>
+            Nicht alle Felder müssen ausgefüllt werden.
           </div>
           <h3>Hast du einen Wohnberechtigungsschein?</h3>
           <input
@@ -96,7 +110,7 @@ const flatDescriptionStage: StageDescription = {
           <div style={{ marginTop: '0.5em', lineHeight: 0.9 }}>
             <small>
               Aktuell kann der Bot leider nicht zwischen &quot;WBS&quot; und
-              &quot;WBS mit besonderem Wohnbedarf&quot; unterscheiden
+              &quot;WBS mit besonderem Wohnbedarf&quot; unterscheiden.
             </small>
           </div>
           <h3>Sonstige Wünsche</h3>
@@ -142,7 +156,11 @@ const flatDescriptionStage: StageDescription = {
           </div>
           <div className={styles.comment}>
             Die Verlässlichkeit dieser Angaben bei den Inseraten ist leider
-            nicht besonders hoch
+            nicht besonders hoch.
+            <br />
+            Außerdem grenzt jeder weitere Filter natürlich die Treffer weiter
+            ein — wenn du zu wenig Wohnungen findest solltest du also in
+            Erwägung ziehen, hier etwas flexibler zu sein.
           </div>
         </div>
         <div className={styles.column}>
@@ -186,7 +204,7 @@ const flatDescriptionStage: StageDescription = {
             {AllFloors.map(floor => (
               <div
                 className={`${styles.floor} ${
-                  floors.includes(floor) ? styles.selected : ''
+                  floors.includes(floor) ? styles.selected : styles.notSelected
                 }`}
                 onClick={() => toggleFloor(floor)}
                 key={floor}
@@ -194,6 +212,16 @@ const flatDescriptionStage: StageDescription = {
                 {floorToName(floor, 4)}
               </div>
             ))}
+          </div>
+          <div className={styles.comment}>
+            Aktuelle Auswahl:{' '}
+            {floors.length === AllFloors.length
+              ? 'Alle Stockwerke'
+              : floors
+                  .slice()
+                  .reverse()
+                  .map(floor => floorToName(floor, 4))
+                  .join(', ')}
           </div>
         </div>
       </div>

@@ -1,37 +1,56 @@
 // @flow
 
 import type { Action, Dispatch, Store } from '../reducers/types';
-import { INVESTIGATE_FLAT, SET_BOT_IS_ACTING } from '../constants/actionTypes';
-import { sleep } from '../utils/async';
-import { navigateToFlatPage, setBotIsActing } from '../actions/bot';
-
-const queue = [];
+import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
+import {
+  navigateToFlatPage,
+  noop,
+  popFlatFromQueue,
+  returnToSearchPage,
+  scrollWhileIdle,
+  stopScrollingWhileIdle
+} from '../actions/bot';
+import type { schedulerStateType } from '../reducers/scheduler';
+import type { Configuration } from '../reducers/configuration';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
-  const run = async queuedAction => {
-    store.dispatch(setBotIsActing(true, queuedAction.meta.message));
+  const {
+    scheduler,
+    configuration: { exhibitionIdentifier }
+  }: {
+    scheduler: schedulerStateType,
+    configuration: Configuration
+  } = store.getState();
 
-    if (action.type === INVESTIGATE_FLAT) {
-      await store.dispatch(navigateToFlatPage(queuedAction.payload.flatId));
+  if (action.type === LAUNCH_NEXT_TASK) {
+    if (scheduler.isActive === true) {
+      // eslint-disable-next-line no-console
+      console.error('Attempt to launch a second task, ignored.');
+      return next(noop());
     }
-  };
+    if (scheduler.queuedFlatIds.length === 0) {
+      if (exhibitionIdentifier) {
+        store.dispatch(scrollWhileIdle());
+      }
 
-  if (action.type === SET_BOT_IS_ACTING && action.payload.isActing === false) {
-    const nextAction = queue.pop();
-    if (nextAction) {
-      await sleep(10000);
-      run(nextAction);
-    }
-  }
+      setTimeout(() => {
+        if (exhibitionIdentifier) {
+          store.dispatch(stopScrollingWhileIdle());
+        }
 
-  if (action.meta && action.meta.queue) {
-    const { isBotActing } = store.getState().electron;
-    if (isBotActing) {
-      queue.push(action);
-    } else {
-      run(action);
+        store.dispatch(returnToSearchPage());
+      }, 60000 + Math.random() * 300000);
+      return next(noop());
     }
+
+    const nextFlatId = scheduler.queuedFlatIds[0];
+    const result = next(action);
+
+    store.dispatch(navigateToFlatPage(nextFlatId));
+    store.dispatch(popFlatFromQueue(nextFlatId));
+
+    return result;
   }
 
   return next(action);

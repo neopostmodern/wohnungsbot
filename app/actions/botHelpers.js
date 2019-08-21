@@ -24,7 +24,13 @@ export function clickAction(
 
     await scrollIntoViewByPolicy(webContents, selector, scrollIntoViewPolicy);
 
-    const boundingRect = await getBoundingBox(webContents, selector);
+    // reset zoom factor, just in case someone (accidentally) changed it
+    // when zoomed the coordinates are returned unscaled, so clicks miss
+    webContents.setZoomFactor(1.0);
+
+    const boundingRect = await new ElectronUtils(webContents).getBoundingBox(
+      selector
+    );
     const x = boundingRect.x + boundingRect.width * Math.random();
     const y = boundingRect.y + boundingRect.height * Math.random();
 
@@ -50,38 +56,13 @@ export function clickAction(
   };
 }
 
-async function performPressKey(webContents: WebContents, keyCode: string) {
-  // const eventDescription = keyCode === 'Shift' ? { key: keyCode } : { keyCode };
-  const eventDescription = { keyCode };
-
-  webContents.sendInputEvent(
-    Object.assign({}, eventDescription, {
-      type: 'keyDown'
-    })
-  );
-
-  if (eventDescription.keyCode) {
-    await sleep(1 + Math.random() * 5);
-    webContents.sendInputEvent(
-      Object.assign({}, eventDescription, {
-        type: 'char'
-      })
-    );
-  }
-
-  await sleep(10 + Math.random() * 50);
-  webContents.sendInputEvent(
-    Object.assign({}, eventDescription, {
-      type: 'keyUp'
-    })
-  );
-}
-
 export function type(text: string) {
   return async (dispatch: Dispatch, getState: GetState) => {
     dispatch(willType(text));
 
     const { webContents } = getState().electron.views.puppet.browserView;
+
+    const electronUtils = new ElectronUtils(webContents);
 
     if (!webContents.isFocused()) {
       webContents.focus();
@@ -96,7 +77,7 @@ export function type(text: string) {
         keyCode = '\u000d';
       }
 
-      await performPressKey(webContents, keyCode);
+      await electronUtils.performPressKey(keyCode);
 
       if (['.', '\n'].includes(character)) {
         await sleep(100 + Math.random() * 300);
@@ -118,35 +99,7 @@ export function pressKey(keyCode: string) {
       webContents.focus();
     }
 
-    await performPressKey(webContents, keyCode);
-  };
-}
-
-export function fillText(selector: string, text: string) {
-  return async (dispatch: Dispatch) => {
-    await dispatch(clickAction(selector));
-    await sleep(500);
-    await dispatch(type(text));
-  };
-}
-
-export function elementExists(selector: string) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
-
-    return webContents.executeJavaScript(
-      `document.querySelector('${selector}') !== null`
-    );
-  };
-}
-
-export function getElementValue(selector: string) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
-
-    return webContents.executeJavaScript(
-      `document.querySelector('${selector}').value`
-    );
+    await new ElectronUtils(webContents).performPressKey(keyCode);
   };
 }
 
@@ -162,7 +115,7 @@ export async function scrollIntoView(
   /* eslint-disable no-await-in-loop */
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    await electronUtils.execute(
+    await electronUtils.evaluate(
       `document.querySelector('${selector}').scrollIntoView({ behavior: ${
         smooth ? "'smooth'" : "'auto'"
       }, block: '${strategy}'})`
@@ -171,7 +124,7 @@ export async function scrollIntoView(
     // there is no way to know when the smooth scroll has finished
     await sleep(2000);
 
-    if (await isElementInViewport(webContents, selector)) {
+    if (await electronUtils.isElementInViewport(selector)) {
       break;
     }
   }
@@ -197,68 +150,20 @@ export type ScrollIntoViewPolicy = 'always' | 'auto' | 'none';
 export async function scrollIntoViewByPolicy(
   webContents: WebContents,
   selector: string,
-  scrollIntoViewPolicy?: ScrollIntoViewPolicy = 'auto'
+  scrollIntoViewPolicy?: ScrollIntoViewPolicy = 'auto',
+  overrideStrategy?: ScrollIntoViewStrategy
 ) {
   if (scrollIntoViewPolicy === 'none') {
     return;
   }
 
   if (scrollIntoViewPolicy === 'always') {
-    await scrollIntoView(webContents, selector, 'center');
+    await scrollIntoView(webContents, selector, overrideStrategy || 'center');
     return;
   }
 
-  if (!(await isElementInViewport(webContents, selector))) {
-    await scrollIntoView(webContents, selector, 'nearest');
-  }
-}
-
-export async function getBoundingBox(
-  webContents: WebContents,
-  selector: string
-): Promise<ClientRect & { x: number, y: number }> {
-  return (new ElectronUtils(webContents).execute(
-    `JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()))`
-    // eslint-disable-next-line flowtype/no-weak-types
-  ): any);
-}
-
-export async function getViewportSize(webContents: WebContents) {
-  return webContents.executeJavaScript(
-    `JSON.parse(JSON.stringify({ height: window.innerHeight, width: window.innerWidth }))`
-  );
-}
-
-export async function isElementInViewport(
-  webContents: WebContents,
-  selector: string,
-  mustIncludeTop: boolean = true,
-  mustIncludeBottom: boolean = false
-): Promise<boolean> {
-  try {
-    const elementBoundingBox = await getBoundingBox(webContents, selector);
-    const viewportSize = await getViewportSize(webContents);
-
-    if (
-      (elementBoundingBox.top < 0 ||
-        elementBoundingBox.top > viewportSize.height) &&
-      (elementBoundingBox.bottom < 0 ||
-        elementBoundingBox.bottom > viewportSize.height)
-    ) {
-      return false;
-    }
-
-    return (
-      (!mustIncludeTop ||
-        (elementBoundingBox.top > 0 &&
-          elementBoundingBox.top < viewportSize.height)) &&
-      (!mustIncludeBottom ||
-        (elementBoundingBox.bottom > 0 &&
-          elementBoundingBox.bottom < viewportSize.height))
-    );
-  } catch (error) {
-    console.error(`isElementInViewport(${selector}) failed.`);
-    return false;
+  if (!(await new ElectronUtils(webContents).isElementInViewport(selector))) {
+    await scrollIntoView(webContents, selector, overrideStrategy || 'nearest');
   }
 }
 

@@ -23,10 +23,9 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
 
   if (action.meta && action.meta.configuration) {
     process.nextTick(() => {
-      const configurationToSave = Object.assign(
-        {},
-        store.getState().configuration
-      );
+      const configurationToSave = {
+        ...store.getState().configuration
+      };
       delete configurationToSave.loaded;
       persistentStore.set('configuration', configurationToSave);
     });

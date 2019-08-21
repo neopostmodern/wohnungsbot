@@ -8,7 +8,7 @@ import { getConfigurationFilterHash } from '../reducers/configuration';
 import { generateSearchUrl } from '../flat/urlBuilder';
 
 // eslint-disable-next-line no-unused-vars
-export default (store: Store) => (next: Dispatch) => (action: Action) => {
+export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   if (!action.meta || !action.meta.configuration) {
     return next(action);
   }

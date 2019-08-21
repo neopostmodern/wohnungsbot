@@ -6,17 +6,18 @@ import BotIllustration from '../../resources/bot.svg';
 // $FlowFixMe - flow doesn't like SVG
 import BotIllustrationActive from '../../resources/bot-active.svg';
 import type { anyAnimation, ElementBoundingBox } from '../reducers/overlay';
-import type { Verdicts } from '../reducers/data';
-import { flatPageUrl } from '../flat/urlBuilder';
+import type { Verdict, Verdicts } from '../reducers/data';
+import VerdictComponent from './util/Verdict';
 
 type Props = {
   isPuppetLoading: boolean,
   animations: Array<anyAnimation>,
   overviewBoundingBoxes: Array<ElementBoundingBox>,
-  privacyMaskBoundingBoxes: Array<ElementBoundingBox>,
   verdicts: Verdicts,
   isBotActing: boolean,
   botMessage: string,
+  showOverlay: boolean,
+  alreadyAppliedFlatIds: Array<string>,
   performScroll: (name: 'puppet', deltaY: number) => void
 };
 
@@ -38,6 +39,7 @@ export default class BotOverlay extends Component<Props> {
             );
           }
 
+          // eslint-disable-next-line no-console
           console.error(
             `Unknown animation: ${animation.type} (${animation.animationId})`
           );
@@ -65,7 +67,12 @@ export default class BotOverlay extends Component<Props> {
   }
 
   botTalk(): string {
-    const { isPuppetLoading, botMessage, verdicts } = this.props;
+    const {
+      isPuppetLoading,
+      botMessage,
+      verdicts,
+      alreadyAppliedFlatIds
+    } = this.props;
 
     if (isPuppetLoading) {
       return `Website lädt...`;
@@ -75,24 +82,30 @@ export default class BotOverlay extends Component<Props> {
       return botMessage;
     }
 
-    // $FlowFixMe (flow can't handle Object.values)
-    const matchedFlats = Object.values(verdicts).filter(({ result }) => result)
-      .length;
+    // eslint-disable-next-line flowtype/no-weak-types
+    const matchedFlats = ((Object.values(verdicts): any): Array<Verdict>)
+      .filter(({ result }) => result)
+      .map(({ flatId }) => flatId);
 
-    if (matchedFlats > 0) {
-      return `${matchedFlats} passende Wohnungen gefunden.`;
+    const notAppliedYetFlats = matchedFlats.filter(
+      flatId => !alreadyAppliedFlatIds.includes(flatId)
+    );
+
+    if (matchedFlats.length > 0) {
+      return `${notAppliedYetFlats.length} neue passende Wohnungen gefunden (${matchedFlats.length} insgesamt).`;
     }
 
-    return 'Ich bin bereit.';
+    return 'Ich bin bereit, aber es gibt keine Wohnungen!';
   }
 
   render() {
     const {
       animations,
       overviewBoundingBoxes,
-      privacyMaskBoundingBoxes,
       verdicts,
-      isBotActing
+      isBotActing,
+      showOverlay,
+      alreadyAppliedFlatIds
     } = this.props;
 
     return (
@@ -102,12 +115,12 @@ export default class BotOverlay extends Component<Props> {
         onWheel={this.handleWheel}
       >
         {BotOverlay.renderAnimations(animations)}
-        {!isBotActing
+        {showOverlay
           ? overviewBoundingBoxes.map(
               ({ boundingBox, attachedInformation: { flatId } }) => (
                 <div
                   key={flatId}
-                  className={styles.verdictOverlay}
+                  className={styles.verdictOverlayWrapper}
                   style={{
                     top: boundingBox.top,
                     left: boundingBox.left,
@@ -115,66 +128,15 @@ export default class BotOverlay extends Component<Props> {
                     height: boundingBox.height
                   }}
                 >
-                  {verdicts[flatId] ? (
-                    <>
-                      <div className={styles.summary}>
-                        <span
-                          className={`material-icons standalone-icon ${
-                            verdicts[flatId].result ? 'good' : 'bad'
-                          }`}
-                        >
-                          {verdicts[flatId].result
-                            ? 'thumb_up_alt'
-                            : 'thumb_down_alt'}
-                        </span>
-                      </div>
-                      <div>
-                        {verdicts[flatId].reasons.map(({ reason, result }) => (
-                          <div key={reason} className={styles.reason}>
-                            <div className={styles.reasonIcon}>
-                              <span
-                                className={`material-icons standalone-icon ${
-                                  result ? 'good' : 'bad'
-                                }`}
-                              >
-                                {result ? 'check' : 'block'}
-                              </span>
-                            </div>
-                            <div>{reason}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <i>Keine Informationen</i>
-                  )}
-                  <div className={styles.openInBrowser}>
-                    <a
-                      href={flatPageUrl(flatId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Wohnung im Browser ansehen
-                      <span className="material-icons">open_in_new</span>
-                    </a>
-                  </div>
+                  <VerdictComponent
+                    flatId={flatId}
+                    verdict={verdicts[flatId]}
+                    isAlreadyApplied={alreadyAppliedFlatIds.includes(flatId)}
+                  />
                 </div>
               )
             )
           : null}
-
-        {privacyMaskBoundingBoxes.map(({ selector, boundingBox }) => (
-          <div
-            key={selector}
-            className={styles.privacyMask}
-            style={{
-              top: boundingBox.top,
-              left: boundingBox.left,
-              width: boundingBox.width,
-              height: boundingBox.height
-            }}
-          />
-        ))}
 
         <img
           src={isBotActing ? BotIllustrationActive : BotIllustration}

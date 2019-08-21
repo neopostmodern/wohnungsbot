@@ -1,0 +1,31 @@
+.verdictOverlay {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.6);
+  height: 100%;
+
+  .summary {
+    font-size: 5em;
+  }
+
+  .reason {
+    width: 10em;
+    display: flex;
+    align-items: flex-start;
+  }
+  .reasonIcon {
+    margin-right: 0.5em;
+    position: relative;
+    bottom: 0.1em;
+  }
+  .oneLineReason {
+    font-size: 150%;
+  }
+}
+
+.openInBrowser {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}

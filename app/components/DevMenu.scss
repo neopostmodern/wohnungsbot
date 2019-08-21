@@ -3,12 +3,25 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  &.collapsed {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: fit-content;
+  }
 }
 .menu {
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 1em;
+  padding-left: 1em;
+  padding-right: 0.2em;
+
+  .collapsed & {
+    padding-left: 0.2em;
+  }
 }
 
 .menuItem {
@@ -21,6 +34,14 @@
     font-size: 80%;
     color: inherit;
   }
+
+  .collapsed &:not(#visibilityToggle) {
+    display: none;
+  }
+}
+#visibilityToggle {
+  font-size: 180%;
+  margin-right: 0;
 }
 
 .entryName {

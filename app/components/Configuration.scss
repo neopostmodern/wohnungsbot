@@ -61,6 +61,16 @@ $CONTENT_WIDTH: 1000px;
   max-width: unset;
 }
 
+.checkboxWithLabel {
+  display: flex;
+  align-items: baseline;
+  margin-top: 0.3em;
+
+  > div:first-child {
+    margin-right: 0.5em;
+  }
+}
+
 $GUTTER: 2rem;
 @media (max-width: $CONTENT_WIDTH) {
   .row {
@@ -211,6 +221,32 @@ main {
   font-family: $FONT_ITALIC;
 }
 
+.pending {
+  margin-top: 1.5rem;
+  border: 2px black solid;
+  padding: 1rem;
+  opacity: 0.6;
+  background-color: #ddd;
+  pointer-events: none;
+
+  input {
+    background: none;
+  }
+
+  &::before {
+    content: "Diese Funktion kommt bald in einem Update";
+    font-size: 70%;
+  }
+}
+
+.announcement {
+  border: 2px solid black;
+  padding: 1em;
+  width: calc(100% + 2em);
+  margin-left: -1em;
+  box-sizing: border-box;
+}
+
 // house
 $HOUSE_LINE: 2px solid black;
 .house, .roof {
@@ -223,18 +259,22 @@ $HOUSE_LINE: 2px solid black;
 
   .floor {
     border-bottom: $HOUSE_LINE;
-    padding: 0.4em 1em;
+    padding: 0.4em 1em 0.2em;
     cursor: pointer;
+    color: white;
 
     &.selected {
       background-color: darkgreen;
     }
+    &.notSelected {
+      background-color: $BAD_RED;
+    }
 
     &:hover {
-      background-color: rgba(0, 100, 0, 0.3);
+      background-color: rgba(0, 100, 0, 0.5);
 
       &.selected {
-        background-color: rgba(100, 0, 0, 0.3);
+        background-color: rgba(100, 0, 0, 0.5);
       }
     }
   }

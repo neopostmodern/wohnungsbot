@@ -8,12 +8,15 @@ import {
   CLICK_ANIMATION_SHOW,
   SET_BOUNDING_BOX,
   REMOVE_BOUNDING_BOXES_IN_GROUP,
-  REFRESH_BOUNDING_BOXES
+  REFRESH_BOUNDING_BOXES,
+  SET_BOUNDING_BOX_GROUP
 } from '../constants/actionTypes';
 import type { Action } from '../reducers/types';
-import type { AttachedInformation } from '../reducers/overlay';
+import type {
+  AttachedInformation,
+  ElementBoundingBox
+} from '../reducers/overlay';
 import type { BoundingBoxGroup } from '../constants/boundingBoxGroups';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 
 export function clickAnimationShow(
   animationId: string,
@@ -90,15 +93,19 @@ export function setBoundingBox(
   };
 }
 
+export function setBoundingBoxGroup(
+  group: BoundingBoxGroup,
+  boundingBoxes: Array<ElementBoundingBox>
+): Action {
+  return {
+    type: SET_BOUNDING_BOX_GROUP,
+    payload: { boundingBoxes, group }
+  };
+}
+
 export function removeBoundingBoxesInGroup(group: BoundingBoxGroup) {
   return {
     type: REMOVE_BOUNDING_BOXES_IN_GROUP,
     payload: { group }
   };
-}
-
-export function requestPrivacyMask(selector: string): Action {
-  return calculateBoundingBox(selector, {
-    group: BOUNDING_BOX_GROUPS.PRIVACY_MASK
-  });
 }

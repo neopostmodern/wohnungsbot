@@ -46,7 +46,7 @@ class PostcodeMap extends React.Component<Props, State> {
 
   heightRef: HTMLElement;
 
-  static initialZoom = 11;
+  static initialZoom = 12;
 
   constructor() {
     super();
@@ -100,7 +100,10 @@ ${postcodeDescription.properties.district}`,
 
   stylePostcodeOverlay(postcodeDescription: PostcodeDescription) {
     const { selectedPostcodes } = this.props;
-    const style = Object.assign({}, baseStyle);
+
+    // SVG CSS is too hard to type
+    // eslint-disable-next-line flowtype/no-weak-types
+    const style: any = { ...baseStyle };
     if (selectedPostcodes.includes(postcodeDescription.id)) {
       Object.assign(style, {
         fillOpacity: 0.8,

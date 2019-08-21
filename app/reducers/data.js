@@ -123,55 +123,6 @@ export type FlatData = {|
   requiresWBS: boolean
 |};
 
-function parseBoolean(stringBoolean: StringBoolean): boolean {
-  return stringBoolean === 'true';
-}
-
-function processOverviewDataEntry(
-  entry: RawOverviewDataEntry
-): OverviewDataEntry {
-  const realEstate = entry['resultlist.realEstate'];
-  const processedEntry: OverviewDataEntry = {
-    id: entry['@id'],
-    title: realEstate.title,
-    address: {
-      postcode: realEstate.address.postcode,
-      description: realEstate.address.description.text,
-      neighborhood: realEstate.address.quarter.split('(')[0].trim(),
-      street: realEstate.address.street
-    },
-    contactDetails: {
-      salutation: realEstate.contactDetails.salutation,
-      firstName: realEstate.contactDetails.firstname,
-      lastName: realEstate.contactDetails.lastname,
-      company: realEstate.contactDetails.company
-    },
-    rent: parseFloat(realEstate.price.value),
-    area: parseFloat(realEstate.livingSpace),
-    balcony: parseBoolean(realEstate.balcony),
-    builtInKitchen: parseBoolean(realEstate.builtInKitchen)
-  };
-  if (realEstate.address.preciseHouseNumber) {
-    processedEntry.address.houseNumber = ((realEstate.address
-      .houseNumber: any): string); // eslint-disable-line flowtype/no-weak-types
-  }
-  return processedEntry;
-}
-
-function processFlatData(flatData: RawFlatData): FlatData {
-  return {
-    id: flatData.obj_scoutId,
-    yearConstructed: parseInt(flatData.obj_yearConstructed, 10),
-    floor: parseInt(flatData.obj_floor, 10),
-    rent: {
-      total: parseFloat(flatData.obj_totalRent),
-      base: parseFloat(flatData.obj_baseRent),
-      additional: parseFloat(flatData.obj_serviceCharge)
-    },
-    requiresWBS: flatData.additionalData.requiresWBS
-  };
-}
-
 export const FLAT_ACTION = {
   APPLY: 'APPLY',
   INVESTIGATE: 'INVESTIGATE',
@@ -187,7 +138,8 @@ export const VERDICT_SCOPE = {
 };
 export type VerdictScope = $Keys<typeof VERDICT_SCOPE>;
 
-export type Verdict = {
+export type Verdict = {|
+  flatId: string,
   configurationHash: number,
   result: boolean,
   scope: VerdictScope,
@@ -196,7 +148,7 @@ export type Verdict = {
     result: boolean
   }>,
   action?: FlatAction
-};
+|};
 export type Verdicts = { [key: string]: Verdict };
 
 export type dataStateType = {|
@@ -216,16 +168,11 @@ export default function data(
   action: Action
 ) {
   if (action.type === SET_OVERVIEW_DATA) {
-    const overview = {};
-    action.payload.data.forEach(entry => {
-      const processedEntry = processOverviewDataEntry(entry);
-      overview[processedEntry.id] = processedEntry;
-    });
-    return Object.assign({}, state, { overview });
+    return { ...state, overview: action.payload.data };
   }
 
   if (action.type === SET_FLAT_DATA) {
-    const flatData = processFlatData(action.payload.flatData);
+    const { flatData } = action.payload;
     return dotProp.set(state, `flat.${flatData.id}`, flatData);
   }
 

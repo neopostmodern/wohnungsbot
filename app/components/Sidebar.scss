@@ -1,6 +1,8 @@
+@import '../styles/constants';
+
 .container {
   background-color: #226798;
-  padding: 2vh;
+  padding: 2vh 2vh $OVERLAY_BORDER_WIDTH;
   height: 100vh;
   box-sizing: border-box;
   color: white;
@@ -12,9 +14,14 @@
   }
 }
 
+h3:first-child {
+  margin-top: 0;
+}
+
 .entry {
   display: flex;
   align-items: center;
+  margin-bottom: 0.5em;
 }
 
 .symbol {
@@ -38,4 +45,19 @@
   font-size: 70%;
   margin-top: 0.5em;
   line-height: 1;
+}
+
+.softwareInformation {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 1em;
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

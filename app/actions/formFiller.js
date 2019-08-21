@@ -12,15 +12,8 @@ import {
 import { sleep } from '../utils/async';
 import type { Dispatch, GetState } from '../reducers/types';
 import type { ScrollIntoViewPolicy } from './botHelpers';
-import {
-  clickAction,
-  elementExists,
-  fillText,
-  getElementValue,
-  pressKey,
-  scrollIntoViewByPolicy
-} from './botHelpers';
-import { requestPrivacyMask } from './overlay';
+import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
+import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
@@ -29,7 +22,6 @@ const SALUTATION_VALUES = {
 
 type BaseField = {
   selector: string,
-  protectPrivacy?: boolean,
   scrollIntoView?: ScrollIntoViewPolicy
 };
 type TextField = BaseField & { type: 'text', value: ?string };
@@ -47,26 +39,22 @@ export const generatePersonalDataFormFillingDescription = (
   {
     selector: '#contactForm-firstName',
     type: 'text',
-    value: contactData.firstName,
-    protectPrivacy: true
+    value: contactData.firstName
   },
   {
     selector: '#contactForm-lastName',
     type: 'text',
-    value: contactData.lastName,
-    protectPrivacy: true
+    value: contactData.lastName
   },
   {
     selector: '#contactForm-emailAddress',
     type: 'text',
-    value: contactData.eMail,
-    protectPrivacy: true
+    value: contactData.eMail
   },
   {
     selector: '#contactForm-phoneNumber',
     type: 'text',
-    value: contactData.telephone,
-    protectPrivacy: true
+    value: contactData.telephone
   },
   {
     selector: '#contactForm-street',
@@ -115,6 +103,7 @@ const EMPLOYMENT_STATUS_VALUES = {
 };
 const mapIncomeToValue = (income: ?number): string => {
   if (income === null || income === undefined) {
+    // eslint-disable-next-line no-console
     console.error('No income has been defined.');
     return '';
   }
@@ -177,48 +166,123 @@ export const generateAdditionalDataFormFillingDescription = (
   }
 ];
 
-export function fillForm(fieldFillingDescription: FieldFillingDesciption) {
+async function fillSelectField(
+  dispatch: Dispatch,
+  electronUtils: ElectronUtilsRedux,
+  field: SelectField,
+  skipField = false
+) {
+  let sanitizedValue = field.value;
+
+  if (skipField) {
+    if (await electronUtils.getValue(field.selector)) {
+      sanitizedValue = '';
+    } else {
+      return;
+    }
+  }
+
+  // some macOS versions render select field pop-ups 'natively', making them
+  // inaccessible to the keystrokes necessary to change the value –
+  // thus on macOS the value is set directly via JavaScript
+  if (process.platform === 'darwin') {
+    await electronUtils.setValue(field.selector, sanitizedValue);
+    await electronUtils.evaluate(
+      `document.querySelector('${field.selector}')
+                          .dispatchEvent(new Event('change', { 'bubbles': true, 'isTrusted': true }))`,
+      true
+    );
+  } else {
+    await dispatch(clickAction(field.selector));
+    await sleep(500);
+
+    // need to close the pop-up such that each subsequent keystroke changes
+    // the fields value immediately
+    await dispatch(pressKey('Escape'));
+    await sleep(500);
+
+    let previousValue = null;
+    let down = true;
+
+    /* eslint-disable no-await-in-loop */
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const currentValue = await electronUtils.getValue(field.selector);
+      if (currentValue === sanitizedValue) {
+        break;
+      }
+      // switch direction if value stops changing
+      if (previousValue && previousValue === currentValue) {
+        down = !down;
+      }
+      previousValue = currentValue;
+
+      await dispatch(pressKey(down ? 'Down' : 'Up'));
+      await sleep(300);
+    }
+    /* eslint-enable no-await-in-loop */
+  }
+
+  await sleep(1000);
+}
+
+export function fillForm(
+  fieldFillingDescription: FieldFillingDesciption,
+  fillAsLittleAsPossible: boolean = true
+) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { webContents } = getState().electron.views.puppet.browserView;
+    const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
     for (const field of fieldFillingDescription) {
-      // sometimes the fields don't exist - skip them
-      if (!(await dispatch(elementExists(field.selector)))) {
+      // sometimes the fields don't exist or is hidden - skip them
+      if (!(await electronUtils.elementExists(field.selector))) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      // this is a way if the element was hidden (see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetParent)
+      if (
+        await electronUtils.evaluate(
+          `document.querySelector('${field.selector}').offsetParent === null`
+        )
+      ) {
         // eslint-disable-next-line no-continue
         continue;
       }
 
-      await scrollIntoViewByPolicy(webContents, field.selector);
+      await scrollIntoViewByPolicy(
+        webContents,
+        field.selector,
+        'auto',
+        'center'
+      );
 
-      if (field.protectPrivacy) {
-        dispatch(requestPrivacyMask(field.selector));
+      if ((await electronUtils.getValue(field.selector)) === field.value) {
+        // eslint-disable-next-line no-continue
+        continue;
       }
 
+      const skipField =
+        field.selector.startsWith('#') &&
+        fillAsLittleAsPossible &&
+        (await electronUtils.elementExists(
+          `.label-optional[for="${field.selector.substr(1)}"]`
+        ));
+
       if (field.type === 'text') {
-        if (field.value) {
-          await dispatch(fillText(field.selector, field.value));
+        if (skipField) {
+          await electronUtils.fillText(field.selector, '');
+          await sleep(300);
+        } else if (field.value) {
+          await electronUtils.fillText(field.selector, field.value);
           await sleep(1000);
         }
       } else if (field.type === 'select') {
-        await dispatch(clickAction(field.selector));
-        await sleep(500);
-
-        // need to close the pop-up such that each subsequent keystroke changes
-        // the fields value immediately
-        await dispatch(pressKey('Escape'));
-        await sleep(500);
-
-        while (
-          (await dispatch(getElementValue(field.selector))) !== field.value
-        ) {
-          await dispatch(pressKey('Down'));
-          await sleep(1000);
-        }
-
-        await sleep(1000);
+        await fillSelectField(dispatch, electronUtils, field, skipField);
       } else {
+        // eslint-disable-next-line no-console
         console.error(`Unknown field type: ${field.type}`);
       }
     }

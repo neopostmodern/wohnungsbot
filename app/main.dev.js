@@ -12,12 +12,13 @@
  */
 import {
   app,
+  screen,
   BrowserWindow,
   BrowserView,
   type BrowserViewConstructorOptions
 } from 'electron';
-// import { autoUpdater } from 'electron-updater';
-// import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
+import log from 'electron-log';
 import configureStore from './store/configureStore';
 import { addView, setWindow } from './actions/electron';
 import { MAIN } from './constants/targets';
@@ -26,14 +27,13 @@ import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
 
-// todo: set up auto updater
-// export default class AppUpdater {
-//   constructor() {
-//     log.transports.file.level = 'info';
-//     autoUpdater.logger = log;
-//     autoUpdater.checkForUpdatesAndNotify();
-//   }
-// }
+export default class AppUpdater {
+  constructor() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+}
 
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -63,7 +63,10 @@ configureStore(MAIN, isDevelopment)
         extensions.map(name =>
           installer.default(installer[name], forceDownload)
         )
-      ).catch(console.log);
+      ).catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(`Problem installing extensions: ${error}`);
+      });
     };
 
     /**
@@ -84,8 +87,8 @@ configureStore(MAIN, isDevelopment)
 
       mainWindow = new BrowserWindow({
         show: false,
-        width: 1000,
-        height: 500,
+        width: Math.min(1200, screen.getPrimaryDisplay().workAreaSize.width),
+        height: Math.min(800, screen.getPrimaryDisplay().workAreaSize.height),
         webPreferences: {
           // devTools: false
         }
@@ -99,6 +102,7 @@ configureStore(MAIN, isDevelopment)
         initialUrl: string
       ): BrowserView => {
         if (mainWindow === undefined || mainWindow === null) {
+          // eslint-disable-next-line no-console
           console.error('Main window not defined!');
           return;
         }
@@ -127,8 +131,7 @@ configureStore(MAIN, isDevelopment)
             enableRemoteModule: false
           }
         },
-        // todo: create landingpage
-        'https://example.com/'
+        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
       );
       puppetView.webContents.setUserAgent(getRandomUserAgent());
 
@@ -171,6 +174,7 @@ configureStore(MAIN, isDevelopment)
 
       configurationView.webContents.on('did-finish-load', () => {
         if (mainWindow === undefined || mainWindow === null) {
+          // eslint-disable-next-line no-console
           console.error('Main window not defined!');
           return;
         }
@@ -179,9 +183,6 @@ configureStore(MAIN, isDevelopment)
 
         if (!mainWindow.isVisible()) {
           mainWindow.show();
-        }
-        if (!mainWindow.isMaximized()) {
-          mainWindow.maximize();
         }
 
         if (firstLaunch) {
@@ -196,9 +197,11 @@ configureStore(MAIN, isDevelopment)
 
       mainWindow.setMenuBarVisibility(false);
 
-      // Remove this if your app does not use auto updates
-      // eslint-disable-next-line
-      // new AppUpdater();
+      // eslint-disable-next-line no-new
+      new AppUpdater();
     });
   })
-  .catch(error => console.error(error));
+  .catch(error => {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  });

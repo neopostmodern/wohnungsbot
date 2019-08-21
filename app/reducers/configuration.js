@@ -18,6 +18,8 @@ import {
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 
+export const ConfigurationVersion = 2;
+
 export const AllFloors = [4, 3, 2, 1, 0];
 
 export type configurationNumbers =
@@ -38,6 +40,7 @@ export type Filter = {|
   postcodes: Array<string>,
   maximumRent?: ?number,
   minimumArea?: ?number,
+  maximumRentPerSquareMeter?: ?number,
   minimumRooms?: ?number,
   maximumRooms?: ?number,
   onlyOldBuilding: boolean,
@@ -67,10 +70,14 @@ export type ContactData = {|
   city: string
 |};
 
-export type DataPolicies = {
+export type DataPolicies = {|
   flatViewingNotificationMails: boolean,
-  researchDataSharing: boolean
-};
+  researchDataSharing: boolean,
+  dataHandlingExhibition?: boolean,
+  artConsent: boolean,
+  applicationNotificationMails: boolean,
+  fillAsLittleAsPossible: boolean
+|};
 
 export const MOVE_IN_WHEN = {
   NOW: 'Ab sofort',
@@ -118,7 +125,9 @@ export type Configuration = {|
   applicationText: string,
   contactData: ContactData,
   additionalInformation: AdditionalInformation,
-  policies: DataPolicies
+  policies: DataPolicies,
+  configurationVersion: number,
+  exhibitionIdentifier?: string
 |};
 
 export const getConfigurationFilterHash = (
@@ -161,9 +170,31 @@ const defaultConfiguration: Configuration = {
   },
   policies: {
     flatViewingNotificationMails: false,
-    researchDataSharing: false
-  }
+    researchDataSharing: false,
+    artConsent: false,
+    applicationNotificationMails: false,
+    fillAsLittleAsPossible: false
+  },
+  configurationVersion: ConfigurationVersion
 };
+
+function configurationMigrations(
+  oldConfiguration: Configuration
+): Configuration {
+  let migratedConfiguration = oldConfiguration;
+  if (oldConfiguration.configurationVersion < 2) {
+    migratedConfiguration = dotProp.set(
+      migratedConfiguration,
+      'policies.fillAsLittleAsPossible',
+      true
+    );
+  }
+  return dotProp.set(
+    migratedConfiguration,
+    'configurationVersion',
+    ConfigurationVersion
+  );
+}
 
 export default function configuration(
   state: Configuration = defaultConfiguration,
@@ -195,7 +226,7 @@ export default function configuration(
 
   switch (action.type) {
     case SET_CONFIGURATION:
-      return action.payload.configuration;
+      return configurationMigrations(action.payload.configuration);
     case RESET_CONFIGURATION:
       return defaultConfiguration;
     case NEXT_STAGE:
@@ -205,7 +236,7 @@ export default function configuration(
     case SET_SEARCH_URL:
       return dotProp.set(state, 'searchUrl', action.payload.searchUrl);
     case RESET_POSTCODES:
-      return dotProp.set(state, 'postcodes', []);
+      return dotProp.set(state, 'filter.postcodes', []);
     case TOGGLE_BOOLEAN:
       return dotProp.toggle(state, action.payload.name);
     case SET_NUMBER:

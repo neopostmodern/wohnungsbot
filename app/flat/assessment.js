@@ -18,6 +18,14 @@ export function assessFlat(
   let action: FlatAction = FLAT_ACTION.IGNORE;
 
   const reasons = [];
+
+  if (overviewDataEntry.rent / overviewDataEntry.area < 4) {
+    reasons.push({
+      reason: 'Angebot ist fake',
+      result: false
+    });
+  }
+
   const flatPostcode = overviewDataEntry.address.postcode;
   reasons.push({
     reason: `Postleitzahl: ${flatPostcode}`,
@@ -34,8 +42,15 @@ export function assessFlat(
     });
   }
 
+  const rentPerSquareMeter = overviewDataEntry.rent / overviewDataEntry.area;
+  reasons.push({
+    reason: `${rentPerSquareMeter.toFixed(2)} €/m² (kalt)`,
+    result: rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
+  });
+
   if (
     overviewDataEntry.title.toLowerCase().includes('bes.') ||
+    overviewDataEntry.title.toLowerCase().includes('bes:') ||
     overviewDataEntry.title.toLowerCase().includes('besichtigung')
   ) {
     reasons.push({
@@ -116,6 +131,7 @@ export function assessFlat(
   }
 
   return {
+    flatId: overviewDataEntry.id,
     configurationHash: getConfigurationFilterHash(configuration),
     scope,
     result,
