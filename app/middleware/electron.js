@@ -74,13 +74,17 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
   if (action.type === SET_BROWSER_WINDOW) {
     const { window } = action.payload;
-    window.on('resize', () => {
+    const adjustViewSizes = () => {
       const { electron } = store.getState();
       resizeViews(electron);
       if (electron.configurationHidden) {
         process.nextTick(() => store.dispatch(refreshBoundingBoxes()));
       }
-    });
+    };
+
+    window.on('resize', adjustViewSizes);
+    // cause views to be adjusted/placed upon launch
+    setImmediate(adjustViewSizes);
   }
 
   if (action.type === HIDE_CONFIGURATION) {

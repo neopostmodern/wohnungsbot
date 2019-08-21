@@ -12,6 +12,7 @@
  */
 import {
   app,
+  screen,
   BrowserWindow,
   BrowserView,
   type BrowserViewConstructorOptions
@@ -86,8 +87,8 @@ configureStore(MAIN, isDevelopment)
 
       mainWindow = new BrowserWindow({
         show: false,
-        width: 1000,
-        height: 500,
+        width: Math.min(1200, screen.getPrimaryDisplay().workAreaSize.width),
+        height: Math.min(800, screen.getPrimaryDisplay().workAreaSize.height),
         webPreferences: {
           // devTools: false
         }
@@ -182,9 +183,6 @@ configureStore(MAIN, isDevelopment)
 
         if (!mainWindow.isVisible()) {
           mainWindow.show();
-        }
-        if (!mainWindow.isMaximized()) {
-          mainWindow.maximize();
         }
 
         if (firstLaunch) {
