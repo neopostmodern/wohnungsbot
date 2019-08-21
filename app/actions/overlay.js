@@ -17,7 +17,6 @@ import type {
   ElementBoundingBox
 } from '../reducers/overlay';
 import type { BoundingBoxGroup } from '../constants/boundingBoxGroups';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 
 export function clickAnimationShow(
   animationId: string,

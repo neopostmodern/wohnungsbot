@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 
 type TextareaProps = {
@@ -37,9 +39,8 @@ export default class Textarea extends React.Component<
   }
 
   render() {
-    const { onChange, value: propsValue, ...props } = this.props;
     const { value } = this.state;
 
-    return <textarea value={value} onChange={this.handleChange} {...props} />;
+    return <textarea value={value} onChange={this.handleChange} />;
   }
 }

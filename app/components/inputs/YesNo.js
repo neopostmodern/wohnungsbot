@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 
 type YesNoProps = {
@@ -9,10 +11,10 @@ export default class YesNo extends React.Component<YesNoProps> {
   props: YesNoProps;
 
   render() {
-    const { value, onChange, ...props } = this.props;
+    const { value, onChange } = this.props;
 
     return (
-      <div {...props}>
+      <div>
         <input type="checkbox" checked={value} onChange={onChange} /> Ja
         &nbsp;&nbsp;
         <input type="checkbox" checked={!value} onChange={onChange} /> Nein

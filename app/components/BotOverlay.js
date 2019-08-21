@@ -39,6 +39,7 @@ export default class BotOverlay extends Component<Props> {
             );
           }
 
+          // eslint-disable-next-line no-console
           console.error(
             `Unknown animation: ${animation.type} (${animation.animationId})`
           );
@@ -91,9 +92,7 @@ export default class BotOverlay extends Component<Props> {
     );
 
     if (matchedFlats.length > 0) {
-      return `${notAppliedYetFlats.length} neue passende Wohnungen gefunden (${
-        matchedFlats.length
-      } insgesamt).`;
+      return `${notAppliedYetFlats.length} neue passende Wohnungen gefunden (${matchedFlats.length} insgesamt).`;
     }
 
     return 'Ich bin bereit, aber es gibt keine Wohnungen!';

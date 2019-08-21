@@ -40,4 +40,7 @@ import('./store/configureStore')
       });
     }
   })
-  .catch(error => console.error(error));
+  .catch(error => {
+    // eslint-disable-next-line no-console
+    console.error(`Error in index.js: ${error}`);
+  });

@@ -21,7 +21,7 @@ export function assessFlat(
 
   if (overviewDataEntry.rent / overviewDataEntry.area < 4) {
     reasons.push({
-      reason: 'Angebot is fake',
+      reason: 'Angebot ist fake',
       result: false
     });
   }
@@ -41,6 +41,12 @@ export function assessFlat(
       result: configuration.filter.hasWBS
     });
   }
+
+  const rentPerSquareMeter = overviewDataEntry.rent / overviewDataEntry.area;
+  reasons.push({
+    reason: `${rentPerSquareMeter.toFixed(2)} €/m² (kalt)`,
+    result: rentPerSquareMeter < 13
+  });
 
   if (
     overviewDataEntry.title.toLowerCase().includes('bes.') ||

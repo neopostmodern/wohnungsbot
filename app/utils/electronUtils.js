@@ -14,7 +14,7 @@ export default class ElectronUtils {
   }
 
   // eslint-disable-next-line flowtype/no-weak-types
-  async evaluate(javaScript: string, isUserGesture = false): any {
+  async evaluate(javaScript: string, isUserGesture: boolean = false): any {
     const code = `new Promise((resolve, reject) => {
        try {
           resolve(${javaScript})
@@ -26,6 +26,7 @@ export default class ElectronUtils {
     try {
       return await this.webContents.executeJavaScript(code, isUserGesture);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`Error executing JavaScript in Electron:
 [${error.name}] ${error.message}
 ${error.stack}
@@ -66,32 +67,24 @@ ${code}
   }
 
   async performPressKey(keyCode: string, modifiers?: Array<string>) {
-    const eventDescription = { keyCode, modifiers };
+    const eventDescription: {
+      keyCode: string,
+      modifiers?: Array<string>,
+      charCode?: number
+    } = { keyCode, modifiers };
 
     if (eventDescription.keyCode === 'Return') {
       eventDescription.keyCode = '\u000d';
       eventDescription.charCode = 13;
     }
 
-    this.webContents.sendInputEvent(
-      Object.assign({}, eventDescription, {
-        type: 'keyDown'
-      })
-    );
+    this.webContents.sendInputEvent({ ...eventDescription, type: 'keyDown' });
 
     await sleep(1 + Math.random() * 5);
-    this.webContents.sendInputEvent(
-      Object.assign({}, eventDescription, {
-        type: 'char'
-      })
-    );
+    this.webContents.sendInputEvent({ ...eventDescription, type: 'char' });
 
     await sleep(10 + Math.random() * 50);
-    this.webContents.sendInputEvent(
-      Object.assign({}, eventDescription, {
-        type: 'keyUp'
-      })
-    );
+    this.webContents.sendInputEvent({ ...eventDescription, type: 'keyUp' });
   }
 
   async scrollBy(deltaX: number, deltaY: number) {
@@ -119,7 +112,7 @@ ${code}
     mustIncludeBottom: boolean = false
   ): Promise<boolean> {
     try {
-      if (!this.elementExists(selector)) {
+      if (!(await this.elementExists(selector))) {
         console.log(
           `isElementInViewport(${selector}) called on non-existent element`
         );

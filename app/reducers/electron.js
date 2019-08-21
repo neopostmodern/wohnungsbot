@@ -42,7 +42,7 @@ export default function electron(
   action: Action
 ): electronStateType {
   if (action.type === SET_BROWSER_WINDOW) {
-    return Object.assign({}, state, { window: action.payload.window });
+    return { ...state, window: action.payload.window };
   }
   if (action.type === INTERNAL_ADD_BROWSER_VIEW) {
     const { name, browserView } = action.payload;
@@ -57,7 +57,7 @@ export default function electron(
     return dotProp.set(state, `views.${name}.url`, url);
   }
   if (action.type === HIDE_CONFIGURATION) {
-    return Object.assign({}, state, { configurationHidden: true });
+    return { ...state, configurationHidden: true };
   }
 
   return state;

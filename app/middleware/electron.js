@@ -39,6 +39,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     store.dispatch(setBrowserViewUrl(name, targetUrl));
     const viewState = store.getState().electron.views[name];
     if (viewState === undefined) {
+      // eslint-disable-next-line no-console
       console.error(`No view registered for ${name}!`);
     } else {
       viewState.browserView.webContents.loadURL(targetUrl);
@@ -48,6 +49,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   if (action.type === INTERNAL_ADD_BROWSER_VIEW) {
     const { window } = store.getState().electron;
     if (window === undefined || window === null) {
+      // eslint-disable-next-line no-console
       console.error('Main window not defined!');
       return;
     }

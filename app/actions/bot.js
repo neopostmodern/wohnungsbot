@@ -16,11 +16,7 @@ import {
 } from '../constants/actionTypes';
 import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
-import {
-  calculateOverviewBoundingBoxes,
-  removeBoundingBoxesInGroup
-} from './overlay';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import { calculateOverviewBoundingBoxes } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
 
 export function queueInvestigateFlat(flatId: string): Action {

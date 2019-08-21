@@ -168,7 +168,7 @@ export default function data(
   action: Action
 ) {
   if (action.type === SET_OVERVIEW_DATA) {
-    return Object.assign({}, state, { overview: action.payload.data });
+    return { ...state, overview: action.payload.data };
   }
 
   if (action.type === SET_FLAT_DATA) {

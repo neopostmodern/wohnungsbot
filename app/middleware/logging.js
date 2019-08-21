@@ -26,15 +26,16 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
       action.payload &&
       JSON.stringify(action.payload).length > payloadLengthLimit
     ) {
-      console.log(
-        Object.assign({}, action, {
-          payload: `${JSON.stringify(action.payload).substr(
-            0,
-            payloadLengthLimit
-          )}...`
-        })
-      );
+      // eslint-disable-next-line no-console
+      console.log({
+        ...action,
+        payload: `${JSON.stringify(action.payload).substr(
+          0,
+          payloadLengthLimit
+        )}...`
+      });
     } else {
+      // eslint-disable-next-line no-console
       console.log(action);
     }
   }

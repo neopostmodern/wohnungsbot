@@ -25,6 +25,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
   if (action.type === LAUNCH_NEXT_TASK) {
     if (scheduler.isActive === true) {
+      // eslint-disable-next-line no-console
       console.error('Attempt to launch a second task, ignored.');
       return next(noop());
     }

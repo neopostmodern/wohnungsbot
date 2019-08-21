@@ -62,7 +62,10 @@ configureStore(MAIN, isDevelopment)
         extensions.map(name =>
           installer.default(installer[name], forceDownload)
         )
-      ).catch(console.log);
+      ).catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(`Problem installing extensions: ${error}`);
+      });
     };
 
     /**
@@ -98,6 +101,7 @@ configureStore(MAIN, isDevelopment)
         initialUrl: string
       ): BrowserView => {
         if (mainWindow === undefined || mainWindow === null) {
+          // eslint-disable-next-line no-console
           console.error('Main window not defined!');
           return;
         }
@@ -169,6 +173,7 @@ configureStore(MAIN, isDevelopment)
 
       configurationView.webContents.on('did-finish-load', () => {
         if (mainWindow === undefined || mainWindow === null) {
+          // eslint-disable-next-line no-console
           console.error('Main window not defined!');
           return;
         }
@@ -198,4 +203,7 @@ configureStore(MAIN, isDevelopment)
       new AppUpdater();
     });
   })
-  .catch(error => console.error(error));
+  .catch(error => {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  });

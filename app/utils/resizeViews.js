@@ -11,6 +11,7 @@ export default function resizeViews(
     views: { puppet, sidebar, botOverlay, configuration, devMenu }
   } = electronState;
   if (window === undefined || window === null) {
+    // eslint-disable-next-line no-console
     console.error('Main window not defined!');
     return;
   }

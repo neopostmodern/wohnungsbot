@@ -13,10 +13,9 @@ const EnumField = ({
   onChange,
   options,
   inline,
-  isWeird,
-  ...props
+  isWeird
 }: EnumFieldProps) => (
-  <div {...props}>
+  <div>
     {/* eslint-disable-next-line flowtype/no-weak-types */}
     {Object.entries(options).map(([optionKey, optionValue]: any) => (
       <div className={inline ? 'inline-enum-select' : ''} key={optionKey}>

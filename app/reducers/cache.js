@@ -50,11 +50,10 @@ export default function cache(
   if (action.type === MARK_COMPLETED) {
     const { name, identifier, data } = action.payload;
 
-    return dotProp.set(
-      state,
-      `${name}.${identifier}`,
-      Object.assign({}, data, { timestamp: new Date().getTime() })
-    );
+    return dotProp.set(state, `${name}.${identifier}`, {
+      ...data,
+      timestamp: new Date().getTime()
+    });
   }
 
   if (action.type === SET_CACHE) {

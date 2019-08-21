@@ -108,6 +108,7 @@ const EMPLOYMENT_STATUS_VALUES = {
 };
 const mapIncomeToValue = (income: ?number): string => {
   if (income === null || income === undefined) {
+    // eslint-disable-next-line no-console
     console.error('No income has been defined.');
     return '';
   }
@@ -179,7 +180,7 @@ async function fillSelectField(
   let sanitizedValue = field.value;
 
   if (skipField) {
-    if (electronUtils.getValue(field.selector)) {
+    if (await electronUtils.getValue(field.selector)) {
       sanitizedValue = '';
     } else {
       return;
@@ -277,6 +278,7 @@ export function fillForm(
       } else if (field.type === 'select') {
         await fillSelectField(dispatch, electronUtils, field, skipField);
       } else {
+        // eslint-disable-next-line no-console
         console.error(`Unknown field type: ${field.type}`);
       }
     }

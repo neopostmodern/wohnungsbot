@@ -4,8 +4,8 @@ type TextFieldProps = {
   value: ?string,
   onChange: (value: ?string) => void,
   placeholder: string,
-  // eslint-disable-next-line flowtype/no-weak-types
-  containerStyle?: any,
+  style: CSSStyleDeclaration,
+  containerStyle?: CSSStyleDeclaration,
   onlyChangeOnSubmit?: boolean
 };
 type TextFieldState = {
@@ -57,14 +57,7 @@ export default class TextField extends React.Component<
   }
 
   render() {
-    const {
-      value: propsValue,
-      onChange,
-      placeholder,
-      containerStyle,
-      onlyChangeOnSubmit,
-      ...props
-    } = this.props;
+    const { placeholder, containerStyle, style } = this.props;
     const { value } = this.state;
 
     return (
@@ -80,7 +73,7 @@ export default class TextField extends React.Component<
           onKeyPress={this.handleKeyPress}
           onChange={this.handleChange}
           placeholder={placeholder}
-          {...props}
+          style={style}
         />
         <div className="textinput-placeholder">{placeholder}</div>
       </div>
