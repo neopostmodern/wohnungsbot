@@ -71,7 +71,9 @@ const flatDescriptionStage: StageDescription = {
             Maximal{' '}
             <NumberField
               value={maximumRentPerSquareMeter}
-              onChange={value => setNumber('filter.maximumRentPerSquareMeter', value)}
+              onChange={value =>
+                setNumber('filter.maximumRentPerSquareMeter', value)
+              }
             />
             € / m² (Kaltmiete)
           </div>
@@ -80,8 +82,8 @@ const flatDescriptionStage: StageDescription = {
               value={minimumRooms}
               onChange={value => setNumber('filter.minimumRooms', value)}
               step={0.5}
-            />
-            {' '}bis{' '}
+            />{' '}
+            bis{' '}
             <NumberField
               value={maximumRooms}
               onChange={value => setNumber('filter.maximumRooms', value)}

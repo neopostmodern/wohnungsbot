@@ -85,7 +85,7 @@ const reviewStage: StageDescription = {
             <i>beliebiger</i>
           )}{' '}
           Quadratmeterpreis (kalt)
-          <br/>
+          <br />
           <br />
           {configuration.filter.minimumRooms ||
           configuration.filter.maximumRooms ? (
