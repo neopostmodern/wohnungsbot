@@ -10,6 +10,25 @@
   box-sizing: border-box;
 }
 
+@mixin border {
+  background-color: $BOT_DARK;
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  height: $OVERLAY_BORDER_WIDTH;
+}
+.borderTop {
+  @include border;
+
+  top: 0;
+}
+.borderBottom {
+  @include border;
+
+  bottom: 0;
+}
+
 $bot-illustration-offset-right: 10vh;
 $bot-illustration-width: 15vh;
 .botIllustration {

@@ -114,6 +114,10 @@ export default class BotOverlay extends Component<Props> {
         data-tid="container"
         onWheel={this.handleWheel}
       >
+        {/* make sure to draw the bottom and top border atop of the overlays */}
+        <div className={styles.borderBottom} />
+        <div className={styles.borderTop} />
+
         {BotOverlay.renderAnimations(animations)}
         {showOverlay
           ? overviewBoundingBoxes.map(
