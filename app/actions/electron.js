@@ -13,7 +13,8 @@ import {
   SET_BROWSER_VIEW_URL,
   SET_BROWSER_WINDOW,
   SHOW_CONFIGURATION,
-  SHOW_DEV_TOOLS
+  SHOW_DEV_TOOLS,
+  OPEN_PDF
 } from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
@@ -110,6 +111,15 @@ export function showDevTools(name: BrowserViewName): Action {
     },
     meta: {
       target: MAIN
+    }
+  };
+}
+
+export function openPDF(pdfPath: string): Action {
+  return {
+    type: OPEN_PDF,
+    payload: {
+      pdfPath
     }
   };
 }

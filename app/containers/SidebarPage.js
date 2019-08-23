@@ -1,14 +1,16 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
-import { showConfiguration } from '../actions/electron';
+import { openPDF, showConfiguration } from '../actions/electron';
 import { returnToSearchPage } from '../actions/bot';
 
 function mapStateToProps(state) {
   const applications = Object.values(state.cache.applications).filter(
     ({ reason }) => reason !== 'UNSUITABLE'
   );
-  applications.sort((a, b) => a.timestamp < b.timestamp);
+
+  // most recent applications to the top
+  applications.sort((a, b) => Math.sign(b.timestamp - a.timestamp));
 
   return {
     applications
@@ -17,7 +19,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { returnToSearchPage, showConfiguration },
+    { returnToSearchPage, showConfiguration, openPDF },
     dispatch
   );
 }

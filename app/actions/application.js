@@ -24,6 +24,7 @@ import {
   setShowOverlay,
   taskFinished
 } from './bot';
+import { printToPDF } from './helpers';
 
 export const generateApplicationTextAndSubmit = (flatId: string) => async (
   dispatch: Dispatch,
@@ -43,6 +44,8 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
   const { webContents } = electron.views.puppet.browserView;
   const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
+  const pdfPath = await dispatch(printToPDF('puppet', flatId));
+
   const flatOverview = data.overview[flatId];
 
   const formTimeout = setTimeout(
@@ -58,7 +61,8 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
         flatId,
         success,
         addressDescription: flatOverview.address.description,
-        reason
+        reason,
+        pdfPath
       })
     );
   };
