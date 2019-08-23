@@ -6,6 +6,7 @@ import { app } from 'electron';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
 import sendMail from '../utils/email';
+import { timeout } from '../utils/async';
 
 const pdfFolderPath = path.join(app.getPath('userData'), 'pdf');
 if (!fs.existsSync(pdfFolderPath)) {
@@ -38,10 +39,16 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       }
     }
 
-    const { webContents } = store.getState().electron.views[name].browserView;
-    const pdfData = await webContents.printToPDF({ pageSize: 'A4' });
+    try {
+      const { webContents } = store.getState().electron.views[name].browserView;
+      // todo: investigate why printToPDF even times out
+      const pdfData = await timeout(webContents.printToPDF({ pageSize: 'A4' }), 10000);
 
-    await fs.promises.writeFile(filePath, pdfData);
+      await fs.promises.writeFile(filePath, pdfData);
+    } catch (error) {
+      console.error("Failed to create PDF:", error);
+      return null;
+    }
 
     // ignoring further returned values!
     next(action);
