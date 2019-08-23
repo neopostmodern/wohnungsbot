@@ -1,15 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import styles from './Sidebar.scss';
-import type { ApplicationData } from '../reducers/cache';
-import { flatPageUrl } from '../flat/urlBuilder';
+import type { ApplicationData, BaseCacheEntry } from '../reducers/cache';
 import { homepage, version, bugs } from '../../package.json';
+import RecentApplication from './sidebar/recentApplication';
 
 type Props = {
   showConfiguration: () => void,
   openPDF: (pdfPath: string) => void,
   returnToSearchPage: () => void,
-  applications: Array<ApplicationData>
+  applications: Array<ApplicationData & BaseCacheEntry>
 };
 type State = {
   announcement?: string
@@ -17,8 +17,6 @@ type State = {
 
 export default class Sidebar extends Component<Props, State> {
   props: Props;
-
-  static RecentApplicationsShowCount = 7;
 
   state: State = {};
 
@@ -32,71 +30,35 @@ export default class Sidebar extends Component<Props, State> {
   }
 
   render() {
-    const { showConfiguration, returnToSearchPage, applications } = this.props;
+    const {
+      showConfiguration,
+      returnToSearchPage,
+      applications,
+      openPDF
+    } = this.props;
     const { announcement } = this.state;
 
     return (
       <div className={styles.container}>
-        <h3>Letzte Bewerbungen</h3>
-        {applications
-          .slice(0, Sidebar.RecentApplicationsShowCount)
-          .map(({ flatId, success, reason, addressDescription, pdfPath }) => (
-            <div key={flatId} className={styles.entry}>
-              <div className={styles.symbol}>
-                <span
-                  className={`material-icons standalone-icon ${
-                    success ? styles.good : 'bad'
-                  }`}
-                >
-                  {success ? 'check' : 'clear'}
-                </span>
-              </div>
-              <div className={styles.entryText}>
-                <div>{addressDescription.split('(')[0]}</div>
-                <div>
-                  {success ? (
-                    <a
-                      href={flatPageUrl(flatId)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Wohnung ansehen
-                      <span className="material-icons">open_in_new</span>
-                    </a>
-                  ) : (
-                    reason
-                  )}
-                </div>
-              </div>
-              <div className={`${styles.symbol} ${styles.clickable}`}>
-                {pdfPath ? (
-                  <span
-                    className="material-icons standalone-icon"
-                    onClick={this.props.openPDF.bind(this, pdfPath)}
-                  >
-                    picture_as_pdf
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        {applications.length > Sidebar.RecentApplicationsShowCount ? (
-          <div>
-            und {applications.length - Sidebar.RecentApplicationsShowCount}{' '}
-            vorherige
-          </div>
-        ) : null}
-
-        <div
-          id={styles.announcement}
-          dangerouslySetInnerHTML={{ __html: announcement || '' }}
-        />
         <button onClick={showConfiguration} type="button">
           <span className="material-icons">arrow_backward</span>
           Suchfilter anpassen
         </button>
-        <br />
-        <br />
+        <div
+          id={styles.announcement}
+          dangerouslySetInnerHTML={{ __html: announcement || '' }}
+        />
+        <h3>Letzte Bewerbungen</h3>
+        <div className={styles.recentApplications}>
+          {applications.map(application => (
+            <RecentApplication
+              key={application.flatId}
+              application={application}
+              openPDF={openPDF.bind(application.pdfPath)}
+            />
+          ))}
+        </div>
+
         <button onClick={returnToSearchPage} type="button">
           <span className="material-icons">replay</span> Bot zurücksetzen
         </button>

@@ -2,7 +2,7 @@
 
 .container {
   background-color: #226798;
-  padding: 2vh 2vh $OVERLAY_BORDER_WIDTH;
+  padding: 2vh 1vh $OVERLAY_BORDER_WIDTH 2vh;
   height: 100vh;
   box-sizing: border-box;
   color: white;
@@ -18,14 +18,30 @@ h3:first-child {
   margin-top: 0;
 }
 
+.recentApplications {
+  flex-shrink: 1;
+  overflow-y: scroll;
+  padding-right: 0.5rem;
+  margin-bottom: 2rem;
+}
+
 .entry {
-  display: flex;
-  align-items: center;
   margin-bottom: 0.5em;
+  padding: 0.5em 0.4em 0.2em;
+  background-color: $BOT_LIGHT;
+  color: black;
+}
+.failure {
+  background-color: #ff4c53;
+}
+
+.unknownStreet {
+  font-style: italic;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .symbol {
-  font-size: 200%;
+  font-size: 150%;
 }
 .good {
   color: forestgreen;
@@ -41,14 +57,24 @@ h3:first-child {
   color: inherit;
 }
 
-.entryText {
-  margin: 0 0.5rem;
+.entryHeader {
+  display: flex;
+  justify-content: space-between;
+  text-transform: uppercase;
+  font-size: 70%;
+  margin-bottom: 0.1rem;
+}
+.entryBody {
+  display: flex;
+  align-items: center;
+}
+.entryMainText {
   flex-grow: 1;
 }
 
 #announcement {
-  margin-top: auto;
-  margin-bottom: 5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
 .comment {
