@@ -8,7 +8,9 @@ function mapStateToProps(state) {
   const applications = Object.values(state.cache.applications).filter(
     ({ reason }) => reason !== 'UNSUITABLE'
   );
-  applications.sort((a, b) => a.timestamp < b.timestamp);
+
+  // most recent applications to the top
+  applications.sort((a, b) => Math.sign(b.timestamp - a.timestamp));
 
   return {
     applications
