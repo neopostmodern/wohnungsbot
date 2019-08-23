@@ -24,7 +24,7 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     /* eslint-enable no-await-in-loop */
   }
 
-  async fillText(selector: string, text: string) {
+  async fillText(selector: string, text: string, secondTry: boolean = false) {
     const currentValue = await this.getValue(selector);
     if (currentValue) {
       if (currentValue === text) {
@@ -41,5 +41,13 @@ export default class ElectronUtilsRedux extends ElectronUtils {
 
     await sleep(500);
     await this.dispatch(type(text));
+
+    if ((await this.getValue(selector)) !== text) {
+      if (secondTry) {
+        throw Error(`Repeatedly failed to write text to "${selector}": "${text}"`);
+      }
+
+      await this.fillText(selector, text, true);
+    }
   }
 }
