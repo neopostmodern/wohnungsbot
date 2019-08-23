@@ -27,9 +27,7 @@ const RecentApplication = ({
     );
 
   return (
-    <div
-      className={`${styles.entry} ${success ? '' : styles.failure}`}
-    >
+    <div className={`${styles.entry} ${success ? '' : styles.failure}`}>
       <div className={styles.entryHeader}>
         <div>{area}</div>
         <div>{new Date(timestamp).toLocaleString('de').split(',')[0]}</div>
