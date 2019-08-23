@@ -42,11 +42,15 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     try {
       const { webContents } = store.getState().electron.views[name].browserView;
       // todo: investigate why printToPDF even times out
-      const pdfData = await timeout(webContents.printToPDF({ pageSize: 'A4' }), 10000);
+      const pdfData = await timeout(
+        webContents.printToPDF({ pageSize: 'A4' }),
+        10000
+      );
 
       await fs.promises.writeFile(filePath, pdfData);
     } catch (error) {
-      console.error("Failed to create PDF:", error);
+      // eslint-disable-next-line no-console
+      console.error('Failed to create PDF:', error);
       return null;
     }
 

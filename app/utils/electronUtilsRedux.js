@@ -44,7 +44,9 @@ export default class ElectronUtilsRedux extends ElectronUtils {
 
     if ((await this.getValue(selector)) !== text) {
       if (secondTry) {
-        throw Error(`Repeatedly failed to write text to "${selector}": "${text}"`);
+        throw Error(
+          `Repeatedly failed to write text to "${selector}": "${text}"`
+        );
       }
 
       await this.fillText(selector, text, true);
