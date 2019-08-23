@@ -23,21 +23,24 @@ export default class ElectronUtils {
        }
     })`;
 
+    // save a stack trace in case we have an error later
+    const { stack } = new Error();
+
     try {
       return await this.webContents.executeJavaScript(code, isUserGesture);
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error(`Error executing JavaScript in Electron:
+      console.error(`Error executing JavaScript-snippet within webContents:
 [${error.name}] ${error.message}
 ${error.stack}
 
 This is the code that caused the error:
 ${code}
 // END OF CODE
+
+Stack that led to the execution of this snippet (Electron):
+${stack.split('\n').slice(2).map(line => line.replace(/\s+/i, ' ')).join('\n')}
 `);
-      if (process.env.NODE_ENV === 'development') {
-        throw error;
-      }
     }
   }
 
