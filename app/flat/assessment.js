@@ -63,7 +63,12 @@ export function assessFlat(
   if (configuration.filter.onlyUnfurnished) {
     reasons.push({
       reason: `Unmöbliert`,
-      result: !overviewDataEntry.title.toLowerCase().includes('öbliert')
+      result: !(
+        overviewDataEntry.title.toLowerCase().includes('öbliert') ||
+        overviewDataEntry.title.toLowerCase().includes('furnish') ||
+        overviewDataEntry.title.toLowerCase().includes('furniture')||
+        overviewDataEntry.title.toLowerCase().includes('equipped')
+      )
     });
   }
 
