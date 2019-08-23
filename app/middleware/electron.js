@@ -12,6 +12,7 @@ import {
   ELECTRON_ROUTING,
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
+  OPEN_PDF,
   PERFORM_SCROLL,
   SCROLL_WHILE_IDLE,
   SET_BROWSER_WINDOW,
@@ -151,6 +152,10 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     }
 
     webContents.openDevTools();
+  }
+
+  if (action.type === OPEN_PDF) {
+    shell.openItem(action.payload.pdfPath);
   }
 
   return next(action);

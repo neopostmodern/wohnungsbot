@@ -16,7 +16,8 @@ export type ApplicationData = {
   flatId: string,
   success: boolean,
   addressDescription: string,
-  reason?: string
+  reason?: string,
+  pdfPath?: string
 };
 
 export type EmailData = {

@@ -1,7 +1,7 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
-import { showConfiguration } from '../actions/electron';
+import { openPDF, showConfiguration } from '../actions/electron';
 import { returnToSearchPage } from '../actions/bot';
 
 function mapStateToProps(state) {
@@ -19,7 +19,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { returnToSearchPage, showConfiguration },
+    { returnToSearchPage, showConfiguration, openPDF },
     dispatch
   );
 }

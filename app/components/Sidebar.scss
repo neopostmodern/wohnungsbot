@@ -26,14 +26,24 @@ h3:first-child {
 
 .symbol {
   font-size: 200%;
-  margin-right: 0.5rem;
 }
 .good {
   color: forestgreen;
 }
+.clickable {
+  cursor: pointer;
+  &:hover {
+    opacity: 0.8;
+  }
+}
 
 .link {
   color: inherit;
+}
+
+.entryText {
+  margin: 0 0.5rem;
+  flex-grow: 1;
 }
 
 #announcement {

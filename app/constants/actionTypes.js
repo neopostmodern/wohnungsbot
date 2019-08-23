@@ -8,6 +8,7 @@ export const HIDE_CONFIGURATION = 'HIDE_CONFIGURATION';
 export const SHOW_CONFIGURATION = 'SHOW_CONFIGURATION';
 export const PERFORM_SCROLL = 'PERFORM_SCROLL';
 export const SHOW_DEV_TOOLS = 'SHOW_DEV_TOOLS';
+export const OPEN_PDF = 'OPEN_PDF';
 
 // configuration
 export const SET_CONFIGURATION = 'SET_CONFIGURATION';

@@ -18,8 +18,6 @@ import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
 import { calculateOverviewBoundingBoxes } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
-import ElectronUtilsRedux from '../utils/electronUtilsRedux';
-import { printToPDF, sendMail } from './helpers';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return async (dispatch: Dispatch, getState: GetState) => {

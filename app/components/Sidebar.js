@@ -7,6 +7,7 @@ import { homepage, version, bugs } from '../../package.json';
 
 type Props = {
   showConfiguration: () => void,
+  openPDF: (pdfPath: string) => void,
   returnToSearchPage: () => void,
   applications: Array<ApplicationData>
 };
@@ -39,7 +40,7 @@ export default class Sidebar extends Component<Props, State> {
         <h3>Letzte Bewerbungen</h3>
         {applications
           .slice(0, Sidebar.RecentApplicationsShowCount)
-          .map(({ flatId, success, reason, addressDescription }) => (
+          .map(({ flatId, success, reason, addressDescription, pdfPath }) => (
             <div key={flatId} className={styles.entry}>
               <div className={styles.symbol}>
                 <span
@@ -50,7 +51,7 @@ export default class Sidebar extends Component<Props, State> {
                   {success ? 'check' : 'clear'}
                 </span>
               </div>
-              <div>
+              <div className={styles.entryText}>
                 <div>{addressDescription.split('(')[0]}</div>
                 <div>
                   {success ? (
@@ -66,6 +67,16 @@ export default class Sidebar extends Component<Props, State> {
                     reason
                   )}
                 </div>
+              </div>
+              <div className={`${styles.symbol} ${styles.clickable}`}>
+                {pdfPath ? (
+                  <span
+                    className="material-icons standalone-icon"
+                    onClick={this.props.openPDF.bind(this, pdfPath)}
+                  >
+                    picture_as_pdf
+                  </span>
+                ) : null}
               </div>
             </div>
           ))}
