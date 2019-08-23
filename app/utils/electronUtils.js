@@ -102,7 +102,11 @@ ${stack.split('\n').slice(2).map(line => line.replace(/\s+/i, ' ')).join('\n')}
 
   async getBoundingBox(
     selector: string
-  ): Promise<ClientRect & { x: number, y: number }> {
+  ): Promise<?(ClientRect & { x: number, y: number })> {
+    if (!(await this.elementExists(selector))) {
+      return null;
+    }
+
     return (this.evaluate(
       `JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()))`
       // eslint-disable-next-line flowtype/no-weak-types

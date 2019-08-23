@@ -113,9 +113,11 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       selector
     );
 
-    store.dispatch(
-      setBoundingBox(boundingBox, selector, { group, attachedInformation })
-    );
+    if (boundingBox) {
+      store.dispatch(
+        setBoundingBox(boundingBox, selector, { group, attachedInformation })
+      );
+    }
   }
 
   if (action.type === SET_SHOW_OVERLAY && action.payload.showOverlay) {
