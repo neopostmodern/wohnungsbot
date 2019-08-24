@@ -4,6 +4,7 @@ import { electronRouting } from '../actions/electron';
 import type { Action, Store } from '../reducers/types';
 import { sleep } from '../utils/async';
 import {
+  RESET_BOT,
   RETURN_TO_SEARCH_PAGE,
   SET_BROWSER_VIEW_READY,
   SET_VERDICT
@@ -12,11 +13,16 @@ import { calculateOverviewBoundingBoxes } from '../actions/overlay';
 import { getFlatData, getOverviewData, refreshVerdicts } from '../actions/data';
 import { FLAT_ACTION } from '../reducers/data';
 import { sendFlatViewingNotificationMail } from '../actions/email';
-import { launchNextTask, queueInvestigateFlat } from '../actions/bot';
+import {
+  launchNextTask,
+  queueInvestigateFlat,
+  returnToSearchPage
+} from '../actions/bot';
 import {
   discardApplicationProcess,
   generateApplicationTextAndSubmit
 } from '../actions/application';
+import AbortionSystem from '../utils/abortionSystem';
 
 export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
@@ -25,6 +31,11 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     store.dispatch(
       electronRouting('puppet', store.getState().configuration.searchUrl)
     );
+  }
+
+  if (action.type === RESET_BOT) {
+    AbortionSystem.abort();
+    store.dispatch(returnToSearchPage());
   }
 
   if (action.type === SET_BROWSER_VIEW_READY) {

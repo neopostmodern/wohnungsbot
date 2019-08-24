@@ -4,19 +4,11 @@ import type { ApplicationData, cacheStateType } from '../reducers/cache';
 import { CACHE_NAMES } from '../reducers/cache';
 import type { Dispatch, GetState } from '../reducers/types';
 import { markCompleted } from './cache';
-import { sleep } from '../utils/async';
+import { sleep, timeout } from '../utils/async';
 import type { Configuration } from '../reducers/configuration';
 import type { dataStateType, OverviewDataEntry } from '../reducers/data';
 import type { electronStateType } from '../reducers/electron';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
-import { clickAction } from './botHelpers';
-import {
-  fillForm,
-  generateAdditionalDataFormFillingDescription,
-  generatePersonalDataFormFillingDescription
-} from './formFiller';
-import applicationTextBuilder from '../flat/applicationTextBuilder';
-import { sendApplicationNotificationEmail } from './email';
 import {
   returnToSearchPage,
   setBotIsActing,
@@ -24,7 +16,10 @@ import {
   setShowOverlay,
   taskFinished
 } from './bot';
+import performApplication from '../utils/performApplication';
+import { abortable } from '../utils/generators';
 import { printToPDF } from './helpers';
+import AbortionSystem from '../utils/abortionSystem';
 
 export const generateApplicationTextAndSubmit = (flatId: string) => async (
   dispatch: Dispatch,
@@ -46,126 +41,37 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
 
   const pdfPath = await dispatch(printToPDF('puppet', flatId));
 
-  const flatOverview = data.overview[flatId];
-
-  const formTimeout = setTimeout(
-    async () => markComplete(false, 'Technischer Fehler (Timeout)'),
-    300000
+  const { abortableAction: abortablePerformApplication, abort } = abortable(
+    performApplication
   );
-
-  const markComplete = async (success: boolean, reason?: string) => {
-    clearTimeout(formTimeout);
-
-    await dispatch(
-      markApplicationComplete({
-        flatId,
-        success,
-        addressDescription: flatOverview.address.description,
-        reason,
-        pdfPath
-      })
+  AbortionSystem.registerAbort(abort);
+  let success;
+  let reason;
+  try {
+    await timeout(
+      abortablePerformApplication(
+        dispatch,
+        electronUtils,
+        configuration,
+        data.overview[flatId]
+      ),
+      300000
     );
-  };
-
-  dispatch(setBotMessage('Anfrage schreiben!'));
-
+    success = true;
+  } catch (error) {
+    success = false;
+    AbortionSystem.abort();
+    reason = error.message;
+  }
   await dispatch(
-    clickAction(
-      await electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
-      'always'
-    )
+    markApplicationComplete({
+      flatId,
+      success,
+      addressDescription: data.overview[flatId].address.description,
+      reason,
+      pdfPath
+    })
   );
-
-  /* eslint-disable no-await-in-loop */
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    if (
-      await electronUtils.elementExists(
-        '[data-qa="get-premium-membership-button"]'
-      )
-    ) {
-      await markComplete(false, 'Bewerbung nur mit "Premium"-Account möglich');
-      return;
-    }
-
-    if (await electronUtils.elementExists('#contactForm-firstName')) {
-      break;
-    }
-
-    await sleep(50);
-  }
-  /* eslint-ensable no-await-in-loop */
-
-  const personalDataFormFillingDescription = generatePersonalDataFormFillingDescription(
-    configuration.contactData
-  );
-
-  const applicationText = applicationTextBuilder(
-    configuration.applicationText,
-    flatOverview.address,
-    flatOverview.contactDetails
-  );
-
-  await electronUtils.fillText('#contactForm-Message', applicationText);
-
-  await dispatch(
-    fillForm(
-      personalDataFormFillingDescription,
-      configuration.policies.fillAsLittleAsPossible
-    )
-  );
-
-  await sleep(1000);
-
-  if (
-    !(await electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
-  ) {
-    dispatch(setBotMessage('Und noch eine Seite...'));
-
-    await dispatch(clickAction('#is24-expose-modal button.button-primary'));
-
-    await sleep(3000);
-
-    await dispatch(
-      fillForm(
-        generateAdditionalDataFormFillingDescription(
-          configuration.additionalInformation
-        ),
-        configuration.policies.fillAsLittleAsPossible
-      )
-    );
-
-    await sleep(1000);
-  }
-
-  // todo: seems unnecessary?
-  // await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
-
-  dispatch(setBotMessage('Abschicken :)'));
-  await sleep(3000);
-
-  // make sure the submit button gets clicked, if not re-try
-  while (
-    await electronUtils.elementExists('#is24-expose-modal .button-primary')
-  ) {
-    await dispatch(clickAction('#is24-expose-modal .button-primary', 'always'));
-
-    await sleep(1000);
-  }
-
-  if (configuration.policies.applicationNotificationMails) {
-    dispatch(
-      sendApplicationNotificationEmail(
-        configuration.contactData,
-        flatOverview,
-        applicationText
-      )
-    );
-  }
-
-  dispatch(setBotMessage('Fertig.'));
-  await sleep(5000);
-  await markComplete(true);
 };
 
 export const markApplicationComplete = (data: ApplicationData) => async (
