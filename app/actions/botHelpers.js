@@ -14,7 +14,13 @@ import AbortionSystem from '../utils/abortionSystem';
 
 export function clickAction(
   selector: string,
-  scrollIntoViewPolicy: ScrollIntoViewPolicy = 'auto'
+  {
+    scrollIntoViewPolicy = 'auto',
+    elementExistenceGuaranteed = true
+  } : {
+    scrollIntoViewPolicy: ScrollIntoViewPolicy,
+    elementExistenceGuaranteed: boolean
+  } = {}
 ) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { webContents } = getState().electron.views.puppet.browserView;
@@ -23,7 +29,11 @@ export function clickAction(
       webContents.focus();
     }
 
-    await scrollIntoViewByPolicy(webContents, selector, scrollIntoViewPolicy);
+    await scrollIntoViewByPolicy(
+      webContents,
+      selector,
+      { scrollIntoViewPolicy, elementExistenceGuaranteed }
+    );
 
     // reset zoom factor, just in case someone (accidentally) changed it
     // when zoomed the coordinates are returned unscaled, so clicks miss
@@ -113,8 +123,15 @@ export type ScrollIntoViewStrategy = 'start' | 'center' | 'end' | 'nearest';
 export async function scrollIntoView(
   webContents: WebContents,
   selector: string,
-  strategy: ScrollIntoViewStrategy = 'center',
-  smooth: boolean = true
+  {
+    strategy = 'center',
+    smooth = true,
+    elementExistenceGuaranteed = true
+  } : {
+    strategy: ScrollIntoViewStrategy,
+    smooth?: boolean,
+    elementExistenceGuaranteed?: boolean
+  } = {}
 ) {
   const electronUtils = new ElectronUtils(webContents);
   /* eslint-disable no-await-in-loop */
@@ -128,7 +145,7 @@ export async function scrollIntoView(
     // there is no way to know when the smooth scroll has finished
     await sleep(2000);
 
-    if (await electronUtils.isElementInViewport(selector)) {
+    if (!elementExistenceGuaranteed || (await electronUtils.isElementInViewport(selector))) {
       break;
     }
   }
@@ -146,7 +163,7 @@ export function scrollIntoViewAction(
     } = getState();
     const { webContents } = views[name].browserView;
 
-    await scrollIntoView(webContents, selector, strategy, smooth);
+    await scrollIntoView(webContents, selector, { strategy, smooth });
   };
 }
 
@@ -154,20 +171,41 @@ export type ScrollIntoViewPolicy = 'always' | 'auto' | 'none';
 export async function scrollIntoViewByPolicy(
   webContents: WebContents,
   selector: string,
-  scrollIntoViewPolicy?: ScrollIntoViewPolicy = 'auto',
-  overrideStrategy?: ScrollIntoViewStrategy
+  {
+    scrollIntoViewPolicy = 'auto',
+    overrideStrategy,
+    elementExistenceGuaranteed = true
+  } : {
+    scrollIntoViewPolicy?: ScrollIntoViewPolicy,
+    overrideStrategy?: ScrollIntoViewStrategy,
+    elementExistenceGuaranteed?: boolean
+  } = {}
 ) {
   if (scrollIntoViewPolicy === 'none') {
     return;
   }
 
   if (scrollIntoViewPolicy === 'always') {
-    await scrollIntoView(webContents, selector, overrideStrategy || 'center');
+    await scrollIntoView(
+      webContents,
+      selector,
+      {
+        strategy: overrideStrategy || 'center',
+        elementExistenceGuaranteed
+      }
+    );
     return;
   }
 
   if (!(await new ElectronUtils(webContents).isElementInViewport(selector))) {
-    await scrollIntoView(webContents, selector, overrideStrategy || 'nearest');
+    await scrollIntoView(
+      webContents,
+      selector,
+      {
+        strategy: overrideStrategy || 'nearest',
+        elementExistenceGuaranteed
+      }
+    );
   }
 }
 

@@ -256,8 +256,10 @@ export function fillForm(
       await scrollIntoViewByPolicy(
         webContents,
         field.selector,
-        'auto',
-        'center'
+        {
+          scrollIntoViewByPolicy: 'auto',
+          overrideStrategy: 'center'
+        }
       );
 
       if ((await electronUtils.getValue(field.selector)) === field.value) {

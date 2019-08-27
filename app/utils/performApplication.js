@@ -97,7 +97,10 @@ export default function* performApplication(
   while (
     yield electronUtils.elementExists('#is24-expose-modal .button-primary')
   ) {
-    yield dispatch(clickAction('#is24-expose-modal .button-primary', 'always'));
+    yield dispatch(clickAction(
+      '#is24-expose-modal .button-primary',
+      { scrollIntoViewPolicy: 'always', elementExistenceGuaranteed: false }
+    ));
 
     yield sleep(1000);
   }
