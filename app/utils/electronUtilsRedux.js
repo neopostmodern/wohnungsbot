@@ -5,6 +5,7 @@ import ElectronUtils from './electronUtils';
 import { clickAction, type } from '../actions/botHelpers';
 import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
+import AbortionSystem from './abortionSystem';
 
 export default class ElectronUtilsRedux extends ElectronUtils {
   dispatch: Dispatch;
@@ -42,7 +43,10 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     await sleep(500);
     await this.dispatch(type(text));
 
-    if ((await this.getValue(selector)) !== text) {
+    if (
+      AbortionSystem.nestedFunctionsMayContinue &&
+      (await this.getValue(selector)) !== text
+    ) {
       if (secondTry) {
         throw Error(
           `Repeatedly failed to write text to "${selector}": "${text}"`

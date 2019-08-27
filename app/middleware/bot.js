@@ -1,11 +1,9 @@
 // @flow
 
-import { electronRouting } from '../actions/electron';
 import type { Action, Store } from '../reducers/types';
 import { sleep } from '../utils/async';
 import {
   RESET_BOT,
-  RETURN_TO_SEARCH_PAGE,
   SET_BROWSER_VIEW_READY,
   SET_VERDICT
 } from '../constants/actionTypes';
@@ -13,29 +11,20 @@ import { calculateOverviewBoundingBoxes } from '../actions/overlay';
 import { getFlatData, getOverviewData, refreshVerdicts } from '../actions/data';
 import { FLAT_ACTION } from '../reducers/data';
 import { sendFlatViewingNotificationMail } from '../actions/email';
-import {
-  launchNextTask,
-  queueInvestigateFlat,
-  returnToSearchPage
-} from '../actions/bot';
+import { launchNextTask, queueInvestigateFlat } from '../actions/bot';
 import {
   discardApplicationProcess,
+  endApplicationProcess,
   generateApplicationTextAndSubmit
 } from '../actions/application';
-import AbortionSystem from '../utils/abortionSystem';
+import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
 
 export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
 ) => {
-  if (action.type === RETURN_TO_SEARCH_PAGE) {
-    store.dispatch(
-      electronRouting('puppet', store.getState().configuration.searchUrl)
-    );
-  }
-
   if (action.type === RESET_BOT) {
-    AbortionSystem.abort();
-    store.dispatch(returnToSearchPage());
+    AbortionSystem.abort(ABORTION_MANUAL);
+    store.dispatch(endApplicationProcess());
   }
 
   if (action.type === SET_BROWSER_VIEW_READY) {

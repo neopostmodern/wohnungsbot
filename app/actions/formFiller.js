@@ -14,6 +14,7 @@ import type { Dispatch, GetState } from '../reducers/types';
 import type { ScrollIntoViewPolicy } from './botHelpers';
 import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
+import AbortionSystem from '../utils/abortionSystem';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
@@ -206,7 +207,7 @@ async function fillSelectField(
 
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-constant-condition
-    while (true) {
+    while (AbortionSystem.nestedFunctionsMayContinue) {
       const currentValue = await electronUtils.getValue(field.selector);
       if (currentValue === sanitizedValue) {
         break;

@@ -10,6 +10,7 @@ import {
 } from '../constants/actionTypes';
 import type { BrowserViewName } from '../reducers/electron';
 import ElectronUtils from '../utils/electronUtils';
+import AbortionSystem from '../utils/abortionSystem';
 
 export function clickAction(
   selector: string,
@@ -71,6 +72,10 @@ export function type(text: string) {
     /* eslint-disable no-await-in-loop */
     // eslint-disable-next-line no-restricted-syntax
     for (const character of text) {
+      if (!AbortionSystem.nestedFunctionsMayContinue) {
+        return;
+      }
+
       let keyCode = character;
 
       if (character === '\n') {
@@ -113,8 +118,7 @@ export async function scrollIntoView(
 ) {
   const electronUtils = new ElectronUtils(webContents);
   /* eslint-disable no-await-in-loop */
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
+  while (AbortionSystem.nestedFunctionsMayContinue) {
     await electronUtils.evaluate(
       `document.querySelector('${selector}').scrollIntoView({ behavior: ${
         smooth ? "'smooth'" : "'auto'"

@@ -3,7 +3,6 @@
 import type { Action, Dispatch, GetState } from '../reducers/types';
 import {
   QUEUE_INVESTIGATE_FLAT,
-  RETURN_TO_SEARCH_PAGE,
   SET_BOT_IS_ACTING,
   SET_BOT_MESSAGE,
   LAUNCH_NEXT_TASK,
@@ -19,6 +18,8 @@ import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
 import { calculateOverviewBoundingBoxes } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
+import AbortionSystem from '../utils/abortionSystem';
+import { electronRouting, setBrowserViewReady } from './electron';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return async (dispatch: Dispatch, getState: GetState) => {
@@ -69,15 +70,16 @@ export const navigateToFlatPage = (flatId: string) => async (
   const flatTitleSelector = `#result-${flatId} .result-list-entry__brand-title`;
 
   /* eslint-disable no-await-in-loop */
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
+  while (AbortionSystem.nestedFunctionsMayContinue) {
     if (!(await puppetView.elementExists(flatTitleSelector))) {
-      break;
+      return true;
     }
     await dispatch(clickAction(flatTitleSelector));
     await sleep(5000);
   }
   /* eslint-enable no-await-in-loop */
+
+  return false;
 };
 
 export function setBotIsActing(isActing: boolean): Action {
@@ -113,10 +115,13 @@ export function taskFinished(): Action {
   };
 }
 
-export function returnToSearchPage(): Action {
-  return {
-    type: RETURN_TO_SEARCH_PAGE,
-    payload: null
+export function returnToSearchPage() {
+  return async (dispatch: Dispatch, getState: GetState) => {
+    const { electron, configuration } = getState();
+    if (electron.views.puppet.url === configuration.searchUrl) {
+      return dispatch(setBrowserViewReady('puppet', true));
+    }
+    return dispatch(electronRouting('puppet', configuration.searchUrl));
   };
 }
 

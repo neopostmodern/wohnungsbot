@@ -5,13 +5,13 @@ import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
 import {
   navigateToFlatPage,
   noop,
-  popFlatFromQueue,
   returnToSearchPage,
   scrollWhileIdle,
   stopScrollingWhileIdle
 } from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
 import type { Configuration } from '../reducers/configuration';
+import { endApplicationProcess } from '../actions/application';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -47,8 +47,14 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     const nextFlatId = scheduler.queuedFlatIds[0];
     const result = next(action);
 
-    store.dispatch(navigateToFlatPage(nextFlatId));
-    store.dispatch(popFlatFromQueue(nextFlatId));
+    const reachedFlatPage = await store.dispatch(
+      navigateToFlatPage(nextFlatId)
+    );
+    if (!reachedFlatPage) {
+      // eslint-disable-next-line no-console
+      console.error(`Flat page wasn't reached, aborting task.`);
+      store.dispatch(endApplicationProcess());
+    }
 
     return result;
   }

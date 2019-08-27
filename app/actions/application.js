@@ -10,6 +10,7 @@ import type { dataStateType, OverviewDataEntry } from '../reducers/data';
 import type { electronStateType } from '../reducers/electron';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import {
+  popFlatFromQueue,
   returnToSearchPage,
   setBotIsActing,
   setBotMessage,
@@ -19,7 +20,10 @@ import {
 import performApplication from '../utils/performApplication';
 import { abortable } from '../utils/generators';
 import { printToPDF } from './helpers';
-import AbortionSystem from '../utils/abortionSystem';
+import AbortionSystem, {
+  ABORTION_ERROR,
+  ABORTION_MANUAL
+} from '../utils/abortionSystem';
 
 export const generateApplicationTextAndSubmit = (flatId: string) => async (
   dispatch: Dispatch,
@@ -60,31 +64,43 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
     success = true;
   } catch (error) {
     success = false;
-    AbortionSystem.abort();
+    AbortionSystem.abort(ABORTION_ERROR);
     reason = error.message;
   }
-  await dispatch(
-    markApplicationComplete({
+  if (AbortionSystem.abortionReason !== ABORTION_MANUAL) {
+    await markApplicationCompleted(dispatch, {
       flatId,
       success,
       addressDescription: data.overview[flatId].address.description,
       reason,
       pdfPath
-    })
+    });
+  }
+  await dispatch(endApplicationProcess());
+};
+
+const markApplicationCompleted = async (
+  dispatch: Dispatch,
+  applicationData: ApplicationData
+) => {
+  dispatch(popFlatFromQueue(applicationData.flatId));
+  return dispatch(
+    markCompleted(
+      CACHE_NAMES.APPLICATIONS,
+      applicationData.flatId,
+      applicationData
+    )
   );
 };
 
-export const markApplicationComplete = (data: ApplicationData) => async (
-  dispatch: Dispatch
-) => {
-  const { flatId } = data;
-  dispatch(markCompleted(CACHE_NAMES.APPLICATIONS, flatId, data));
+export const endApplicationProcess = () => async (dispatch: Dispatch) => {
   dispatch(returnToSearchPage());
   dispatch(setBotMessage(null));
   dispatch(taskFinished());
+
   await sleep(5000);
 
-  // this kicks of next queued action, if any
+  // this kicks of next queued action, if any (?? — shouldn't this be caused by the page load caused in by `returnToSearchPage`)
   dispatch(setBotIsActing(false));
   dispatch(setShowOverlay(true));
 };
@@ -94,12 +110,12 @@ export const discardApplicationProcess = (
 ) => async (dispatch: Dispatch) => {
   dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
   await sleep(5000);
-  dispatch(
-    markApplicationComplete({
-      flatId: flatOverview.id,
-      success: false,
-      addressDescription: flatOverview.address.description,
-      reason: 'UNSUITABLE' // this won't show up in the sidebar
-    })
-  );
+  dispatch(popFlatFromQueue(flatOverview.id));
+  await markApplicationCompleted(dispatch, {
+    flatId: flatOverview.id,
+    success: false,
+    addressDescription: flatOverview.address.description,
+    reason: 'UNSUITABLE' // this won't show up in the sidebar
+  });
+  await dispatch(endApplicationProcess());
 };
