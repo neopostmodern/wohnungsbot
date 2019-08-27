@@ -17,7 +17,7 @@ export function clickAction(
   {
     scrollIntoViewPolicy = 'auto',
     elementExistenceGuaranteed = true
-  } : {
+  }: {
     scrollIntoViewPolicy: ScrollIntoViewPolicy,
     elementExistenceGuaranteed: boolean
   } = {}
@@ -29,11 +29,10 @@ export function clickAction(
       webContents.focus();
     }
 
-    await scrollIntoViewByPolicy(
-      webContents,
-      selector,
-      { scrollIntoViewPolicy, elementExistenceGuaranteed }
-    );
+    await scrollIntoViewByPolicy(webContents, selector, {
+      scrollIntoViewPolicy,
+      elementExistenceGuaranteed
+    });
 
     // reset zoom factor, just in case someone (accidentally) changed it
     // when zoomed the coordinates are returned unscaled, so clicks miss
@@ -127,7 +126,7 @@ export async function scrollIntoView(
     strategy = 'center',
     smooth = true,
     elementExistenceGuaranteed = true
-  } : {
+  }: {
     strategy: ScrollIntoViewStrategy,
     smooth?: boolean,
     elementExistenceGuaranteed?: boolean
@@ -145,7 +144,10 @@ export async function scrollIntoView(
     // there is no way to know when the smooth scroll has finished
     await sleep(2000);
 
-    if (!elementExistenceGuaranteed || (await electronUtils.isElementInViewport(selector))) {
+    if (
+      !elementExistenceGuaranteed ||
+      (await electronUtils.isElementInViewport(selector))
+    ) {
       break;
     }
   }
@@ -175,7 +177,7 @@ export async function scrollIntoViewByPolicy(
     scrollIntoViewPolicy = 'auto',
     overrideStrategy,
     elementExistenceGuaranteed = true
-  } : {
+  }: {
     scrollIntoViewPolicy?: ScrollIntoViewPolicy,
     overrideStrategy?: ScrollIntoViewStrategy,
     elementExistenceGuaranteed?: boolean
@@ -186,26 +188,18 @@ export async function scrollIntoViewByPolicy(
   }
 
   if (scrollIntoViewPolicy === 'always') {
-    await scrollIntoView(
-      webContents,
-      selector,
-      {
-        strategy: overrideStrategy || 'center',
-        elementExistenceGuaranteed
-      }
-    );
+    await scrollIntoView(webContents, selector, {
+      strategy: overrideStrategy || 'center',
+      elementExistenceGuaranteed
+    });
     return;
   }
 
   if (!(await new ElectronUtils(webContents).isElementInViewport(selector))) {
-    await scrollIntoView(
-      webContents,
-      selector,
-      {
-        strategy: overrideStrategy || 'nearest',
-        elementExistenceGuaranteed
-      }
-    );
+    await scrollIntoView(webContents, selector, {
+      strategy: overrideStrategy || 'nearest',
+      elementExistenceGuaranteed
+    });
   }
 }
 

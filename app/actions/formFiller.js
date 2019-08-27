@@ -253,14 +253,10 @@ export function fillForm(
         continue;
       }
 
-      await scrollIntoViewByPolicy(
-        webContents,
-        field.selector,
-        {
-          scrollIntoViewByPolicy: 'auto',
-          overrideStrategy: 'center'
-        }
-      );
+      await scrollIntoViewByPolicy(webContents, field.selector, {
+        scrollIntoViewByPolicy: 'auto',
+        overrideStrategy: 'center'
+      });
 
       if ((await electronUtils.getValue(field.selector)) === field.value) {
         // eslint-disable-next-line no-continue
