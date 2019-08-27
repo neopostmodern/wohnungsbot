@@ -5,22 +5,17 @@ import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
 import {
   navigateToFlatPage,
   noop,
-  returnToSearchPage,
-  scrollWhileIdle,
-  stopScrollingWhileIdle
+  returnToSearchPage
 } from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
-import type { Configuration } from '../reducers/configuration';
 import { endApplicationProcess } from '../actions/application';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   const {
-    scheduler,
-    configuration: { exhibitionIdentifier }
+    scheduler
   }: {
-    scheduler: schedulerStateType,
-    configuration: Configuration
+    scheduler: schedulerStateType
   } = store.getState();
 
   if (action.type === LAUNCH_NEXT_TASK) {
@@ -30,15 +25,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       return next(noop());
     }
     if (scheduler.queuedFlatIds.length === 0) {
-      if (exhibitionIdentifier) {
-        store.dispatch(scrollWhileIdle());
-      }
-
       setTimeout(() => {
-        if (exhibitionIdentifier) {
-          store.dispatch(stopScrollingWhileIdle());
-        }
-
         store.dispatch(returnToSearchPage(true));
       }, 60000 + Math.random() * 300000);
       return next(noop());

@@ -73,7 +73,6 @@ export type ContactData = {|
 export type DataPolicies = {|
   flatViewingNotificationMails: boolean,
   researchDataSharing: boolean,
-  dataHandlingExhibition?: boolean,
   artConsent: boolean,
   applicationNotificationMails: boolean,
   fillAsLittleAsPossible: boolean
@@ -126,8 +125,7 @@ export type Configuration = {|
   contactData: ContactData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies,
-  configurationVersion: number,
-  exhibitionIdentifier?: string
+  configurationVersion: number
 |};
 
 export const getConfigurationFilterHash = (
