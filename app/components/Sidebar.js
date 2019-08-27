@@ -8,7 +8,7 @@ import RecentApplication from './sidebar/recentApplication';
 type Props = {
   showConfiguration: () => void,
   openPDF: (pdfPath: string) => void,
-  returnToSearchPage: () => void,
+  resetBot: () => void,
   applications: Array<ApplicationData & BaseCacheEntry>
 };
 type State = {
@@ -30,12 +30,7 @@ export default class Sidebar extends Component<Props, State> {
   }
 
   render() {
-    const {
-      showConfiguration,
-      returnToSearchPage,
-      applications,
-      openPDF
-    } = this.props;
+    const { showConfiguration, resetBot, applications, openPDF } = this.props;
     const { announcement } = this.state;
 
     return (
@@ -59,7 +54,7 @@ export default class Sidebar extends Component<Props, State> {
           ))}
         </div>
 
-        <button onClick={returnToSearchPage} type="button">
+        <button onClick={resetBot} type="button">
           <span className="material-icons">replay</span> Bot zurücksetzen
         </button>
         <div className={styles.comment}>

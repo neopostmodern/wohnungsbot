@@ -2,7 +2,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
 import { openPDF, showConfiguration } from '../actions/electron';
-import { returnToSearchPage } from '../actions/bot';
+import { resetBot } from '../actions/bot';
 
 function mapStateToProps(state) {
   const applications = Object.values(state.cache.applications).filter(
@@ -18,10 +18,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    { returnToSearchPage, showConfiguration, openPDF },
-    dispatch
-  );
+  return bindActionCreators({ resetBot, showConfiguration, openPDF }, dispatch);
 }
 
 export default connect(

@@ -21,7 +21,14 @@ const payloadLengthLimit = 200;
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
-  if (!blackList.includes(action.type)) {
+  if (action.constructor && action.constructor.name === 'AsyncFunction') {
+    // eslint-disable-next-line no-console
+    console.log(
+      `[Async Function] ${action.name ||
+        (action.prototype && action.prototype.name) ||
+        '<anonynumous>'}`
+    );
+  } else if (!blackList.includes(action.type)) {
     if (
       action.payload &&
       JSON.stringify(action.payload).length > payloadLengthLimit

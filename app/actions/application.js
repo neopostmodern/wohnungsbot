@@ -4,27 +4,26 @@ import type { ApplicationData, cacheStateType } from '../reducers/cache';
 import { CACHE_NAMES } from '../reducers/cache';
 import type { Dispatch, GetState } from '../reducers/types';
 import { markCompleted } from './cache';
-import { sleep } from '../utils/async';
+import { sleep, timeout } from '../utils/async';
 import type { Configuration } from '../reducers/configuration';
 import type { dataStateType, OverviewDataEntry } from '../reducers/data';
 import type { electronStateType } from '../reducers/electron';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
-import { clickAction } from './botHelpers';
 import {
-  fillForm,
-  generateAdditionalDataFormFillingDescription,
-  generatePersonalDataFormFillingDescription
-} from './formFiller';
-import applicationTextBuilder from '../flat/applicationTextBuilder';
-import { sendApplicationNotificationEmail } from './email';
-import {
+  popFlatFromQueue,
   returnToSearchPage,
   setBotIsActing,
   setBotMessage,
   setShowOverlay,
   taskFinished
 } from './bot';
+import performApplication from '../utils/performApplication';
+import { abortable } from '../utils/generators';
 import { printToPDF } from './helpers';
+import AbortionSystem, {
+  ABORTION_ERROR,
+  ABORTION_MANUAL
+} from '../utils/abortionSystem';
 
 export const generateApplicationTextAndSubmit = (flatId: string) => async (
   dispatch: Dispatch,
@@ -46,139 +45,62 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
 
   const pdfPath = await dispatch(printToPDF('puppet', flatId));
 
-  const flatOverview = data.overview[flatId];
-
-  const formTimeout = setTimeout(
-    async () => markComplete(false, 'Technischer Fehler (Timeout)'),
-    300000
+  const { abortableAction: abortablePerformApplication, abort } = abortable(
+    performApplication
   );
-
-  const markComplete = async (success: boolean, reason?: string) => {
-    clearTimeout(formTimeout);
-
-    await dispatch(
-      markApplicationComplete({
-        flatId,
-        success,
-        addressDescription: flatOverview.address.description,
-        reason,
-        pdfPath
-      })
+  AbortionSystem.registerAbort(abort);
+  let success;
+  let reason;
+  try {
+    await timeout(
+      abortablePerformApplication(
+        dispatch,
+        electronUtils,
+        configuration,
+        data.overview[flatId]
+      ),
+      300000
     );
-  };
-
-  dispatch(setBotMessage('Anfrage schreiben!'));
-
-  await dispatch(
-    clickAction(
-      await electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
-      'always'
-    )
-  );
-
-  /* eslint-disable no-await-in-loop */
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    if (
-      await electronUtils.elementExists(
-        '[data-qa="get-premium-membership-button"]'
-      )
-    ) {
-      await markComplete(false, 'Bewerbung nur mit "Premium"-Account möglich');
-      return;
-    }
-
-    if (await electronUtils.elementExists('#contactForm-firstName')) {
-      break;
-    }
-
-    await sleep(50);
+    success = true;
+  } catch (error) {
+    success = false;
+    AbortionSystem.abort(ABORTION_ERROR);
+    reason = error.message;
   }
-  /* eslint-ensable no-await-in-loop */
-
-  const personalDataFormFillingDescription = generatePersonalDataFormFillingDescription(
-    configuration.contactData
-  );
-
-  const applicationText = applicationTextBuilder(
-    configuration.applicationText,
-    flatOverview.address,
-    flatOverview.contactDetails
-  );
-
-  await electronUtils.fillText('#contactForm-Message', applicationText);
-
-  await dispatch(
-    fillForm(
-      personalDataFormFillingDescription,
-      configuration.policies.fillAsLittleAsPossible
-    )
-  );
-
-  await sleep(1000);
-
-  if (
-    !(await electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
-  ) {
-    dispatch(setBotMessage('Und noch eine Seite...'));
-
-    await dispatch(clickAction('#is24-expose-modal button.button-primary'));
-
-    await sleep(3000);
-
-    await dispatch(
-      fillForm(
-        generateAdditionalDataFormFillingDescription(
-          configuration.additionalInformation
-        ),
-        configuration.policies.fillAsLittleAsPossible
-      )
-    );
-
-    await sleep(1000);
+  if (AbortionSystem.abortionReason !== ABORTION_MANUAL) {
+    await markApplicationCompleted(dispatch, {
+      flatId,
+      success,
+      addressDescription: data.overview[flatId].address.description,
+      reason,
+      pdfPath
+    });
   }
-
-  // todo: seems unnecessary?
-  // await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
-
-  dispatch(setBotMessage('Abschicken :)'));
-  await sleep(3000);
-
-  // make sure the submit button gets clicked, if not re-try
-  while (
-    await electronUtils.elementExists('#is24-expose-modal .button-primary')
-  ) {
-    await dispatch(clickAction('#is24-expose-modal .button-primary', 'always'));
-
-    await sleep(1000);
-  }
-
-  if (configuration.policies.applicationNotificationMails) {
-    dispatch(
-      sendApplicationNotificationEmail(
-        configuration.contactData,
-        flatOverview,
-        applicationText
-      )
-    );
-  }
-
-  dispatch(setBotMessage('Fertig.'));
-  await sleep(5000);
-  await markComplete(true);
+  await dispatch(endApplicationProcess());
 };
 
-export const markApplicationComplete = (data: ApplicationData) => async (
-  dispatch: Dispatch
+const markApplicationCompleted = async (
+  dispatch: Dispatch,
+  applicationData: ApplicationData
 ) => {
-  const { flatId } = data;
-  dispatch(markCompleted(CACHE_NAMES.APPLICATIONS, flatId, data));
+  dispatch(popFlatFromQueue(applicationData.flatId));
+  return dispatch(
+    markCompleted(
+      CACHE_NAMES.APPLICATIONS,
+      applicationData.flatId,
+      applicationData
+    )
+  );
+};
+
+export const endApplicationProcess = () => async (dispatch: Dispatch) => {
   dispatch(returnToSearchPage());
   dispatch(setBotMessage(null));
   dispatch(taskFinished());
+
   await sleep(5000);
 
-  // this kicks of next queued action, if any
+  // this kicks of next queued action, if any (?? — shouldn't this be caused by the page load caused in by `returnToSearchPage`)
   dispatch(setBotIsActing(false));
   dispatch(setShowOverlay(true));
 };
@@ -188,12 +110,12 @@ export const discardApplicationProcess = (
 ) => async (dispatch: Dispatch) => {
   dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
   await sleep(5000);
-  dispatch(
-    markApplicationComplete({
-      flatId: flatOverview.id,
-      success: false,
-      addressDescription: flatOverview.address.description,
-      reason: 'UNSUITABLE' // this won't show up in the sidebar
-    })
-  );
+  dispatch(popFlatFromQueue(flatOverview.id));
+  await markApplicationCompleted(dispatch, {
+    flatId: flatOverview.id,
+    success: false,
+    addressDescription: flatOverview.address.description,
+    reason: 'UNSUITABLE' // this won't show up in the sidebar
+  });
+  await dispatch(endApplicationProcess());
 };
