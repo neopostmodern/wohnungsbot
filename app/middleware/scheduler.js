@@ -39,7 +39,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
           store.dispatch(stopScrollingWhileIdle());
         }
 
-        store.dispatch(returnToSearchPage());
+        store.dispatch(returnToSearchPage(true));
       }, 60000 + Math.random() * 300000);
       return next(noop());
     }

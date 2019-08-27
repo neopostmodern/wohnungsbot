@@ -115,10 +115,10 @@ export function taskFinished(): Action {
   };
 }
 
-export function returnToSearchPage() {
+export function returnToSearchPage(forceReload: boolean = false) {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { electron, configuration } = getState();
-    if (electron.views.puppet.url === configuration.searchUrl) {
+    if (electron.views.puppet.url === configuration.searchUrl && !forceReload) {
       return dispatch(setBrowserViewReady('puppet', true));
     }
     return dispatch(electronRouting('puppet', configuration.searchUrl));
