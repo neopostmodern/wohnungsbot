@@ -97,12 +97,14 @@ export function assessFlat(
   }
 
   if (flatData) {
-    const normalizedFloor = Math.min(4, flatData.floor);
+    if (!Number.isNaN(flatData.floor)) {
+      const normalizedFloor = Math.min(4, flatData.floor);
 
-    reasons.push({
-      reason: floorToName(flatData.floor),
-      result: configuration.filter.floors.includes(normalizedFloor)
-    });
+      reasons.push({
+        reason: floorToName(flatData.floor),
+        result: configuration.filter.floors.includes(normalizedFloor)
+      });
+    }
 
     if (flatData.requiresWBS) {
       reasons.push({
