@@ -91,7 +91,8 @@ configureStore(MAIN, isDevelopment)
         height: Math.min(800, screen.getPrimaryDisplay().workAreaSize.height),
         webPreferences: {
           // devTools: false
-        }
+        },
+        titleBarStyle: "hidden"
       });
 
       store.dispatch(setWindow(mainWindow));
