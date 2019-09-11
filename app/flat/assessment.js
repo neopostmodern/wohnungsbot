@@ -42,11 +42,13 @@ export function assessFlat(
     });
   }
 
-  const rentPerSquareMeter = overviewDataEntry.rent / overviewDataEntry.area;
-  reasons.push({
-    reason: `${rentPerSquareMeter.toFixed(2)} €/m² (kalt)`,
-    result: rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
-  });
+  if (configuration.filter.maximumRentPerSquareMeter) {
+    const rentPerSquareMeter = overviewDataEntry.rent / overviewDataEntry.area;
+    reasons.push({
+      reason: `${rentPerSquareMeter.toFixed(2)} €/m² (kalt)`,
+      result: rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
+    });
+  }
 
   if (
     overviewDataEntry.title.toLowerCase().includes('bes.') ||
