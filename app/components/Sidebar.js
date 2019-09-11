@@ -35,7 +35,7 @@ export default class Sidebar extends Component<Props, State> {
 
     return (
       <div className={styles.container}>
-        <button onClick={showConfiguration} type="button">
+        <button onClick={showConfiguration} type="button" className={styles.adjustFiltersButton}>
           <span className="material-icons">arrow_backward</span>
           Suchfilter anpassen
         </button>
@@ -54,7 +54,7 @@ export default class Sidebar extends Component<Props, State> {
           ))}
         </div>
 
-        <button onClick={resetBot} type="button">
+        <button onClick={resetBot} type="button" className={styles.resetButton}>
           <span className="material-icons">replay</span> Bot zurücksetzen
         </button>
         <div className={styles.comment}>

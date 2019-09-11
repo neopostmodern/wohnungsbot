@@ -18,6 +18,10 @@ h3:first-child {
   margin-top: 0;
 }
 
+.adjustFiltersButton {
+  margin-top: 1rem;
+}
+
 .recentApplications {
   flex-shrink: 1;
   overflow-y: scroll;
@@ -75,6 +79,10 @@ h3:first-child {
 #announcement {
   margin-top: 2rem;
   margin-bottom: 1rem;
+}
+
+.resetButton {
+  margin-top: auto;
 }
 
 .comment {
