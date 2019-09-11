@@ -63,6 +63,9 @@ export const generateApplicationTextAndSubmit = (flatId: string) => async (
     );
     success = true;
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`Error in application:
+${error}`);
     success = false;
     AbortionSystem.abort(ABORTION_ERROR);
     reason = error.message;
