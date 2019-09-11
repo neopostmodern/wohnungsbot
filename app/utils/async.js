@@ -8,7 +8,11 @@ export const timeout = (promise, waitingTime) =>
       () => reject(new Error('Timed out')),
       waitingTime
     );
-    const promiseReturnValue = await promise;
-    clearTimeout(timeoutId);
-    resolve(promiseReturnValue);
+    try {
+      const promiseReturnValue = await promise;
+      clearTimeout(timeoutId);
+      resolve(promiseReturnValue);
+    } catch (error) {
+      reject(error);
+    }
   });

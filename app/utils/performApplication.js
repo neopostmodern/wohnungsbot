@@ -35,6 +35,7 @@ export default function* performApplication(
         '[data-qa="get-premium-membership-button"]'
       )
     ) {
+      yield sleep(3000);
       throw new Error('Bewerbung nur mit "Premium"-Account möglich');
     }
 
