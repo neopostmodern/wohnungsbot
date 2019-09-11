@@ -49,7 +49,7 @@ export default class Sidebar extends Component<Props, State> {
             <RecentApplication
               key={application.flatId}
               application={application}
-              openPDF={openPDF.bind(application.pdfPath)}
+              openPDF={() => openPDF(application.pdfPath)}
             />
           ))}
         </div>
