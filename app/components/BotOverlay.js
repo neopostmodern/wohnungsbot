@@ -18,6 +18,7 @@ type Props = {
   botMessage: string,
   showOverlay: boolean,
   alreadyAppliedFlatIds: Array<string>,
+  unsuitableFlatIds: Array<string>,
   performScroll: (name: 'puppet', deltaY: number) => void
 };
 
@@ -105,7 +106,8 @@ export default class BotOverlay extends Component<Props> {
       verdicts,
       isBotActing,
       showOverlay,
-      alreadyAppliedFlatIds
+      alreadyAppliedFlatIds,
+      unsuitableFlatIds
     } = this.props;
 
     return (
@@ -136,6 +138,7 @@ export default class BotOverlay extends Component<Props> {
                     flatId={flatId}
                     verdict={verdicts[flatId]}
                     isAlreadyApplied={alreadyAppliedFlatIds.includes(flatId)}
+                    isUnsuitable={unsuitableFlatIds.includes(flatId)}
                   />
                 </div>
               )

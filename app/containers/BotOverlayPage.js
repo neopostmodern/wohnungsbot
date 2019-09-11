@@ -17,7 +17,12 @@ function mapStateToProps(state: stateType) {
     isBotActing: state.bot.isActive,
     botMessage: state.bot.message,
     showOverlay: state.bot.showOverlay,
-    alreadyAppliedFlatIds: Object.keys(state.cache.applications)
+    alreadyAppliedFlatIds: Object.entries(state.cache.applications)
+      .filter(([flatId, application]) => application.reason !== 'UNSUITABLE')
+      .map(([flatId]) => flatId),
+    unsuitableFlatIds: Object.entries(state.cache.applications)
+      .filter(([flatId, application]) => application.reason === 'UNSUITABLE')
+      .map(([flatId]) => flatId)
   };
 }
 
