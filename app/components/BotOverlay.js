@@ -72,7 +72,8 @@ export default class BotOverlay extends Component<Props> {
       isPuppetLoading,
       botMessage,
       verdicts,
-      alreadyAppliedFlatIds
+      alreadyAppliedFlatIds,
+      unsuitableFlatIds
     } = this.props;
 
     if (isPuppetLoading) {
@@ -85,18 +86,22 @@ export default class BotOverlay extends Component<Props> {
 
     // eslint-disable-next-line flowtype/no-weak-types
     const matchedFlats = ((Object.values(verdicts): any): Array<Verdict>)
-      .filter(({ result }) => result)
+      .filter(
+        ({ flatId, result }) => result && !unsuitableFlatIds.includes(flatId)
+      )
       .map(({ flatId }) => flatId);
 
     const notAppliedYetFlats = matchedFlats.filter(
-      flatId => !alreadyAppliedFlatIds.includes(flatId)
+      flatId =>
+        !alreadyAppliedFlatIds.includes(flatId) &&
+        !unsuitableFlatIds.includes(flatId)
     );
 
     if (matchedFlats.length > 0) {
       return `${notAppliedYetFlats.length} neue passende Wohnungen gefunden (${matchedFlats.length} insgesamt).`;
     }
 
-    return 'Ich bin bereit, aber es gibt keine Wohnungen!';
+    return 'Ich bin bereit, aber es gibt keine passenden Wohnungen!';
   }
 
   render() {
