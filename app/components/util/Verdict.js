@@ -6,21 +6,63 @@ import type { Verdict } from '../../reducers/data';
 type VerdictProps = {
   flatId: string,
   verdict: Verdict,
-  isAlreadyApplied: boolean
+  isAlreadyApplied: boolean,
+  isUnsuitable: boolean
+};
+
+const VerdictSummary = ({
+  verdict,
+  isAlreadyApplied,
+  isUnsuitable
+}: {
+  verdict: Verdict,
+  isAlreadyApplied: boolean,
+  isUnsuitable: boolean
+}) => {
+  if (isAlreadyApplied) {
+    return <div className={styles.oneLineReason}>Bewerbung abgeschickt</div>;
+  }
+
+  if (isUnsuitable) {
+    return <div className={styles.oneLineReason}>Unpassend</div>;
+  }
+
+  return (
+    <>
+      {verdict.reasons.map(({ reason, result }) => (
+        <div key={reason} className={styles.reason}>
+          <div className={styles.reasonIcon}>
+            <span
+              className={`material-icons standalone-icon ${
+                result ? 'good' : 'bad'
+              }`}
+            >
+              {result ? 'check' : 'block'}
+            </span>
+          </div>
+          <div>{reason}</div>
+        </div>
+      ))}
+    </>
+  );
 };
 
 export default class VerdictComponent extends React.Component<VerdictProps> {
   getMainIcon(): string {
-    const { verdict, isAlreadyApplied } = this.props;
+    const { verdict, isAlreadyApplied, isUnsuitable } = this.props;
     if (isAlreadyApplied) {
       return 'done_outline';
+    }
+
+    if (isUnsuitable) {
+      return 'block';
     }
 
     return verdict.result ? 'thumb_up_alt' : 'thumb_down_alt';
   }
 
   render() {
-    const { verdict, isAlreadyApplied, flatId } = this.props;
+    const { verdict, isAlreadyApplied, isUnsuitable, flatId } = this.props;
 
     return (
       <div className={styles.verdictOverlay}>
@@ -29,33 +71,20 @@ export default class VerdictComponent extends React.Component<VerdictProps> {
             <div className={styles.summary}>
               <span
                 className={`material-icons standalone-icon ${
-                  verdict.result || isAlreadyApplied ? 'good' : 'bad'
+                  !isUnsuitable && (verdict.result || isAlreadyApplied)
+                    ? 'good'
+                    : 'bad'
                 }`}
               >
                 {this.getMainIcon()}
               </span>
             </div>
             <div>
-              {isAlreadyApplied ? (
-                <div className={styles.oneLineReason}>
-                  Bewerbung abgeschickt
-                </div>
-              ) : (
-                verdict.reasons.map(({ reason, result }) => (
-                  <div key={reason} className={styles.reason}>
-                    <div className={styles.reasonIcon}>
-                      <span
-                        className={`material-icons standalone-icon ${
-                          result ? 'good' : 'bad'
-                        }`}
-                      >
-                        {result ? 'check' : 'block'}
-                      </span>
-                    </div>
-                    <div>{reason}</div>
-                  </div>
-                ))
-              )}
+              <VerdictSummary
+                verdict={verdict}
+                isAlreadyApplied={isAlreadyApplied}
+                isUnsuitable={isUnsuitable}
+              />
             </div>
           </>
         ) : (

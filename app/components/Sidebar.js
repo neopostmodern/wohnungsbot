@@ -35,7 +35,11 @@ export default class Sidebar extends Component<Props, State> {
 
     return (
       <div className={styles.container}>
-        <button onClick={showConfiguration} type="button" className={styles.adjustFiltersButton}>
+        <button
+          onClick={showConfiguration}
+          type="button"
+          className={styles.adjustFiltersButton}
+        >
           <span className="material-icons">arrow_backward</span>
           Suchfilter anpassen
         </button>
