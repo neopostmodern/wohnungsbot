@@ -46,7 +46,8 @@ export function assessFlat(
     const rentPerSquareMeter = overviewDataEntry.rent / overviewDataEntry.area;
     reasons.push({
       reason: `${rentPerSquareMeter.toFixed(2)} €/m² (kalt)`,
-      result: rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
+      result:
+        rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
     });
   }
 

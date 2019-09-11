@@ -92,7 +92,7 @@ configureStore(MAIN, isDevelopment)
         webPreferences: {
           // devTools: false
         },
-        titleBarStyle: "hidden"
+        titleBarStyle: 'hidden'
       });
 
       store.dispatch(setWindow(mainWindow));
