@@ -17,7 +17,7 @@ function generateSalutation(contactData: FlatContactDetails): string {
 
 const streetNamePrepositions = [
   {
-    suffixes: ['platz', 'pl.', 'damm', 'ufer'],
+    suffixes: ['platz', 'pl.', 'damm', 'ufer', 'ring'],
     preposition: 'am'
   },
   {
