@@ -54,7 +54,8 @@ export function assessFlat(
   if (
     overviewDataEntry.title.toLowerCase().includes('bes.') ||
     overviewDataEntry.title.toLowerCase().includes('bes:') ||
-    overviewDataEntry.title.toLowerCase().includes('besichtigung')
+    overviewDataEntry.title.toLowerCase().includes('besichtigung') ||
+    overviewDataEntry.title.includes('Visit')
   ) {
     reasons.push({
       reason: `Besichtigungstermin im Titel`,
