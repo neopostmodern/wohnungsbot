@@ -18,7 +18,7 @@ import {
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 
-export const ConfigurationVersion = 2;
+export const ConfigurationVersion = 3;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -186,6 +186,15 @@ function configurationMigrations(
       'policies.fillAsLittleAsPossible',
       true
     );
+  }
+  if (oldConfiguration.configurationVersion < 3) {
+    if (oldConfiguration.additionalInformation.animals.trim().length === 0) {
+      migratedConfiguration = dotProp.set(
+        migratedConfiguration,
+        'additionalInformation.animals',
+        'Keine'
+      )
+    }
   }
   return dotProp.set(
     migratedConfiguration,
