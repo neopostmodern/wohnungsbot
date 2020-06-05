@@ -41,6 +41,11 @@ export function clickAction(
     const boundingRect = await new ElectronUtils(webContents).getBoundingBox(
       selector
     );
+    if (!boundingRect) {
+      console.error(`[Click] No bounding box for this element: '${selector}'`);
+      await sleep(500);
+      return;
+    }
     const x = boundingRect.x + boundingRect.width * Math.random();
     const y = boundingRect.y + boundingRect.height * Math.random();
 

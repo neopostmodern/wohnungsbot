@@ -12,7 +12,7 @@ import type { OverviewDataEntry } from '../reducers/data';
 import type { Dispatch } from '../reducers/types';
 import type { Configuration } from '../reducers/configuration';
 import type ElectronUtils from './electronUtils';
-import type { Configuration } from '../reducers/configuration';
+import AbortionSystem from './abortionSystem';
 
 export default function* performApplication(
   dispatch: Dispatch,
@@ -80,6 +80,11 @@ export default function* performApplication(
 
     yield sleep(3000);
 
+    // check if one of the inputs of the second page exists
+    if (!(yield electronUtils.elementExists('#contactForm-numberOfPersons'))) {
+      throw Error('Fehler beim Ausflüllen des Formulars');
+    }
+
     yield dispatch(
       fillForm(
         generateAdditionalDataFormFillingDescription(
@@ -98,12 +103,17 @@ export default function* performApplication(
   dispatch(setBotMessage('Abschicken :)'));
   yield sleep(3000);
 
+  const submitButtonSelector = '#is24-expose-modal .button-primary';
+
   // make sure the submit button gets clicked, if not re-try
   while (
-    yield electronUtils.elementExists('#is24-expose-modal .button-primary')
+    ((yield electronUtils.getInnerText(submitButtonSelector)) || '').includes(
+      'Anfrage senden'
+    ) &&
+    AbortionSystem.nestedFunctionsMayContinue
   ) {
     yield dispatch(
-      clickAction('#is24-expose-modal .button-primary', {
+      clickAction(submitButtonSelector, {
         scrollIntoViewPolicy: 'always',
         elementExistenceGuaranteed: false
       })
