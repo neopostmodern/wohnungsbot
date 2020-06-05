@@ -20,7 +20,13 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
   state: DevMenuState = { expanded: false };
 
   render() {
-    const { views, showDevTools, resetConfiguration, resetCache } = this.props;
+    const {
+      views,
+      showDevTools,
+      resetConfiguration,
+      resetCache,
+      stopBot
+    } = this.props;
     const { expanded } = this.state;
 
     return (
@@ -32,7 +38,8 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
             <div key={viewName} className={styles.menuItem}>
               <div className={styles.entryName}>{viewName}</div>
               <button type="button" onClick={() => showDevTools(viewName)}>
-                DevTools <span className="material-icons">open_in_new</span>
+                <span className="material-icons">build</span>{' '}
+                <span className="material-icons">open_in_new</span>
               </button>
             </div>
           ))}
@@ -44,7 +51,12 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
           </div>
           <div className={styles.menuItem}>
             <button type="button" onClick={resetConfiguration}>
-              Reset configuration <span className="material-icons">replay</span>
+              Reset <span className="material-icons">replay</span>
+            </button>
+          </div>
+          <div className={styles.menuItem}>
+            <button type="button" onClick={stopBot}>
+              Stop <span className="material-icons">stop</span>
             </button>
           </div>
           <div className={styles.menuItem} id={styles.visibilityToggle}>

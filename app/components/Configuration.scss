@@ -50,7 +50,7 @@ $CONTENT_WIDTH: 1000px;
   }
 }
 
-.flexboxHack [data-type="map"] {
+.flexboxHack [data-type='map'] {
   height: unset;
   position: absolute;
   top: 0;
@@ -196,7 +196,8 @@ main {
 .searchParameter {
   margin-bottom: 0.8em;
 }
-.comment, .disclaimer {
+.comment,
+.disclaimer {
   font-size: 70%;
   margin-top: 0.5em;
   line-height: 1;
@@ -234,7 +235,7 @@ main {
   }
 
   &::before {
-    content: "Diese Funktion kommt bald in einem Update";
+    content: 'Diese Funktion kommt bald in einem Update';
     font-size: 70%;
   }
 }
@@ -249,7 +250,8 @@ main {
 
 // house
 $HOUSE_LINE: 2px solid black;
-.house, .roof {
+.house,
+.roof {
   max-width: 11em;
   box-sizing: border-box;
 }
@@ -286,7 +288,8 @@ $ROOF_HEIGHT: 2em;
   display: flex;
   align-items: flex-start;
 }
-.roofLeft, .roofRight {
+.roofLeft,
+.roofRight {
   border-top: $HOUSE_LINE;
   transform-origin: 0 0;
   width: $ROOF_HEIGHT;

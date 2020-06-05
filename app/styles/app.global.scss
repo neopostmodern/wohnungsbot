@@ -83,7 +83,8 @@ button {
   }
 }
 
-input[type="text"], input[type="number"] {
+input[type='text'],
+input[type='number'] {
   border: none;
   border-bottom: 2px solid black;
   font-size: inherit;
@@ -91,7 +92,7 @@ input[type="text"], input[type="number"] {
   padding-left: 0.5em;
   padding-top: 0.3em;
 }
-input[type="number"] {
+input[type='number'] {
   max-width: 3em;
   text-align: center;
 }
@@ -117,7 +118,7 @@ textarea {
   box-sizing: border-box;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   -webkit-appearance: none;
   appearance: none;
   border: 2px solid black;
@@ -129,7 +130,8 @@ input[type="checkbox"] {
   position: relative;
   top: 0.2em;
 
-  &:checked::after, &:checked::before {
+  &:checked::after,
+  &:checked::before {
     content: '';
     border-bottom: 2px solid black;
     width: 1.5em;

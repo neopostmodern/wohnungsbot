@@ -53,8 +53,8 @@ const reviewStage: StageDescription = {
           <br />
           <br />
           als {configuration.additionalInformation.moveInWho}{' '}
-          {(configuration.additionalInformation.animals &&
-              configuration.additionalInformation.animals !== 'Keine') ? (
+          {configuration.additionalInformation.animals &&
+          configuration.additionalInformation.animals !== 'Keine' ? (
             <>mit {configuration.additionalInformation.animals}</>
           ) : (
             <>ohne Tiere</>

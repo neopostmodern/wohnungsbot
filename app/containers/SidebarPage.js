@@ -18,7 +18,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ resetBot, showConfiguration, openPDF }, dispatch);
+  return bindActionCreators(
+    { resetBot, showConfiguration, openPDF, removeEntry },
+    dispatch
+  );
 }
 
 export default connect(

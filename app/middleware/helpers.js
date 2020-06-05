@@ -43,7 +43,9 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     try {
       const { webContents } = store.getState().electron.views[name].browserView;
       // `printToPDF` times out if there are iframes on the page: https://github.com/electron/electron/issues/20634
-      await new ElectronUtils(webContents).evaluate(`document.querySelectorAll('iframe').forEach(iframe => iframe.remove())`)
+      await new ElectronUtils(webContents).evaluate(
+        `document.querySelectorAll('iframe').forEach(iframe => iframe.remove())`
+      );
       const pdfData = await timeout(
         webContents.printToPDF({ pageSize: 'A4' }),
         10000

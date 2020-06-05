@@ -79,8 +79,8 @@ export type DataPolicies = {|
 |};
 
 export const MOVE_IN_WHEN = {
-  NOW: 'Ab sofort',
-  FLEXIBLE: 'Flexibel'
+  NOW: 'Ab sofort', // FROM_NOW
+  FLEXIBLE: 'Flexibel' // FLEXIBLE
 };
 export type MoveInWhen = $Values<typeof MOVE_IN_WHEN>;
 
@@ -193,7 +193,7 @@ function configurationMigrations(
         migratedConfiguration,
         'additionalInformation.animals',
         'Keine'
-      )
+      );
     }
   }
   return dotProp.set(
