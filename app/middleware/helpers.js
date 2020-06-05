@@ -7,6 +7,7 @@ import type { Action, Dispatch, Store } from '../reducers/types';
 import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
 import sendMail from '../utils/email';
 import { timeout } from '../utils/async';
+import ElectronUtils from '../utils/electronUtils';
 
 const pdfFolderPath = path.join(app.getPath('userData'), 'pdf');
 if (!fs.existsSync(pdfFolderPath)) {
@@ -41,7 +42,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
     try {
       const { webContents } = store.getState().electron.views[name].browserView;
-      // todo: investigate why printToPDF even times out
+      // `printToPDF` times out if there are iframes on the page: https://github.com/electron/electron/issues/20634
+      await new ElectronUtils(webContents).evaluate(`document.querySelectorAll('iframe').forEach(iframe => iframe.remove())`)
       const pdfData = await timeout(
         webContents.printToPDF({ pageSize: 'A4' }),
         10000
