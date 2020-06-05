@@ -22,6 +22,9 @@ export default function* performApplication(
 ) {
   dispatch(setBotMessage('Anfrage schreiben!'));
 
+  // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
+  yield electronUtils.evaluate(`grecaptcha = undefined`);
+
   yield dispatch(
     clickAction(
       yield electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
