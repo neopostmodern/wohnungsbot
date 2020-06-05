@@ -62,10 +62,18 @@ ${stack
     return this.evaluate(`document.querySelector('${selector}') !== null`);
   }
 
+  async getInnerText(selector: string): Promise<string | undefined> {
+    return this.evaluate(`document.querySelector('${selector}')?.innerText`);
+  }
+
   async isElementSelected(selector: string): Promise<boolean> {
     return this.evaluate(
       `document.querySelector(':focus') === document.querySelector('${selector}')`
     );
+  }
+
+  async isElementChecked(selector: string): Promise<boolean> {
+    return this.evaluate(`document.querySelector('${selector}').checked`);
   }
 
   async getValue(selector: string): Promise<string> {
