@@ -79,8 +79,8 @@ export type DataPolicies = {|
 |};
 
 export const MOVE_IN_WHEN = {
-  NOW: 'Ab sofort', // FROM_NOW
-  FLEXIBLE: 'Flexibel' // FLEXIBLE
+  NOW: 'Ab sofort',
+  FLEXIBLE: 'Flexibel'
 };
 export type MoveInWhen = $Values<typeof MOVE_IN_WHEN>;
 

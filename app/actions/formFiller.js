@@ -27,11 +27,12 @@ type BaseField = {
 };
 type TextField = BaseField & { type: 'text', value: ?string };
 type SelectField = BaseField & { type: 'select', value: string };
-type AnyInputField = TextField | SelectField;
-type FieldFillingDesciption = Array<AnyInputField>;
+type RadioField = BaseField & { type: 'radio', value: string };
+type AnyInputField = TextField | SelectField | RadioField;
+type FieldFillingDescription = Array<AnyInputField>;
 export const generatePersonalDataFormFillingDescription = (
   contactData: ContactData
-): FieldFillingDesciption => [
+): FieldFillingDescription => [
   {
     selector: '#contactForm-salutation',
     type: 'select',
@@ -134,10 +135,10 @@ const mapIncomeToValue = (income: ?number): string => {
 
 export const generateAdditionalDataFormFillingDescription = (
   additionalInformation: AdditionalInformation
-): FieldFillingDesciption => [
+): FieldFillingDescription => [
   {
-    selector: '#contactForm-moveInDateType',
-    type: 'select',
+    selector: '[data-is24-show-field="moveInDateType"]',
+    type: 'radio',
     value: MOVE_IN_WHEN_VALUES[additionalInformation.moveInWhen]
   },
   {
@@ -146,7 +147,15 @@ export const generateAdditionalDataFormFillingDescription = (
     value: MOVE_IN_WHO_VALUES[additionalInformation.moveInWho]
   },
   {
-    selector: '#contactForm-petsInHousehold',
+    selector: '[data-is24-show-field="hasPets"]',
+    type: 'radio',
+    value:
+      additionalInformation.animals && additionalInformation.animals !== 'Keine'
+        ? 'true'
+        : 'false'
+  },
+  {
+    selector: '#contactForm-personalData-petsInHousehold',
     type: 'text',
     value: additionalInformation.animals
   },
@@ -227,8 +236,36 @@ async function fillSelectField(
   await sleep(1000);
 }
 
+async function fillRadioField(
+  dispatch: Dispatch,
+  electronUtils: ElectronUtilsRedux,
+  field: RadioField,
+  skipField = false
+) {
+  const labelSelectorForRadio = selector => `${selector} ~ label`;
+  if (skipField) {
+    const selectedRadioSelector = `${field.selector} :checked`;
+    if (await electronUtils.elementExists(selectedRadioSelector)) {
+      // if the information shouldn't be submitted, but something is checked, click again to uncheck
+      await dispatch(clickAction(labelSelectorForRadio(selectedRadioSelector)));
+      await sleep(500);
+    }
+    return;
+  }
+
+  const radioButtonSelector = `${field.selector} [value="${field.value}"]`;
+  if (await electronUtils.isElementChecked(radioButtonSelector)) {
+    return;
+  }
+
+  await electronUtils.clickAndEnsureFocused(
+    labelSelectorForRadio(radioButtonSelector)
+  );
+  await sleep(1200);
+}
+
 export function fillForm(
-  fieldFillingDescription: FieldFillingDesciption,
+  fieldFillingDescription: FieldFillingDescription,
   fillAsLittleAsPossible: boolean = true
 ) {
   return async (dispatch: Dispatch, getState: GetState) => {
@@ -263,12 +300,21 @@ export function fillForm(
         continue;
       }
 
-      const skipField =
+      const optionalElementExistsById =
         field.selector.startsWith('#') &&
-        fillAsLittleAsPossible &&
         (await electronUtils.elementExists(
           `.label-optional[for="${field.selector.substr(1)}"]`
         ));
+
+      const optionalElementExistsByData =
+        field.selector.startsWith('[data') &&
+        (await electronUtils.elementExists(
+          `${field.selector} .label-optional`
+        ));
+
+      const skipField =
+        fillAsLittleAsPossible &&
+        (optionalElementExistsById || optionalElementExistsByData);
 
       if (field.type === 'text') {
         if (skipField) {
@@ -280,6 +326,8 @@ export function fillForm(
         }
       } else if (field.type === 'select') {
         await fillSelectField(dispatch, electronUtils, field, skipField);
+      } else if (field.type === 'radio') {
+        await fillRadioField(dispatch, electronUtils, field, skipField);
       } else {
         // eslint-disable-next-line no-console
         console.error(`Unknown field type: ${field.type}`);
