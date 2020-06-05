@@ -22,6 +22,9 @@ export function setWindow(window: BrowserWindow): Action {
     type: SET_BROWSER_WINDOW,
     payload: {
       window
+    },
+    meta: {
+      scope: 'local'
     }
   };
 }
@@ -39,6 +42,7 @@ export function addView(
       initialUrl
     },
     meta: {
+      scope: 'local',
       target: 'main'
     }
   };

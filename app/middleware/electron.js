@@ -155,7 +155,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   }
 
   if (action.type === OPEN_PDF) {
-    shell.openItem(action.payload.pdfPath);
+    shell.openPath(action.payload.pdfPath);
   }
 
   return next(action);
