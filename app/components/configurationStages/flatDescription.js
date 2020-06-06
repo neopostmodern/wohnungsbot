@@ -182,7 +182,6 @@ const flatDescriptionStage: StageDescription = {
             }
             placeholder="Beschreibung der Tiere"
             style={{ width: '300px' }}
-            defaultValue="Keine"
           />
 
           <h3>Ab wann?</h3>
@@ -236,13 +235,6 @@ const flatDescriptionStage: StageDescription = {
       checkInvalid: (configuration: Configuration) => {
         if (configuration.filter.floors.length === 0) {
           return 'Wähle mindestens ein Stockwerk aus';
-        }
-
-        if (
-          !configuration.additionalInformation.animals ||
-          configuration.additionalInformation.animals.length === 0
-        ) {
-          return 'Angabe zu Tieren fehlt';
         }
 
         return false;
