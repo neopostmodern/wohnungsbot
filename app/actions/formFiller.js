@@ -258,9 +258,7 @@ async function fillRadioField(
     return;
   }
 
-  await electronUtils.clickAndEnsureFocused(
-    labelSelectorForRadio(radioButtonSelector)
-  );
+  await dispatch(clickAction(labelSelectorForRadio(radioButtonSelector)));
   await sleep(1200);
 }
 
