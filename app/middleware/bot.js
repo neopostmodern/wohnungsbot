@@ -33,6 +33,13 @@ export default (store: Store) => (next: (action: Action) => void) => async (
         await sleep(5000);
 
         const { puppet } = store.getState().electron.views;
+
+        puppet.browserView.webContents.insertCSS(`
+          #cmp-faktor-io-brand-consent-notice {
+            display: none !important;
+          }
+        `);
+
         if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
           setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
           setTimeout(
