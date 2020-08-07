@@ -16,6 +16,7 @@ import {
   PERFORM_SCROLL,
   SCROLL_WHILE_IDLE,
   SET_BROWSER_WINDOW,
+  SET_INTERACTIVE_MODE,
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS,
   STOP_SCROLLING_WHILE_IDLE
@@ -112,6 +113,10 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       // eslint-disable-next-line no-await-in-loop
       await sleep(5);
     }
+  }
+
+  if (action.type === SET_INTERACTIVE_MODE) {
+    setImmediate(() => resizeViews(store.getState().electron));
   }
 
   if (action.type === PERFORM_SCROLL) {

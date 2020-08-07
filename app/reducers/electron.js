@@ -6,7 +6,8 @@ import {
   INTERNAL_ADD_BROWSER_VIEW,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_VIEW_URL,
-  SET_BROWSER_WINDOW
+  SET_BROWSER_WINDOW,
+  SET_INTERACTIVE_MODE
 } from '../constants/actionTypes';
 import type { Action } from './types';
 
@@ -28,13 +29,15 @@ export type Views = {
 export type electronStateType = {
   window: ?BrowserWindow,
   views: Views,
-  configurationHidden: boolean
+  configurationHidden: boolean,
+  interactiveMode: boolean
 };
 
 const electronDefaultState: electronStateType = {
   views: {},
   window: null,
-  configurationHidden: false
+  configurationHidden: false,
+  interactiveMode: false
 };
 
 export default function electron(
@@ -58,6 +61,9 @@ export default function electron(
   }
   if (action.type === HIDE_CONFIGURATION) {
     return { ...state, configurationHidden: true };
+  }
+  if (action.type === SET_INTERACTIVE_MODE) {
+    return { ...state, interactiveMode: action.payload }
   }
 
   return state;

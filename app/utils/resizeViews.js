@@ -8,7 +8,8 @@ export default function resizeViews(
 ) {
   const {
     window,
-    views: { puppet, sidebar, botOverlay, configuration, devMenu }
+    views: { puppet, sidebar, botOverlay, configuration, devMenu },
+    interactiveMode
   } = electronState;
   if (window === undefined || window === null) {
     // eslint-disable-next-line no-console
@@ -30,12 +31,15 @@ export default function resizeViews(
     width: windowWidth - sideBarWidth, // - 20, // by not subtracting the offset we push the scrollbar out of view
     height: windowHeight - 20
   });
+
+  const botOverlayHeightInManualMode = 150;
   botOverlay.browserView.setBounds({
     x: sideBarWidth,
-    y: 0,
+    y: interactiveMode ? windowHeight - botOverlayHeightInManualMode : 0,
     width: windowWidth - sideBarWidth,
-    height: windowHeight
+    height: interactiveMode ? botOverlayHeightInManualMode : windowHeight
   });
+
   let configurationY = electronState.configurationHidden ? windowHeight : 0;
   if (
     configurationVisibility !== undefined &&

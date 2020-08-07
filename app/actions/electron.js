@@ -12,6 +12,7 @@ import {
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_VIEW_URL,
   SET_BROWSER_WINDOW,
+  SET_INTERACTIVE_MODE,
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS,
   OPEN_PDF
@@ -92,6 +93,13 @@ export function showConfiguration(): Action {
     type: SHOW_CONFIGURATION,
     payload: null
   };
+}
+
+export function setInteractiveMode(interactiveModeEnabled: boolean): Action {
+  return {
+    type: SET_INTERACTIVE_MODE,
+    payload: interactiveModeEnabled
+  }
 }
 
 export function performScroll(name: BrowserViewName, deltaY: number): Action {

@@ -29,8 +29,8 @@
   bottom: 0;
 }
 
-$bot-illustration-offset-right: 10vh;
-$bot-illustration-width: 15vh;
+$bot-illustration-offset-right: 10vmax;
+$bot-illustration-width: 15vmax;
 .botIllustration {
   position: absolute;
   bottom: -2px;
@@ -39,15 +39,15 @@ $bot-illustration-width: 15vh;
 }
 
 $speech-bubble-color: $BOT_LIGHT;
-$speech-bubble-anchor-width: 4vh;
+$speech-bubble-anchor-width: 4vmax;
 .speechBubble {
   position: absolute;
   right: $bot-illustration-offset-right + $bot-illustration-width +
-    $speech-bubble-anchor-width - 1vh;
-  bottom: 3vh;
+    $speech-bubble-anchor-width - 1vmax;
+  bottom: 3vmax;
   background-color: $speech-bubble-color;
   color: #333;
-  font-size: calc(20px + 1vh);
+  font-size: calc(20px + 1vmax);
   padding: 0.5em 0.7em 0.4em;
   margin-left: 0.5em;
 }
@@ -55,13 +55,13 @@ $speech-bubble-anchor-width: 4vh;
   content: '';
   position: absolute;
   right: 0;
-  bottom: 1vh;
+  bottom: 1vmax;
   width: 0;
   height: 0;
   border: 0 solid transparent;
-  border-top-width: 2vh;
-  border-left: 4vh $speech-bubble-color solid;
-  margin-right: -4vh;
+  border-top-width: 2vmax;
+  border-left: 4vmax $speech-bubble-color solid;
+  margin-right: -4vmax;
 }
 
 .animations {
