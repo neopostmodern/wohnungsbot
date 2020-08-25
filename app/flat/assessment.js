@@ -19,6 +19,13 @@ export function assessFlat(
 
   const reasons = [];
 
+  if (overviewDataEntry.isPartOfProject) {
+    reasons.push({
+      reason: 'Projekt',
+      result: false
+    });
+  }
+
   if (overviewDataEntry.rent / overviewDataEntry.area < 4) {
     reasons.push({
       reason: 'Angebot ist fake',

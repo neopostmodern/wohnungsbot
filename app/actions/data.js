@@ -45,7 +45,8 @@ function processOverviewDataEntry(
     rent: parseFloat(realEstate.price.value),
     area: parseFloat(realEstate.livingSpace),
     balcony: parseBoolean(realEstate.balcony),
-    builtInKitchen: parseBoolean(realEstate.builtInKitchen)
+    builtInKitchen: parseBoolean(realEstate.builtInKitchen),
+    isPartOfProject: Boolean(entry.project)
   };
   if (realEstate.address.preciseHouseNumber) {
     processedEntry.address.houseNumber = ((realEstate.address

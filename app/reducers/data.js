@@ -67,7 +67,8 @@ export type RawOverviewDataEntry = {
     privateOffer: StringBoolean,
     realtorCompanyName: string,
     title: string,
-    titlePicture: PictureDescription
+    titlePicture: PictureDescription,
+    project?: {}
   }
 };
 // eslint-disable-next-line flowtype/no-weak-types
@@ -96,7 +97,8 @@ export type OverviewDataEntry = {|
   balcony: boolean,
   builtInKitchen: boolean,
   rent: number,
-  area: number
+  area: number,
+  isPartOfProject: boolean
 |};
 
 export type RawFlatData = {
