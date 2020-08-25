@@ -29,8 +29,9 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
     const { puppet } = store.getState().electron.views;
 
+    // hide cookie pop-up
     puppet.browserView.webContents.insertCSS(`
-      #cmp-faktor-io-brand-consent-notice {
+      body > div:first-child:not(.page-wrapper) {
         display: none !important;
       }
     `);
