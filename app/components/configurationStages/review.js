@@ -127,6 +127,24 @@ const reviewStage: StageDescription = {
               <br />
             </>
           ) : null}{' '}
+          {configuration.filter.mustBeSwapApartment ? (
+            <>
+              Tauschwohnung
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.noSwapApartment? (
+            <>
+              keine Tauschwohnung
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.onlyForSeniors? (
+            <>
+              für Senioren
+              <br />
+            </>
+          ) : null}{' '}
           {configuration.filter.onlyOldBuilding ? (
             <>
               Altbau

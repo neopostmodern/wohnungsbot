@@ -34,6 +34,12 @@ const flatDescriptionStage: StageDescription = {
         mustHaveBalcony,
         mustHaveKitchenette,
         noKitchenette,
+        mustBeSwapApartment,
+        noSwapApartment,
+        onlyForSeniors,
+        notSpecificallyForSeniors,
+        onlySublease,
+        noSublease,
         maximumRent,
         minimumArea,
         maximumRentPerSquareMeter,
@@ -145,6 +151,54 @@ const flatDescriptionStage: StageDescription = {
               onChange={() => toggleBoolean('filter.noKitchenette')}
             />{' '}
             Unbedingt <em>ohne</em> Einbauküche
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={mustBeSwapApartment}
+              onChange={() => toggleBoolean('filter.mustBeSwapApartment')}
+            />{' '}
+            Unbedingt <em>eine</em> Tauschwohnung
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={noSwapApartment}
+              onChange={() => toggleBoolean('filter.noSwapApartment')}
+            />{' '}
+            Unbedingt <em>keine</em> Tauschwohnung
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={onlyForSeniors}
+              onChange={() => toggleBoolean('filter.onlyForSeniors')}
+            />{' '}
+            Nur für Senioren (ab 55 Jahren)
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={notSpecificallyForSeniors}
+              onChange={() => toggleBoolean('filter.notSpecificallyForSeniors')}
+            />{' '}
+            Keine Senioren-Wohnungen
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={onlySublease}
+              onChange={() => toggleBoolean('filter.onlySublease')}
+            />{' '}
+            Unbedingt Zwischenmiete
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={noSublease}
+              onChange={() => toggleBoolean('filter.noSublease')}
+            />{' '}
+            Unbedingt <em>keine</em> Zwischenmiete
           </div>
           <div className={styles.searchParameter}>
             <input
