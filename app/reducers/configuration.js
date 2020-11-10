@@ -35,9 +35,7 @@ export type configurationBoolean =
   | 'noKitchenette'
   | 'onlyOldBuilding'
   | 'onlyUnfurnished'
-  | 'mustBeSwapApartment'
   | 'noSwapApartment'
-  | 'onlyForSeniors'
   | 'notSpecificallyForSeniors'
   | 'onlySublease'
   | 'noSublease';
@@ -55,9 +53,7 @@ export type Filter = {|
   mustHaveBalcony: boolean,
   mustHaveKitchenette: boolean,
   noKitchenette: boolean,
-  mustBeSwapApartment: boolean,
   noSwapApartment: boolean,
-  onlyForSeniors: boolean,
   notSpecificallyForSeniors: boolean,
   onlySublease: boolean,
   noSublease: boolean,
@@ -158,9 +154,7 @@ const defaultConfiguration: Configuration = {
     mustHaveBalcony: false,
     mustHaveKitchenette: false,
     noKitchenette: false,
-    mustBeSwapApartment: false,
     noSwapApartment: false,
-    onlyForSeniors: false,
     notSpecificallyForSeniors: false,
     onlySublease: false,
     noSublease: false

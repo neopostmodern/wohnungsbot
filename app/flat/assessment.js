@@ -105,13 +105,6 @@ export function assessFlat(
     });
   }
 
-  if (configuration.filter.mustBeSwapApartment) {
-    reasons.push({
-      reason: `Tauschwohnung`,
-      result: overviewDataEntry.title.toLowerCase().includes('tausch') || overviewDataEntry.title.toLowerCase().includes('swap')
-    });
-  }
-
   if (configuration.filter.noSwapApartment) {
     reasons.push({
       reason: `Keine Tauschwohnung`,
@@ -119,14 +112,7 @@ export function assessFlat(
     });
   }
 
-  if (configuration.filter.onlyForSeniors) {
-    reasons.push({
-      reason: `Senioren-Wohnung`,
-      result: overviewDataEntry.title.toLowerCase().includes('senioren')
-    });
-  }
-
-  if (configuration.filter.notForSeniors) {
+  if (configuration.filter.notSpecificallyForSeniors) {
     reasons.push({
       reason: `Keine Senioren-Wohnung`,
       result: !overviewDataEntry.title.toLowerCase().includes('senioren')

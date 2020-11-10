@@ -127,21 +127,21 @@ const reviewStage: StageDescription = {
               <br />
             </>
           ) : null}{' '}
-          {configuration.filter.mustBeSwapApartment ? (
-            <>
-              Tauschwohnung
-              <br />
-            </>
-          ) : null}{' '}
           {configuration.filter.noSwapApartment? (
             <>
               keine Tauschwohnung
               <br />
             </>
           ) : null}{' '}
-          {configuration.filter.onlyForSeniors? (
+          {configuration.filter.notSpecificallyForSeniors? (
             <>
-              für Senioren
+              keine Seniorenwohnung
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.noSublease? (
+            <>
+              keine Zwischenmiete
               <br />
             </>
           ) : null}{' '}

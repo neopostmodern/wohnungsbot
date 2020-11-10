@@ -34,9 +34,7 @@ const flatDescriptionStage: StageDescription = {
         mustHaveBalcony,
         mustHaveKitchenette,
         noKitchenette,
-        mustBeSwapApartment,
         noSwapApartment,
-        onlyForSeniors,
         notSpecificallyForSeniors,
         onlySublease,
         noSublease,
@@ -155,26 +153,10 @@ const flatDescriptionStage: StageDescription = {
           <div className={styles.searchParameter}>
             <input
               type="checkbox"
-              checked={mustBeSwapApartment}
-              onChange={() => toggleBoolean('filter.mustBeSwapApartment')}
-            />{' '}
-            Unbedingt <em>eine</em> Tauschwohnung
-          </div>
-          <div className={styles.searchParameter}>
-            <input
-              type="checkbox"
               checked={noSwapApartment}
               onChange={() => toggleBoolean('filter.noSwapApartment')}
             />{' '}
             Unbedingt <em>keine</em> Tauschwohnung
-          </div>
-          <div className={styles.searchParameter}>
-            <input
-              type="checkbox"
-              checked={onlyForSeniors}
-              onChange={() => toggleBoolean('filter.onlyForSeniors')}
-            />{' '}
-            Nur für Senioren (ab 55 Jahren)
           </div>
           <div className={styles.searchParameter}>
             <input
