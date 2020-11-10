@@ -105,6 +105,35 @@ export function assessFlat(
     });
   }
 
+  if (configuration.filter.noSwapApartment) {
+    reasons.push({
+      reason: `Keine Tauschwohnung`,
+      result: !(overviewDataEntry.title.toLowerCase().includes('tausch') || overviewDataEntry.title.toLowerCase().includes('swap'))
+    });
+  }
+
+  if (configuration.filter.notSpecificallyForSeniors) {
+    reasons.push({
+      reason: `Keine Senioren-Wohnung`,
+      result: !overviewDataEntry.title.toLowerCase().includes('senioren')
+    });
+  }
+
+  const subleaseCond = overviewDataEntry.title.toLowerCase().includes('zwischenmiete') || overviewDataEntry.title.toLowerCase().includes('befr.') || overviewDataEntry.title.toLowerCase().includes('befristet') || overviewDataEntry.title.toLowerCase().includes(' bis ')
+  if (configuration.filter.onlySublease) {
+    reasons.push({
+      reason: `Zwischenmiete`,
+      result: subleaseCond
+    });
+  }
+
+  if (configuration.filter.noSublease) {
+    reasons.push({
+      reason: `Keine Zwischenmiete`,
+      result: !subleaseCond
+    });
+  }
+
   if (flatData) {
     if (!Number.isNaN(flatData.floor)) {
       const normalizedFloor = Math.min(4, flatData.floor);

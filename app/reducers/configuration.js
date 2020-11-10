@@ -34,7 +34,11 @@ export type configurationBoolean =
   | 'mustHaveKitchenette'
   | 'noKitchenette'
   | 'onlyOldBuilding'
-  | 'onlyUnfurnished';
+  | 'onlyUnfurnished'
+  | 'noSwapApartment'
+  | 'notSpecificallyForSeniors'
+  | 'onlySublease'
+  | 'noSublease';
 
 export type Filter = {|
   postcodes: Array<string>,
@@ -49,6 +53,10 @@ export type Filter = {|
   mustHaveBalcony: boolean,
   mustHaveKitchenette: boolean,
   noKitchenette: boolean,
+  noSwapApartment: boolean,
+  notSpecificallyForSeniors: boolean,
+  onlySublease: boolean,
+  noSublease: boolean,
   floors: Array<number>
 |};
 
@@ -145,7 +153,11 @@ const defaultConfiguration: Configuration = {
     hasWBS: false,
     mustHaveBalcony: false,
     mustHaveKitchenette: false,
-    noKitchenette: false
+    noKitchenette: false,
+    noSwapApartment: false,
+    notSpecificallyForSeniors: false,
+    onlySublease: false,
+    noSublease: false
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   contactData: {

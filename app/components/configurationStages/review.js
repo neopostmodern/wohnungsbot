@@ -127,6 +127,30 @@ const reviewStage: StageDescription = {
               <br />
             </>
           ) : null}{' '}
+          {configuration.filter.noSwapApartment? (
+            <>
+              keine Tauschwohnung
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.notSpecificallyForSeniors? (
+            <>
+              keine Seniorenwohnung
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.noSublease? (
+            <>
+              keine Wohnungen zur Zwischenmiete
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.onlySublease? (
+            <>
+              nur Wohnungen zur Zwischenmiete
+              <br />
+            </>
+          ) : null}{' '}
           {configuration.filter.onlyOldBuilding ? (
             <>
               Altbau
