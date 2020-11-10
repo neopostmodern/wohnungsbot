@@ -141,7 +141,13 @@ const reviewStage: StageDescription = {
           ) : null}{' '}
           {configuration.filter.noSublease? (
             <>
-              keine Zwischenmiete
+              keine Wohnungen zur Zwischenmiete
+              <br />
+            </>
+          ) : null}{' '}
+          {configuration.filter.onlySublease? (
+            <>
+              nur Wohnungen zur Zwischenmiete
               <br />
             </>
           ) : null}{' '}
