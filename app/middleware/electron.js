@@ -44,9 +44,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       // eslint-disable-next-line no-console
       console.error(`No view registered for ${name}!`);
     } else {
-      viewState.browserView.webContents.loadURL(targetUrl).then(() => {
-        return viewState.browserView.webContents.session.cookies.set({ url: '//immobilienscout24.de', name: 'cconsent-v2', value: '01234567' })
-      });
+      viewState.browserView.webContents.loadURL(targetUrl);
     }
   }
 
