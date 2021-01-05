@@ -227,7 +227,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@sendgrid/mail": "^7.2.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "connected-react-router": "^6.8.0",
     "core-js": "^3.6.5",
     "dot-prop-immutable": "^2.1.0",
