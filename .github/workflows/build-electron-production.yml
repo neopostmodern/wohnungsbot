@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build Electron app (production)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+    env:
+      CONFIG_FILE: config.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          args: "-p always"
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Installer ${{ runner.os }}
+          path: release/structure-*
+          if-no-files-found: error
