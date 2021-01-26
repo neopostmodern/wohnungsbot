@@ -16,6 +16,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Install dependencies
         run: npm ci
+      - name: Decrypt keys
+        run: ./internals/deploy/decrypt-keys.sh
+        shell: bash
+        env:
+          KEYS_DECRYPT_PASSPHRASE: ${{ secrets.KEYS_DECRYPT_PASSPHRASE }}
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
