@@ -104,7 +104,6 @@
       "buildResources": "resources",
       "output": "release"
     },
-    "afterSign": "internals/build/notarize.js",
     "publish": [
       {
         "provider": "github",
