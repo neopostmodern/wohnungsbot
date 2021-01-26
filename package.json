@@ -73,23 +73,8 @@
       "package.json"
     ],
     "mac": {
-      "entitlements": "internals/build/entitlements.mac.plist",
-      "entitlementsInherit": "internals/build/entitlements.mac.plist",
-      "gatekeeperAssess": false,
-      "hardenedRuntime": true
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
+      "target": [
+        "tar.gz"
       ]
     },
     "win": {
@@ -119,7 +104,6 @@
       "buildResources": "resources",
       "output": "release"
     },
-    "afterSign": "internals/build/notarize.js",
     "publish": [
       {
         "provider": "github",
