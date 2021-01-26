@@ -1,0 +1,28 @@
+on:
+  push:
+    branches:
+      - dev
+jobs:
+  build:
+    name: Build Electron app (staging)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+    env:
+      CONFIG_FILE: config-staging.json
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          args: "-p never"
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Installer ${{ runner.os }}
+          path: release/structure-*
+          if-no-files-found: error
