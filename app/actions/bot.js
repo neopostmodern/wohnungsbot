@@ -19,6 +19,7 @@ import { clickAction, scrollIntoViewAction } from './botHelpers';
 import { calculateOverviewBoundingBoxes } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
+import { entrySelector, entryTitleSelector } from '../utils/selectors';
 import { electronRouting, setBrowserViewReady } from './electron';
 
 export function queueInvestigateFlat(flatId: string): Action {
@@ -56,7 +57,7 @@ export const navigateToFlatPage = (flatId: string) => async (
   dispatch(setBotIsActing(true));
   dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
   dispatch(setShowOverlay(false));
-  await dispatch(scrollIntoViewAction('puppet', `#result-${flatId}`));
+  await dispatch(scrollIntoViewAction('puppet', entrySelector(flatId)));
   dispatch(calculateOverviewBoundingBoxes());
   dispatch(setShowOverlay(true));
   await sleep(5000);
@@ -67,7 +68,7 @@ export const navigateToFlatPage = (flatId: string) => async (
     getState().electron.views.puppet.browserView.webContents
   );
 
-  const flatTitleSelector = `#result-${flatId} .result-list-entry__brand-title`;
+  const flatTitleSelector = entryTitleSelector(flatId);
 
   /* eslint-disable no-await-in-loop */
   while (AbortionSystem.nestedFunctionsMayContinue) {

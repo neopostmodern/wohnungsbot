@@ -24,6 +24,7 @@ import type { OverviewDataEntry } from '../reducers/data';
 import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
 import ElectronUtils from '../utils/electronUtils';
+import { entrySelector } from '../utils/selectors';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -59,7 +60,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         Object.values(overview)
           // $FlowFixMe -- Object.values
           .map(async (entry: OverviewDataEntry) => {
-            const selector = `#result-${entry.id}`;
+            const selector = entrySelector(entry.id);
 
             if (
               !(await electronUtils.isElementInViewport(selector, false, false))
