@@ -72,6 +72,7 @@
       "app/main.prod.js.map",
       "package.json"
     ],
+    "afterAllArtifactBuild": "./internals/build/repackage-macos.js",
     "mac": {
       "target": [
         "tar.gz"
@@ -196,6 +197,7 @@
     "stylelint": "^13.6.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
+    "tar": "^6.1.0",
     "terser-webpack-plugin": "^3.1.0",
     "testcafe": "^1.9.0",
     "testcafe-browser-provider-electron": "^0.0.14",
