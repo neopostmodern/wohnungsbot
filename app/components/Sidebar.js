@@ -22,7 +22,7 @@ export default class Sidebar extends Component<Props, State> {
 
   async componentWillMount() {
     const response = await fetch(
-      'https://wohnung.neopostmodern.com/announcement.html'
+      'https://wohnungsbot.de/announcement.html'
     );
     const announcement = await response.text();
 
