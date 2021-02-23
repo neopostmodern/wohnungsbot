@@ -41,5 +41,8 @@ export function generateSearchUrl(configuration: Configuration): string {
     configuration.filter.minimumArea
   )}-/EURO--${numberToGermanFloatString(configuration.filter.maximumRent)}`;
 
+  // sort by date listed
+  searchUrl += '?sorting=2'
+
   return searchUrl;
 }
