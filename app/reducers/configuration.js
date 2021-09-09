@@ -66,6 +66,12 @@ export const SALUTATIONS = {
 };
 export type Salutation = $Values<typeof SALUTATIONS>;
 
+export type ImmobilienScout24Data ={|
+  userName: string,
+  password: string,
+  cookie: string,
+|};
+
 export type ContactData = {|
   salutation: Salutation,
   firstName: string,
@@ -131,6 +137,7 @@ export type Configuration = {|
   searchUrl?: string,
   applicationText: string,
   contactData: ContactData,
+  immobilienScout24: ImmobilienScout24Data,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies,
   configurationVersion: number

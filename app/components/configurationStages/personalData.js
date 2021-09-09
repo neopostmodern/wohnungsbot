@@ -25,6 +25,10 @@ const personalDataStage: StageDescription = {
   ),
   body: ({
     configuration: {
+      immobilienScout24:{
+        userName,
+        password
+      },
       contactData: {
         salutation,
         firstName,
@@ -119,17 +123,17 @@ const personalDataStage: StageDescription = {
             />
           </div>
 
-          <div className={styles.pending}>
+          <div className={styles.searchParameter}>
             <h3>ImmobilienScout24-Account</h3>
             <TextField
-              value=""
-              onChange={() => {}}
+              value={userName}
+              onChange={value => setString('immobilienScout24.userName', value)}
               placeholder="E-Mail Addresse"
               style={{ width: '190px' }}
             />{' '}
             <TextField
-              value=""
-              onChange={() => {}}
+              value={password}
+              onChange={value => setString('immobilienScout24.password', value)}
               placeholder="Passwort"
               style={{ width: '190px' }}
             />
