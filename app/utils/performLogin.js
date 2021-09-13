@@ -65,6 +65,7 @@ export default function* performLogin(
   // Check for errors
   if (yield electronUtils.elementExists('#errors_password')) {
     yield sleep(2000);
+    dispatch(setLoginStatus(LOGINSTATUS.ERROR));
     throw new Error('Anmeldefehler');
     // TODO: need's some kind of error recovery.
   }
