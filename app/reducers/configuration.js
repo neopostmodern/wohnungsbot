@@ -13,7 +13,7 @@ import {
   TOGGLE_FLOOR,
   TOGGLE_POSTCODE,
   TOGGLE_BOOLEAN,
-  SET_STRING
+  SET_STRING,
 } from '../constants/actionTypes';
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
@@ -57,19 +57,25 @@ export type Filter = {|
   notSpecificallyForSeniors: boolean,
   onlySublease: boolean,
   noSublease: boolean,
-  floors: Array<number>
+  floors: Array<number>,
 |};
 
 export const SALUTATIONS = {
   FRAU: 'Frau',
-  HERR: 'Herr'
+  HERR: 'Herr',
 };
 export type Salutation = $Values<typeof SALUTATIONS>;
 
-export type ImmobilienScout24Data ={|
+export const LOGINSTATUS = {
+  LOGGED_IN: 'LOGGED_IN',
+  LOGGED_OUT: 'LOGGED_OUT',
+  ERROR: 'ERROR',
+};
+
+export type LoginData = {|
   userName: string,
   password: string,
-  cookie: string,
+  status: $Values<typeof LOGINSTATUS>,
 |};
 
 export type ContactData = {|
@@ -81,7 +87,7 @@ export type ContactData = {|
   street: string,
   houseNumber: string,
   postcode: string,
-  city: string
+  city: string,
 |};
 
 export type DataPolicies = {|
@@ -89,12 +95,12 @@ export type DataPolicies = {|
   researchDataSharing: boolean,
   artConsent: boolean,
   applicationNotificationMails: boolean,
-  fillAsLittleAsPossible: boolean
+  fillAsLittleAsPossible: boolean,
 |};
 
 export const MOVE_IN_WHEN = {
   NOW: 'Ab sofort',
-  FLEXIBLE: 'Flexibel'
+  FLEXIBLE: 'Flexibel',
 };
 export type MoveInWhen = $Values<typeof MOVE_IN_WHEN>;
 
@@ -102,7 +108,7 @@ export const MOVE_IN_WHO = {
   SINGLE: 'Einpersonenhaushalt',
   TWO_ADULTS: 'Zwei Erwachsene',
   FAMILY: 'Familie',
-  SHARED_FLAT: 'Wohngemeinschaft'
+  SHARED_FLAT: 'Wohngemeinschaft',
 };
 export type MoveInWho = $Values<typeof MOVE_IN_WHO>;
 
@@ -117,7 +123,7 @@ export const EMPLOYMENT_STATUS = {
   HOUSEPERSON: 'Hausmensch',
   UNEMPLOYED: 'Arbeitslos',
   RETIRED: 'Renter_in',
-  OTHER: 'Sonstige'
+  OTHER: 'Sonstige',
 };
 export type EmploymentStatus = $Values<typeof EMPLOYMENT_STATUS>;
 
@@ -127,7 +133,7 @@ export type AdditionalInformation = {|
   animals: string,
   employmentStatus: EmploymentStatus,
   income: ?number,
-  hasDocumentsReady: boolean
+  hasDocumentsReady: boolean,
 |};
 
 export type Configuration = {|
@@ -137,10 +143,10 @@ export type Configuration = {|
   searchUrl?: string,
   applicationText: string,
   contactData: ContactData,
-  immobilienScout24: ImmobilienScout24Data,
+  immobilienScout24: LoginData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies,
-  configurationVersion: number
+  configurationVersion: number,
 |};
 
 export const getConfigurationFilterHash = (
@@ -164,9 +170,14 @@ const defaultConfiguration: Configuration = {
     noSwapApartment: false,
     notSpecificallyForSeniors: false,
     onlySublease: false,
-    noSublease: false
+    noSublease: false,
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
+  immobilienScout24: {
+    userName: '',
+    password: '',
+    status: LOGINSTATUS.LOGGED_OUT,
+  },
   contactData: {
     salutation: SALUTATIONS.FRAU,
     firstName: '',
@@ -175,7 +186,7 @@ const defaultConfiguration: Configuration = {
     street: '',
     houseNumber: '',
     postcode: '',
-    city: ''
+    city: '',
   },
   additionalInformation: {
     moveInWhen: MOVE_IN_WHEN.NOW,
@@ -183,16 +194,16 @@ const defaultConfiguration: Configuration = {
     animals: '',
     employmentStatus: EMPLOYMENT_STATUS.EMPLOYEE,
     income: null,
-    hasDocumentsReady: true
+    hasDocumentsReady: true,
   },
   policies: {
     flatViewingNotificationMails: false,
     researchDataSharing: false,
     artConsent: false,
     applicationNotificationMails: false,
-    fillAsLittleAsPossible: false
+    fillAsLittleAsPossible: false,
   },
-  configurationVersion: ConfigurationVersion
+  configurationVersion: ConfigurationVersion,
 };
 
 function configurationMigrations(
