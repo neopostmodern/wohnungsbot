@@ -9,7 +9,8 @@ import { abortable } from '../utils/generators';
 import AbortionSystem, { ABORTION_ERROR } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import { LOGINSTATUS } from '../reducers/configuration';
-import { returnToSearchPage } from '../actions/bot';
+import { returnToSearchPage, setLoginStatus } from '../actions/bot';
+import performLogout from '../utils/performLogout';
 
 export default (store: Store) =>
   (next: (action: Action) => void) =>
@@ -25,6 +26,7 @@ export default (store: Store) =>
           status !== LOGINSTATUS.LOGGED_IN &&
           userName !== '' &&
           password !== '';
+
         if (shouldTryToLogin) {
           await store.dispatch(
             electronRouting('puppet', 'https://www.immobilienscout24.de/')
@@ -52,13 +54,44 @@ export default (store: Store) =>
             console.error(`Error in application:
 ${error}`);
             AbortionSystem.abort(ABORTION_ERROR);
+            dispatch(setLoginStatus(LOGINSTATUS.ERROR));
           }
           await sleep(2000);
         }
+      } else if (action.type === LOGOUT) {
+        await store.dispatch(
+          electronRouting('puppet', 'https://www.immobilienscout24.de/')
+        );
+        await sleep(4000);
+        const { webContents } = electron.views.puppet.browserView;
+        const electronUtils = new ElectronUtilsRedux(
+          webContents,
+          store.dispatch
+        );
+        const { abortableAction: abortablePerformLogout, abort } =
+          abortable(performLogout);
+        AbortionSystem.registerAbort(abort);
+        try {
+          await timeout(
+            abortablePerformLogout(
+              store.dispatch,
+              electronUtils,
+              store.getState().configuration
+            ),
+            300000
+          );
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(`Error in application:
+${error}`);
+          AbortionSystem.abort(ABORTION_ERROR);
+          dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+        }
+        await sleep(2000);
       }
-
       return next(action);
     } catch (error) {
+      dispatch(setLoginStatus(LOGINSTATUS.ERROR));
       dispatch(returnToSearchPage(true));
     }
   };
