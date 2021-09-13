@@ -20,59 +20,54 @@ export default function* performLogin(
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
-  // Logout
-  if (yield electronUtils.elementExists('[data-tracked-link="abmelden"]')) {
-    yield dispatch(clickAction('.topnavigation__overlay--account'));
-    yield sleep(1000);
-    // First try to log out in case there is a problem with previous checks so the bot doesn't hangs.
-    yield dispatch(clickAction('[data-tracked-link="abmelden"]'));
+  console.log(yield electronUtils.elementExists('.sso-login--logged-in'));
+  // Check again if user is logged in
+  if (!(yield electronUtils.elementExists('.sso-login--logged-in'))) {
+    // Click login button
+    if (yield electronUtils.elementExists('[data-tracked-link="anmelden"]')) {
+      yield dispatch(clickAction('.topnavigation__overlay--account'));
+      yield sleep(1000);
+      yield dispatch(clickAction('[data-tracked-link="anmelden"]'));
+    }
+
+    // Wait for page to load
+    yield sleep(6000);
+
+    // Fill username
+    yield electronUtils.fillText(
+      '#username',
+      configuration.immobilienScout24.userName
+    );
+
+    // Click continue button
+    const continueButtonSelector = '#submit';
+    yield dispatch(clickAction(continueButtonSelector));
     yield sleep(3000);
-  }
 
-  // Click login button
-  if (yield electronUtils.elementExists('[data-tracked-link="anmelden"]')) {
-    yield dispatch(clickAction('.topnavigation__overlay--account'));
-    yield sleep(1000);
-    yield dispatch(clickAction('[data-tracked-link="anmelden"]'));
+    // Fill password
+    yield electronUtils.fillText(
+      '#password',
+      configuration.immobilienScout24.password
+    );
+
+    // Click login button
+    const loginButtonSelector = '#loginOrRegistration';
+    yield dispatch(clickAction(loginButtonSelector));
+
+    // Check for errors
+    if (yield electronUtils.elementExists('#errors_password')) {
+      yield sleep(2000);
+      dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+      throw new Error('Anmeldefehler');
+      // TODO: need's some kind of error recovery.
+    }
+
+    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+
+    dispatch(setBotMessage('Einloggen erfolgreich :)', 4000));
   } else {
-    dispatch(returnToSearchPage());
+    dispatch(setBotMessage('Bereits eingeloggt', 4000));
   }
-
-  // Wait for page to load
-  yield sleep(6000);
-
-  // Fill username
-  yield electronUtils.fillText(
-    '#username',
-    configuration.immobilienScout24.userName
-  );
-
-  // Click continue button
-  const continueButtonSelector = '#submit';
-  yield dispatch(clickAction(continueButtonSelector));
-  yield sleep(3000);
-
-  // Fill password
-  yield electronUtils.fillText(
-    '#password',
-    configuration.immobilienScout24.password
-  );
-
-  // Click login button
-  const loginButtonSelector = '#loginOrRegistration';
-  yield dispatch(clickAction(loginButtonSelector));
-
-  // Check for errors
-  if (yield electronUtils.elementExists('#errors_password')) {
-    yield sleep(2000);
-    dispatch(setLoginStatus(LOGINSTATUS.ERROR));
-    throw new Error('Anmeldefehler');
-    // TODO: need's some kind of error recovery.
-  }
-
-  dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
-
-  dispatch(setBotMessage('Einloggen erfolgreich :)'));
-
+  yield sleep(5000);
   dispatch(returnToSearchPage());
 }
