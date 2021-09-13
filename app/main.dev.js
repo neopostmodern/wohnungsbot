@@ -159,7 +159,7 @@ configureStore(MAIN, isDevelopment)
         `file://${__dirname}/app.html#${ROUTES.CONFIGURATION}`
       );
 
-      if (true) {
+      if (isDevelopment) {
         newView(
           'devMenu',
           {

@@ -1,6 +1,6 @@
 // @flow
 
-import { LOGIN } from '../constants/actionTypes';
+import { LOGIN, LOGOUT } from '../constants/actionTypes';
 import type { Action, Store } from '../reducers/types';
 import { sleep, timeout } from '../utils/async';
 import performLogin from '../utils/performLogin';
@@ -9,7 +9,7 @@ import { abortable } from '../utils/generators';
 import AbortionSystem, { ABORTION_ERROR } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import { LOGINSTATUS } from '../reducers/configuration';
-import { returnToSearchPage, setLoginStatus } from '../actions/bot';
+import { setBotIsActing, setLoginStatus } from '../actions/bot';
 import performLogout from '../utils/performLogout';
 
 export default (store: Store) =>
@@ -22,12 +22,12 @@ export default (store: Store) =>
           immobilienScout24: { userName, password, status },
         } = configuration;
         const shouldTryToLogin =
-          status !== LOGINSTATUS.ERROR &&
           status !== LOGINSTATUS.LOGGED_IN &&
           userName !== '' &&
           password !== '';
 
         if (shouldTryToLogin) {
+          await store.dispatch(setBotIsActing(false));
           await store.dispatch(
             electronRouting('puppet', 'https://www.immobilienscout24.de/')
           );
@@ -54,11 +54,14 @@ export default (store: Store) =>
             console.error(`Error in application:
 ${error}`);
             AbortionSystem.abort(ABORTION_ERROR);
-            dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+            await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
           }
           await sleep(2000);
         }
       } else if (action.type === LOGOUT) {
+        const { electron } = store.getState();
+
+        await store.dispatch(setBotIsActing(false));
         await store.dispatch(
           electronRouting('puppet', 'https://www.immobilienscout24.de/')
         );
@@ -85,13 +88,16 @@ ${error}`);
           console.error(`Error in application:
 ${error}`);
           AbortionSystem.abort(ABORTION_ERROR);
-          dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
         await sleep(2000);
       }
-      return next(action);
     } catch (error) {
-      dispatch(setLoginStatus(LOGINSTATUS.ERROR));
-      dispatch(returnToSearchPage(true));
+      // eslint-disable-next-line no-console
+      console.error(`Login error: ${error}`);
+      await sleep(5000);
+      await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
     }
+
+    return next(action);
   };
