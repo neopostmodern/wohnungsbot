@@ -13,6 +13,7 @@ import configuration from '../middleware/configuration';
 import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
 import bot from '../middleware/bot';
+import login from '../middleware/login';
 
 const configureStore = async (
   target: string,
@@ -61,6 +62,11 @@ const configureStore = async (
 
   if (target === MAIN) {
     middleware.push(data);
+  }
+
+
+  if (target === MAIN) {
+    middleware.push(login);
   }
 
   if (target === MAIN) {

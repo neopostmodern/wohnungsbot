@@ -7,11 +7,12 @@ type DevMenuProps = {
   views: Views,
   showDevTools: (name: BrowserViewName) => void,
   resetConfiguration: () => void,
-  resetCache: () => void
+  resetCache: () => void,
+  logout: () => void,
 };
 
 type DevMenuState = {
-  expanded: boolean
+  expanded: boolean,
 };
 
 export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
@@ -20,13 +21,8 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
   state: DevMenuState = { expanded: false };
 
   render() {
-    const {
-      views,
-      showDevTools,
-      resetConfiguration,
-      resetCache,
-      stopBot
-    } = this.props;
+    const { views, showDevTools, resetConfiguration, resetCache, stopBot, logout } =
+      this.props;
     const { expanded } = this.state;
 
     return (
@@ -34,7 +30,7 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
         className={`${styles.container} ${expanded ? '' : styles.collapsed}`}
       >
         <div className={styles.menu}>
-          {Object.keys(views).map(viewName => (
+          {Object.keys(views).map((viewName) => (
             <div key={viewName} className={styles.menuItem}>
               <div className={styles.entryName}>{viewName}</div>
               <button type="button" onClick={() => showDevTools(viewName)}>
@@ -55,6 +51,11 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
             </button>
           </div>
           <div className={styles.menuItem}>
+            <button type="button" onClick={logout}>
+              Logout <span className="material-icons">replay</span>
+            </button>
+          </div>
+          <div className={styles.menuItem}>
             <button type="button" onClick={stopBot}>
               Stop <span className="material-icons">stop</span>
             </button>
@@ -63,7 +64,9 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
             <button
               type="button"
               onClick={() =>
-                this.setState(prevState => ({ expanded: !prevState.expanded }))
+                this.setState((prevState) => ({
+                  expanded: !prevState.expanded,
+                }))
               }
             >
               <span className="material-icons">

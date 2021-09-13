@@ -12,7 +12,9 @@ import {
   TASK_FINISHED,
   SCROLL_WHILE_IDLE,
   STOP_SCROLLING_WHILE_IDLE,
-  RESET_BOT
+  RESET_BOT,
+  LOGIN,
+  LOGOUT,
 } from '../constants/actionTypes';
 import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
@@ -21,6 +23,9 @@ import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
 import { entrySelector, entryTitleSelector } from '../utils/selectors';
 import { electronRouting, setBrowserViewReady } from './electron';
+import type { LoginData } from '../reducers/configuration';
+import { LOGINSTATUS } from '../reducers/configuration';
+import { setConfiguration } from './configuration';
 
 export function queueInvestigateFlat(flatId: string): Action {
   return async (dispatch: Dispatch, getState: GetState) => {
@@ -31,7 +36,7 @@ export function queueInvestigateFlat(flatId: string): Action {
 
     dispatch({
       type: QUEUE_INVESTIGATE_FLAT,
-      payload: { flatId }
+      payload: { flatId },
     });
   };
 }
@@ -39,80 +44,72 @@ export function queueInvestigateFlat(flatId: string): Action {
 export function popFlatFromQueue(flatId: string): Action {
   return {
     type: POP_FLAT_FROM_QUEUE,
-    payload: { flatId }
+    payload: { flatId },
   };
 }
 
-export const clickLogin = () => async (dispatch: Dispatch) => {
-  await dispatch(clickAction('#link_loginAccountLink'));
-  await sleep(1000);
-  await dispatch(clickAction('#link_loginLinkInternal'));
-};
-
-export const navigateToFlatPage = (flatId: string) => async (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
-  await sleep(10000);
-  dispatch(setBotIsActing(true));
-  dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
-  dispatch(setShowOverlay(false));
-  await dispatch(scrollIntoViewAction('puppet', entrySelector(flatId)));
-  dispatch(calculateOverviewBoundingBoxes());
-  dispatch(setShowOverlay(true));
-  await sleep(5000);
-  dispatch(setShowOverlay(false));
-  dispatch(setBotMessage(`Wohnung ${flatId} genauer anschauen!`));
-
-  const puppetView = new ElectronUtils(
-    getState().electron.views.puppet.browserView.webContents
-  );
-
-  const flatTitleSelector = entryTitleSelector(flatId);
-
-  /* eslint-disable no-await-in-loop */
-  while (AbortionSystem.nestedFunctionsMayContinue) {
-    if (!(await puppetView.elementExists(flatTitleSelector))) {
-      return true;
-    }
-    await dispatch(clickAction(flatTitleSelector));
+export const navigateToFlatPage =
+  (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
+    await sleep(10000);
+    dispatch(setBotIsActing(true));
+    dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
+    dispatch(setShowOverlay(false));
+    await dispatch(scrollIntoViewAction('puppet', entrySelector(flatId)));
+    dispatch(calculateOverviewBoundingBoxes());
+    dispatch(setShowOverlay(true));
     await sleep(5000);
-  }
-  /* eslint-enable no-await-in-loop */
+    dispatch(setShowOverlay(false));
+    dispatch(setBotMessage(`Wohnung ${flatId} genauer anschauen!`));
 
-  return false;
-};
+    const puppetView = new ElectronUtils(
+      getState().electron.views.puppet.browserView.webContents
+    );
+
+    const flatTitleSelector = entryTitleSelector(flatId);
+
+    /* eslint-disable no-await-in-loop */
+    while (AbortionSystem.nestedFunctionsMayContinue) {
+      if (!(await puppetView.elementExists(flatTitleSelector))) {
+        return true;
+      }
+      await dispatch(clickAction(flatTitleSelector));
+      await sleep(5000);
+    }
+    /* eslint-enable no-await-in-loop */
+
+    return false;
+  };
 
 export function setBotIsActing(isActing: boolean): Action {
   return {
     type: SET_BOT_IS_ACTING,
-    payload: { isActing }
+    payload: { isActing },
   };
 }
 export function setBotMessage(message: ?string, timeout?: number): Action {
   return {
     type: SET_BOT_MESSAGE,
-    payload: { message, timeout }
+    payload: { message, timeout },
   };
 }
 export function setShowOverlay(showOverlay: boolean): Action {
   return {
     type: SET_SHOW_OVERLAY,
-    payload: { showOverlay }
+    payload: { showOverlay },
   };
 }
 
 export function launchNextTask(): Action {
   return {
     type: LAUNCH_NEXT_TASK,
-    payload: null
+    payload: null,
   };
 }
 
 export function taskFinished(): Action {
   return {
     type: TASK_FINISHED,
-    payload: null
+    payload: null,
   };
 }
 
@@ -129,27 +126,51 @@ export function returnToSearchPage(forceReload: boolean = false) {
 export function noop(): Action {
   return {
     type: NOOP,
-    payload: null
+    payload: null,
   };
 }
 
 export function scrollWhileIdle(): Action {
   return {
     type: SCROLL_WHILE_IDLE,
-    payload: null
+    payload: null,
   };
 }
 
 export function stopScrollingWhileIdle(): Action {
   return {
     type: STOP_SCROLLING_WHILE_IDLE,
-    payload: null
+    payload: null,
   };
 }
 
 export function resetBot(): Action {
   return {
     type: RESET_BOT,
-    payload: null
+    payload: null,
+  };
+}
+
+export function login(immobilienScout24Data: LoginData): Action {
+  return {
+    type: LOGIN,
+    payload: {
+      immobilienScout24Data,
+    },
+  };
+}
+
+export function logout(): Action {
+  return {
+    type: LOGOUT,
+    payload: null,
+  };
+}
+
+export function setLoginStatus(loginStatus: LOGINSTATUS): Action {
+  return async (dispatch: Dispatch, getState: GetState) => {
+    const { configuration } = getState();
+    configuration.immobilienScout24.status = loginStatus;
+    dispatch(setConfiguration(configuration));
   };
 }
