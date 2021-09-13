@@ -1,7 +1,7 @@
 import {
   returnToSearchPage,
   setBotMessage,
-  setLoginStatus,
+  setLoginStatus
 } from '../actions/bot';
 import { clickAction, mouseOverAction } from '../actions/botHelpers';
 import { sleep } from './async';

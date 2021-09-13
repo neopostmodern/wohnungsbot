@@ -19,7 +19,7 @@ export default (store: Store) =>
       if (action.type === LOGIN) {
         const { configuration, electron } = store.getState();
         const {
-          immobilienScout24: { userName, password, status },
+          immobilienScout24: { userName, password, status }
         } = configuration;
         const shouldTryToLogin =
           status !== LOGINSTATUS.LOGGED_IN &&
@@ -51,8 +51,7 @@ export default (store: Store) =>
             );
           } catch (error) {
             // eslint-disable-next-line no-console
-            console.error(`Error in application:
-${error}`);
+            console.error(`Error in application: ${error}`);
             AbortionSystem.abort(ABORTION_ERROR);
             await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
           }
@@ -85,8 +84,7 @@ ${error}`);
           );
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error(`Error in application:
-${error}`);
+          console.error(`Error in application: ${error}`);
           AbortionSystem.abort(ABORTION_ERROR);
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }

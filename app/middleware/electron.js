@@ -4,7 +4,7 @@ import { shell } from 'electron';
 import {
   electronRouting,
   setBrowserViewReady,
-  setBrowserViewUrl,
+  setBrowserViewUrl
 } from '../actions/electron';
 import type { Action, Store } from '../reducers/types';
 import { sleep } from '../utils/async';
@@ -19,11 +19,11 @@ import {
   SET_INTERACTIVE_MODE,
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS,
-  STOP_SCROLLING_WHILE_IDLE,
+  STOP_SCROLLING_WHILE_IDLE
 } from '../constants/actionTypes';
 import {
   calculateOverviewBoundingBoxes,
-  refreshBoundingBoxes,
+  refreshBoundingBoxes
 } from '../actions/overlay';
 import { easeInOutCubic } from '../utils/easing';
 import resizeViews from '../utils/resizeViews';
@@ -151,7 +151,7 @@ export default (store: Store) =>
 
     if (action.type === SHOW_DEV_TOOLS) {
       const {
-        electron: { views },
+        electron: { views }
       } = store.getState();
       const { webContents } = views[action.payload.name].browserView;
 
