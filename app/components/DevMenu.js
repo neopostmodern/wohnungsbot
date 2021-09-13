@@ -65,7 +65,7 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
               type="button"
               onClick={() =>
                 this.setState((prevState) => ({
-                  expanded: !prevState.expanded,
+                  expanded: !prevState.expanded
                 }))
               }
             >

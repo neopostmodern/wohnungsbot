@@ -10,7 +10,7 @@ import { logout } from '../actions/bot';
 
 function mapStateToProps(state: stateType) {
   return {
-    views: state.electron.views,
+    views: state.electron.views
   };
 }
 

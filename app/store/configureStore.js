@@ -64,7 +64,6 @@ const configureStore = async (
     middleware.push(data);
   }
 
-
   if (target === MAIN) {
     middleware.push(login);
   }
