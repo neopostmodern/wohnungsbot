@@ -84,7 +84,9 @@ button {
 }
 
 input[type='text'],
-input[type='number'] {
+input[type='number'],
+input[type='email'],
+input[type='password'] {
   border: none;
   border-bottom: 2px solid black;
   font-size: inherit;
@@ -107,6 +109,15 @@ input[type='number'] {
 }
 .textinput__empty .textinput-placeholder {
   opacity: 0;
+}
+.textinput__error {
+  input {
+    border-bottom-color: darkred;
+  }
+
+  ::placeholder {
+    color: darkred;
+  }
 }
 
 textarea {

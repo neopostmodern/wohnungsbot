@@ -1,12 +1,15 @@
 import React from 'react';
 
 type TextFieldProps = {
+  type?: string,
   value: ?string,
   onChange: (value: ?string) => void,
   placeholder: string,
   style: CSSStyleDeclaration,
   containerStyle?: CSSStyleDeclaration,
-  onlyChangeOnSubmit?: boolean
+  onlyChangeOnSubmit?: boolean,
+  error?: boolean,
+  required?: boolean
 };
 type TextFieldState = {
   value: ?string
@@ -57,18 +60,27 @@ export default class TextField extends React.Component<
   }
 
   render() {
-    const { placeholder, containerStyle, style } = this.props;
+    const {
+      type,
+      placeholder,
+      containerStyle,
+      style,
+      required,
+      error
+    } = this.props;
     const { value } = this.state;
+
+    let hasError = error || (required && !value);
 
     return (
       <div
         className={`textinput-wrapper ${
           !value || value.length === 0 ? 'textinput__empty' : ''
-        }`}
+        } ${hasError ? 'textinput__error' : ''}`}
         style={containerStyle || {}}
       >
         <input
-          type="text"
+          type={type || 'text'}
           value={value === null ? '' : value}
           onKeyPress={this.handleKeyPress}
           onChange={this.handleChange}

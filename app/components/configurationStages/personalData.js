@@ -25,10 +25,7 @@ const personalDataStage: StageDescription = {
   ),
   body: ({
     configuration: {
-      immobilienScout24:{
-        userName,
-        password
-      },
+      immobilienScout24: { useAccount, userName, password },
       contactData: {
         salutation,
         firstName,
@@ -123,20 +120,38 @@ const personalDataStage: StageDescription = {
             />
           </div>
 
+          <h3>
+            Möchtest du dich mit deinem ImmobilienScout24-Account anmelden?
+          </h3>
           <div className={styles.searchParameter}>
-            <h3>ImmobilienScout24-Account</h3>
-            <TextField
-              value={userName}
-              onChange={value => setString('immobilienScout24.userName', value)}
-              placeholder="E-Mail Addresse"
-              style={{ width: '190px' }}
-            />{' '}
-            <TextField
-              value={password}
-              onChange={value => setString('immobilienScout24.password', value)}
-              placeholder="Passwort"
-              style={{ width: '190px' }}
+            <YesNo
+              value={useAccount}
+              onChange={() => toggleBoolean('immobilienScout24.useAccount')}
             />
+            {useAccount && (
+              <>
+                <TextField
+                  type="email"
+                  value={userName}
+                  required
+                  onChange={(value) =>
+                    setString('immobilienScout24.userName', value)
+                  }
+                  placeholder="E-Mail Addresse"
+                  style={{ width: '190px' }}
+                />{' '}
+                <TextField
+                  type="password"
+                  value={password}
+                  required
+                  onChange={(value) =>
+                    setString('immobilienScout24.password', value)
+                  }
+                  placeholder="Passwort"
+                  style={{ width: '190px' }}
+                />
+              </>
+            )}
             <div className={styles.comment}>
               Falls du einen ImmobilienScout24-Account hast, kannst du diesen
               hier angeben und der Bot meldet sich für dich an.
@@ -266,8 +281,15 @@ const personalDataStage: StageDescription = {
           }
         };
 
+        if (configuration.immobilienScout24.useAccount) {
+          checks.immobilienScout24 = {
+            userName: 'deine E-Mail',
+            password: 'dein Passwort'
+          };
+        }
+
         // eslint-disable-next-line no-restricted-syntax
-        for (const group of Object.values(checks)) {
+        for (const [groupName, group] of Object.entries(checks)) {
           // eslint-disable-next-line no-restricted-syntax
           for (const field in group) {
             if (!Object.prototype.hasOwnProperty.call(group, field)) {
@@ -276,8 +298,8 @@ const personalDataStage: StageDescription = {
             }
 
             if (
-              !configuration.contactData[field] ||
-              configuration.contactData[field].length === 0
+              !configuration[groupName][field] ||
+              configuration[groupName][field].length === 0
             ) {
               return `Bitte gib ${group[field]} an`;
             }

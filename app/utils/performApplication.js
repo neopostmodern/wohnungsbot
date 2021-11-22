@@ -10,6 +10,7 @@ import applicationTextBuilder from '../flat/applicationTextBuilder';
 import { sendApplicationNotificationEmail } from '../actions/email';
 import type { OverviewDataEntry } from '../reducers/data';
 import type { Dispatch } from '../reducers/types';
+import { LOGINSTATUS } from '../reducers/configuration';
 import type { Configuration } from '../reducers/configuration';
 import type ElectronUtils from './electronUtils';
 import AbortionSystem from './abortionSystem';
@@ -51,7 +52,8 @@ export default function* performApplication(
   }
 
   const personalDataFormFillingDescription = generatePersonalDataFormFillingDescription(
-    configuration.contactData
+    configuration.contactData,
+    configuration.immobilienScout24.status === LOGINSTATUS.LOGGED_IN
   );
 
   const applicationText = applicationTextBuilder(

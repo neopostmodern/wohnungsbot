@@ -1,12 +1,11 @@
 import {
   returnToSearchPage,
   setBotMessage,
-  setLoginStatus,
+  setLoginStatus
 } from '../actions/bot';
-import { clickAction, mouseOverAction } from '../actions/botHelpers';
+import { clickAction } from '../actions/botHelpers';
 import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
-import type { Configuration } from '../reducers/configuration';
 import type ElectronUtils from './electronUtils';
 import { LOGINSTATUS } from '../reducers/configuration';
 
@@ -14,16 +13,17 @@ export default function* performLogout(
   dispatch: Dispatch,
   electronUtils: ElectronUtils
 ) {
-  dispatch(setBotMessage('Abmelden'));
-
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
   // Logout
-  if (yield electronUtils.elementExists('[data-tracked-link="abmelden"]')) {
+  if (yield electronUtils.elementExists('.sso-login--logged-in')) {
+    dispatch(setBotMessage('Abmelden'));
+    yield sleep(1000);
+
     yield dispatch(clickAction('.topnavigation__overlay--account'));
     yield sleep(1000);
-    // First try to log out in case there is a problem with previous checks so the bot doesn't hangs.
+
     yield dispatch(clickAction('[data-tracked-link="abmelden"]'));
     yield sleep(3000);
   }

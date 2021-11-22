@@ -18,7 +18,7 @@ import {
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 
-export const ConfigurationVersion = 3;
+export const ConfigurationVersion = 4;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -73,6 +73,7 @@ export const LOGINSTATUS = {
 };
 
 export type LoginData = {|
+  useAccount: boolean,
   userName: string,
   password: string,
   status: $Values<typeof LOGINSTATUS>
@@ -174,6 +175,7 @@ const defaultConfiguration: Configuration = {
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   immobilienScout24: {
+    useAccount: false,
     userName: '',
     password: '',
     status: LOGINSTATUS.LOGGED_OUT
@@ -225,6 +227,17 @@ function configurationMigrations(
         'Keine'
       );
     }
+  }
+  if (oldConfiguration.configurationVersion < 4) {
+    migratedConfiguration = {
+      ...oldConfiguration,
+      immobilienScout24: {
+        useAccount: false,
+        userName: '',
+        password: '',
+        status: LOGINSTATUS.LOGGED_OUT
+      }
+    };
   }
   return dotProp.set(
     migratedConfiguration,

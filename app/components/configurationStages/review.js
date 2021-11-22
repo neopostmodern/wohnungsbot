@@ -193,6 +193,18 @@ const reviewStage: StageDescription = {
             </>
           )}
           E-Mails mit Terminen für Massenbesichtigungen verschicken
+          <br />
+          <br />
+          {configuration.immobilienScout24.useAccount ? (
+            <>
+              den ImmobilienScout24-Account{' '}
+              <em>{configuration.immobilienScout24.userName}</em> verwenden
+            </>
+          ) : (
+            <>
+              <em>keinen</em> ImmobilienScout24-Account verwenden
+            </>
+          )}
           {/* <br /> */}
           {/* <br /> */}
           {/* {configuration.policies.researchDataSharing ? null : ( */}

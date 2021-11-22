@@ -3,7 +3,7 @@ import {
   setBotMessage,
   setLoginStatus
 } from '../actions/bot';
-import { clickAction, mouseOverAction } from '../actions/botHelpers';
+import { clickAction } from '../actions/botHelpers';
 import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
 import type { Configuration } from '../reducers/configuration';
@@ -15,14 +15,18 @@ export default function* performLogin(
   electronUtils: ElectronUtils,
   configuration: Configuration
 ) {
-  dispatch(setBotMessage('Anmelden'));
+  yield sleep(1000);
 
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
-  console.log(yield electronUtils.elementExists('.sso-login--logged-in'));
   // Check again if user is logged in
-  if (!(yield electronUtils.elementExists('.sso-login--logged-in'))) {
+  if (yield electronUtils.elementExists('.sso-login--logged-in')) {
+    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+    dispatch(setBotMessage('Bereits eingeloggt', 4000));
+  } else {
+    dispatch(setBotMessage('Anmelden'));
+
     // Click login button
     if (yield electronUtils.elementExists('[data-tracked-link="anmelden"]')) {
       yield dispatch(clickAction('.topnavigation__overlay--account'));
@@ -31,7 +35,7 @@ export default function* performLogin(
     }
 
     // Wait for page to load
-    yield sleep(6000);
+    yield sleep(10000);
 
     // Fill username
     yield electronUtils.fillText(
@@ -65,9 +69,8 @@ export default function* performLogin(
     dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
 
     dispatch(setBotMessage('Einloggen erfolgreich :)', 4000));
-  } else {
-    dispatch(setBotMessage('Bereits eingeloggt', 4000));
   }
+
   yield sleep(5000);
   dispatch(returnToSearchPage());
 }
