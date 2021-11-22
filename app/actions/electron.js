@@ -15,7 +15,9 @@ import {
   SET_INTERACTIVE_MODE,
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS,
-  OPEN_PDF
+  OPEN_PDF,
+  SET_AVAILABLE_VERSION,
+  SET_UPDATE_DOWNLOAD_PROGRESS
 } from '../constants/actionTypes';
 
 export function setWindow(window: BrowserWindow): Action {
@@ -132,6 +134,24 @@ export function openPDF(pdfPath: string): Action {
     type: OPEN_PDF,
     payload: {
       pdfPath
+    }
+  };
+}
+
+export function setAvailableVersion(version: string): Action {
+  return {
+    type: SET_AVAILABLE_VERSION,
+    payload: {
+      version
+    }
+  };
+}
+
+export function setUpdateDownloadProgress(percentage: number): Action {
+  return {
+    type: SET_UPDATE_DOWNLOAD_PROGRESS,
+    payload: {
+      percentage
     }
   };
 }

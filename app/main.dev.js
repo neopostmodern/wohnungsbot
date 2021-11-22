@@ -20,24 +20,53 @@ import {
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import configureStore from './store/configureStore';
-import { addView, setWindow } from './actions/electron';
+import {
+  addView,
+  setAvailableVersion,
+  setUpdateDownloadProgress,
+  setWindow
+} from './actions/electron';
 import { MAIN } from './constants/targets';
 import ROUTES from './constants/routes';
+import { LOADING, UP_TO_DATE } from './constants/updater';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
 
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
-
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 let firstLaunch = true;
+
+export default class AppUpdater {
+  constructor() {
+    if (isDevelopment) {
+      log.transports.file.level = 'info';
+      autoUpdater.logger = log;
+    }
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+
+  onUpdateAvailable(callback: (version: string) => void) {
+    autoUpdater.on('checking-for-update', () => {
+      callback(LOADING);
+    });
+    autoUpdater.on('update-available', ({ version }) => {
+      callback(version);
+    });
+    autoUpdater.on('update-not-available', () => {
+      callback(UP_TO_DATE);
+    });
+  }
+
+  onDownloadProgress(callback: (percentage: number) => void) {
+    autoUpdater.on('download-progress', ({ percent }) => {
+      callback(percent);
+    });
+    autoUpdater.on('update-downloaded', () => {
+      callback(100);
+    });
+  }
+}
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -198,8 +227,18 @@ configureStore(MAIN, isDevelopment)
 
       mainWindow.setMenuBarVisibility(false);
 
-      // eslint-disable-next-line no-new
-      new AppUpdater();
+      const appUpdater = new AppUpdater();
+      appUpdater.onUpdateAvailable((version) => {
+        store.dispatch(setAvailableVersion(version));
+
+        // no auto-update on macOS
+        if (process.platform === 'darwin') {
+          store.dispatch(setUpdateDownloadProgress(-1));
+        }
+      });
+      appUpdater.onDownloadProgress((percentage) => {
+        store.dispatch();
+      });
     });
   })
   .catch((error) => {
