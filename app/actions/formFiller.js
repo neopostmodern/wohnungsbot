@@ -242,7 +242,7 @@ async function fillRadioField(
   field: RadioField,
   skipField = false
 ) {
-  const labelSelectorForRadio = selector => `${selector} ~ label`;
+  const labelSelectorForRadio = (selector) => `${selector} ~ label`;
   if (skipField) {
     const selectedRadioSelector = `${field.selector} :checked`;
     if (await electronUtils.elementExists(selectedRadioSelector)) {

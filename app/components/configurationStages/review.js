@@ -105,7 +105,7 @@ const reviewStage: StageDescription = {
           {configuration.filter.floors
             .slice()
             .reverse()
-            .map(floor => floorToName(floor, 4))
+            .map((floor) => floorToName(floor, 4))
             .join(', ')}
           <br />
           <br />
@@ -127,25 +127,25 @@ const reviewStage: StageDescription = {
               <br />
             </>
           ) : null}{' '}
-          {configuration.filter.noSwapApartment? (
+          {configuration.filter.noSwapApartment ? (
             <>
               keine Tauschwohnung
               <br />
             </>
           ) : null}{' '}
-          {configuration.filter.notSpecificallyForSeniors? (
+          {configuration.filter.notSpecificallyForSeniors ? (
             <>
               keine Seniorenwohnung
               <br />
             </>
           ) : null}{' '}
-          {configuration.filter.noSublease? (
+          {configuration.filter.noSublease ? (
             <>
               keine Wohnungen zur Zwischenmiete
               <br />
             </>
           ) : null}{' '}
-          {configuration.filter.onlySublease? (
+          {configuration.filter.onlySublease ? (
             <>
               nur Wohnungen zur Zwischenmiete
               <br />

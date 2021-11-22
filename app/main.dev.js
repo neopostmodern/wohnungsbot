@@ -50,7 +50,7 @@ if (isDevelopment) {
 
 configureStore(MAIN, isDevelopment)
   // eslint-disable-next-line promise/always-return
-  .then(store => {
+  .then((store) => {
     let mainWindow: ?BrowserWindow = null;
 
     // todo: extensions don't seem to load in BrowserView?
@@ -60,10 +60,10 @@ configureStore(MAIN, isDevelopment)
       const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
       return Promise.all(
-        extensions.map(name =>
+        extensions.map((name) =>
           installer.default(installer[name], forceDownload)
         )
-      ).catch(error => {
+      ).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(`Problem installing extensions: ${error}`);
       });
@@ -202,7 +202,7 @@ configureStore(MAIN, isDevelopment)
       new AppUpdater();
     });
   })
-  .catch(error => {
+  .catch((error) => {
     // eslint-disable-next-line no-console
     console.error(error);
   });

@@ -58,7 +58,7 @@ const personalDataStage: StageDescription = {
           <h3>Deine aktuellen Kontaktdaten</h3>
           <EnumField
             value={salutation}
-            onChange={value => setString('contactData.salutation', value)}
+            onChange={(value) => setString('contactData.salutation', value)}
             options={SALUTATIONS}
             inline
             isWeird
@@ -69,13 +69,13 @@ const personalDataStage: StageDescription = {
           >
             <TextField
               value={firstName}
-              onChange={value => setString('contactData.firstName', value)}
+              onChange={(value) => setString('contactData.firstName', value)}
               placeholder="Vorname"
               style={twoTextFieldsInLineStyles}
             />{' '}
             <TextField
               value={lastName}
-              onChange={value => setString('contactData.lastName', value)}
+              onChange={(value) => setString('contactData.lastName', value)}
               placeholder="Nachname"
               style={twoTextFieldsInLineStyles}
             />
@@ -83,13 +83,13 @@ const personalDataStage: StageDescription = {
           <div className={styles.searchParameter}>
             <TextField
               value={street}
-              onChange={value => setString('contactData.street', value)}
+              onChange={(value) => setString('contactData.street', value)}
               placeholder="Straße"
               style={{ width: '320px' }}
             />{' '}
             <TextField
               value={houseNumber}
-              onChange={value => setString('contactData.houseNumber', value)}
+              onChange={(value) => setString('contactData.houseNumber', value)}
               placeholder="Nr."
               style={{ width: '80px' }}
             />
@@ -97,13 +97,13 @@ const personalDataStage: StageDescription = {
           <div className={styles.searchParameter}>
             <TextField
               value={postcode}
-              onChange={value => setString('contactData.postcode', value)}
+              onChange={(value) => setString('contactData.postcode', value)}
               placeholder="PLZ"
               style={{ width: '120px' }}
             />{' '}
             <TextField
               value={city}
-              onChange={value => setString('contactData.city', value)}
+              onChange={(value) => setString('contactData.city', value)}
               placeholder="Stadt"
               style={{ width: '280px' }}
             />
@@ -111,13 +111,13 @@ const personalDataStage: StageDescription = {
           <div className={styles.searchParameter}>
             <TextField
               value={telephone}
-              onChange={value => setString('contactData.telephone', value)}
+              onChange={(value) => setString('contactData.telephone', value)}
               placeholder="Telefonnummer"
               style={twoTextFieldsInLineStyles}
             />{' '}
             <TextField
               value={eMail}
-              onChange={value => setString('contactData.eMail', value)}
+              onChange={(value) => setString('contactData.eMail', value)}
               placeholder="E-Mail"
               style={twoTextFieldsInLineStyles}
             />
@@ -180,7 +180,9 @@ const personalDataStage: StageDescription = {
           <h3>Deine finanzielle Situation</h3>
           <NumberField
             value={income}
-            onChange={value => setNumber('additionalInformation.income', value)}
+            onChange={(value) =>
+              setNumber('additionalInformation.income', value)
+            }
             style={{ maxWidth: '100px' }}
           />
           € Einkommen
@@ -194,7 +196,7 @@ const personalDataStage: StageDescription = {
           <EnumField
             options={EMPLOYMENT_STATUS}
             value={employmentStatus}
-            onChange={value =>
+            onChange={(value) =>
               setString('additionalInformation.employmentStatus', value)
             }
             isWeird
