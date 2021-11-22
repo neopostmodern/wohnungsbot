@@ -29,16 +29,15 @@ export default (store: Store) => (next: (action: Action) => void) => async (
   action: Action
 ) => {
   const handlePuppetReady = async () => {
-    await sleep(5000);
-
     const { puppet } = store.getState().electron.views;
 
     // hide cookie pop-up
-    puppet.browserView.webContents.insertCSS(`
+    await puppet.browserView.webContents.insertCSS(`
       body > div:first-child:not(.page-wrapper) {
         display: none !important;
       }
     `);
+    await sleep(5000);
 
     const electronUtils = new ElectronUtils(puppet.browserView.webContents);
     if (
