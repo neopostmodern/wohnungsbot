@@ -9,15 +9,15 @@ export function flatPageUrl(flatId: string): string {
 export function generateSearchUrl(configuration: Configuration): string {
   let searchUrl =
     'https://www.immobilienscout24.de/Suche/S-2/Wohnung-Miete/Berlin/Berlin/';
-  const overlappingDistricts = districts.filter(district =>
-    district.postcodes.some(postcode =>
+  const overlappingDistricts = districts.filter((district) =>
+    district.postcodes.some((postcode) =>
       configuration.filter.postcodes.includes(postcode)
     )
   );
 
   if (overlappingDistricts.length <= 10) {
     searchUrl += overlappingDistricts
-      .map(district =>
+      .map((district) =>
         district.label
           .replace(/[()]/g, '')
           .replace(/ /g, '-')
@@ -29,7 +29,7 @@ export function generateSearchUrl(configuration: Configuration): string {
       .join('_');
   } else {
     searchUrl += overlappingDistricts
-      .map(district => (district.geoNodeId - 1276003001000).toString())
+      .map((district) => (district.geoNodeId - 1276003001000).toString())
       .join('_');
   }
 
@@ -42,7 +42,7 @@ export function generateSearchUrl(configuration: Configuration): string {
   )}-/EURO--${numberToGermanFloatString(configuration.filter.maximumRent)}`;
 
   // sort by date listed
-  searchUrl += '?sorting=2'
+  searchUrl += '?sorting=2';
 
   return searchUrl;
 }

@@ -33,7 +33,7 @@ export type StageDescription = {
   body: FlexibleNode,
   buttons: {
     forward: ButtonDescription & {
-      checkInvalid?: Configuration => false | FlexibleNode
+      checkInvalid?: (Configuration) => false | FlexibleNode
     },
     backwards?: ButtonDescription
   }

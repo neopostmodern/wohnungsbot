@@ -59,7 +59,7 @@ const flatDescriptionStage: StageDescription = {
             Bis zu{' '}
             <NumberField
               value={maximumRent}
-              onChange={value => setNumber('filter.maximumRent', value)}
+              onChange={(value) => setNumber('filter.maximumRent', value)}
             />
             € Kaltmiete
           </div>
@@ -67,7 +67,7 @@ const flatDescriptionStage: StageDescription = {
             Mindestens{' '}
             <NumberField
               value={minimumArea}
-              onChange={value => setNumber('filter.minimumArea', value)}
+              onChange={(value) => setNumber('filter.minimumArea', value)}
             />
             m²
           </div>
@@ -75,7 +75,7 @@ const flatDescriptionStage: StageDescription = {
             Maximal{' '}
             <NumberField
               value={maximumRentPerSquareMeter}
-              onChange={value =>
+              onChange={(value) =>
                 setNumber('filter.maximumRentPerSquareMeter', value)
               }
             />
@@ -84,13 +84,13 @@ const flatDescriptionStage: StageDescription = {
           <div className={styles.searchParameter}>
             <NumberField
               value={minimumRooms}
-              onChange={value => setNumber('filter.minimumRooms', value)}
+              onChange={(value) => setNumber('filter.minimumRooms', value)}
               step={0.5}
             />{' '}
             bis{' '}
             <NumberField
               value={maximumRooms}
-              onChange={value => setNumber('filter.maximumRooms', value)}
+              onChange={(value) => setNumber('filter.maximumRooms', value)}
               step={0.5}
             />{' '}
             Zimmer
@@ -204,7 +204,7 @@ const flatDescriptionStage: StageDescription = {
           <EnumField
             value={moveInWho}
             options={MOVE_IN_WHO}
-            onChange={value =>
+            onChange={(value) =>
               setString('additionalInformation.moveInWho', value)
             }
             isWeird
@@ -213,7 +213,7 @@ const flatDescriptionStage: StageDescription = {
           <h3>Mit Tieren?</h3>
           <TextField
             value={animals}
-            onChange={value =>
+            onChange={(value) =>
               setString('additionalInformation.animals', value)
             }
             placeholder="Beschreibung der Tiere"
@@ -224,7 +224,7 @@ const flatDescriptionStage: StageDescription = {
           <EnumField
             value={moveInWhen}
             options={MOVE_IN_WHEN}
-            onChange={value =>
+            onChange={(value) =>
               setString('additionalInformation.moveInWhen', value)
             }
             inline
@@ -237,7 +237,7 @@ const flatDescriptionStage: StageDescription = {
             <div className={styles.roofRight} />
           </div>
           <div className={styles.house}>
-            {AllFloors.map(floor => (
+            {AllFloors.map((floor) => (
               <div
                 className={`${styles.floor} ${
                   floors.includes(floor) ? styles.selected : styles.notSelected
@@ -256,7 +256,7 @@ const flatDescriptionStage: StageDescription = {
               : floors
                   .slice()
                   .reverse()
-                  .map(floor => floorToName(floor, 4))
+                  .map((floor) => floorToName(floor, 4))
                   .join(', ')}
           </div>
         </div>

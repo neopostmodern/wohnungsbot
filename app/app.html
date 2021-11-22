@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>Hello Electron React!</title>
     <script>
-      (function() {
+      (function () {
         if (typeof process === 'undefined' || !process.env.HOT) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
@@ -23,12 +23,18 @@
 
         // Dynamically insert the DLL script in development env in the
         // renderer process
-        if (typeof process !== 'undefined' && process.env.NODE_ENV === 'development') {
+        if (
+          typeof process !== 'undefined' &&
+          process.env.NODE_ENV === 'development'
+        ) {
           scripts.push('../dll/renderer.dev.dll.js');
         }
 
         // Dynamically insert the bundled app script in the renderer process
-        const port = typeof process !== 'undefined' && process.env.PORT ? process.env.PORT : 1212;
+        const port =
+          typeof process !== 'undefined' && process.env.PORT
+            ? process.env.PORT
+            : 1212;
         scripts.push(
           typeof process !== 'undefined' && process.env.HOT
             ? 'http://localhost:' + port + '/dist/renderer.dev.js'
@@ -37,7 +43,7 @@
 
         document.write(
           scripts
-            .map(script => `<script defer src="${script}"><\/script>`)
+            .map((script) => `<script defer src="${script}"><\/script>`)
             .join('')
         );
       }

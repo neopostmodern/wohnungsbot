@@ -21,7 +21,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ resetBot, showConfiguration, openPDF }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Sidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

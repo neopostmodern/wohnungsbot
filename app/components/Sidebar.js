@@ -21,9 +21,7 @@ export default class Sidebar extends Component<Props, State> {
   state: State = {};
 
   async componentWillMount() {
-    const response = await fetch(
-      'https://wohnungsbot.de/announcement.html'
-    );
+    const response = await fetch('https://wohnungsbot.de/announcement.html');
     const announcement = await response.text();
 
     this.setState({ announcement });
@@ -49,7 +47,7 @@ export default class Sidebar extends Component<Props, State> {
         />
         <h3>Letzte Bewerbungen</h3>
         <div className={styles.recentApplications}>
-          {applications.map(application => (
+          {applications.map((application) => (
             <RecentApplication
               key={application.flatId}
               application={application}

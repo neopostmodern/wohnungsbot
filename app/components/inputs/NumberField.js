@@ -23,7 +23,7 @@ const NumberField = ({
   <input
     type="number"
     value={value === null ? '' : value}
-    onChange={event => onChange(valueToInt(event.target.value))}
+    onChange={(event) => onChange(valueToInt(event.target.value))}
     step={step}
     style={style}
   />

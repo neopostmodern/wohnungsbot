@@ -28,7 +28,7 @@ export default class BotOverlay extends Component<Props> {
   static renderAnimations(animations: Array<anyAnimation>) {
     return (
       <div className={styles.animations}>
-        {animations.map(animation => {
+        {animations.map((animation) => {
           if (animation.type === 'click') {
             return (
               <div
@@ -92,7 +92,7 @@ export default class BotOverlay extends Component<Props> {
       .map(({ flatId }) => flatId);
 
     const notAppliedYetFlats = matchedFlats.filter(
-      flatId =>
+      (flatId) =>
         !alreadyAppliedFlatIds.includes(flatId) &&
         !unsuitableFlatIds.includes(flatId)
     );

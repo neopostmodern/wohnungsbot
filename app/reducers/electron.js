@@ -63,7 +63,7 @@ export default function electron(
     return { ...state, configurationHidden: true };
   }
   if (action.type === SET_INTERACTIVE_MODE) {
-    return { ...state, interactiveMode: action.payload }
+    return { ...state, interactiveMode: action.payload };
   }
 
   return state;

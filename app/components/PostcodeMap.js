@@ -12,8 +12,8 @@ const tileUrl =
   'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
 const tileAttribution = `
   Map tiles by <a href="http://stamen.com">Stamen Design</a>,
-  <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> 
-  &mdash; Map data &copy; 
+  <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>
+  &mdash; Map data &copy;
   <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`;
 
 const baseStyle = {
@@ -152,7 +152,10 @@ ${postcodeDescription.properties.district}`,
             zoom={PostcodeMap.initialZoom}
             minZoom={10}
             maxZoom={16}
-            maxBounds={[[52.3202, 12.924], [52.6805, 13.8249]]}
+            maxBounds={[
+              [52.3202, 12.924],
+              [52.6805, 13.8249]
+            ]}
             style={{ height }}
             onZoom={this.handleZoom}
           >

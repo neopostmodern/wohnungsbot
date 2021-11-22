@@ -24,9 +24,11 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.constructor && action.constructor.name === 'AsyncFunction') {
     // eslint-disable-next-line no-console
     console.log(
-      `[Async Function] ${action.name ||
+      `[Async Function] ${
+        action.name ||
         (action.prototype && action.prototype.name) ||
-        '<anonynumous>'}`
+        '<anonynumous>'
+      }`
     );
   } else if (!blackList.includes(action.type)) {
     if (

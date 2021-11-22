@@ -42,7 +42,7 @@ Stack that led to the execution of this snippet (Electron):
 ${stack
   .split('\n')
   .slice(2)
-  .map(line => line.replace(/\s+/i, ' '))
+  .map((line) => line.replace(/\s+/i, ' '))
   .join('\n')}
 `);
     }

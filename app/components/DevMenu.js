@@ -8,11 +8,11 @@ type DevMenuProps = {
   showDevTools: (name: BrowserViewName) => void,
   resetConfiguration: () => void,
   resetCache: () => void,
-  logout: () => void,
+  logout: () => void
 };
 
 type DevMenuState = {
-  expanded: boolean,
+  expanded: boolean
 };
 
 export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
@@ -21,8 +21,14 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
   state: DevMenuState = { expanded: false };
 
   render() {
-    const { views, showDevTools, resetConfiguration, resetCache, stopBot, logout } =
-      this.props;
+    const {
+      views,
+      showDevTools,
+      resetConfiguration,
+      resetCache,
+      stopBot,
+      logout
+    } = this.props;
     const { expanded } = this.state;
 
     return (

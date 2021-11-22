@@ -56,26 +56,32 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     const electronUtils = new ElectronUtils(webContents);
 
     if (overview) {
-      const boundingBoxes = (await Promise.all(
-        Object.values(overview)
-          // $FlowFixMe -- Object.values
-          .map(async (entry: OverviewDataEntry) => {
-            const selector = entrySelector(entry.id);
+      const boundingBoxes = (
+        await Promise.all(
+          Object.values(overview)
+            // $FlowFixMe -- Object.values
+            .map(async (entry: OverviewDataEntry) => {
+              const selector = entrySelector(entry.id);
 
-            if (
-              !(await electronUtils.isElementInViewport(selector, false, false))
-            ) {
-              return null;
-            }
+              if (
+                !(await electronUtils.isElementInViewport(
+                  selector,
+                  false,
+                  false
+                ))
+              ) {
+                return null;
+              }
 
-            return {
-              selector,
-              boundingBox: await electronUtils.getBoundingBox(selector),
-              attachedInformation: { flatId: entry.id },
-              group: BOUNDING_BOX_GROUPS.OVERVIEW
-            };
-          })
-      )).filter(entry => entry !== null);
+              return {
+                selector,
+                boundingBox: await electronUtils.getBoundingBox(selector),
+                attachedInformation: { flatId: entry.id },
+                group: BOUNDING_BOX_GROUPS.OVERVIEW
+              };
+            })
+        )
+      ).filter((entry) => entry !== null);
 
       store.dispatch(
         // $FlowFixMe the filter call doesn't seem to be understood
@@ -89,7 +95,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       overlay: { boundingBoxes }
     } = store.getState();
 
-    boundingBoxes.forEach(boundingBox => {
+    boundingBoxes.forEach((boundingBox) => {
       const { selector, group, attachedInformation } = boundingBox;
       store.dispatch(
         calculateBoundingBox(selector, { group, attachedInformation })

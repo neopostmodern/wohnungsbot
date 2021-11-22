@@ -68,7 +68,7 @@ export function getOverviewData() {
 
       const data = {};
       if (rawOverviewData) {
-        rawOverviewData.forEach(entry => {
+        rawOverviewData.forEach((entry) => {
           const processedEntry = processOverviewDataEntry(entry);
           data[processedEntry.id] = processedEntry;
         });

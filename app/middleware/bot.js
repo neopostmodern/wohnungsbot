@@ -11,7 +11,11 @@ import { calculateOverviewBoundingBoxes } from '../actions/overlay';
 import { getFlatData, getOverviewData, refreshVerdicts } from '../actions/data';
 import { FLAT_ACTION } from '../reducers/data';
 import { sendFlatViewingNotificationMail } from '../actions/email';
-import { launchNextTask, queueInvestigateFlat, setBotMessage } from '../actions/bot';
+import {
+  launchNextTask,
+  queueInvestigateFlat,
+  setBotMessage
+} from '../actions/bot';
 import { setInteractiveMode } from '../actions/electron';
 import {
   discardApplicationProcess,
@@ -37,7 +41,11 @@ export default (store: Store) => (next: (action: Action) => void) => async (
     `);
 
     const electronUtils = new ElectronUtils(puppet.browserView.webContents);
-    if ((await electronUtils.evaluate('document.title')).includes('Ich bin kein Roboter')) {
+    if (
+      (await electronUtils.evaluate('document.title')).includes(
+        'Ich bin kein Roboter'
+      )
+    ) {
       store.dispatch(setBotMessage('Mensch! Du bist dran.'));
 
       if (!puppet.browserView.webContents.isFocused()) {
@@ -45,7 +53,11 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       }
       store.dispatch(setInteractiveMode(true));
 
-      while ((await electronUtils.evaluate('document.title')).includes('Ich bin kein Roboter')) {
+      while (
+        (await electronUtils.evaluate('document.title')).includes(
+          'Ich bin kein Roboter'
+        )
+      ) {
         await sleep(1000);
       }
       store.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
@@ -58,14 +70,8 @@ export default (store: Store) => (next: (action: Action) => void) => async (
 
     if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
       setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
-      setTimeout(
-        () => store.dispatch(calculateOverviewBoundingBoxes()),
-        1000
-      );
-      setTimeout(
-        () => store.dispatch(calculateOverviewBoundingBoxes()),
-        5000
-      );
+      setTimeout(() => store.dispatch(calculateOverviewBoundingBoxes()), 1000);
+      setTimeout(() => store.dispatch(calculateOverviewBoundingBoxes()), 5000);
 
       await store.dispatch(getOverviewData());
       await store.dispatch(refreshVerdicts());
@@ -77,7 +83,7 @@ export default (store: Store) => (next: (action: Action) => void) => async (
       await store.dispatch(getFlatData());
       store.dispatch(refreshVerdicts());
     }
-  }
+  };
 
   if (action.type === RESET_BOT) {
     AbortionSystem.abort(ABORTION_MANUAL);

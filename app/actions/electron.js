@@ -99,7 +99,7 @@ export function setInteractiveMode(interactiveModeEnabled: boolean): Action {
   return {
     type: SET_INTERACTIVE_MODE,
     payload: interactiveModeEnabled
-  }
+  };
 }
 
 export function performScroll(name: BrowserViewName, deltaY: number): Action {
