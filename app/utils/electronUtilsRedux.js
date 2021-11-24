@@ -26,6 +26,7 @@ export default class ElectronUtilsRedux extends ElectronUtils {
   }
 
   async fillText(selector: string, text: string, secondTry: boolean = false) {
+    await sleep(500);
     const currentValue = await this.getValue(selector);
     if (currentValue) {
       if (currentValue === text) {
