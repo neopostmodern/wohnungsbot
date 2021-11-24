@@ -150,5 +150,21 @@ export default function* performApplication(
   }
 
   dispatch(setBotMessage('Fertig.'));
+
+  const saveDataButtonSelector = `[data-qa="saveProfileButton"]`;
+  if (
+    configuration.immobilienScout24.useAccount &&
+    ((yield electronUtils.getInnerText(saveDataButtonSelector)) || '').includes(
+      'Daten speichern'
+    )
+  ) {
+    yield dispatch(
+      clickAction(saveDataButtonSelector, {
+        scrollIntoViewPolicy: 'always',
+        elementExistenceGuaranteed: false
+      })
+    );
+  }
+
   yield sleep(5000);
 }
