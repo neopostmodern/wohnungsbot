@@ -75,11 +75,11 @@ const configurationExplanationStage: StageDescription = {
         <br />
         Mehr Informationen zu diesem Projekt findest du auf{' '}
         <a
-          href="https://wohnung.neopostmodern.com"
+          href="https://wohnungsbot.de"
           target="_blank"
           rel="noopener noreferrer"
         >
-          wohnung.neopostmodern.com
+          wohnungsbot.de
         </a>
         .
       </span>

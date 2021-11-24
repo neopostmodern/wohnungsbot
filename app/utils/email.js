@@ -8,7 +8,7 @@ sendgrid.setApiKey(SENDGRID_API_KEY);
 const sendMail = async (to: string, subject: string, text: string) => {
   const message = {
     to,
-    from: 'bot@wohnung.neopostmodern.com',
+    from: 'bot@wohnungsbot.de',
     subject,
     text
   };
