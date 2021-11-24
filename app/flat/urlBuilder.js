@@ -1,48 +1,63 @@
 import type { Configuration } from '../reducers/configuration';
 import districts from '../map/districts';
-import { numberToGermanFloatString } from '../utils/germanStrings';
+
+const numberToUrlFloatString = (value: ?number): string => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return value.toFixed(1);
+};
 
 export function flatPageUrl(flatId: string): string {
   return `https://www.immobilienscout24.de/expose/${flatId}`;
 }
 
 export function generateSearchUrl(configuration: Configuration): string {
-  let searchUrl =
-    'https://www.immobilienscout24.de/Suche/S-2/Wohnung-Miete/Berlin/Berlin/';
   const overlappingDistricts = districts.filter((district) =>
     district.postcodes.some((postcode) =>
       configuration.filter.postcodes.includes(postcode)
     )
   );
 
-  if (overlappingDistricts.length <= 10) {
-    searchUrl += overlappingDistricts
-      .map((district) =>
-        district.label
-          .replace(/[()]/g, '')
-          .replace(/ /g, '-')
-          .replace(/ä/g, 'ae')
-          .replace(/ö/g, 'oe')
-          .replace(/ü/g, 'ue')
-          .replace(/ß/g, 'ss')
-      )
-      .join('_');
-  } else {
-    searchUrl += overlappingDistricts
-      .map((district) => (district.geoNodeId - 1276003001000).toString())
-      .join('_');
+  let searchUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin';
+
+  if (overlappingDistricts.length === 1) {
+    searchUrl +=
+      '/' +
+      overlappingDistricts
+        .map((district) =>
+          district.label
+            .replace(/[()]/g, '')
+            .replace(/ /g, '-')
+            .replace(/ä/g, 'ae')
+            .replace(/ö/g, 'oe')
+            .replace(/ü/g, 'ue')
+            .replace(/ß/g, 'ss')
+        )
+        .join('_');
   }
 
-  searchUrl += `/${numberToGermanFloatString(
+  searchUrl += `/wohnung-mieten?numberofrooms=${numberToUrlFloatString(
     configuration.filter.minimumRooms
-  )}-${numberToGermanFloatString(
+  )}-${numberToUrlFloatString(
     configuration.filter.maximumRooms
-  )}/${numberToGermanFloatString(
+  )}&livingspace=${numberToUrlFloatString(
     configuration.filter.minimumArea
-  )}-/EURO--${numberToGermanFloatString(configuration.filter.maximumRent)}`;
+  )}&pricetype=rentpermonth&price=-${numberToUrlFloatString(
+    configuration.filter.maximumRent
+  )}`;
+
+  if (overlappingDistricts.length > 1) {
+    searchUrl +=
+      '&geocodes=' +
+      overlappingDistricts
+        .map((district) => district.geoNodeId.toString())
+        .join(',');
+  }
 
   // sort by date listed
-  searchUrl += '?sorting=2';
+  searchUrl += '&sorting=2';
 
   return searchUrl;
 }

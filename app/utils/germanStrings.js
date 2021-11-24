@@ -9,11 +9,3 @@ export const floorToName = (floor: number, limit?: number) => {
   }
   return floorName;
 };
-
-export const numberToGermanFloatString = (value: ?number): string => {
-  if (value === null || value === undefined) {
-    return '';
-  }
-
-  return value.toFixed(2).replace('.', ',');
-};
