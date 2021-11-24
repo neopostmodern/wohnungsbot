@@ -58,7 +58,7 @@ const configurationExplanationStage: StageDescription = {
           <div>
             <input
               type="checkbox"
-              value={artConsent}
+              checked={artConsent}
               onChange={() => toggleBoolean('policies.artConsent')}
             />
           </div>
