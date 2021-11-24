@@ -51,10 +51,11 @@ export default function* performApplication(
     yield sleep(50);
   }
 
-  const personalDataFormFillingDescription = generatePersonalDataFormFillingDescription(
-    configuration.contactData,
-    configuration.immobilienScout24.status === LOGINSTATUS.LOGGED_IN
-  );
+  const personalDataFormFillingDescription =
+    generatePersonalDataFormFillingDescription(
+      configuration.contactData,
+      configuration.immobilienScout24.status === LOGINSTATUS.LOGGED_IN
+    );
 
   const applicationText = applicationTextBuilder(
     configuration.applicationText,
@@ -74,6 +75,20 @@ export default function* performApplication(
   yield sleep(1000);
 
   if (
+    configuration.immobilienScout24.useAccount &&
+    (yield electronUtils.elementExists(
+      '[data-is24-show-field="moveInDateType"]'
+    ))
+  ) {
+    yield dispatch(
+      fillForm(
+        generateAdditionalDataFormFillingDescription(
+          configuration.additionalInformation
+        ),
+        configuration.policies.fillAsLittleAsPossible
+      )
+    );
+  } else if (
     !(yield electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
   ) {
     dispatch(setBotMessage('Und noch eine Seite...'));
