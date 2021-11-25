@@ -42,5 +42,5 @@ import('./store/configureStore')
   })
   .catch((error) => {
     // eslint-disable-next-line no-console
-    console.error(`Error in index.js: ${error}`);
+    console.error(`Error in index.js`, error);
   });

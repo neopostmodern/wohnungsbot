@@ -1,6 +1,6 @@
 // @flow
 import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
+import { createReduxHistoryContext } from 'redux-first-history';
 import electron from './electron';
 import overlay from './overlay';
 import data from './data';
@@ -21,7 +21,10 @@ export default function createRootReducer(history: History) {
     bot
   };
   if (history) {
-    reducers.router = connectRouter(history);
+    const { routerReducer } = createReduxHistoryContext({
+      history
+    });
+    reducers.router = routerReducer;
   }
   return combineReducers<{}, *>(reducers);
 }

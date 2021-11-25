@@ -120,9 +120,6 @@ configureStore(MAIN, isDevelopment)
         show: false,
         width: Math.min(1200, screen.getPrimaryDisplay().workAreaSize.width),
         height: Math.min(800, screen.getPrimaryDisplay().workAreaSize.height),
-        webPreferences: {
-          // devTools: false
-        },
         titleBarStyle: 'hidden'
       });
 
@@ -151,7 +148,9 @@ configureStore(MAIN, isDevelopment)
         'sidebar',
         {
           webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`
           }
         },
         `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
@@ -174,7 +173,9 @@ configureStore(MAIN, isDevelopment)
         {
           webPreferences: {
             nodeIntegration: true,
-            experimentalFeatures: true
+            experimentalFeatures: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`
           },
           transparent: true
         },
@@ -185,7 +186,9 @@ configureStore(MAIN, isDevelopment)
         'configuration',
         {
           webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`
           },
           transparent: true
         },
@@ -198,7 +201,9 @@ configureStore(MAIN, isDevelopment)
           {
             webPreferences: {
               nodeIntegration: true,
-              experimentalFeatures: true
+              experimentalFeatures: true,
+              contextIsolation: false,
+              preload: `${__dirname}/preload.js`
             },
             transparent: true
           },
@@ -217,6 +222,8 @@ configureStore(MAIN, isDevelopment)
 
         if (!mainWindow.isVisible()) {
           mainWindow.show();
+          // resize again, sometimes it only works after the window is visible
+          resizeViews({ interactiveMode: false });
         }
 
         if (firstLaunch) {

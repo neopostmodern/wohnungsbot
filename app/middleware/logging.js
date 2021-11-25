@@ -31,22 +31,17 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
       }`
     );
   } else if (!blackList.includes(action.type)) {
-    if (
-      action.payload &&
-      JSON.stringify(action.payload).length > payloadLengthLimit
-    ) {
-      // eslint-disable-next-line no-console
-      console.log({
-        ...action,
-        payload: `${JSON.stringify(action.payload).substr(
-          0,
-          payloadLengthLimit
-        )}...`
-      });
-    } else {
-      // eslint-disable-next-line no-console
-      console.log(action);
+    let payload = action.payload;
+
+    if (payload && JSON.stringify(payload).length > payloadLengthLimit) {
+      payload = `${JSON.stringify(action.payload).substr(
+        0,
+        payloadLengthLimit
+      )}...`;
     }
+
+    // eslint-disable-next-line no-console
+    console.log({ ...action, payload });
   }
 
   return next(action);
