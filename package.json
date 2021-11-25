@@ -237,8 +237,8 @@
     "topojson": "^3.0.2"
   },
   "devEngines": {
-    "node": ">=7.x",
-    "npm": ">=4.x"
+    "node": ">=16.x",
+    "npm": ">=8.x"
   },
   "browserslist": [
     "last 1 electron version"
