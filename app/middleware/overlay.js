@@ -25,6 +25,7 @@ import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
 import ElectronUtils from '../utils/electronUtils';
 import { entrySelector } from '../utils/selectors';
+import { electronObjects } from '../store/electronObjects';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -46,13 +47,10 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
   if (action.type === CALCULATE_OVERVIEW_BOUNDING_BOXES) {
     const {
-      electron: {
-        views: { puppet }
-      },
       data: { overview }
     } = store.getState();
 
-    const { webContents } = puppet.browserView;
+    const { webContents } = electronObjects.views.puppet;
     const electronUtils = new ElectronUtils(webContents);
 
     if (overview) {
@@ -104,15 +102,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   }
 
   if (action.type === CALCULATE_BOUNDING_BOX) {
-    const {
-      electron: {
-        views: {
-          puppet: {
-            browserView: { webContents }
-          }
-        }
-      }
-    } = store.getState();
+    const { webContents } = electronObjects.views.puppet;
 
     const { selector, group, attachedInformation } = action.payload;
 

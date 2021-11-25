@@ -24,104 +24,112 @@ import {
 } from '../actions/application';
 import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
 import ElectronUtils from '../utils/electronUtils';
+import { electronObjects } from '../store/electronObjects';
 
-export default (store: Store) => (next: (action: Action) => void) => async (
-  action: Action
-) => {
-  const handlePuppetReady = async () => {
-    const { puppet } = store.getState().electron.views;
+export default (store: Store) =>
+  (next: (action: Action) => void) =>
+  async (action: Action) => {
+    const handlePuppetReady = async () => {
+      const { puppet } = store.getState().electron.views;
+      const { webContents: puppetWebContents } = electronObjects.views.puppet;
 
-    // hide cookie pop-up
-    await puppet.browserView.webContents.insertCSS(`
+      // hide cookie pop-up
+      await puppetWebContents.insertCSS(`
       body > div:first-child:not(.page-wrapper) {
         display: none !important;
       }
     `);
-    await sleep(5000);
+      await sleep(5000);
 
-    const electronUtils = new ElectronUtils(puppet.browserView.webContents);
-    if (
-      (await electronUtils.evaluate('document.title')).includes(
-        'Ich bin kein Roboter'
-      )
-    ) {
-      store.dispatch(setBotMessage('Mensch! Du bist dran.'));
-
-      if (!puppet.browserView.webContents.isFocused()) {
-        puppet.browserView.webContents.focus();
-      }
-      store.dispatch(setInteractiveMode(true));
-
-      while (
+      const electronUtils = new ElectronUtils(puppetWebContents);
+      if (
         (await electronUtils.evaluate('document.title')).includes(
           'Ich bin kein Roboter'
         )
       ) {
-        await sleep(1000);
+        store.dispatch(setBotMessage('Mensch! Du bist dran.'));
+
+        if (!puppetWebContents.isFocused()) {
+          puppetWebContents.focus();
+        }
+        store.dispatch(setInteractiveMode(true));
+
+        while (
+          (await electronUtils.evaluate('document.title')).includes(
+            'Ich bin kein Roboter'
+          )
+        ) {
+          await sleep(1000);
+        }
+        store.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
+        store.dispatch(setInteractiveMode(false));
+
+        await sleep(5000);
+        await handlePuppetReady();
+        return;
       }
-      store.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
-      store.dispatch(setInteractiveMode(false));
 
-      await sleep(5000);
-      await handlePuppetReady();
-      return;
-    }
-
-    if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
-      setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
-      setTimeout(() => store.dispatch(calculateOverviewBoundingBoxes()), 1000);
-      setTimeout(() => store.dispatch(calculateOverviewBoundingBoxes()), 5000);
-
-      await store.dispatch(getOverviewData());
-      await store.dispatch(refreshVerdicts());
-      await sleep(20000);
-      store.dispatch(launchNextTask());
-    }
-
-    if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
-      await store.dispatch(getFlatData());
-      store.dispatch(refreshVerdicts());
-    }
-  };
-
-  if (action.type === RESET_BOT) {
-    AbortionSystem.abort(ABORTION_MANUAL);
-    store.dispatch(endApplicationProcess());
-  }
-
-  if (action.type === SET_BROWSER_VIEW_READY) {
-    if (action.payload.name === 'puppet' && action.payload.ready) {
-      setImmediate(handlePuppetReady);
-    }
-  }
-
-  if (action.type === SET_VERDICT) {
-    const { flatId, verdict } = action.payload;
-    const {
-      configuration: { contactData },
-      data: { overview }
-    } = store.getState();
-    const flatOverview = overview[flatId];
-
-    // eslint-disable-next-line default-case
-    switch (verdict.action) {
-      case FLAT_ACTION.NOTIFY_VIEWING_DATE:
-        store.dispatch(
-          sendFlatViewingNotificationMail(contactData, flatOverview)
+      if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
+        setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
+        setTimeout(
+          () => store.dispatch(calculateOverviewBoundingBoxes()),
+          1000
         );
-        break;
-      case FLAT_ACTION.INVESTIGATE:
-        store.dispatch(queueInvestigateFlat(flatId));
-        break;
-      case FLAT_ACTION.APPLY:
-        store.dispatch(generateApplicationTextAndSubmit(flatId));
-        break;
-      case FLAT_ACTION.DISCARD:
-        store.dispatch(discardApplicationProcess(flatOverview));
+        setTimeout(
+          () => store.dispatch(calculateOverviewBoundingBoxes()),
+          5000
+        );
 
-        break;
+        await store.dispatch(getOverviewData());
+        await store.dispatch(refreshVerdicts());
+        await sleep(20000);
+        store.dispatch(launchNextTask());
+      }
+
+      if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
+        await store.dispatch(getFlatData());
+        store.dispatch(refreshVerdicts());
+      }
+    };
+
+    if (action.type === RESET_BOT) {
+      AbortionSystem.abort(ABORTION_MANUAL);
+      store.dispatch(endApplicationProcess());
     }
-  }
 
-  return next(action);
-};
+    if (action.type === SET_BROWSER_VIEW_READY) {
+      if (action.payload.name === 'puppet' && action.payload.ready) {
+        setImmediate(handlePuppetReady);
+      }
+    }
+
+    if (action.type === SET_VERDICT) {
+      const { flatId, verdict } = action.payload;
+      const {
+        configuration: { contactData },
+        data: { overview }
+      } = store.getState();
+      const flatOverview = overview[flatId];
+
+      // eslint-disable-next-line default-case
+      switch (verdict.action) {
+        case FLAT_ACTION.NOTIFY_VIEWING_DATE:
+          store.dispatch(
+            sendFlatViewingNotificationMail(contactData, flatOverview)
+          );
+          break;
+        case FLAT_ACTION.INVESTIGATE:
+          store.dispatch(queueInvestigateFlat(flatId));
+          break;
+        case FLAT_ACTION.APPLY:
+          store.dispatch(generateApplicationTextAndSubmit(flatId));
+          break;
+        case FLAT_ACTION.DISCARD:
+          store.dispatch(discardApplicationProcess(flatOverview));
+
+          break;
+      }
+    }
+
+    return next(action);
+  };

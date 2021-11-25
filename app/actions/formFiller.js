@@ -10,11 +10,12 @@ import {
   SALUTATIONS
 } from '../reducers/configuration';
 import { sleep } from '../utils/async';
-import type { Dispatch, GetState } from '../reducers/types';
+import type { Dispatch } from '../reducers/types';
 import type { ScrollIntoViewPolicy } from './botHelpers';
 import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import AbortionSystem from '../utils/abortionSystem';
+import { electronObjects } from '../store/electronObjects';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
@@ -274,8 +275,8 @@ export function fillForm(
   fieldFillingDescription: FieldFillingDescription,
   fillAsLittleAsPossible: boolean = true
 ) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
+  return async (dispatch: Dispatch) => {
+    const { webContents } = electronObjects.views.puppet;
     const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
     /* eslint-disable no-await-in-loop */

@@ -7,7 +7,7 @@ import { markCompleted } from './cache';
 import { sleep, timeout } from '../utils/async';
 import type { Configuration } from '../reducers/configuration';
 import type { dataStateType, OverviewDataEntry } from '../reducers/data';
-import type { electronStateType } from '../reducers/electron';
+import { electronObjects } from '../store/electronObjects';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import {
   popFlatFromQueue,
@@ -25,23 +25,18 @@ import AbortionSystem, {
   ABORTION_MANUAL
 } from '../utils/abortionSystem';
 
-export const generateApplicationTextAndSubmit = (flatId: string) => async (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
-  const {
-    configuration,
-    data,
-    electron
-  }: {
-    configuration: Configuration,
-    data: dataStateType,
-    electron: electronStateType,
-    cache: cacheStateType
-  } = getState();
+export const generateApplicationTextAndSubmit =
+  (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
+    const {
+      configuration,
+      data
+    }: {
+      configuration: Configuration,
+      data: dataStateType
+    } = getState();
 
-  const { webContents } = electron.views.puppet.browserView;
-  const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
+    const { webContents } = electronObjects.views.puppet;
+    const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
   const pdfPath = await dispatch(printToPDF('puppet', flatId));
 

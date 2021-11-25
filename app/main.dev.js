@@ -32,6 +32,8 @@ import { LOADING, UP_TO_DATE } from './constants/updater';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
+import { electronObjects } from './store/electronObjects';
+import resizeViews from './utils/resizeViews';
 
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
@@ -124,7 +126,8 @@ configureStore(MAIN, isDevelopment)
         titleBarStyle: 'hidden'
       });
 
-      store.dispatch(setWindow(mainWindow));
+      electronObjects.window = mainWindow;
+      store.dispatch(setWindow());
 
       const newView = (
         name: BrowserViewName,
@@ -139,7 +142,8 @@ configureStore(MAIN, isDevelopment)
 
         const browserView = new BrowserView(options);
         mainWindow.addBrowserView(browserView);
-        store.dispatch(addView(name, browserView, initialUrl));
+        electronObjects.views[name] = browserView;
+        store.dispatch(addView(name, initialUrl));
         return browserView;
       };
 

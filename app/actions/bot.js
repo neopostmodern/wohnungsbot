@@ -16,6 +16,7 @@ import {
   LOGIN,
   LOGOUT
 } from '../constants/actionTypes';
+import { electronObjects } from '../store/electronObjects';
 import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
 import { calculateOverviewBoundingBoxes } from './overlay';
@@ -48,39 +49,37 @@ export function popFlatFromQueue(flatId: string): Action {
   };
 }
 
-export const navigateToFlatPage = (flatId: string) => async (
-  dispatch: Dispatch,
-  getState: GetState
-) => {
-  await sleep(10000);
-  dispatch(setBotIsActing(true));
-  dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
-  dispatch(setShowOverlay(false));
-  await dispatch(scrollIntoViewAction('puppet', entrySelector(flatId)));
-  dispatch(calculateOverviewBoundingBoxes());
-  dispatch(setShowOverlay(true));
-  await sleep(5000);
-  dispatch(setShowOverlay(false));
-  dispatch(setBotMessage(`Wohnung ${flatId} genauer anschauen!`));
-
-  const puppetView = new ElectronUtils(
-    getState().electron.views.puppet.browserView.webContents
-  );
-
-  const flatTitleSelector = entryTitleSelector(flatId);
-
-  /* eslint-disable no-await-in-loop */
-  while (AbortionSystem.nestedFunctionsMayContinue) {
-    if (!(await puppetView.elementExists(flatTitleSelector))) {
-      return true;
-    }
-    await dispatch(clickAction(flatTitleSelector));
+export const navigateToFlatPage =
+  (flatId: string) => async (dispatch: Dispatch) => {
+    await sleep(10000);
+    dispatch(setBotIsActing(true));
+    dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
+    dispatch(setShowOverlay(false));
+    await dispatch(scrollIntoViewAction('puppet', entrySelector(flatId)));
+    dispatch(calculateOverviewBoundingBoxes());
+    dispatch(setShowOverlay(true));
     await sleep(5000);
-  }
-  /* eslint-enable no-await-in-loop */
+    dispatch(setShowOverlay(false));
+    dispatch(setBotMessage(`Wohnung ${flatId} genauer anschauen!`));
 
-  return false;
-};
+    const puppetView = new ElectronUtils(
+      electronObjects.views.puppet.webContents
+    );
+
+    const flatTitleSelector = entryTitleSelector(flatId);
+
+    /* eslint-disable no-await-in-loop */
+    while (AbortionSystem.nestedFunctionsMayContinue) {
+      if (!(await puppetView.elementExists(flatTitleSelector))) {
+        return true;
+      }
+      await dispatch(clickAction(flatTitleSelector));
+      await sleep(5000);
+    }
+    /* eslint-enable no-await-in-loop */
+
+    return false;
+  };
 
 export function setBotIsActing(isActing: boolean): Action {
   return {

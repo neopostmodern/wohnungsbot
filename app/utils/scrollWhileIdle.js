@@ -4,6 +4,7 @@ import { sleep } from './async';
 import ElectronUtils from './electronUtils';
 import type { Dispatch, GetState } from '../reducers/types';
 import { calculateOverviewBoundingBoxes } from '../actions/overlay';
+import { electronObjects } from '../store/electronObjects';
 
 export default function scrollWhileIdle(
   getState: GetState,
@@ -13,7 +14,7 @@ export default function scrollWhileIdle(
   let direction = 1;
 
   const electronUtils = new ElectronUtils(
-    getState().electron.views.puppet.browserView.webContents
+    electronObjects.views.puppet.webContents
   );
 
   const scroll = async () => {

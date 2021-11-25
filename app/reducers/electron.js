@@ -1,13 +1,11 @@
 // @flow
 import dotProp from 'dot-prop-immutable';
-import type { BrowserWindow, BrowserView } from 'electron';
 import {
   HIDE_CONFIGURATION,
   INTERNAL_ADD_BROWSER_VIEW,
   SET_AVAILABLE_VERSION,
   SET_BROWSER_VIEW_READY,
   SET_BROWSER_VIEW_URL,
-  SET_BROWSER_WINDOW,
   SET_INTERACTIVE_MODE,
   SET_UPDATE_DOWNLOAD_PROGRESS
 } from '../constants/actionTypes';
@@ -21,7 +19,6 @@ export type BrowserViewName =
   | 'configuration'
   | 'devMenu';
 export type BrowserViewState = {
-  browserView: BrowserView,
   url: string,
   ready: boolean
 };
@@ -35,7 +32,6 @@ export type UpdaterStatus = {
 };
 
 export type electronStateType = {
-  window: ?BrowserWindow,
   views: Views,
   configurationHidden: boolean,
   interactiveMode: boolean,
@@ -44,7 +40,6 @@ export type electronStateType = {
 
 const electronDefaultState: electronStateType = {
   views: {},
-  window: null,
   configurationHidden: false,
   interactiveMode: false,
   updater: {
@@ -57,9 +52,6 @@ export default function electron(
   state: electronStateType = electronDefaultState,
   action: Action
 ): electronStateType {
-  if (action.type === SET_BROWSER_WINDOW) {
-    return { ...state, window: action.payload.window };
-  }
   if (action.type === INTERNAL_ADD_BROWSER_VIEW) {
     const { name, browserView } = action.payload;
     return dotProp.set(state, `views.${name}`, { browserView, ready: false });

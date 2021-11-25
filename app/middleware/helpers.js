@@ -8,6 +8,7 @@ import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
 import sendMail from '../utils/email';
 import { timeout } from '../utils/async';
 import ElectronUtils from '../utils/electronUtils';
+import { electronObjects } from '../store/electronObjects';
 
 const pdfFolderPath = path.join(app.getPath('userData'), 'pdf');
 if (!fs.existsSync(pdfFolderPath)) {
@@ -41,7 +42,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     }
 
     try {
-      const { webContents } = store.getState().electron.views[name].browserView;
+      const { webContents } = electronObjects.views[name];
       // `printToPDF` times out if there are iframes on the page: https://github.com/electron/electron/issues/20634
       await new ElectronUtils(webContents).evaluate(
         `document.querySelectorAll('iframe').forEach(iframe => iframe.remove())`
