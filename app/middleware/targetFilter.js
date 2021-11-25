@@ -25,21 +25,22 @@ export function targetedAction<T>(
 }
 
 // eslint-disable-next-line no-unused-vars
-export default (target: targetType) => (store: Store) => (next: Dispatch) => (
-  action: Action
-) => {
-  if (!action.meta || !action.meta.target) {
+export default (target: targetType) =>
+  (store: Store) =>
+  (next: Dispatch) =>
+  (action: Action) => {
+    if (!action.meta || !action.meta.target) {
+      return next(action);
+    }
+
+    if (action.meta.target !== target) {
+      return;
+    }
+
+    const registeredAction = actions[action.type];
+    if (registeredAction) {
+      return store.dispatch(registeredAction(action.payload));
+    }
+
     return next(action);
-  }
-
-  if (action.meta.target !== target) {
-    return;
-  }
-
-  const registeredAction = actions[action.type];
-  if (registeredAction) {
-    return store.dispatch(registeredAction(action.payload));
-  }
-
-  return next(action);
-};
+  };

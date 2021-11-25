@@ -60,14 +60,8 @@ export default class TextField extends React.Component<
   }
 
   render() {
-    const {
-      type,
-      placeholder,
-      containerStyle,
-      style,
-      required,
-      error
-    } = this.props;
+    const { type, placeholder, containerStyle, style, required, error } =
+      this.props;
     const { value } = this.state;
 
     let hasError = error || (required && !value);

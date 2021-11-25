@@ -81,9 +81,8 @@ export default class Configuration extends Component<Props> {
     let stageValid = true;
     let validationMessage = null;
     if (stage.buttons.forward.checkInvalid) {
-      const validationResult = stage.buttons.forward.checkInvalid(
-        configuration
-      );
+      const validationResult =
+        stage.buttons.forward.checkInvalid(configuration);
       stageValid = validationResult === false;
       if (!stageValid) {
         validationMessage = validationResult;
