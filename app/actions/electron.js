@@ -1,6 +1,5 @@
 // @flow
 
-import type { BrowserView, BrowserWindow } from 'electron';
 import { MAIN } from '../constants/targets';
 import type { Action } from '../reducers/types';
 import type { BrowserViewName } from '../reducers/electron';
@@ -15,31 +14,26 @@ import {
   SET_INTERACTIVE_MODE,
   SHOW_CONFIGURATION,
   SHOW_DEV_TOOLS,
-  OPEN_PDF
+  OPEN_PDF,
+  SET_AVAILABLE_VERSION,
+  SET_UPDATE_DOWNLOAD_PROGRESS
 } from '../constants/actionTypes';
 
-export function setWindow(window: BrowserWindow): Action {
+export function setWindow(): Action {
   return {
     type: SET_BROWSER_WINDOW,
-    payload: {
-      window
-    },
+    payload: {},
     meta: {
       scope: 'local'
     }
   };
 }
 
-export function addView(
-  name: BrowserViewName,
-  browserView: BrowserView,
-  initialUrl?: string
-): Action {
+export function addView(name: BrowserViewName, initialUrl?: string): Action {
   return {
     type: INTERNAL_ADD_BROWSER_VIEW,
     payload: {
       name,
-      browserView,
       initialUrl
     },
     meta: {
@@ -99,7 +93,7 @@ export function setInteractiveMode(interactiveModeEnabled: boolean): Action {
   return {
     type: SET_INTERACTIVE_MODE,
     payload: interactiveModeEnabled
-  }
+  };
 }
 
 export function performScroll(name: BrowserViewName, deltaY: number): Action {
@@ -132,6 +126,24 @@ export function openPDF(pdfPath: string): Action {
     type: OPEN_PDF,
     payload: {
       pdfPath
+    }
+  };
+}
+
+export function setAvailableVersion(version: string): Action {
+  return {
+    type: SET_AVAILABLE_VERSION,
+    payload: {
+      version
+    }
+  };
+}
+
+export function setUpdateDownloadProgress(percentage: number): Action {
+  return {
+    type: SET_UPDATE_DOWNLOAD_PROGRESS,
+    payload: {
+      percentage
     }
   };
 }

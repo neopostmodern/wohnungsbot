@@ -40,7 +40,4 @@ function mapDispatchToProps(dispatch) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Configuration);
+export default connect(mapStateToProps, mapDispatchToProps)(Configuration);

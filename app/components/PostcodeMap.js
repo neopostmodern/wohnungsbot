@@ -1,6 +1,12 @@
 // @flow
 import React from 'react';
-import { Map, GeoJSON, TileLayer, Marker } from 'react-leaflet';
+import {
+  MapContainer,
+  GeoJSON,
+  TileLayer,
+  Marker,
+  useMapEvent
+} from 'react-leaflet';
 import { divIcon, type Layer } from 'leaflet';
 import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo';
@@ -12,8 +18,8 @@ const tileUrl =
   'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
 const tileAttribution = `
   Map tiles by <a href="http://stamen.com">Stamen Design</a>,
-  <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> 
-  &mdash; Map data &copy; 
+  <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>
+  &mdash; Map data &copy;
   <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`;
 
 const baseStyle = {
@@ -28,6 +34,13 @@ type PostcodeDescription = {
     name: string,
     district: string
   }
+};
+
+const ZoomLevelListener = ({ onZoomChange }) => {
+  const map = useMapEvent('zoom', () => {
+    onZoomChange(map.getZoom());
+  });
+  return null;
 };
 
 type Props = {
@@ -131,9 +144,9 @@ ${postcodeDescription.properties.district}`,
     }
   }
 
-  handleZoom(zoomEvent: { type: 'zoom', target: { _zoom: number } }) {
+  handleZoom(zoom) {
     // eslint-disable-next-line no-underscore-dangle
-    this.setState({ zoom: zoomEvent.target._zoom });
+    this.setState({ zoom });
   }
 
   render() {
@@ -147,15 +160,18 @@ ${postcodeDescription.properties.district}`,
         data-type="map"
       >
         {height ? (
-          <Map
+          <MapContainer
             center={[52.5234051, 13.4113999]}
             zoom={PostcodeMap.initialZoom}
             minZoom={10}
             maxZoom={16}
-            maxBounds={[[52.3202, 12.924], [52.6805, 13.8249]]}
+            maxBounds={[
+              [52.3202, 12.924],
+              [52.6805, 13.8249]
+            ]}
             style={{ height }}
-            onZoom={this.handleZoom}
           >
+            <ZoomLevelListener onZoomChange={this.handleZoom} />
             <TileLayer url={tileUrl} attribution={tileAttribution} />
             <GeoJSON
               data={geoData}
@@ -170,7 +186,7 @@ ${postcodeDescription.properties.district}`,
                 icon={divIcon({ html: name, className: 'district-label' })}
               />
             ))}
-          </Map>
+          </MapContainer>
         ) : null}
       </div>
     );

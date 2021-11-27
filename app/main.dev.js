@@ -20,24 +20,55 @@ import {
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import configureStore from './store/configureStore';
-import { addView, setWindow } from './actions/electron';
+import {
+  addView,
+  setAvailableVersion,
+  setUpdateDownloadProgress,
+  setWindow
+} from './actions/electron';
 import { MAIN } from './constants/targets';
 import ROUTES from './constants/routes';
+import { LOADING, UP_TO_DATE } from './constants/updater';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
-
-export default class AppUpdater {
-  constructor() {
-    log.transports.file.level = 'info';
-    autoUpdater.logger = log;
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-}
+import { electronObjects } from './store/electronObjects';
+import resizeViews from './utils/resizeViews';
 
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 let firstLaunch = true;
+
+export default class AppUpdater {
+  constructor() {
+    if (isDevelopment) {
+      log.transports.file.level = 'info';
+      autoUpdater.logger = log;
+    }
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+
+  onUpdateAvailable(callback: (version: string) => void) {
+    autoUpdater.on('checking-for-update', () => {
+      callback(LOADING);
+    });
+    autoUpdater.on('update-available', ({ version }) => {
+      callback(version);
+    });
+    autoUpdater.on('update-not-available', () => {
+      callback(UP_TO_DATE);
+    });
+  }
+
+  onDownloadProgress(callback: (percentage: number) => void) {
+    autoUpdater.on('download-progress', ({ percent }) => {
+      callback(percent);
+    });
+    autoUpdater.on('update-downloaded', () => {
+      callback(100);
+    });
+  }
+}
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -50,7 +81,7 @@ if (isDevelopment) {
 
 configureStore(MAIN, isDevelopment)
   // eslint-disable-next-line promise/always-return
-  .then(store => {
+  .then((store) => {
     let mainWindow: ?BrowserWindow = null;
 
     // todo: extensions don't seem to load in BrowserView?
@@ -60,10 +91,10 @@ configureStore(MAIN, isDevelopment)
       const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
 
       return Promise.all(
-        extensions.map(name =>
+        extensions.map((name) =>
           installer.default(installer[name], forceDownload)
         )
-      ).catch(error => {
+      ).catch((error) => {
         // eslint-disable-next-line no-console
         console.error(`Problem installing extensions: ${error}`);
       });
@@ -89,13 +120,11 @@ configureStore(MAIN, isDevelopment)
         show: false,
         width: Math.min(1200, screen.getPrimaryDisplay().workAreaSize.width),
         height: Math.min(800, screen.getPrimaryDisplay().workAreaSize.height),
-        webPreferences: {
-          // devTools: false
-        },
         titleBarStyle: 'hidden'
       });
 
-      store.dispatch(setWindow(mainWindow));
+      electronObjects.window = mainWindow;
+      store.dispatch(setWindow());
 
       const newView = (
         name: BrowserViewName,
@@ -110,7 +139,8 @@ configureStore(MAIN, isDevelopment)
 
         const browserView = new BrowserView(options);
         mainWindow.addBrowserView(browserView);
-        store.dispatch(addView(name, browserView, initialUrl));
+        electronObjects.views[name] = browserView;
+        store.dispatch(addView(name, initialUrl));
         return browserView;
       };
 
@@ -118,7 +148,9 @@ configureStore(MAIN, isDevelopment)
         'sidebar',
         {
           webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`
           }
         },
         `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
@@ -141,7 +173,9 @@ configureStore(MAIN, isDevelopment)
         {
           webPreferences: {
             nodeIntegration: true,
-            experimentalFeatures: true
+            experimentalFeatures: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`
           },
           transparent: true
         },
@@ -152,7 +186,9 @@ configureStore(MAIN, isDevelopment)
         'configuration',
         {
           webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`
           },
           transparent: true
         },
@@ -165,7 +201,9 @@ configureStore(MAIN, isDevelopment)
           {
             webPreferences: {
               nodeIntegration: true,
-              experimentalFeatures: true
+              experimentalFeatures: true,
+              contextIsolation: false,
+              preload: `${__dirname}/preload.js`
             },
             transparent: true
           },
@@ -184,6 +222,8 @@ configureStore(MAIN, isDevelopment)
 
         if (!mainWindow.isVisible()) {
           mainWindow.show();
+          // resize again, sometimes it only works after the window is visible
+          resizeViews({ interactiveMode: false });
         }
 
         if (firstLaunch) {
@@ -198,11 +238,21 @@ configureStore(MAIN, isDevelopment)
 
       mainWindow.setMenuBarVisibility(false);
 
-      // eslint-disable-next-line no-new
-      new AppUpdater();
+      const appUpdater = new AppUpdater();
+      appUpdater.onUpdateAvailable((version) => {
+        store.dispatch(setAvailableVersion(version));
+
+        // no auto-update on macOS
+        if (process.platform === 'darwin') {
+          store.dispatch(setUpdateDownloadProgress(-1));
+        }
+      });
+      appUpdater.onDownloadProgress((percentage) => {
+        store.dispatch();
+      });
     });
   })
-  .catch(error => {
+  .catch((error) => {
     // eslint-disable-next-line no-console
     console.error(error);
   });

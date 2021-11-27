@@ -40,7 +40,7 @@ export default function scheduler(
     return dotProp.set(
       state,
       'queuedFlatIds',
-      state.queuedFlatIds.filter(queuedFlatId => queuedFlatId !== flatId)
+      state.queuedFlatIds.filter((queuedFlatId) => queuedFlatId !== flatId)
     );
   }
 

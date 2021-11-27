@@ -30,7 +30,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ performScroll }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BotOverlay);
+export default connect(mapStateToProps, mapDispatchToProps)(BotOverlay);

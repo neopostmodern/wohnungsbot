@@ -4,12 +4,15 @@ import styles from './Sidebar.scss';
 import type { ApplicationData, BaseCacheEntry } from '../reducers/cache';
 import { homepage, version, bugs } from '../../package.json';
 import RecentApplication from './sidebar/recentApplication';
+import { LOADING, UP_TO_DATE } from '../constants/updater';
 
 type Props = {
   showConfiguration: () => void,
   openPDF: (pdfPath: string) => void,
   resetBot: () => void,
-  applications: Array<ApplicationData & BaseCacheEntry>
+  applications: Array<ApplicationData & BaseCacheEntry>,
+  availableVersion: string,
+  downloadProgressPercentage: number
 };
 type State = {
   announcement?: string
@@ -21,17 +24,58 @@ export default class Sidebar extends Component<Props, State> {
   state: State = {};
 
   async componentWillMount() {
-    const response = await fetch(
-      'https://wohnung.neopostmodern.com/announcement.html'
-    );
+    const response = await fetch('https://wohnungsbot.de/announcement.html');
     const announcement = await response.text();
 
     this.setState({ announcement });
   }
 
   render() {
-    const { showConfiguration, resetBot, applications, openPDF } = this.props;
+    const {
+      showConfiguration,
+      resetBot,
+      applications,
+      openPDF,
+      availableVersion,
+      downloadProgressPercentage
+    } = this.props;
     const { announcement } = this.state;
+
+    let updateNotification = null;
+    if (availableVersion === LOADING) {
+      updateNotification = 'Suche nach Updates...';
+    } else if (availableVersion !== UP_TO_DATE) {
+      if (downloadProgressPercentage < 0) {
+        updateNotification = (
+          <>
+            Der <b>Wohnungsbot {availableVersion}</b> ist verfügbar, aber das
+            Update kann auf macOS nicht automatisch installiert werden. Bitte{' '}
+            <a
+              href={homepage + '#downloads'}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              lade die neuste Version manuell herunter
+            </a>{' '}
+            und installiere sie.
+          </>
+        );
+      } else if (downloadProgressPercentage >= 100) {
+        updateNotification = (
+          <>
+            Der <b>Wohnungsbot {availableVersion}</b> wurde heruntergeladen und
+            wird beim nächsten Start installiert.
+          </>
+        );
+      } else {
+        updateNotification = (
+          <>
+            Der <b>Wohnungsbot {availableVersion}</b> ist verfügbar und wird
+            gerade heruntergeladen ({downloadProgressPercentage.toFixed(0)}%).
+          </>
+        );
+      }
+    }
 
     return (
       <div className={styles.container}>
@@ -49,7 +93,7 @@ export default class Sidebar extends Component<Props, State> {
         />
         <h3>Letzte Bewerbungen</h3>
         <div className={styles.recentApplications}>
-          {applications.map(application => (
+          {applications.map((application) => (
             <RecentApplication
               key={application.flatId}
               application={application}
@@ -58,7 +102,8 @@ export default class Sidebar extends Component<Props, State> {
           ))}
         </div>
 
-        <button onClick={resetBot} type="button" className={styles.resetButton}>
+        <div className={styles.spacer} />
+        <button onClick={resetBot} type="button">
           <span className="material-icons">replay</span> Bot zurücksetzen
         </button>
         <div className={styles.comment}>
@@ -68,10 +113,29 @@ export default class Sidebar extends Component<Props, State> {
           <br />
           Deine Daten bleiben erhalten!
         </div>
+        {updateNotification && (
+          <div className={styles.updateNotification}>{updateNotification}</div>
+        )}
         <div className={styles.softwareInformation}>
           <div>
             <a href={homepage} target="_blank" rel="noopener noreferrer">
               Wohnungsbot {version}
+              {availableVersion === UP_TO_DATE ? (
+                <span className="material-icons" title="Aktuelle Version">
+                  done
+                </span>
+              ) : (
+                <span
+                  className="material-icons"
+                  title={
+                    availableVersion === LOADING
+                      ? 'Suche nach Updates'
+                      : `Aktuellere Version verfügbar: ${availableVersion}`
+                  }
+                >
+                  update
+                </span>
+              )}
             </a>
           </div>
           <div>

@@ -1,7 +1,7 @@
 // @flow
 
 import type { WebContents } from 'electron';
-import type { Action, Dispatch, GetState } from '../reducers/types';
+import type { Action, Dispatch } from '../reducers/types';
 import { sleep } from '../utils/async';
 import {
   WILL_CLICK,
@@ -9,6 +9,7 @@ import {
   WILL_TYPE
 } from '../constants/actionTypes';
 import type { BrowserViewName } from '../reducers/electron';
+import { electronObjects } from '../store/electronObjects';
 import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
 
@@ -22,8 +23,8 @@ export function clickAction(
     elementExistenceGuaranteed: boolean
   } = {}
 ) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
+  return async (dispatch: Dispatch) => {
+    const { webContents } = electronObjects.views.puppet;
 
     if (!webContents.isFocused()) {
       webContents.focus();
@@ -72,10 +73,10 @@ export function clickAction(
 }
 
 export function type(text: string) {
-  return async (dispatch: Dispatch, getState: GetState) => {
+  return async (dispatch: Dispatch) => {
     dispatch(willType(text));
 
-    const { webContents } = getState().electron.views.puppet.browserView;
+    const { webContents } = electronObjects.views.puppet;
 
     const electronUtils = new ElectronUtils(webContents);
 
@@ -109,10 +110,10 @@ export function type(text: string) {
 }
 
 export function pressKey(keyCode: string) {
-  return async (dispatch: Dispatch, getState: GetState) => {
+  return async (dispatch: Dispatch) => {
     dispatch(willPressKey(keyCode));
 
-    const { webContents } = getState().electron.views.puppet.browserView;
+    const { webContents } = electronObjects.views.puppet;
 
     if (!webContents.isFocused()) {
       webContents.focus();
@@ -164,11 +165,8 @@ export function scrollIntoViewAction(
   strategy: ScrollIntoViewStrategy = 'center',
   smooth: boolean = true
 ) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const {
-      electron: { views }
-    } = getState();
-    const { webContents } = views[name].browserView;
+  return async () => {
+    const { webContents } = electronObjects.views[name];
 
     await scrollIntoView(webContents, selector, { strategy, smooth });
   };

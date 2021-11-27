@@ -10,11 +10,12 @@ import {
   SALUTATIONS
 } from '../reducers/configuration';
 import { sleep } from '../utils/async';
-import type { Dispatch, GetState } from '../reducers/types';
+import type { Dispatch } from '../reducers/types';
 import type { ScrollIntoViewPolicy } from './botHelpers';
 import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import AbortionSystem from '../utils/abortionSystem';
+import { electronObjects } from '../store/electronObjects';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
@@ -31,54 +32,62 @@ type RadioField = BaseField & { type: 'radio', value: string };
 type AnyInputField = TextField | SelectField | RadioField;
 type FieldFillingDescription = Array<AnyInputField>;
 export const generatePersonalDataFormFillingDescription = (
-  contactData: ContactData
-): FieldFillingDescription => [
-  {
-    selector: '#contactForm-salutation',
-    type: 'select',
-    value: SALUTATION_VALUES[contactData.salutation]
-  },
-  {
-    selector: '#contactForm-firstName',
-    type: 'text',
-    value: contactData.firstName
-  },
-  {
-    selector: '#contactForm-lastName',
-    type: 'text',
-    value: contactData.lastName
-  },
-  {
-    selector: '#contactForm-emailAddress',
-    type: 'text',
-    value: contactData.eMail
-  },
-  {
-    selector: '#contactForm-phoneNumber',
-    type: 'text',
-    value: contactData.telephone
-  },
-  {
-    selector: '#contactForm-street',
-    type: 'text',
-    value: contactData.street
-  },
-  {
-    selector: '#contactForm-houseNumber',
-    type: 'text',
-    value: contactData.houseNumber
-  },
-  {
-    selector: '#contactForm-postcode',
-    type: 'text',
-    value: contactData.postcode
-  },
-  {
-    selector: '#contactForm-city',
-    type: 'text',
-    value: contactData.city
+  contactData: ContactData,
+  userIsLoggedIn: boolean = false
+): FieldFillingDescription => {
+  const fieldFillingDescription: FieldFillingDescription = [
+    {
+      selector: '#contactForm-salutation',
+      type: 'select',
+      value: SALUTATION_VALUES[contactData.salutation]
+    },
+    {
+      selector: '#contactForm-firstName',
+      type: 'text',
+      value: contactData.firstName
+    },
+    {
+      selector: '#contactForm-lastName',
+      type: 'text',
+      value: contactData.lastName
+    }
+  ];
+  // the e-mail address field is read-only for logged in users
+  if (!userIsLoggedIn) {
+    fieldFillingDescription.push({
+      selector: '#contactForm-emailAddress',
+      type: 'text',
+      value: contactData.eMail
+    });
   }
-];
+  return fieldFillingDescription.concat([
+    {
+      selector: '#contactForm-phoneNumber',
+      type: 'text',
+      value: contactData.telephone
+    },
+    {
+      selector: '#contactForm-street',
+      type: 'text',
+      value: contactData.street
+    },
+    {
+      selector: '#contactForm-houseNumber',
+      type: 'text',
+      value: contactData.houseNumber
+    },
+    {
+      selector: '#contactForm-postcode',
+      type: 'text',
+      value: contactData.postcode
+    },
+    {
+      selector: '#contactForm-city',
+      type: 'text',
+      value: contactData.city
+    }
+  ]);
+};
 
 const MOVE_IN_WHEN_VALUES = {
   [MOVE_IN_WHEN.NOW]: 'FROM_NOW',
@@ -242,7 +251,7 @@ async function fillRadioField(
   field: RadioField,
   skipField = false
 ) {
-  const labelSelectorForRadio = selector => `${selector} ~ label`;
+  const labelSelectorForRadio = (selector) => `${selector} ~ label`;
   if (skipField) {
     const selectedRadioSelector = `${field.selector} :checked`;
     if (await electronUtils.elementExists(selectedRadioSelector)) {
@@ -266,8 +275,8 @@ export function fillForm(
   fieldFillingDescription: FieldFillingDescription,
   fillAsLittleAsPossible: boolean = true
 ) {
-  return async (dispatch: Dispatch, getState: GetState) => {
-    const { webContents } = getState().electron.views.puppet.browserView;
+  return async (dispatch: Dispatch) => {
+    const { webContents } = electronObjects.views.puppet;
     const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
     /* eslint-disable no-await-in-loop */

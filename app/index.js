@@ -13,7 +13,7 @@ import('./store/configureStore')
   .then(({ default: configureStore }) =>
     configureStore(target, process.env.NODE_ENV === 'development')
   )
-  .then(store => {
+  .then((store) => {
     const history = getHistory();
 
     const AppContainer = process.env.PLAIN_HMR
@@ -40,7 +40,7 @@ import('./store/configureStore')
       });
     }
   })
-  .catch(error => {
+  .catch((error) => {
     // eslint-disable-next-line no-console
-    console.error(`Error in index.js: ${error}`);
+    console.error(`Error in index.js`, error);
   });

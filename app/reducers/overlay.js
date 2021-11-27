@@ -50,7 +50,7 @@ export default function overlay(
         state,
         'animations',
         state.animations.filter(
-          animation => animation.animationId !== action.payload.animationId
+          (animation) => animation.animationId !== action.payload.animationId
         )
       );
     case SET_BOUNDING_BOX:

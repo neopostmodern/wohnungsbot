@@ -28,7 +28,7 @@ export default class BotOverlay extends Component<Props> {
   static renderAnimations(animations: Array<anyAnimation>) {
     return (
       <div className={styles.animations}>
-        {animations.map(animation => {
+        {animations.map((animation) => {
           if (animation.type === 'click') {
             return (
               <div
@@ -92,7 +92,7 @@ export default class BotOverlay extends Component<Props> {
       .map(({ flatId }) => flatId);
 
     const notAppliedYetFlats = matchedFlats.filter(
-      flatId =>
+      (flatId) =>
         !alreadyAppliedFlatIds.includes(flatId) &&
         !unsuitableFlatIds.includes(flatId)
     );
@@ -101,7 +101,7 @@ export default class BotOverlay extends Component<Props> {
       return `${notAppliedYetFlats.length} neue passende Wohnungen gefunden (${matchedFlats.length} insgesamt).`;
     }
 
-    return 'Ich bin bereit, aber es gibt keine passenden Wohnungen!';
+    return null;
   }
 
   render() {
@@ -114,6 +114,8 @@ export default class BotOverlay extends Component<Props> {
       alreadyAppliedFlatIds,
       unsuitableFlatIds
     } = this.props;
+
+    const speechBubbleText = this.botTalk();
 
     return (
       <div
@@ -155,7 +157,9 @@ export default class BotOverlay extends Component<Props> {
           alt="bot"
           className={styles.botIllustration}
         />
-        <div className={styles.speechBubble}>{this.botTalk()}</div>
+        {speechBubbleText && (
+          <div className={styles.speechBubble}>{speechBubbleText}</div>
+        )}
       </div>
     );
   }

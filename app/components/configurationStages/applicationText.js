@@ -28,7 +28,7 @@ const applicationTextStage: StageDescription = {
         <div className={styles.column}>
           <h3>Deine Textvorlage</h3>
           <Textarea
-            onChange={text => setString('applicationText', text)}
+            onChange={(text) => setString('applicationText', text)}
             value={applicationText}
           />
           <h3>Verfügbare Textbausteine</h3>

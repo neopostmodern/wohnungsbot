@@ -25,6 +25,7 @@ import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
 import ElectronUtils from '../utils/electronUtils';
 import { entrySelector } from '../utils/selectors';
+import { electronObjects } from '../store/electronObjects';
 
 // eslint-disable-next-line no-unused-vars
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
@@ -46,36 +47,39 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
 
   if (action.type === CALCULATE_OVERVIEW_BOUNDING_BOXES) {
     const {
-      electron: {
-        views: { puppet }
-      },
       data: { overview }
     } = store.getState();
 
-    const { webContents } = puppet.browserView;
+    const { webContents } = electronObjects.views.puppet;
     const electronUtils = new ElectronUtils(webContents);
 
     if (overview) {
-      const boundingBoxes = (await Promise.all(
-        Object.values(overview)
-          // $FlowFixMe -- Object.values
-          .map(async (entry: OverviewDataEntry) => {
-            const selector = entrySelector(entry.id);
+      const boundingBoxes = (
+        await Promise.all(
+          Object.values(overview)
+            // $FlowFixMe -- Object.values
+            .map(async (entry: OverviewDataEntry) => {
+              const selector = entrySelector(entry.id);
 
-            if (
-              !(await electronUtils.isElementInViewport(selector, false, false))
-            ) {
-              return null;
-            }
+              if (
+                !(await electronUtils.isElementInViewport(
+                  selector,
+                  false,
+                  false
+                ))
+              ) {
+                return null;
+              }
 
-            return {
-              selector,
-              boundingBox: await electronUtils.getBoundingBox(selector),
-              attachedInformation: { flatId: entry.id },
-              group: BOUNDING_BOX_GROUPS.OVERVIEW
-            };
-          })
-      )).filter(entry => entry !== null);
+              return {
+                selector,
+                boundingBox: await electronUtils.getBoundingBox(selector),
+                attachedInformation: { flatId: entry.id },
+                group: BOUNDING_BOX_GROUPS.OVERVIEW
+              };
+            })
+        )
+      ).filter((entry) => entry !== null);
 
       store.dispatch(
         // $FlowFixMe the filter call doesn't seem to be understood
@@ -89,7 +93,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       overlay: { boundingBoxes }
     } = store.getState();
 
-    boundingBoxes.forEach(boundingBox => {
+    boundingBoxes.forEach((boundingBox) => {
       const { selector, group, attachedInformation } = boundingBox;
       store.dispatch(
         calculateBoundingBox(selector, { group, attachedInformation })
@@ -98,15 +102,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   }
 
   if (action.type === CALCULATE_BOUNDING_BOX) {
-    const {
-      electron: {
-        views: {
-          puppet: {
-            browserView: { webContents }
-          }
-        }
-      }
-    } = store.getState();
+    const { webContents } = electronObjects.views.puppet;
 
     const { selector, group, attachedInformation } = action.payload;
 

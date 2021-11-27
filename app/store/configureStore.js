@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import { routerMiddleware, routerActions } from 'connected-react-router';
+import { createReduxHistoryContext } from 'redux-first-history';
 import { createLogger } from 'redux-logger';
 
 import getHistory from './history';
@@ -13,6 +13,7 @@ import configuration from '../middleware/configuration';
 import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
 import bot from '../middleware/bot';
+import login from '../middleware/login';
 
 const configureStore = async (
   target: string,
@@ -23,12 +24,6 @@ const configureStore = async (
   const middleware = [];
   const enhancers = [];
 
-  let safeInitialState = initialState;
-  if (target === RENDERER) {
-    const { getInitialStateRenderer } = await import('electron-redux');
-    safeInitialState = getInitialStateRenderer();
-  }
-
   // Thunk Middleware
   middleware.push(thunk);
 
@@ -36,8 +31,10 @@ const configureStore = async (
 
   // Router Middleware
   if (target === RENDERER || target === WEB) {
-    const router = routerMiddleware(history);
-    middleware.push(router);
+    const { routerMiddleware } = createReduxHistoryContext({
+      history
+    });
+    middleware.push(routerMiddleware);
   }
   // data extraction + routing + more
   if (target === MAIN) {
@@ -64,28 +61,15 @@ const configureStore = async (
   }
 
   if (target === MAIN) {
+    middleware.push(login);
+  }
+
+  if (target === MAIN) {
     const helpers = (await import('../middleware/helpers')).default;
     middleware.push(helpers);
   }
 
   const rootReducer = createRootReducer(history);
-
-  // Redux DevTools Configuration
-  const actionCreators = {
-    ...routerActions
-  };
-  // If Redux DevTools Extension is installed use it, otherwise use Redux compose
-  /* eslint-disable no-underscore-dangle */
-  const composeEnhancers =
-    target === RENDERER &&
-    isDevelopment &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-          // Options: http://extension.remotedev.io/docs/API/Arguments.html
-          actionCreators
-        })
-      : compose;
-  /* eslint-enable no-underscore-dangle */
 
   if (target === MAIN) {
     middleware.unshift(scheduler);
@@ -109,31 +93,23 @@ const configureStore = async (
     }
   }
 
-  // Electron Redux
-  if (target === MAIN) {
-    const { forwardToRenderer } = await import('electron-redux');
-    middleware.push(forwardToRenderer);
-  }
-  if (target === RENDERER) {
-    const { forwardToMain } = await import('electron-redux');
-    middleware.unshift(forwardToMain);
-  }
-
   // Apply Middleware & Compose Enhancers
   enhancers.push(applyMiddleware(...middleware));
+
+  // Electron Redux
+  let composeEnhancers = compose;
+  if (target === MAIN) {
+    const { composeWithStateSync } = await import('electron-redux/main');
+    composeEnhancers = composeWithStateSync;
+  }
+  if (target === RENDERER) {
+    const { composeWithStateSync } = await import('electron-redux/renderer');
+    composeEnhancers = composeWithStateSync;
+  }
   const enhancer = composeEnhancers(...enhancers);
 
   // Create Store
-  const store = createStore(rootReducer, safeInitialState, enhancer);
-
-  if (target === MAIN) {
-    const { replayActionMain } = await import('electron-redux');
-    replayActionMain(store);
-  }
-  if (target === RENDERER) {
-    const { replayActionRenderer } = await import('electron-redux');
-    replayActionRenderer(store);
-  }
+  const store = createStore(rootReducer, enhancer);
 
   if (module.hot) {
     module.hot.accept(

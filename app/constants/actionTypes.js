@@ -10,6 +10,8 @@ export const SET_INTERACTIVE_MODE = 'SET_INTERACTIVE_MODE';
 export const PERFORM_SCROLL = 'PERFORM_SCROLL';
 export const SHOW_DEV_TOOLS = 'SHOW_DEV_TOOLS';
 export const OPEN_PDF = 'OPEN_PDF';
+export const SET_AVAILABLE_VERSION = 'SET_AVAILABLE_VERSION';
+export const SET_UPDATE_DOWNLOAD_PROGRESS = 'SET_UPDATE_DOWNLOAD_PROGRESS';
 
 // configuration
 export const SET_CONFIGURATION = 'SET_CONFIGURATION';
@@ -72,3 +74,7 @@ export const MARK_COMPLETED = 'MARK_COMPLETED';
 // helpers
 export const SEND_MAIL = 'SEND_MAIL';
 export const PRINT_TO_PDF = 'PRINT_TO_PDF';
+
+// login
+export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';

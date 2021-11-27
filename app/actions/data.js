@@ -9,7 +9,7 @@ import type {
   StringBoolean,
   Verdict
 } from '../reducers/data';
-import type { Action, Dispatch, GetState } from '../reducers/types';
+import type { Action, Dispatch } from '../reducers/types';
 import {
   SET_OVERVIEW_DATA,
   REFRESH_VERDICTS,
@@ -17,6 +17,7 @@ import {
   SET_FLAT_DATA
 } from '../constants/actionTypes';
 import ElectronUtils from '../utils/electronUtils';
+import { electronObjects } from '../store/electronObjects';
 import { returnToSearchPage } from './bot';
 
 function parseBoolean(stringBoolean: StringBoolean): boolean {
@@ -56,9 +57,9 @@ function processOverviewDataEntry(
 }
 
 export function getOverviewData() {
-  return async (dispatch: Dispatch, getState: GetState) => {
+  return async (dispatch: Dispatch) => {
     const electronUtils = new ElectronUtils(
-      getState().electron.views.puppet.browserView.webContents
+      electronObjects.views.puppet.webContents
     );
     // is null if there were zero results
     try {
@@ -68,7 +69,7 @@ export function getOverviewData() {
 
       const data = {};
       if (rawOverviewData) {
-        rawOverviewData.forEach(entry => {
+        rawOverviewData.forEach((entry) => {
           const processedEntry = processOverviewDataEntry(entry);
           data[processedEntry.id] = processedEntry;
         });
@@ -101,9 +102,9 @@ function processFlatData(flatData: RawFlatData): FlatData {
 }
 
 export function getFlatData(): Action {
-  return async (dispatch: Dispatch, getState: GetState) => {
+  return async (dispatch: Dispatch) => {
     const electronUtils = new ElectronUtils(
-      getState().electron.views.puppet.browserView.webContents
+      electronObjects.views.puppet.webContents
     );
     const rawFlatData: RawFlatData = await electronUtils.evaluate(`utag_data`);
 

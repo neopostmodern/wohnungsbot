@@ -108,7 +108,10 @@ export function assessFlat(
   if (configuration.filter.noSwapApartment) {
     reasons.push({
       reason: `Keine Tauschwohnung`,
-      result: !(overviewDataEntry.title.toLowerCase().includes('tausch') || overviewDataEntry.title.toLowerCase().includes('swap'))
+      result: !(
+        overviewDataEntry.title.toLowerCase().includes('tausch') ||
+        overviewDataEntry.title.toLowerCase().includes('swap')
+      )
     });
   }
 
@@ -119,7 +122,11 @@ export function assessFlat(
     });
   }
 
-  const subleaseCond = overviewDataEntry.title.toLowerCase().includes('zwischenmiete') || overviewDataEntry.title.toLowerCase().includes('befr.') || overviewDataEntry.title.toLowerCase().includes('befristet') || overviewDataEntry.title.toLowerCase().includes(' bis ')
+  const subleaseCond =
+    overviewDataEntry.title.toLowerCase().includes('zwischenmiete') ||
+    overviewDataEntry.title.toLowerCase().includes('befr.') ||
+    overviewDataEntry.title.toLowerCase().includes('befristet') ||
+    overviewDataEntry.title.toLowerCase().includes(' bis ');
   if (configuration.filter.onlySublease) {
     reasons.push({
       reason: `Zwischenmiete`,
@@ -159,7 +166,7 @@ export function assessFlat(
     }
   }
 
-  const result = reasons.every(reason => reason.result);
+  const result = reasons.every((reason) => reason.result);
   let scope;
 
   if (flatData) {

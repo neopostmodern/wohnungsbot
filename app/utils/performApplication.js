@@ -10,6 +10,7 @@ import applicationTextBuilder from '../flat/applicationTextBuilder';
 import { sendApplicationNotificationEmail } from '../actions/email';
 import type { OverviewDataEntry } from '../reducers/data';
 import type { Dispatch } from '../reducers/types';
+import { LOGINSTATUS } from '../reducers/configuration';
 import type { Configuration } from '../reducers/configuration';
 import type ElectronUtils from './electronUtils';
 import AbortionSystem from './abortionSystem';
@@ -50,9 +51,11 @@ export default function* performApplication(
     yield sleep(50);
   }
 
-  const personalDataFormFillingDescription = generatePersonalDataFormFillingDescription(
-    configuration.contactData
-  );
+  const personalDataFormFillingDescription =
+    generatePersonalDataFormFillingDescription(
+      configuration.contactData,
+      configuration.immobilienScout24.status === LOGINSTATUS.LOGGED_IN
+    );
 
   const applicationText = applicationTextBuilder(
     configuration.applicationText,
@@ -72,6 +75,20 @@ export default function* performApplication(
   yield sleep(1000);
 
   if (
+    configuration.immobilienScout24.useAccount &&
+    (yield electronUtils.elementExists(
+      '[data-is24-show-field="moveInDateType"]'
+    ))
+  ) {
+    yield dispatch(
+      fillForm(
+        generateAdditionalDataFormFillingDescription(
+          configuration.additionalInformation
+        ),
+        configuration.policies.fillAsLittleAsPossible
+      )
+    );
+  } else if (
     !(yield electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
   ) {
     dispatch(setBotMessage('Und noch eine Seite...'));
@@ -133,5 +150,21 @@ export default function* performApplication(
   }
 
   dispatch(setBotMessage('Fertig.'));
+
+  const saveDataButtonSelector = `[data-qa="saveProfileButton"]`;
+  if (
+    configuration.immobilienScout24.useAccount &&
+    ((yield electronUtils.getInnerText(saveDataButtonSelector)) || '').includes(
+      'Daten speichern'
+    )
+  ) {
+    yield dispatch(
+      clickAction(saveDataButtonSelector, {
+        scrollIntoViewPolicy: 'always',
+        elementExistenceGuaranteed: false
+      })
+    );
+  }
+
   yield sleep(5000);
 }

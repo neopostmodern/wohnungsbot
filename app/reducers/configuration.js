@@ -18,7 +18,7 @@ import {
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 
-export const ConfigurationVersion = 3;
+export const ConfigurationVersion = 4;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -65,6 +65,19 @@ export const SALUTATIONS = {
   HERR: 'Herr'
 };
 export type Salutation = $Values<typeof SALUTATIONS>;
+
+export const LOGINSTATUS = {
+  LOGGED_IN: 'LOGGED_IN',
+  LOGGED_OUT: 'LOGGED_OUT',
+  ERROR: 'ERROR'
+};
+
+export type LoginData = {|
+  useAccount: boolean,
+  userName: string,
+  password: string,
+  status: $Values<typeof LOGINSTATUS>
+|};
 
 export type ContactData = {|
   salutation: Salutation,
@@ -131,6 +144,7 @@ export type Configuration = {|
   searchUrl?: string,
   applicationText: string,
   contactData: ContactData,
+  immobilienScout24: LoginData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies,
   configurationVersion: number
@@ -160,6 +174,12 @@ const defaultConfiguration: Configuration = {
     noSublease: false
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
+  immobilienScout24: {
+    useAccount: false,
+    userName: '',
+    password: '',
+    status: LOGINSTATUS.LOGGED_OUT
+  },
   contactData: {
     salutation: SALUTATIONS.FRAU,
     firstName: '',
@@ -207,6 +227,17 @@ function configurationMigrations(
         'Keine'
       );
     }
+  }
+  if (oldConfiguration.configurationVersion < 4) {
+    migratedConfiguration = {
+      ...oldConfiguration,
+      immobilienScout24: {
+        useAccount: false,
+        userName: '',
+        password: '',
+        status: LOGINSTATUS.LOGGED_OUT
+      }
+    };
   }
   return dotProp.set(
     migratedConfiguration,

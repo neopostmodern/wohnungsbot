@@ -25,6 +25,7 @@ const personalDataStage: StageDescription = {
   ),
   body: ({
     configuration: {
+      immobilienScout24: { useAccount, userName, password },
       contactData: {
         salutation,
         firstName,
@@ -54,7 +55,7 @@ const personalDataStage: StageDescription = {
           <h3>Deine aktuellen Kontaktdaten</h3>
           <EnumField
             value={salutation}
-            onChange={value => setString('contactData.salutation', value)}
+            onChange={(value) => setString('contactData.salutation', value)}
             options={SALUTATIONS}
             inline
             isWeird
@@ -65,13 +66,13 @@ const personalDataStage: StageDescription = {
           >
             <TextField
               value={firstName}
-              onChange={value => setString('contactData.firstName', value)}
+              onChange={(value) => setString('contactData.firstName', value)}
               placeholder="Vorname"
               style={twoTextFieldsInLineStyles}
             />{' '}
             <TextField
               value={lastName}
-              onChange={value => setString('contactData.lastName', value)}
+              onChange={(value) => setString('contactData.lastName', value)}
               placeholder="Nachname"
               style={twoTextFieldsInLineStyles}
             />
@@ -79,13 +80,13 @@ const personalDataStage: StageDescription = {
           <div className={styles.searchParameter}>
             <TextField
               value={street}
-              onChange={value => setString('contactData.street', value)}
+              onChange={(value) => setString('contactData.street', value)}
               placeholder="Straße"
               style={{ width: '320px' }}
             />{' '}
             <TextField
               value={houseNumber}
-              onChange={value => setString('contactData.houseNumber', value)}
+              onChange={(value) => setString('contactData.houseNumber', value)}
               placeholder="Nr."
               style={{ width: '80px' }}
             />
@@ -93,13 +94,13 @@ const personalDataStage: StageDescription = {
           <div className={styles.searchParameter}>
             <TextField
               value={postcode}
-              onChange={value => setString('contactData.postcode', value)}
+              onChange={(value) => setString('contactData.postcode', value)}
               placeholder="PLZ"
               style={{ width: '120px' }}
             />{' '}
             <TextField
               value={city}
-              onChange={value => setString('contactData.city', value)}
+              onChange={(value) => setString('contactData.city', value)}
               placeholder="Stadt"
               style={{ width: '280px' }}
             />
@@ -107,32 +108,50 @@ const personalDataStage: StageDescription = {
           <div className={styles.searchParameter}>
             <TextField
               value={telephone}
-              onChange={value => setString('contactData.telephone', value)}
+              onChange={(value) => setString('contactData.telephone', value)}
               placeholder="Telefonnummer"
               style={twoTextFieldsInLineStyles}
             />{' '}
             <TextField
               value={eMail}
-              onChange={value => setString('contactData.eMail', value)}
+              onChange={(value) => setString('contactData.eMail', value)}
               placeholder="E-Mail"
               style={twoTextFieldsInLineStyles}
             />
           </div>
 
-          <div className={styles.pending}>
-            <h3>ImmobilienScout24-Account</h3>
-            <TextField
-              value=""
-              onChange={() => {}}
-              placeholder="E-Mail Addresse"
-              style={{ width: '190px' }}
-            />{' '}
-            <TextField
-              value=""
-              onChange={() => {}}
-              placeholder="Passwort"
-              style={{ width: '190px' }}
+          <h3>
+            Möchtest du dich mit deinem ImmobilienScout24-Account anmelden?
+          </h3>
+          <div className={styles.searchParameter}>
+            <YesNo
+              value={useAccount}
+              onChange={() => toggleBoolean('immobilienScout24.useAccount')}
             />
+            {useAccount && (
+              <>
+                <TextField
+                  type="email"
+                  value={userName}
+                  required
+                  onChange={(value) =>
+                    setString('immobilienScout24.userName', value)
+                  }
+                  placeholder="E-Mail Addresse"
+                  style={{ width: '190px' }}
+                />{' '}
+                <TextField
+                  type="password"
+                  value={password}
+                  required
+                  onChange={(value) =>
+                    setString('immobilienScout24.password', value)
+                  }
+                  placeholder="Passwort"
+                  style={{ width: '190px' }}
+                />
+              </>
+            )}
             <div className={styles.comment}>
               Falls du einen ImmobilienScout24-Account hast, kannst du diesen
               hier angeben und der Bot meldet sich für dich an.
@@ -176,7 +195,9 @@ const personalDataStage: StageDescription = {
           <h3>Deine finanzielle Situation</h3>
           <NumberField
             value={income}
-            onChange={value => setNumber('additionalInformation.income', value)}
+            onChange={(value) =>
+              setNumber('additionalInformation.income', value)
+            }
             style={{ maxWidth: '100px' }}
           />
           € Einkommen
@@ -190,7 +211,7 @@ const personalDataStage: StageDescription = {
           <EnumField
             options={EMPLOYMENT_STATUS}
             value={employmentStatus}
-            onChange={value =>
+            onChange={(value) =>
               setString('additionalInformation.employmentStatus', value)
             }
             isWeird
@@ -260,8 +281,15 @@ const personalDataStage: StageDescription = {
           }
         };
 
+        if (configuration.immobilienScout24.useAccount) {
+          checks.immobilienScout24 = {
+            userName: 'deine E-Mail',
+            password: 'dein Passwort'
+          };
+        }
+
         // eslint-disable-next-line no-restricted-syntax
-        for (const group of Object.values(checks)) {
+        for (const [groupName, group] of Object.entries(checks)) {
           // eslint-disable-next-line no-restricted-syntax
           for (const field in group) {
             if (!Object.prototype.hasOwnProperty.call(group, field)) {
@@ -270,8 +298,8 @@ const personalDataStage: StageDescription = {
             }
 
             if (
-              !configuration.contactData[field] ||
-              configuration.contactData[field].length === 0
+              !configuration[groupName][field] ||
+              configuration[groupName][field].length === 0
             ) {
               return `Bitte gib ${group[field]} an`;
             }

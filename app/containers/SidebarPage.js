@@ -13,7 +13,10 @@ function mapStateToProps(state) {
   applications.sort((a, b) => Math.sign(b.timestamp - a.timestamp));
 
   return {
-    applications
+    applications,
+    availableVersion: state.electron.updater.availableVersion,
+    downloadProgressPercentage:
+      state.electron.updater.downloadProgressPercentage
   };
 }
 
@@ -21,7 +24,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ resetBot, showConfiguration, openPDF }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Sidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
