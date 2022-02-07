@@ -99,7 +99,7 @@ export default function* performApplication(
 
     // check if one of the inputs of the second page exists
     if (!(yield electronUtils.elementExists('#contactForm-numberOfPersons'))) {
-      throw Error('Fehler beim Ausflüllen des Formulars');
+      throw Error('Fehler beim Ausfüllen des Formulars');
     }
 
     yield dispatch(
