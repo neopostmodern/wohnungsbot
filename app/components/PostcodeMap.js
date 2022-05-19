@@ -59,7 +59,7 @@ class PostcodeMap extends React.Component<Props, State> {
 
   heightRef: HTMLElement;
 
-  static initialZoom = 12;
+  static initialZoom: number = 12;
 
   constructor() {
     super();

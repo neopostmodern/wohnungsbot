@@ -1,3 +1,5 @@
+// @flow
+
 import type { Dispatch as ReduxDispatch, Store as ReduxStore } from 'redux';
 import type { electronStateType } from './electron';
 import type { overlayStateType } from './overlay';
@@ -20,7 +22,7 @@ export type stateType = {
 export type Action = {
   +type: string,
   // eslint-disable-next-line flowtype/no-weak-types
-  payload: any,
+  payload?: any,
   // eslint-disable-next-line flowtype/space-after-type-colon
   meta?:
     | {
@@ -31,9 +33,10 @@ export type Action = {
         message: string
       }
 };
+export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 
 export type GetState = () => stateType;
 
-export type Dispatch = ReduxDispatch<Action>;
+export type Dispatch = (action: Action | ThunkAction) => any;
 
 export type Store = ReduxStore<stateType, Action>;

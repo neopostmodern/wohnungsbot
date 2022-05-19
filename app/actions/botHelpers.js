@@ -1,7 +1,7 @@
 // @flow
 
 import type { WebContents } from 'electron';
-import type { Action, Dispatch } from '../reducers/types';
+import type { Action, Dispatch, ThunkAction } from "../reducers/types";
 import { sleep } from '../utils/async';
 import {
   WILL_CLICK,
@@ -22,7 +22,7 @@ export function clickAction(
     scrollIntoViewPolicy: ScrollIntoViewPolicy,
     elementExistenceGuaranteed: boolean
   } = {}
-) {
+): ThunkAction {
   return async (dispatch: Dispatch) => {
     const { webContents } = electronObjects.views.puppet;
 

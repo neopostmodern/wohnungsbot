@@ -6,12 +6,12 @@ import { generateInPlaceDescription } from '../flat/applicationTextBuilder';
 import { flatPageUrl } from '../flat/urlBuilder';
 import type { ContactData } from '../reducers/configuration';
 import type { OverviewDataEntry } from '../reducers/data';
-import type { Dispatch, GetState } from '../reducers/types';
+import type { Action, Dispatch, GetState } from '../reducers/types';
 import { markCompleted } from './cache';
 import { CACHE_NAMES } from '../reducers/cache';
 
 // eslint-disable-next-line import/prefer-default-export
-export const sendMail = (to: string, subject: string, text: string) => ({
+export const sendMail = (to: string, subject: string, text: string): Action => ({
   type: SEND_MAIL,
   payload: { to, subject, text },
   meta: { target: MAIN }
@@ -70,7 +70,7 @@ export const sendApplicationNotificationEmail = (
   contactData: ContactData,
   flatOverview: OverviewDataEntry,
   applicationText: string
-) =>
+): Action =>
   sendMail(
     contactData.eMail,
     '[Wohnungsbot] Der Bot hat sich für dich auf eine Wohnung beworben!',

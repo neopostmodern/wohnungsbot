@@ -9,7 +9,7 @@ import type {
   StringBoolean,
   Verdict
 } from '../reducers/data';
-import type { Action, Dispatch } from '../reducers/types';
+import type { Action, Dispatch, ThunkAction } from '../reducers/types';
 import {
   SET_OVERVIEW_DATA,
   REFRESH_VERDICTS,
@@ -56,7 +56,7 @@ function processOverviewDataEntry(
   return processedEntry;
 }
 
-export function getOverviewData() {
+export function getOverviewData(): ThunkAction {
   return async (dispatch: Dispatch) => {
     const electronUtils = new ElectronUtils(
       electronObjects.views.puppet.webContents
@@ -101,7 +101,7 @@ function processFlatData(flatData: RawFlatData): FlatData {
   };
 }
 
-export function getFlatData(): Action {
+export function getFlatData(): ThunkAction {
   return async (dispatch: Dispatch) => {
     const electronUtils = new ElectronUtils(
       electronObjects.views.puppet.webContents
@@ -130,7 +130,7 @@ export function setVerdict(flatId: string, verdict: Verdict): Action {
   };
 }
 
-export function refreshVerdicts(): Action {
+export function refreshVerdicts() {
   return async (dispatch: Dispatch) => {
     dispatch({
       type: REFRESH_VERDICTS,

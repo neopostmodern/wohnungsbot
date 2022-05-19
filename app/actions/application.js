@@ -2,7 +2,7 @@
 
 import type { ApplicationData, cacheStateType } from '../reducers/cache';
 import { CACHE_NAMES } from '../reducers/cache';
-import type { Dispatch, GetState } from '../reducers/types';
+import type { Dispatch, GetState, ThunkAction } from "../reducers/types";
 import { markCompleted } from './cache';
 import { sleep, timeout } from '../utils/async';
 import type { Configuration } from '../reducers/configuration';
@@ -26,7 +26,7 @@ import AbortionSystem, {
 } from '../utils/abortionSystem';
 
 export const generateApplicationTextAndSubmit =
-  (flatId: string) => async (dispatch: Dispatch, getState: GetState) => {
+  (flatId: string): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
     const {
       configuration,
       data
@@ -38,7 +38,7 @@ export const generateApplicationTextAndSubmit =
     const { webContents } = electronObjects.views.puppet;
     const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
-    const pdfPath = await dispatch(printToPDF('puppet', flatId));
+    const pdfPath: string = await dispatch(printToPDF('puppet', flatId));
 
     const { abortableAction: abortablePerformApplication, abort } =
       abortable(performApplication);
@@ -90,7 +90,7 @@ const markApplicationCompleted = async (
   );
 };
 
-export const endApplicationProcess = () => async (dispatch: Dispatch) => {
+export const endApplicationProcess = (): ThunkAction => async (dispatch: Dispatch) => {
   dispatch(returnToSearchPage());
   dispatch(setBotMessage(null));
   dispatch(taskFinished());
@@ -103,7 +103,7 @@ export const endApplicationProcess = () => async (dispatch: Dispatch) => {
 };
 
 export const discardApplicationProcess =
-  (flatOverview: OverviewDataEntry) => async (dispatch: Dispatch) => {
+  (flatOverview: OverviewDataEntry): ThunkAction => async (dispatch: Dispatch) => {
     dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
     await sleep(5000);
     dispatch(popFlatFromQueue(flatOverview.id));

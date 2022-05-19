@@ -1,6 +1,6 @@
 // @flow
 
-import type { Action, Dispatch, GetState } from '../reducers/types';
+import type { Action, Dispatch, GetState, ThunkAction } from '../reducers/types';
 import {
   QUEUE_INVESTIGATE_FLAT,
   SET_BOT_IS_ACTING,
@@ -28,7 +28,7 @@ import type { LoginData } from '../reducers/configuration';
 import { LOGINSTATUS } from '../reducers/configuration';
 import { setConfiguration } from './configuration';
 
-export function queueInvestigateFlat(flatId: string): Action {
+export function queueInvestigateFlat(flatId: string): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { cache } = getState();
     if (cache.applications[flatId]) {
@@ -168,7 +168,7 @@ export function logout(): Action {
   };
 }
 
-export function setLoginStatus(loginStatus: LOGINSTATUS): Action {
+export function setLoginStatus(loginStatus: $Values<typeof LOGINSTATUS>): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { configuration } = getState();
     configuration.immobilienScout24.status = loginStatus;

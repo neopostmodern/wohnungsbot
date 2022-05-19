@@ -168,7 +168,7 @@ const dataDefaultState: dataStateType = {
 export default function data(
   state: dataStateType = dataDefaultState,
   action: Action
-) {
+): dataStateType {
   if (action.type === SET_OVERVIEW_DATA) {
     return { ...state, overview: action.payload.data };
   }

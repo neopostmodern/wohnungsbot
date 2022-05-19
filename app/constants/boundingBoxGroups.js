@@ -1,3 +1,5 @@
+// @flow
+
 const BOUNDING_BOX_GROUPS = {
   OVERVIEW: 'OVERVIEW'
 };
