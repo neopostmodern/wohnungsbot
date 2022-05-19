@@ -23,7 +23,7 @@ import {
   generateApplicationTextAndSubmit
 } from '../actions/application';
 import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
-import ElectronUtils from '../utils/electronUtils';
+import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import { electronObjects } from '../store/electronObjects';
 
 export default (store: Store) =>
@@ -33,15 +33,10 @@ export default (store: Store) =>
       const { puppet } = store.getState().electron.views;
       const { webContents: puppetWebContents } = electronObjects.views.puppet;
 
-      // hide cookie pop-up
-      await puppetWebContents.insertCSS(`
-      body > div:first-child:not(.page-wrapper) {
-        display: none !important;
-      }
-    `);
+      const electronUtils = new ElectronUtilsRedux(puppetWebContents, store.dispatch);
       await sleep(5000);
 
-      const electronUtils = new ElectronUtils(puppetWebContents);
+      // handle captcha if prompted
       if (
         (await electronUtils.evaluate('document.title')).includes(
           'Ich bin kein Roboter'
@@ -67,6 +62,22 @@ export default (store: Store) =>
         await sleep(5000);
         await handlePuppetReady();
         return;
+      }
+
+      // handle cookie popup if present
+      const cookiePopupRootSelector = '#usercentrics-root';
+      if (
+        (await electronUtils.elementExists(cookiePopupRootSelector))
+        && (await electronUtils.elementExists('#uc-center-container', cookiePopupRootSelector))
+      ) {
+        store.dispatch(setBotMessage('🍪⁉️'));
+        await sleep(1000);
+        await electronUtils.click('[data-testid="uc-customize-button"]', cookiePopupRootSelector);
+        await sleep(1000);
+        await electronUtils.click('[data-testid="uc-deny-all-button"]', cookiePopupRootSelector);
+        await sleep(500);
+        store.dispatch(setBotMessage('🍪✔️'));
+        await sleep(500);
       }
 
       if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
