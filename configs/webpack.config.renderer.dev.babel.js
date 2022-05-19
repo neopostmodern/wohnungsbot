@@ -13,6 +13,7 @@ import webpack from 'webpack';
 import chalk from 'chalk';
 import { merge } from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import baseConfig from './webpack.config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { styleRules, imageAndFontRules } from './commonRules';
@@ -112,7 +113,9 @@ export default merge(baseConfig, {
 
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
-    })
+    }),
+    
+    new MiniCssExtractPlugin()
   ],
 
   node: {
