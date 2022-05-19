@@ -17,6 +17,7 @@ import {
 } from '../constants/actionTypes';
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
+import { generateSearchUrl } from "../flat/urlBuilder";
 
 export const ConfigurationVersion = 4;
 
@@ -230,7 +231,7 @@ function configurationMigrations(
   }
   if (oldConfiguration.configurationVersion < 4) {
     migratedConfiguration = {
-      ...oldConfiguration,
+      ...migratedConfiguration,
       immobilienScout24: {
         useAccount: false,
         userName: '',
@@ -239,6 +240,14 @@ function configurationMigrations(
       }
     };
   }
+
+  // always re-generate search URL at startup (in case the generation function changed, such as after bug #79)
+  migratedConfiguration = dotProp.set(
+    migratedConfiguration,
+    'searchUrl',
+    generateSearchUrl(migratedConfiguration)
+  )
+
   return dotProp.set(
     migratedConfiguration,
     'configurationVersion',

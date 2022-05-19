@@ -42,9 +42,9 @@ export function generateSearchUrl(configuration: Configuration): string {
     configuration.filter.minimumRooms
   )}-${numberToUrlFloatString(
     configuration.filter.maximumRooms
-  )}&livingspace=${numberToUrlFloatString(
+  )}${configuration.filter.minimumArea ? `&livingspace=${numberToUrlFloatString(
     configuration.filter.minimumArea
-  )}&pricetype=rentpermonth&price=-${numberToUrlFloatString(
+  )}-` : ''}&pricetype=rentpermonth&price=-${numberToUrlFloatString(
     configuration.filter.maximumRent
   )}`;
 
@@ -55,9 +55,6 @@ export function generateSearchUrl(configuration: Configuration): string {
         .map((district) => district.geoNodeId.toString())
         .join(',');
   }
-
-  // sort by date listed
-  searchUrl += '&sorting=2';
 
   return searchUrl;
 }
