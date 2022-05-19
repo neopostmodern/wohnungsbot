@@ -1,7 +1,7 @@
 // @flow
 
 import type { WebContents } from 'electron';
-import type { Action, Dispatch, ThunkAction } from "../reducers/types";
+import type { Action, Dispatch, ThunkAction } from '../reducers/types';
 import { sleep } from '../utils/async';
 import {
   WILL_CLICK,
@@ -43,11 +43,15 @@ export function clickAction(
     webContents.zoomFactor = 1.0;
 
     const boundingRect = await new ElectronUtils(webContents).getBoundingBox(
-      selector, 
+      selector,
       shadowRootSelector
     );
     if (!boundingRect) {
-      console.error(`[Click] No bounding box for this element: '${selector}' ${shadowRootSelector ? `[shadow-root: '${shadowRootSelector}']` : ''}`);
+      console.error(
+        `[Click] No bounding box for this element: '${selector}' ${
+          shadowRootSelector ? `[shadow-root: '${shadowRootSelector}']` : ''
+        }`
+      );
       await sleep(500);
       return;
     }
@@ -148,7 +152,10 @@ export async function scrollIntoView(
   /* eslint-disable no-await-in-loop */
   while (AbortionSystem.nestedFunctionsMayContinue) {
     await electronUtils.evaluate(
-      `${ElectronUtils.generateSelector(selector, shadowRootSelector)}.scrollIntoView({ behavior: ${
+      `${ElectronUtils.generateSelector(
+        selector,
+        shadowRootSelector
+      )}.scrollIntoView({ behavior: ${
         smooth ? "'smooth'" : "'auto'"
       }, block: '${strategy}'})`
     );
@@ -207,7 +214,11 @@ export async function scrollIntoViewByPolicy(
     return;
   }
 
-  if (!(await new ElectronUtils(webContents).isElementInViewport(selector, { shadowRootSelector }))) {
+  if (
+    !(await new ElectronUtils(webContents).isElementInViewport(selector, {
+      shadowRootSelector
+    }))
+  ) {
     await scrollIntoView(webContents, selector, {
       strategy: overrideStrategy || 'nearest',
       elementExistenceGuaranteed,

@@ -1,6 +1,11 @@
 // @flow
 
-import type { Action, Dispatch, GetState, ThunkAction } from '../reducers/types';
+import type {
+  Action,
+  Dispatch,
+  GetState,
+  ThunkAction
+} from '../reducers/types';
 import {
   QUEUE_INVESTIGATE_FLAT,
   SET_BOT_IS_ACTING,
@@ -168,7 +173,9 @@ export function logout(): Action {
   };
 }
 
-export function setLoginStatus(loginStatus: $Values<typeof LOGINSTATUS>): ThunkAction {
+export function setLoginStatus(
+  loginStatus: $Values<typeof LOGINSTATUS>
+): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { configuration } = getState();
     configuration.immobilienScout24.status = loginStatus;

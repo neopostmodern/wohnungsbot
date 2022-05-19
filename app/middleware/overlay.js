@@ -62,13 +62,10 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
               const selector = entrySelector(entry.id);
 
               if (
-                !(await electronUtils.isElementInViewport(
-                  selector,
-                  {
-                    mustIncludeBottom: false,
-                    mustIncludeTop: false
-                  }
-                ))
+                !(await electronUtils.isElementInViewport(selector, {
+                  mustIncludeBottom: false,
+                  mustIncludeTop: false
+                }))
               ) {
                 return null;
               }

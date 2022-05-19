@@ -11,7 +11,11 @@ import { markCompleted } from './cache';
 import { CACHE_NAMES } from '../reducers/cache';
 
 // eslint-disable-next-line import/prefer-default-export
-export const sendMail = (to: string, subject: string, text: string): Action => ({
+export const sendMail = (
+  to: string,
+  subject: string,
+  text: string
+): Action => ({
   type: SEND_MAIL,
   payload: { to, subject, text },
   meta: { target: MAIN }
@@ -79,7 +83,7 @@ export const sendApplicationNotificationEmail = (
 der Bot hat gerade eine Wohnung ${generateInPlaceDescription(
       flatOverview.address
     )} für dich angeschrieben!
-      
+
 Am besten tust du jetzt nichts. Warte erstmal ob du angeschrieben wirst für eine Besichtigung.
 
 Dann kannst du dir hier die Wohnung anschauen: ${flatPageUrl(flatOverview.id)}

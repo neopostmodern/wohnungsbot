@@ -2,7 +2,7 @@
 
 import type { ApplicationData, cacheStateType } from '../reducers/cache';
 import { CACHE_NAMES } from '../reducers/cache';
-import type { Dispatch, GetState, ThunkAction } from "../reducers/types";
+import type { Dispatch, GetState, ThunkAction } from '../reducers/types';
 import { markCompleted } from './cache';
 import { sleep, timeout } from '../utils/async';
 import type { Configuration } from '../reducers/configuration';
@@ -26,7 +26,8 @@ import AbortionSystem, {
 } from '../utils/abortionSystem';
 
 export const generateApplicationTextAndSubmit =
-  (flatId: string): ThunkAction => async (dispatch: Dispatch, getState: GetState) => {
+  (flatId: string): ThunkAction =>
+  async (dispatch: Dispatch, getState: GetState) => {
     const {
       configuration,
       data
@@ -90,20 +91,22 @@ const markApplicationCompleted = async (
   );
 };
 
-export const endApplicationProcess = (): ThunkAction => async (dispatch: Dispatch) => {
-  dispatch(returnToSearchPage());
-  dispatch(setBotMessage(null));
-  dispatch(taskFinished());
+export const endApplicationProcess =
+  (): ThunkAction => async (dispatch: Dispatch) => {
+    dispatch(returnToSearchPage());
+    dispatch(setBotMessage(null));
+    dispatch(taskFinished());
 
-  await sleep(5000);
+    await sleep(5000);
 
-  // this kicks of next queued action, if any (?? — shouldn't this be caused by the page load caused in by `returnToSearchPage`)
-  dispatch(setBotIsActing(false));
-  dispatch(setShowOverlay(true));
-};
+    // this kicks of next queued action, if any (?? — shouldn't this be caused by the page load caused in by `returnToSearchPage`)
+    dispatch(setBotIsActing(false));
+    dispatch(setShowOverlay(true));
+  };
 
 export const discardApplicationProcess =
-  (flatOverview: OverviewDataEntry): ThunkAction => async (dispatch: Dispatch) => {
+  (flatOverview: OverviewDataEntry): ThunkAction =>
+  async (dispatch: Dispatch) => {
     dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
     await sleep(5000);
     dispatch(popFlatFromQueue(flatOverview.id));

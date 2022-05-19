@@ -17,7 +17,7 @@ export default class ElectronUtilsRedux extends ElectronUtils {
   }
 
   async click(selector: string, shadowRootSelector?: string) {
-    await this.dispatch(clickAction(selector, { shadowRootSelector }))
+    await this.dispatch(clickAction(selector, { shadowRootSelector }));
   }
 
   async clickAndEnsureFocused(selector: string) {

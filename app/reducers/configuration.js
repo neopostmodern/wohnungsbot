@@ -17,7 +17,7 @@ import {
 } from '../constants/actionTypes';
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
-import { generateSearchUrl } from "../flat/urlBuilder";
+import { generateSearchUrl } from '../flat/urlBuilder';
 
 export const ConfigurationVersion = 4;
 
@@ -246,7 +246,7 @@ function configurationMigrations(
     migratedConfiguration,
     'searchUrl',
     generateSearchUrl(migratedConfiguration)
-  )
+  );
 
   return dotProp.set(
     migratedConfiguration,

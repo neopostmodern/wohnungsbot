@@ -33,7 +33,10 @@ export default (store: Store) =>
       const { puppet } = store.getState().electron.views;
       const { webContents: puppetWebContents } = electronObjects.views.puppet;
 
-      const electronUtils = new ElectronUtilsRedux(puppetWebContents, store.dispatch);
+      const electronUtils = new ElectronUtilsRedux(
+        puppetWebContents,
+        store.dispatch
+      );
       await sleep(5000);
 
       // handle captcha if prompted
@@ -67,14 +70,23 @@ export default (store: Store) =>
       // handle cookie popup if present
       const cookiePopupRootSelector = '#usercentrics-root';
       if (
-        (await electronUtils.elementExists(cookiePopupRootSelector))
-        && (await electronUtils.elementExists('#uc-center-container', cookiePopupRootSelector))
+        (await electronUtils.elementExists(cookiePopupRootSelector)) &&
+        (await electronUtils.elementExists(
+          '#uc-center-container',
+          cookiePopupRootSelector
+        ))
       ) {
         store.dispatch(setBotMessage('🍪⁉️'));
         await sleep(1000);
-        await electronUtils.click('[data-testid="uc-customize-button"]', cookiePopupRootSelector);
+        await electronUtils.click(
+          '[data-testid="uc-customize-button"]',
+          cookiePopupRootSelector
+        );
         await sleep(1000);
-        await electronUtils.click('[data-testid="uc-deny-all-button"]', cookiePopupRootSelector);
+        await electronUtils.click(
+          '[data-testid="uc-deny-all-button"]',
+          cookiePopupRootSelector
+        );
         await sleep(500);
         store.dispatch(setBotMessage('🍪✔️'));
         await sleep(500);

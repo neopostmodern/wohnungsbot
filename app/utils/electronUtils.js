@@ -48,8 +48,15 @@ ${stack
     }
   }
 
-  static generateSelector(selector: string, shadowRootSelector?: string): string {
-    return `document${shadowRootSelector ? `.querySelector('${shadowRootSelector}').shadowRoot` : ''}.querySelector('${selector}')`
+  static generateSelector(
+    selector: string,
+    shadowRootSelector?: string
+  ): string {
+    return `document${
+      shadowRootSelector
+        ? `.querySelector('${shadowRootSelector}').shadowRoot`
+        : ''
+    }.querySelector('${selector}')`;
   }
 
   // returns a selector unique to the first element of passed in selector
@@ -62,8 +69,13 @@ ${stack
     return `#${id}`;
   }
 
-  async elementExists(selector: string, shadowRootSelector?: string): Promise<boolean> {
-    return this.evaluate(`${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`);
+  async elementExists(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<boolean> {
+    return this.evaluate(
+      `${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`
+    );
   }
 
   async getInnerText(selector: string): Promise<string | undefined> {
@@ -125,7 +137,10 @@ ${stack
     }
 
     return (this.evaluate(
-      `JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(selector, shadowRootSelector)}.getBoundingClientRect()))`
+      `JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(
+        selector,
+        shadowRootSelector
+      )}.getBoundingClientRect()))`
       // eslint-disable-next-line flowtype/no-weak-types
     ): any);
   }
@@ -142,7 +157,7 @@ ${stack
       mustIncludeTop = true,
       mustIncludeBottom = false,
       shadowRootSelector
-    } : {
+    }: {
       mustIncludeTop?: boolean,
       mustIncludeBottom?: boolean,
       shadowRootSelector?: string
@@ -151,12 +166,17 @@ ${stack
     try {
       if (!(await this.elementExists(selector, shadowRootSelector))) {
         console.log(
-          `isElementInViewport(${selector})${shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''} called on non-existent element`
+          `isElementInViewport(${selector})${
+            shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
+          } called on non-existent element`
         );
         return false;
       }
 
-      const elementBoundingBox = await this.getBoundingBox(selector, shadowRootSelector);
+      const elementBoundingBox = await this.getBoundingBox(
+        selector,
+        shadowRootSelector
+      );
       const viewportSize = await this.getViewportSize();
 
       if (
@@ -177,7 +197,11 @@ ${stack
             elementBoundingBox.bottom < viewportSize.height))
       );
     } catch (error) {
-      console.error(`isElementInViewport(${selector})${shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''} failed.`);
+      console.error(
+        `isElementInViewport(${selector})${
+          shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
+        } failed.`
+      );
       return false;
     }
   }

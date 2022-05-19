@@ -40,11 +40,13 @@ export function generateSearchUrl(configuration: Configuration): string {
 
   searchUrl += `/wohnung-mieten?numberofrooms=${numberToUrlFloatString(
     configuration.filter.minimumRooms
-  )}-${numberToUrlFloatString(
-    configuration.filter.maximumRooms
-  )}${configuration.filter.minimumArea ? `&livingspace=${numberToUrlFloatString(
+  )}-${numberToUrlFloatString(configuration.filter.maximumRooms)}${
     configuration.filter.minimumArea
-  )}-` : ''}&pricetype=rentpermonth&price=-${numberToUrlFloatString(
+      ? `&livingspace=${numberToUrlFloatString(
+          configuration.filter.minimumArea
+        )}-`
+      : ''
+  }&pricetype=rentpermonth&price=-${numberToUrlFloatString(
     configuration.filter.maximumRent
   )}`;
 
