@@ -48,6 +48,10 @@ ${stack
     }
   }
 
+  static generateSelector(selector: string, shadowRootSelector?: string): string {
+    return `document${shadowRootSelector ? `.querySelector('${shadowRootSelector}').shadowRoot` : ''}.querySelector('${selector}')`
+  }
+
   // returns a selector unique to the first element of passed in selector
   async selectorForVisibleElement(selector: string): Promise<string> {
     const id = uniqueId();
@@ -58,8 +62,8 @@ ${stack
     return `#${id}`;
   }
 
-  async elementExists(selector: string): Promise<boolean> {
-    return this.evaluate(`document.querySelector('${selector}') !== null`);
+  async elementExists(selector: string, shadowRootSelector?: string): Promise<boolean> {
+    return this.evaluate(`${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`);
   }
 
   async getInnerText(selector: string): Promise<string | undefined> {
@@ -113,14 +117,15 @@ ${stack
   }
 
   async getBoundingBox(
-    selector: string
+    selector: string,
+    shadowRootSelector?: string
   ): Promise<?(ClientRect & { x: number, y: number })> {
-    if (!(await this.elementExists(selector))) {
+    if (!(await this.elementExists(selector, shadowRootSelector))) {
       return null;
     }
 
     return (this.evaluate(
-      `JSON.parse(JSON.stringify(document.querySelector('${selector}').getBoundingClientRect()))`
+      `JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(selector, shadowRootSelector)}.getBoundingClientRect()))`
       // eslint-disable-next-line flowtype/no-weak-types
     ): any);
   }
@@ -133,18 +138,25 @@ ${stack
 
   async isElementInViewport(
     selector: string,
-    mustIncludeTop: boolean = true,
-    mustIncludeBottom: boolean = false
+    {
+      mustIncludeTop = true,
+      mustIncludeBottom = false,
+      shadowRootSelector
+    } : {
+      mustIncludeTop?: boolean,
+      mustIncludeBottom?: boolean,
+      shadowRootSelector?: string
+    } = {}
   ): Promise<boolean> {
     try {
-      if (!(await this.elementExists(selector))) {
+      if (!(await this.elementExists(selector, shadowRootSelector))) {
         console.log(
-          `isElementInViewport(${selector}) called on non-existent element`
+          `isElementInViewport(${selector})${shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''} called on non-existent element`
         );
         return false;
       }
 
-      const elementBoundingBox = await this.getBoundingBox(selector);
+      const elementBoundingBox = await this.getBoundingBox(selector, shadowRootSelector);
       const viewportSize = await this.getViewportSize();
 
       if (
@@ -165,7 +177,7 @@ ${stack
             elementBoundingBox.bottom < viewportSize.height))
       );
     } catch (error) {
-      console.error(`isElementInViewport(${selector}) failed.`);
+      console.error(`isElementInViewport(${selector})${shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''} failed.`);
       return false;
     }
   }

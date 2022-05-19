@@ -17,10 +17,12 @@ export function clickAction(
   selector: string,
   {
     scrollIntoViewPolicy = 'auto',
-    elementExistenceGuaranteed = true
+    elementExistenceGuaranteed = true,
+    shadowRootSelector
   }: {
-    scrollIntoViewPolicy: ScrollIntoViewPolicy,
-    elementExistenceGuaranteed: boolean
+    scrollIntoViewPolicy?: ScrollIntoViewPolicy,
+    elementExistenceGuaranteed?: boolean,
+    shadowRootSelector?: string
   } = {}
 ): ThunkAction {
   return async (dispatch: Dispatch) => {
@@ -32,7 +34,8 @@ export function clickAction(
 
     await scrollIntoViewByPolicy(webContents, selector, {
       scrollIntoViewPolicy,
-      elementExistenceGuaranteed
+      elementExistenceGuaranteed,
+      shadowRootSelector
     });
 
     // reset zoom factor, just in case someone (accidentally) changed it
@@ -40,10 +43,11 @@ export function clickAction(
     webContents.zoomFactor = 1.0;
 
     const boundingRect = await new ElectronUtils(webContents).getBoundingBox(
-      selector
+      selector, 
+      shadowRootSelector
     );
     if (!boundingRect) {
-      console.error(`[Click] No bounding box for this element: '${selector}'`);
+      console.error(`[Click] No bounding box for this element: '${selector}' ${shadowRootSelector ? `[shadow-root: '${shadowRootSelector}']` : ''}`);
       await sleep(500);
       return;
     }
@@ -109,7 +113,7 @@ export function type(text: string) {
   };
 }
 
-export function pressKey(keyCode: string) {
+export function pressKey(keyCode: string): ThunkAction {
   return async (dispatch: Dispatch) => {
     dispatch(willPressKey(keyCode));
 
@@ -131,18 +135,20 @@ export async function scrollIntoView(
   {
     strategy = 'center',
     smooth = true,
-    elementExistenceGuaranteed = true
+    elementExistenceGuaranteed = true,
+    shadowRootSelector
   }: {
     strategy: ScrollIntoViewStrategy,
     smooth?: boolean,
-    elementExistenceGuaranteed?: boolean
+    elementExistenceGuaranteed?: boolean,
+    shadowRootSelector?: string
   } = {}
 ) {
   const electronUtils = new ElectronUtils(webContents);
   /* eslint-disable no-await-in-loop */
   while (AbortionSystem.nestedFunctionsMayContinue) {
     await electronUtils.evaluate(
-      `document.querySelector('${selector}').scrollIntoView({ behavior: ${
+      `${ElectronUtils.generateSelector(selector, shadowRootSelector)}.scrollIntoView({ behavior: ${
         smooth ? "'smooth'" : "'auto'"
       }, block: '${strategy}'})`
     );
@@ -179,11 +185,13 @@ export async function scrollIntoViewByPolicy(
   {
     scrollIntoViewPolicy = 'auto',
     overrideStrategy,
-    elementExistenceGuaranteed = true
+    elementExistenceGuaranteed = true,
+    shadowRootSelector
   }: {
     scrollIntoViewPolicy?: ScrollIntoViewPolicy,
     overrideStrategy?: ScrollIntoViewStrategy,
-    elementExistenceGuaranteed?: boolean
+    elementExistenceGuaranteed?: boolean,
+    shadowRootSelector?: string
   } = {}
 ) {
   if (scrollIntoViewPolicy === 'none') {
@@ -193,15 +201,17 @@ export async function scrollIntoViewByPolicy(
   if (scrollIntoViewPolicy === 'always') {
     await scrollIntoView(webContents, selector, {
       strategy: overrideStrategy || 'center',
-      elementExistenceGuaranteed
+      elementExistenceGuaranteed,
+      shadowRootSelector
     });
     return;
   }
 
-  if (!(await new ElectronUtils(webContents).isElementInViewport(selector))) {
+  if (!(await new ElectronUtils(webContents).isElementInViewport(selector, { shadowRootSelector }))) {
     await scrollIntoView(webContents, selector, {
       strategy: overrideStrategy || 'nearest',
-      elementExistenceGuaranteed
+      elementExistenceGuaranteed,
+      shadowRootSelector
     });
   }
 }

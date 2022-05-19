@@ -16,6 +16,10 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     this.dispatch = dispatch;
   }
 
+  async click(selector: string, shadowRootSelector?: string) {
+    await this.dispatch(clickAction(selector, { shadowRootSelector }))
+  }
+
   async clickAndEnsureFocused(selector: string) {
     /* eslint-disable no-await-in-loop */
     while (!(await this.isElementSelected(selector))) {
