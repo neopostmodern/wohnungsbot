@@ -73,10 +73,33 @@
       "app/preload.js",
       "package.json"
     ],
-    "afterAllArtifactBuild": "./internals/build/repackage-macos.js",
     "mac": {
-      "target": [
-        "tar.gz"
+      "target": {
+        "target": "default",
+        "arch": [
+          "arm64",
+          "x64"
+        ]
+      },
+      "type": "distribution",
+      "hardenedRuntime": true,
+      "entitlements": "internals/build/entitlements.mac.plist",
+      "entitlementsInherit": "internals/build/entitlements.mac.plist",
+      "gatekeeperAssess": false,
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
       ]
     },
     "win": {
