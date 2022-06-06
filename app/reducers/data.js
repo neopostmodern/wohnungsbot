@@ -98,7 +98,8 @@ export type OverviewDataEntry = {|
   builtInKitchen: boolean,
   rent: number,
   area: number,
-  isPartOfProject: boolean
+  isPartOfProject: boolean,
+  hasAlreadyApplied: boolean
 |};
 
 export type RawFlatData = {
