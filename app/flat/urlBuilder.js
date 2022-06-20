@@ -58,7 +58,7 @@ export function generateSearchUrl(configuration: Configuration): string {
         .join(',');
   }
 
-  if(configuration.filter.noSwapApartment) {
+  if (configuration.filter.noSwapApartment) {
     searchUrl += '&exclusioncriteria=swapflat';
   }
 
