@@ -19,11 +19,11 @@ export function assessFlat(
 
   const reasons = [];
 
-  if(overviewDataEntry.hasAlreadyApplied) {
+  if (overviewDataEntry.hasAlreadyApplied) {
     reasons.push({
       reason: 'Bereits beworben',
       result: false
-    })
+    });
   }
 
   if (overviewDataEntry.isPartOfProject) {
