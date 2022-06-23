@@ -47,7 +47,8 @@ function processOverviewDataEntry(
     area: parseFloat(realEstate.livingSpace),
     balcony: parseBoolean(realEstate.balcony),
     builtInKitchen: parseBoolean(realEstate.builtInKitchen),
-    isPartOfProject: Boolean(entry.project)
+    isPartOfProject: Boolean(entry.project),
+    hasAlreadyApplied: Boolean(entry.alreadyApplied)
   };
   if (realEstate.address.preciseHouseNumber) {
     processedEntry.address.houseNumber = ((realEstate.address
@@ -69,10 +70,15 @@ export function getOverviewData(): ThunkAction {
 
       const data = {};
       if (rawOverviewData) {
-        rawOverviewData.forEach((entry) => {
+        for (let i = 0; i < rawOverviewData.length; i++) {
+          let entry = rawOverviewData[i];
+          let hasApplied = await electronUtils.evaluate(
+            `document.querySelector('[data-id="${entry['@id']}"]').getElementsByClassName("shortlist-star--shortlisted").length > 0`
+          );
+          entry['alreadyApplied'] = hasApplied;
           const processedEntry = processOverviewDataEntry(entry);
           data[processedEntry.id] = processedEntry;
-        });
+        }
       }
 
       dispatch({
