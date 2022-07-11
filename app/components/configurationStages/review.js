@@ -214,6 +214,19 @@ const reviewStage: StageDescription = {
           {/* )} */}
           {/* anonymen Daten zur Wohnungsnot sammeln */}
           <br />
+          <br />
+          {configuration.experimentalFeatures.sortByNewest ? (
+            <>
+              folgende experimentelle Fähigkeiten verwenden:
+              <>
+                <div>- Wohnungen sortieren nach "Neueste zuerst"</div>
+              </>
+            </>
+          ) : (
+            <>
+              <em>keine</em> experimentellen Fähigkeiten verwenden
+            </>
+          )}
         </div>
       </div>
       <JsonExport serializableObject={configuration} />

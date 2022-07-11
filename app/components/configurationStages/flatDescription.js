@@ -44,7 +44,8 @@ const flatDescriptionStage: StageDescription = {
         minimumRooms,
         maximumRooms
       },
-      additionalInformation: { moveInWho, animals, moveInWhen }
+      additionalInformation: { moveInWho, animals, moveInWhen },
+      experimentalFeatures: { sortByNewest }
     },
     toggleFloor,
     toggleBoolean,
@@ -258,6 +259,23 @@ const flatDescriptionStage: StageDescription = {
                   .reverse()
                   .map((floor) => floorToName(floor, 4))
                   .join(', ')}
+          </div>
+
+          <h3>Experimentelle Fähigkeiten</h3>
+          <div className={styles.comment}>
+            Folgende Fähigkeiten sind sehr nützlich und können zu den besten
+            Ergebnissen führen. Allerdings stürzt der Bot dabei manchmal ab,
+            deshalb sind diese Fähigkeiten standardmäßig nicht aktiviert.
+          </div>
+          <div className={styles.searchParameter}>
+            <input
+              type="checkbox"
+              checked={sortByNewest}
+              onChange={() =>
+                toggleBoolean('experimentalFeatures.sortByNewest')
+              }
+            />{' '}
+            Wohnungen nach "Neueste zuerst" sortieren
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 import { generateSearchUrl } from '../flat/urlBuilder';
 
-export const ConfigurationVersion = 4;
+export const ConfigurationVersion = 5;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -138,6 +138,10 @@ export type AdditionalInformation = {|
   hasDocumentsReady: boolean
 |};
 
+export type ExperimentalFeatures = {|
+  sortByNewest: boolean
+|};
+
 export type Configuration = {|
   stage: number,
   loaded: boolean,
@@ -148,7 +152,8 @@ export type Configuration = {|
   immobilienScout24: LoginData,
   additionalInformation: AdditionalInformation,
   policies: DataPolicies,
-  configurationVersion: number
+  configurationVersion: number,
+  experimentalFeatures: ExperimentalFeatures
 |};
 
 export const getConfigurationFilterHash = (
@@ -206,6 +211,9 @@ const defaultConfiguration: Configuration = {
     applicationNotificationMails: false,
     fillAsLittleAsPossible: false
   },
+  experimentalFeatures: {
+    sortByNewest: false
+  },
   configurationVersion: ConfigurationVersion
 };
 
@@ -237,6 +245,15 @@ function configurationMigrations(
         userName: '',
         password: '',
         status: LOGINSTATUS.LOGGED_OUT
+      }
+    };
+  }
+
+  if (oldConfiguration.configurationVersion < 5) {
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      experimentalFeatures: {
+        sortByNewest: false
       }
     };
   }

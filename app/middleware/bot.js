@@ -93,7 +93,13 @@ export default (store: Store) =>
       }
 
       if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
-        if (!puppet.url.includes('sorting=2')) {
+        const {
+          configuration: { experimentalFeatures }
+        } = store.getState();
+        if (
+          experimentalFeatures.sortByNewest &&
+          !puppet.url.includes('sorting=2')
+        ) {
           store.dispatch(setBotMessage('Sortierung ändern...️'));
           setImmediate(async () => {
             await electronUtils.evaluate(
