@@ -93,10 +93,17 @@ export default (store: Store) =>
       }
 
       if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
-        if(!puppet.url.includes("sorting=2")) {
-          setImmediate(async() => {
-            await electronUtils.evaluate("windows.location=window.location + '&sorting=2'");
+        if (!puppet.url.includes('sorting=2')) {
+          store.dispatch(setBotMessage('Sortierung ändern...️'));
+          setImmediate(async () => {
+            await electronUtils.evaluate(
+              "window.location = window.location + '&sorting=2'"
+            );
           });
+          await sleep(2000);
+          store.dispatch(setBotMessage(null));
+          await handlePuppetReady();
+          return;
         }
         setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
         setTimeout(
