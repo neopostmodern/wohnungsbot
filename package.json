@@ -27,7 +27,6 @@
     "lint-styles-fix": "npm run-script --silent lint-styles --fix; exit 0",
     "package-all": "npm run-script build && electron-builder build -mwl",
     "package-linux": "npm run-script build && electron-builder build --linux --x64",
-    "package-linux-32": "npm run-script build && electron-builder build --linux --ia32",
     "package-linux-arm": "npm run-script build && electron-builder build --linux --armv7l",
     "package-win": "npm run-script build && electron-builder build --win",
     "package-macos": "npm run-script build && electron-builder build --mac",
@@ -117,7 +116,6 @@
         {
           "target": "AppImage",
           "arch": [
-            "ia32",
             "x64",
             "armv7l"
           ]

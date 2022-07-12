@@ -13,6 +13,12 @@ Der Wohnungsbot kann an sich für für `ia32` auf Windows gebaut werden. Standar
 
 Es selbst zu bauen ist aber einfach, mehr dazu im Abschnitt [Build and package](#build-and-package).
 
+### 32-bit Version für Linux
+Offiziell unterstützt Electron [seit 4.0 keine 32-bit Linux Systeme mehr](https://www.electronjs.org/blog/linux-32bit-support),
+aber bis inklusive Wohnungsbot 1.5 (Electron 18) hat es ohne Probleme funktioniert.  
+Ab Wohnungsbot 1.6 (Electron 19) gibt es keine 32-bit Linux builds mehr – entweder ihr findet heraus,
+wie man es dennoch bauen kann, oder ihr verwendet [den Wohnungsbot 1.5](https://github.com/neopostmodern/wohnungsbot/releases/tag/v1.5.0).
+
 ## Verweise
 - Der Code für die Karte basiert auf [einem schönen Projekt](https://interaktiv.morgenpost.de/mietkarte-berlin/) des Tagesspiegels,
 [Code auf Github](https://github.com/funkeinteraktiv/mietkarte)
