@@ -100,6 +100,7 @@ export type ContactData = {|
 
 export type DataPolicies = {|
   flatViewingNotificationMails: boolean,
+  autostart: boolean,
   researchDataSharing: boolean,
   artConsent: boolean,
   applicationNotificationMails: boolean,
@@ -212,6 +213,7 @@ const defaultConfiguration: Configuration = {
   },
   policies: {
     flatViewingNotificationMails: false,
+    autostart: false,
     researchDataSharing: false,
     artConsent: false,
     applicationNotificationMails: false,

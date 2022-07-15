@@ -29,7 +29,7 @@ type Props = {
 
 export default class Configuration extends Component<Props> {
   props: Props;
-
+  firstStart: Boolean;
   constructor() {
     super();
 
@@ -42,6 +42,8 @@ export default class Configuration extends Component<Props> {
   componentDidMount() {
     // $FlowFixMe - flow thinks document.body could be undefined
     document.body.addEventListener('keydown', this.handleKeyDown);
+    // Indicates lifecycle start. Needed so that configuration doesn't autohide anytime it's visible
+    this.firstStart = true;
   }
 
   componentWillUnmount() {
@@ -125,11 +127,15 @@ export default class Configuration extends Component<Props> {
   }
 
   render() {
-    const { previousStage, configuration } = this.props;
-
+    const { previousStage, configuration, hideConfiguration} = this.props;
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
 
+    if(configuration.policies.autostart && this.firstStart) {
+      hideConfiguration();
+    }
+    //Prevent configuration hiding after checkbox is checked
+    this.firstStart = false;
     return (
       <div
         className={`${styles.wrapper} ${
