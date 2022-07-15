@@ -11,10 +11,7 @@ const reviewStage: StageDescription = {
   },
   title: 'Bereit für die Wohnungssuche?',
   subtitle: 'Überprüfe deine Suchprofil und dann kann es los gehen.',
-  body: ({ 
-    configuration,
-    toggleBoolean 
-  }: InheritedProps) => (
+  body: ({ configuration, toggleBoolean }: InheritedProps) => (
     <div className={styles.marginBottom}>
       <div className={styles.announcement}>
         <h3>Wichtige Hinweise</h3>
@@ -30,9 +27,12 @@ const reviewStage: StageDescription = {
         arbeiten lassen.
       </div>
       <br />
-      <input type={'checkbox'} 
-        checked={configuration.policies.autostart} 
-        onChange={() => toggleBoolean('policies.autostart')}/> Beim nächsten Start automatisch anfangen zu suchen
+      <input
+        type={'checkbox'}
+        checked={configuration.policies.autostart}
+        onChange={() => toggleBoolean('policies.autostart')}
+      />{' '}
+      Beim nächsten Start automatisch anfangen zu suchen
       <br />
       <br />
       <div className={styles.row}>

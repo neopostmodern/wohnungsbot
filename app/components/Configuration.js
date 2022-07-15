@@ -127,11 +127,11 @@ export default class Configuration extends Component<Props> {
   }
 
   render() {
-    const { previousStage, configuration, hideConfiguration} = this.props;
+    const { previousStage, configuration, hideConfiguration } = this.props;
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
 
-    if(configuration.policies.autostart && this.firstStart) {
+    if (configuration.policies.autostart && this.firstStart) {
       hideConfiguration();
     }
     //Prevent configuration hiding after checkbox is checked
