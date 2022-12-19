@@ -4,7 +4,7 @@ Der Wohnungsbot ist Teil der Ausstellung *Von einem der auszog eine Wohnung in B
 
 ## Info
 [Website](https://wohnungsbot.de/)  
-[Ausstellungsansichten (vorläufig)](https://bericht.neopostmodern.com/portfolio/von-einem-der-auszog-eine-wohnung-in-berlin-zu-finden-2-akt)  
+[Ausstellungsansichten (vorläufig)](https://neopostmodern.com/portfolio/von-einem-der-auszog-eine-wohnung-in-berlin-zu-finden-2-akt)  
 [Artikel bei *Tagesspiegel Leute*](https://leute.tagesspiegel.de/neukoelln/unter-nachbarn/2019/09/11/95231/)
 
 ## Hinweise
