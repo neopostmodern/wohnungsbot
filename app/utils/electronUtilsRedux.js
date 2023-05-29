@@ -31,22 +31,24 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     /* eslint-enable no-await-in-loop */
   }
 
-  async humanInteraction(isHumanActionStillNeeded: () => Promise<boolean>, delayBeforeFirstDoneCheckMillis: number = 10_000) {
+  async humanInteraction(isHumanActionStillNeeded: () => Promise<boolean>, delayBeforeFirstDoneCheckMillis: number = 3_000) {
+    await sleep(delayBeforeFirstDoneCheckMillis);
+    if (!(await isHumanActionStillNeeded())) {
+      return;
+    }
+
     this.dispatch(setBotMessage('Mensch! Du bist dran.'));
-    this.dispatch(setBotIsActing(false));
 
     if (!this.webContents.isFocused()) {
       this.webContents.focus();
     }
     this.dispatch(setInteractiveMode(true));
 
-    await sleep(delayBeforeFirstDoneCheckMillis);
     while (await isHumanActionStillNeeded()) {
       await sleep(1000);
     }
     this.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
     this.dispatch(setInteractiveMode(false));
-    this.dispatch(setBotIsActing(true));
   }
 
   async fillText(selector: string, text: string, secondTry: boolean = false) {
