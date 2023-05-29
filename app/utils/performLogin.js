@@ -64,6 +64,8 @@ export default function* performLogin(
       // TODO: need's some kind of error recovery.
     }
 
+    yield sleep(5000);
+
     yield electronUtils.humanInteraction(async () => {
       const exists = await electronUtils.elementExists('.mfa-verify');
       return exists;
