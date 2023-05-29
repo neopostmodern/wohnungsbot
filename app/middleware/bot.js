@@ -45,22 +45,11 @@ export default (store: Store) =>
           'Ich bin kein Roboter'
         )
       ) {
-        store.dispatch(setBotMessage('Mensch! Du bist dran.'));
-
-        if (!puppetWebContents.isFocused()) {
-          puppetWebContents.focus();
-        }
-        store.dispatch(setInteractiveMode(true));
-
-        while (
-          (await electronUtils.evaluate('document.title')).includes(
+        await electronUtils.humanInteraction(async () => {
+          return (await electronUtils.evaluate('document.title')).includes(
             'Ich bin kein Roboter'
           )
-        ) {
-          await sleep(1000);
-        }
-        store.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
-        store.dispatch(setInteractiveMode(false));
+        });
 
         await sleep(5000);
         await handlePuppetReady();
