@@ -3,6 +3,7 @@
 import { type WebContents } from 'electron';
 import { uniqueId } from './random';
 import { sleep } from './async';
+import {delay} from "electron-notarize/lib/helpers";
 
 export type ViewportSize = { height: number, width: number };
 
@@ -76,6 +77,12 @@ ${stack
     return this.evaluate(
       `${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`
     );
+  }
+
+  async awaitElementExists(selector: string, shadowRootSelector?: string): Promise<void> {
+    while (!await this.elementExists(selector, shadowRootSelector)) {
+      await delay(1000)
+    }
   }
 
   async getInnerText(selector: string): Promise<string | undefined> {
