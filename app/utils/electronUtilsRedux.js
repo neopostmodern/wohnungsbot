@@ -32,7 +32,7 @@ export default class ElectronUtilsRedux extends ElectronUtils {
   }
 
   async humanInteraction(isHumanActionStillNeeded: () => Promise<boolean>, delayBeforeFirstDoneCheckMillis: number = 10_000) {
-    this.dispatch(setBotMessage('Mensch! Du bist dran.', delayBeforeFirstDoneCheckMillis));
+    this.dispatch(setBotMessage('Mensch! Du bist dran.'));
     this.dispatch(setBotIsActing(false));
 
     if (!this.webContents.isFocused()) {
