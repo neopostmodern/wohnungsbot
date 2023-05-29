@@ -21,7 +21,7 @@ export default function* performLogin(
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
   // Check again if user is logged in
-  if (yield electronUtils.elementExists('.sso-login--logged-in')) {
+  if (yield electronUtils.elementExists('.topnavigation__sso-login--logged-out')) {
     dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
     dispatch(setBotMessage('Bereits eingeloggt', 4000));
   } else {

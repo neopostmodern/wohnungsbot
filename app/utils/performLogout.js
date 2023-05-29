@@ -17,7 +17,7 @@ export default function* performLogout(
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
   // Logout
-  if (yield electronUtils.elementExists('.sso-login--logged-in')) {
+  if (yield electronUtils.elementExists('.topnavigation__sso-login--logged-in')) {
     dispatch(setBotMessage('Abmelden'));
     yield sleep(1000);
 
