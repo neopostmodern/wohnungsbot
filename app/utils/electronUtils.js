@@ -78,6 +78,15 @@ ${stack
     );
   }
 
+  async awaitElementExists(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<void> {
+    while (!(await this.elementExists(selector, shadowRootSelector))) {
+      await sleep(1000);
+    }
+  }
+
   async getInnerText(selector: string): Promise<string | undefined> {
     return this.evaluate(`document.querySelector('${selector}')?.innerText`);
   }

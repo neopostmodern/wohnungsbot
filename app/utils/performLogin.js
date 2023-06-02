@@ -7,12 +7,14 @@ import { clickAction } from '../actions/botHelpers';
 import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
 import type { Configuration } from '../reducers/configuration';
-import type ElectronUtils from './electronUtils';
 import { LOGINSTATUS } from '../reducers/configuration';
+import { electronRouting } from '../actions/electron';
+import ElectronUtilsRedux from './electronUtilsRedux';
+import { timeout } from './async';
 
 export default function* performLogin(
   dispatch: Dispatch,
-  electronUtils: ElectronUtils,
+  electronUtils: ElectronUtilsRedux,
   configuration: Configuration
 ) {
   yield sleep(1000);
@@ -26,16 +28,15 @@ export default function* performLogin(
     dispatch(setBotMessage('Bereits eingeloggt', 4000));
   } else {
     dispatch(setBotMessage('Anmelden'));
-
-    // Click login button
-    if (yield electronUtils.elementExists('[data-tracked-link="anmelden"]')) {
-      yield dispatch(clickAction('.topnavigation__overlay--account'));
-      yield sleep(1000);
-      yield dispatch(clickAction('[data-tracked-link="anmelden"]'));
-    }
+    yield dispatch(
+      electronRouting(
+        'puppet',
+        'https://www.immobilienscout24.de/geschlossenerbereich/start.html?source=headericon'
+      )
+    );
 
     // Wait for page to load
-    yield sleep(10000);
+    yield timeout(electronUtils.awaitElementExists('#username'), 10000);
 
     // Fill username
     yield electronUtils.fillText(
@@ -65,6 +66,13 @@ export default function* performLogin(
       throw new Error('Anmeldefehler');
       // TODO: need's some kind of error recovery.
     }
+
+    yield sleep(5000);
+
+    yield electronUtils.humanInteraction(async () => {
+      const exists = await electronUtils.elementExists('.mfa-verify');
+      return exists;
+    });
 
     dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
 

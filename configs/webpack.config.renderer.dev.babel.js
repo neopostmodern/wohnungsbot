@@ -114,7 +114,7 @@ export default merge(baseConfig, {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
     }),
-    
+
     new MiniCssExtractPlugin()
   ],
 

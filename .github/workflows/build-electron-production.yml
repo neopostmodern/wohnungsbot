@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     env:
       CONFIG_FILE: config.json
     steps:
@@ -29,7 +29,7 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
-          args: "-p always"
+          args: '-p always'
       - name: Store artifacts
         uses: actions/upload-artifact@v2
         with:

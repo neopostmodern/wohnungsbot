@@ -4,8 +4,10 @@ import type { WebContents } from 'electron';
 import ElectronUtils from './electronUtils';
 import { clickAction, type } from '../actions/botHelpers';
 import { sleep } from './async';
-import type { Dispatch } from '../reducers/types';
+import type { Dispatch, Store } from '../reducers/types';
 import AbortionSystem from './abortionSystem';
+import { setBotIsActing, setBotMessage } from '../actions/bot';
+import { setInteractiveMode } from '../actions/electron';
 
 export default class ElectronUtilsRedux extends ElectronUtils {
   dispatch: Dispatch;
@@ -27,6 +29,29 @@ export default class ElectronUtilsRedux extends ElectronUtils {
       await sleep(800);
     }
     /* eslint-enable no-await-in-loop */
+  }
+
+  async humanInteraction(
+    isHumanActionStillNeeded: () => Promise<boolean>,
+    delayBeforeFirstDoneCheckMillis: number = 3_000
+  ) {
+    await sleep(delayBeforeFirstDoneCheckMillis);
+    if (!(await isHumanActionStillNeeded())) {
+      return;
+    }
+
+    this.dispatch(setBotMessage('Mensch! Du bist dran.'));
+
+    if (!this.webContents.isFocused()) {
+      this.webContents.focus();
+    }
+    this.dispatch(setInteractiveMode(true));
+
+    while (await isHumanActionStillNeeded()) {
+      await sleep(1000);
+    }
+    this.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
+    this.dispatch(setInteractiveMode(false));
   }
 
   async fillText(selector: string, text: string, secondTry: boolean = false) {
