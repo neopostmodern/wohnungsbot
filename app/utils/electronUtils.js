@@ -3,7 +3,6 @@
 import { type WebContents } from 'electron';
 import { uniqueId } from './random';
 import { sleep } from './async';
-import {delay} from "electron-notarize/lib/helpers";
 
 export type ViewportSize = { height: number, width: number };
 
@@ -81,7 +80,7 @@ ${stack
 
   async awaitElementExists(selector: string, shadowRootSelector?: string): Promise<void> {
     while (!await this.elementExists(selector, shadowRootSelector)) {
-      await delay(1000)
+      await sleep(1000)
     }
   }
 
