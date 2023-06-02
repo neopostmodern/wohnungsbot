@@ -8,9 +8,9 @@ import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
 import type { Configuration } from '../reducers/configuration';
 import { LOGINSTATUS } from '../reducers/configuration';
-import {electronRouting} from "../actions/electron";
-import ElectronUtilsRedux from "./electronUtilsRedux";
-import { timeout } from "./async";
+import { electronRouting } from '../actions/electron';
+import ElectronUtilsRedux from './electronUtilsRedux';
+import { timeout } from './async';
 
 export default function* performLogin(
   dispatch: Dispatch,
@@ -29,7 +29,10 @@ export default function* performLogin(
   } else {
     dispatch(setBotMessage('Anmelden'));
     yield dispatch(
-      electronRouting('puppet', 'https://www.immobilienscout24.de/geschlossenerbereich/start.html?source=headericon')
+      electronRouting(
+        'puppet',
+        'https://www.immobilienscout24.de/geschlossenerbereich/start.html?source=headericon'
+      )
     );
 
     // Wait for page to load

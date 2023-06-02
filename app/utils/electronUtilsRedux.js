@@ -4,10 +4,10 @@ import type { WebContents } from 'electron';
 import ElectronUtils from './electronUtils';
 import { clickAction, type } from '../actions/botHelpers';
 import { sleep } from './async';
-import type {Dispatch, Store} from '../reducers/types';
+import type { Dispatch, Store } from '../reducers/types';
 import AbortionSystem from './abortionSystem';
-import {setBotIsActing, setBotMessage} from "../actions/bot";
-import {setInteractiveMode} from "../actions/electron";
+import { setBotIsActing, setBotMessage } from '../actions/bot';
+import { setInteractiveMode } from '../actions/electron';
 
 export default class ElectronUtilsRedux extends ElectronUtils {
   dispatch: Dispatch;
@@ -31,7 +31,10 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     /* eslint-enable no-await-in-loop */
   }
 
-  async humanInteraction(isHumanActionStillNeeded: () => Promise<boolean>, delayBeforeFirstDoneCheckMillis: number = 3_000) {
+  async humanInteraction(
+    isHumanActionStillNeeded: () => Promise<boolean>,
+    delayBeforeFirstDoneCheckMillis: number = 3_000
+  ) {
     await sleep(delayBeforeFirstDoneCheckMillis);
     if (!(await isHumanActionStillNeeded())) {
       return;

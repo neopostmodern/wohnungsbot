@@ -48,7 +48,7 @@ export default (store: Store) =>
         await electronUtils.humanInteraction(async () => {
           return (await electronUtils.evaluate('document.title')).includes(
             'Ich bin kein Roboter'
-          )
+          );
         });
 
         await sleep(5000);

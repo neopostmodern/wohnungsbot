@@ -78,9 +78,12 @@ ${stack
     );
   }
 
-  async awaitElementExists(selector: string, shadowRootSelector?: string): Promise<void> {
-    while (!await this.elementExists(selector, shadowRootSelector)) {
-      await sleep(1000)
+  async awaitElementExists(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<void> {
+    while (!(await this.elementExists(selector, shadowRootSelector))) {
+      await sleep(1000);
     }
   }
 
