@@ -20,9 +20,8 @@ export function generateSearchUrl(configuration: Configuration): string {
     )
   );
 
-  let searchUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin';
-
-  searchUrl += `/wohnung-mieten?numberofrooms=${numberToUrlFloatString(
+  let searchUrl = "https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten" +
+    `?numberofrooms=${numberToUrlFloatString(
     configuration.filter.minimumRooms
   )}-${numberToUrlFloatString(configuration.filter.maximumRooms)}${
     configuration.filter.minimumArea
@@ -32,13 +31,10 @@ export function generateSearchUrl(configuration: Configuration): string {
       : ''
   }&pricetype=rentpermonth&price=-${numberToUrlFloatString(
     configuration.filter.maximumRent
-  )}`;
-
-  searchUrl +=
-    '&geocodes=' +
+  )}&geocodes=${
     overlappingDistricts
       .map((district) => district.geoNodeId.toString())
-      .join(',');
+      .join(',')}`;
 
   if (configuration.filter.noSwapApartment) {
     searchUrl += '&exclusioncriteria=swapflat';
