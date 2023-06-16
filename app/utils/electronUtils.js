@@ -44,7 +44,9 @@ ${stack
   .slice(2)
   .map((line) => line.replace(/\s+/i, ' '))
   .join('\n')}
-`);
+
+Current URL:
+${this.webContents.getURL()}`);
     }
   }
 
