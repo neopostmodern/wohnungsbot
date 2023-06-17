@@ -40,5 +40,9 @@ export function generateSearchUrl(configuration: Configuration): string {
     searchUrl += '&exclusioncriteria=swapflat';
   }
 
+  if (configuration.filter.mustHaveBalcony) {
+    searchUrl += '&equipment=balcony'
+  }
+
   return searchUrl;
 }
