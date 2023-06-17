@@ -42,14 +42,18 @@ export function generateSearchUrl(configuration: Configuration): string {
 
   const equipment = [];
   if (configuration.filter.mustHaveBalcony) {
-    equipment.push('balcony')
+    equipment.push('balcony');
   }
   if (configuration.filter.mustHaveKitchenette) {
-    equipment.push('builtinkitchen')
+    equipment.push('builtinkitchen');
   }
 
   if (equipment.length > 0) {
-    searchUrl += '&equipment=' + equipment.join(',')
+    searchUrl += '&equipment=' + equipment.join(',');
+  }
+
+  if (!configuration.filter.hasWBS) {
+    searchUrl += '&haspromotion=false';
   }
 
   return searchUrl;
