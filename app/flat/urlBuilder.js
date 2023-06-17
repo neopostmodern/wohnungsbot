@@ -40,8 +40,16 @@ export function generateSearchUrl(configuration: Configuration): string {
     searchUrl += '&exclusioncriteria=swapflat';
   }
 
+  const equipment = [];
   if (configuration.filter.mustHaveBalcony) {
-    searchUrl += '&equipment=balcony'
+    equipment.push('balcony')
+  }
+  if (configuration.filter.mustHaveKitchenette) {
+    equipment.push('builtinkitchen')
+  }
+
+  if (equipment.length > 0) {
+    searchUrl += '&equipment=' + equipment.join(',')
   }
 
   return searchUrl;
