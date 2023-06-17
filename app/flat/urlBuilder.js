@@ -20,19 +20,19 @@ export function generateSearchUrl(configuration: Configuration): string {
     )
   );
 
-  let searchUrl = "https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten" +
+  let searchUrl =
+    'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten' +
     `?numberofrooms=${numberToUrlFloatString(
-    configuration.filter.minimumRooms
-  )}-${numberToUrlFloatString(configuration.filter.maximumRooms)}${
-    configuration.filter.minimumArea
-      ? `&livingspace=${numberToUrlFloatString(
-          configuration.filter.minimumArea
-        )}-`
-      : ''
-  }&pricetype=rentpermonth&price=-${numberToUrlFloatString(
-    configuration.filter.maximumRent
-  )}&geocodes=${
-    overlappingDistricts
+      configuration.filter.minimumRooms
+    )}-${numberToUrlFloatString(configuration.filter.maximumRooms)}${
+      configuration.filter.minimumArea
+        ? `&livingspace=${numberToUrlFloatString(
+            configuration.filter.minimumArea
+          )}-`
+        : ''
+    }&pricetype=rentpermonth&price=-${numberToUrlFloatString(
+      configuration.filter.maximumRent
+    )}&geocodes=${overlappingDistricts
       .map((district) => district.geoNodeId.toString())
       .join(',')}`;
 
