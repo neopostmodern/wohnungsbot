@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '../Configuration.scss';
-import { EMPLOYMENT_STATUS, SALUTATIONS } from '../../reducers/configuration';
+import { EMPLOYMENT_STATUS, SALUTATIONS, USEACCOUNT } from '../../reducers/configuration';
 import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
 import Disclaimer from './disclaimer';
@@ -124,11 +124,14 @@ const personalDataStage: StageDescription = {
             Möchtest du dich mit deinem ImmobilienScout24-Account anmelden?
           </h3>
           <div className={styles.searchParameter}>
-            <YesNo
+            <EnumField
+              options={USEACCOUNT}
               value={useAccount}
-              onChange={() => toggleBoolean('immobilienScout24.useAccount')}
+              onChange={(value) =>
+                setString('immobilienScout24.useAccount', value)
+              }
             />
-            {useAccount && (
+            {useAccount == USEACCOUNT.JA && (
               <>
                 <TextField
                   type="email"
@@ -155,6 +158,8 @@ const personalDataStage: StageDescription = {
             <div className={styles.comment}>
               Falls du einen ImmobilienScout24-Account hast, kannst du diesen
               hier angeben und der Bot meldet sich für dich an.
+              <br />
+              Bei manueller Anmeldung gibst du deine Daten selbst ein, oder kannst den Google und Facebook login nutzen.
               <br />
               Derzeit funktioniert der Bot ausschließlich für ImmobilienScout24.
             </div>

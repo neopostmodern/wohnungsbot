@@ -67,6 +67,12 @@ export const SALUTATIONS = {
 };
 export type Salutation = $Values<typeof SALUTATIONS>;
 
+export const USEACCOUNT = {
+  JA: 'Ja',
+  MANUELL: 'Manuell',
+  NEIN: 'Nein'
+};
+
 export const LOGINSTATUS = {
   LOGGED_IN: 'LOGGED_IN',
   LOGGED_OUT: 'LOGGED_OUT',
@@ -74,7 +80,7 @@ export const LOGINSTATUS = {
 };
 
 export type LoginData = {|
-  useAccount: boolean,
+  useAccount: $Values<typeof USEACCOUNT>,
   userName: string,
   password: string,
   status: $Values<typeof LOGINSTATUS>
@@ -181,7 +187,7 @@ const defaultConfiguration: Configuration = {
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   immobilienScout24: {
-    useAccount: false,
+    useAccount: USEACCOUNT.NEIN,
     userName: '',
     password: '',
     status: LOGINSTATUS.LOGGED_OUT
