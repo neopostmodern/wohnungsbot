@@ -40,7 +40,7 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       if (store.getState().bot.message === action.payload.message) {
         store.dispatch(setBotMessage(null));
       }
-    });
+    }, action.payload.timeout);
   }
 
   // todo: invalidate / remove boundaries on URL change etc.
