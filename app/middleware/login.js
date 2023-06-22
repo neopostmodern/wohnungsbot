@@ -22,15 +22,15 @@ export default (store: Store) =>
           immobilienScout24: { useAccount }
         }
       } = store.getState();
+      await store.dispatch(setBotIsActing(false));
+      await store.dispatch(
+        electronRouting('puppet', 'https://www.immobilienscout24.de/')
+      );
+      await sleep(4000);
+      const { webContents } = electronObjects.views.puppet;
+      const electronUtils = new ElectronUtilsRedux(webContents, store.dispatch);
 
       if (action.type === LOGOUT || useAccount === USEACCOUNT.NEIN) {
-        await store.dispatch(setBotIsActing(false));
-        await store.dispatch(
-          electronRouting('puppet', 'https://www.immobilienscout24.de/')
-        );
-        await sleep(4000);
-        const { webContents } = electronObjects.views.puppet;
-        const electronUtils = new ElectronUtilsRedux(webContents, store.dispatch);
         const { abortableAction: abortablePerformLogout, abort } =
           abortable(performLogout);
         AbortionSystem.registerAbort(abort);
@@ -49,18 +49,7 @@ export default (store: Store) =>
           AbortionSystem.abort(ABORTION_ERROR);
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
-        await sleep(2000);
       } else if (useAccount == USEACCOUNT.JA) {
-        await store.dispatch(setBotIsActing(false));
-        await store.dispatch(
-          electronRouting('puppet', 'https://www.immobilienscout24.de/')
-        );
-        await sleep(4000);
-        const { webContents } = electronObjects.views.puppet;
-        const electronUtils = new ElectronUtilsRedux(
-          webContents,
-          store.dispatch
-        );
         const { abortableAction: abortablePerformLogin, abort } =
           abortable(performLogin);
         AbortionSystem.registerAbort(abort);
@@ -79,18 +68,7 @@ export default (store: Store) =>
           AbortionSystem.abort(ABORTION_ERROR);
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
-        await sleep(2000);
       } else if (useAccount == USEACCOUNT.MANUELL) {
-        await store.dispatch(setBotIsActing(false));
-        await store.dispatch(
-          electronRouting('puppet', 'https://www.immobilienscout24.de/')
-        );
-        await sleep(4000);
-        const { webContents } = electronObjects.views.puppet;
-        const electronUtils = new ElectronUtilsRedux(
-          webContents,
-          store.dispatch
-        );
         const { abortableAction: abortablePerformManualLogin, abort } =
           abortable(performManualLogin);
         AbortionSystem.registerAbort(abort);
@@ -109,8 +87,9 @@ export default (store: Store) =>
           AbortionSystem.abort(ABORTION_ERROR);
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
-        await sleep(2000);
       }
+
+      await sleep(2000);
     }
 
     return next(action);
