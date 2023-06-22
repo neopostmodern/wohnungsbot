@@ -50,6 +50,10 @@ ${this.webContents.getURL()}`);
     }
   }
 
+  isOnExternalPage(): boolean {
+    return !this.webContents.getURL().substring(0,50).includes("immobilienscout24.de")
+  }
+
   static generateSelector(
     selector: string,
     shadowRootSelector?: string

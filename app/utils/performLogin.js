@@ -110,7 +110,8 @@ export function* performManualLogin(
     yield electronUtils.humanInteraction(async () => {
       const username = await electronUtils.elementExists('#username');
       const password = await electronUtils.elementExists('#password');
-      return username || password;
+      const external = electronUtils.isOnExternalPage();
+      return username || password || external;
     });
 
     yield sleep(5000);
