@@ -17,7 +17,34 @@ export default (store: Store) =>
   (next: (action: Action) => void) =>
   async (action: Action) => {
     if (action.type === LOGIN || action.type === LOGOUT) {
-      if (action.type === LOGIN) {
+      if (action.type === LOGOUT) {
+        await store.dispatch(setBotIsActing(false));
+        await store.dispatch(
+          electronRouting('puppet', 'https://www.immobilienscout24.de/')
+        );
+        await sleep(4000);
+        const { webContents } = electronObjects.views.puppet;
+        const electronUtils = new ElectronUtilsRedux(webContents, store.dispatch);
+        const { abortableAction: abortablePerformLogout, abort } =
+          abortable(performLogout);
+        AbortionSystem.registerAbort(abort);
+        try {
+          await timeout(
+            abortablePerformLogout(
+              store.dispatch,
+              electronUtils,
+              store.getState().configuration
+            ),
+            300000
+          );
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(`Error during logout: ${error}`);
+          AbortionSystem.abort(ABORTION_ERROR);
+          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+        }
+        await sleep(2000);
+      } else if (action.type === LOGIN) {
         const {
           configuration: {
             immobilienScout24: { useAccount }
@@ -87,33 +114,6 @@ export default (store: Store) =>
         } else {
           await store.dispatch(logout());
         }
-      } else if (action.type === LOGOUT) {
-        await store.dispatch(setBotIsActing(false));
-        await store.dispatch(
-          electronRouting('puppet', 'https://www.immobilienscout24.de/')
-        );
-        await sleep(4000);
-        const { webContents } = electronObjects.views.puppet;
-        const electronUtils = new ElectronUtilsRedux(webContents, store.dispatch);
-        const { abortableAction: abortablePerformLogout, abort } =
-          abortable(performLogout);
-        AbortionSystem.registerAbort(abort);
-        try {
-          await timeout(
-            abortablePerformLogout(
-              store.dispatch,
-              electronUtils,
-              store.getState().configuration
-            ),
-            300000
-          );
-        } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(`Error during logout: ${error}`);
-          AbortionSystem.abort(ABORTION_ERROR);
-          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
-        }
-        await sleep(2000);
       }
     }
 
