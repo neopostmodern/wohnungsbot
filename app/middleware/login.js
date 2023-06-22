@@ -17,7 +17,13 @@ export default (store: Store) =>
   (next: (action: Action) => void) =>
   async (action: Action) => {
     if (action.type === LOGIN || action.type === LOGOUT) {
-      if (action.type === LOGOUT) {
+      const {
+        configuration: {
+          immobilienScout24: { useAccount }
+        }
+      } = store.getState();
+
+      if (action.type === LOGOUT || useAccount === USEACCOUNT.NEIN) {
         await store.dispatch(setBotIsActing(false));
         await store.dispatch(
           electronRouting('puppet', 'https://www.immobilienscout24.de/')
@@ -44,76 +50,66 @@ export default (store: Store) =>
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
         await sleep(2000);
-      } else if (action.type === LOGIN) {
-        const {
-          configuration: {
-            immobilienScout24: { useAccount }
-          }
-        } = store.getState();
-
-        if (useAccount == USEACCOUNT.JA) {
-          await store.dispatch(setBotIsActing(false));
-          await store.dispatch(
-            electronRouting('puppet', 'https://www.immobilienscout24.de/')
+      } else if (useAccount == USEACCOUNT.JA) {
+        await store.dispatch(setBotIsActing(false));
+        await store.dispatch(
+          electronRouting('puppet', 'https://www.immobilienscout24.de/')
+        );
+        await sleep(4000);
+        const { webContents } = electronObjects.views.puppet;
+        const electronUtils = new ElectronUtilsRedux(
+          webContents,
+          store.dispatch
+        );
+        const { abortableAction: abortablePerformLogin, abort } =
+          abortable(performLogin);
+        AbortionSystem.registerAbort(abort);
+        try {
+          await timeout(
+            abortablePerformLogin(
+              store.dispatch,
+              electronUtils,
+              store.getState().configuration
+            ),
+            300000
           );
-          await sleep(4000);
-          const { webContents } = electronObjects.views.puppet;
-          const electronUtils = new ElectronUtilsRedux(
-            webContents,
-            store.dispatch
-          );
-          const { abortableAction: abortablePerformLogin, abort } =
-            abortable(performLogin);
-          AbortionSystem.registerAbort(abort);
-          try {
-            await timeout(
-              abortablePerformLogin(
-                store.dispatch,
-                electronUtils,
-                store.getState().configuration
-              ),
-              300000
-            );
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error(`Error during login: ${error}`);
-            AbortionSystem.abort(ABORTION_ERROR);
-            await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
-          }
-          await sleep(2000);
-        } else if (useAccount == USEACCOUNT.MANUELL) {
-          await store.dispatch(setBotIsActing(false));
-          await store.dispatch(
-            electronRouting('puppet', 'https://www.immobilienscout24.de/')
-          );
-          await sleep(4000);
-          const { webContents } = electronObjects.views.puppet;
-          const electronUtils = new ElectronUtilsRedux(
-            webContents,
-            store.dispatch
-          );
-          const { abortableAction: abortablePerformManualLogin, abort } =
-            abortable(performManualLogin);
-          AbortionSystem.registerAbort(abort);
-          try {
-            await timeout(
-              abortablePerformManualLogin(
-                store.dispatch,
-                electronUtils,
-                store.getState().configuration
-              ),
-              300000
-            );
-          } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error(`Error during login: ${error}`);
-            AbortionSystem.abort(ABORTION_ERROR);
-            await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
-          }
-          await sleep(2000);
-        } else {
-          await store.dispatch(logout());
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(`Error during login: ${error}`);
+          AbortionSystem.abort(ABORTION_ERROR);
+          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
+        await sleep(2000);
+      } else if (useAccount == USEACCOUNT.MANUELL) {
+        await store.dispatch(setBotIsActing(false));
+        await store.dispatch(
+          electronRouting('puppet', 'https://www.immobilienscout24.de/')
+        );
+        await sleep(4000);
+        const { webContents } = electronObjects.views.puppet;
+        const electronUtils = new ElectronUtilsRedux(
+          webContents,
+          store.dispatch
+        );
+        const { abortableAction: abortablePerformManualLogin, abort } =
+          abortable(performManualLogin);
+        AbortionSystem.registerAbort(abort);
+        try {
+          await timeout(
+            abortablePerformManualLogin(
+              store.dispatch,
+              electronUtils,
+              store.getState().configuration
+            ),
+            300000
+          );
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(`Error during login: ${error}`);
+          AbortionSystem.abort(ABORTION_ERROR);
+          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+        }
+        await sleep(2000);
       }
     }
 
