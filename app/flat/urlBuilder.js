@@ -20,46 +20,40 @@ export function generateSearchUrl(configuration: Configuration): string {
     )
   );
 
-  let searchUrl = 'https://www.immobilienscout24.de/Suche/de/berlin/berlin';
-
-  if (overlappingDistricts.length === 1) {
-    searchUrl +=
-      '/' +
-      overlappingDistricts
-        .map((district) =>
-          district.label
-            .replace(/[()]/g, '')
-            .replace(/ /g, '-')
-            .replace(/ä/g, 'ae')
-            .replace(/ö/g, 'oe')
-            .replace(/ü/g, 'ue')
-            .replace(/ß/g, 'ss')
-        )
-        .join('_');
-  }
-
-  searchUrl += `/wohnung-mieten?numberofrooms=${numberToUrlFloatString(
-    configuration.filter.minimumRooms
-  )}-${numberToUrlFloatString(configuration.filter.maximumRooms)}${
-    configuration.filter.minimumArea
-      ? `&livingspace=${numberToUrlFloatString(
-          configuration.filter.minimumArea
-        )}-`
-      : ''
-  }&pricetype=rentpermonth&price=-${numberToUrlFloatString(
-    configuration.filter.maximumRent
-  )}`;
-
-  if (overlappingDistricts.length > 1) {
-    searchUrl +=
-      '&geocodes=' +
-      overlappingDistricts
-        .map((district) => district.geoNodeId.toString())
-        .join(',');
-  }
+  let searchUrl =
+    'https://www.immobilienscout24.de/Suche/de/berlin/berlin/wohnung-mieten' +
+    `?numberofrooms=${numberToUrlFloatString(
+      configuration.filter.minimumRooms
+    )}-${numberToUrlFloatString(configuration.filter.maximumRooms)}${
+      configuration.filter.minimumArea
+        ? `&livingspace=${numberToUrlFloatString(
+            configuration.filter.minimumArea
+          )}-`
+        : ''
+    }&pricetype=rentpermonth&price=-${numberToUrlFloatString(
+      configuration.filter.maximumRent
+    )}&geocodes=${overlappingDistricts
+      .map((district) => district.geoNodeId.toString())
+      .join(',')}`;
 
   if (configuration.filter.noSwapApartment) {
     searchUrl += '&exclusioncriteria=swapflat';
+  }
+
+  const equipment = [];
+  if (configuration.filter.mustHaveBalcony) {
+    equipment.push('balcony');
+  }
+  if (configuration.filter.mustHaveKitchenette) {
+    equipment.push('builtinkitchen');
+  }
+
+  if (equipment.length > 0) {
+    searchUrl += '&equipment=' + equipment.join(',');
+  }
+
+  if (!configuration.filter.hasWBS) {
+    searchUrl += '&haspromotion=false';
   }
 
   return searchUrl;

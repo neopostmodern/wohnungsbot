@@ -44,7 +44,9 @@ ${stack
   .slice(2)
   .map((line) => line.replace(/\s+/i, ' '))
   .join('\n')}
-`);
+
+Current URL:
+${this.webContents.getURL()}`);
     }
   }
 
@@ -76,6 +78,15 @@ ${stack
     return this.evaluate(
       `${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`
     );
+  }
+
+  async awaitElementExists(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<void> {
+    while (!(await this.elementExists(selector, shadowRootSelector))) {
+      await sleep(1000);
+    }
   }
 
   async getInnerText(selector: string): Promise<string | undefined> {

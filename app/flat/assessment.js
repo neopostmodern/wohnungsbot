@@ -125,7 +125,10 @@ export function assessFlat(
   if (configuration.filter.notSpecificallyForSeniors) {
     reasons.push({
       reason: `Keine Senioren-Wohnung`,
-      result: !overviewDataEntry.title.toLowerCase().includes('senioren')
+      result: !(
+        overviewDataEntry.title.toLowerCase().includes('senioren') ||
+        overviewDataEntry.title.toLowerCase().includes('altersgerechtes')
+      )
     });
   }
 
