@@ -3,7 +3,7 @@
 import { LOGIN, LOGOUT } from '../constants/actionTypes';
 import type { Action, Store } from '../reducers/types';
 import { sleep, timeout } from '../utils/async';
-import { performLogin, performManualLogin } from '../utils/performLogin';
+import { performAutomaticLogin, performManualLogin } from '../utils/performLogin';
 import { electronRouting } from '../actions/electron';
 import { abortable } from '../utils/generators';
 import AbortionSystem, { ABORTION_ERROR } from '../utils/abortionSystem';
@@ -50,12 +50,12 @@ export default (store: Store) =>
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
       } else if (useAccount == USEACCOUNT.JA) {
-        const { abortableAction: abortablePerformLogin, abort } =
-          abortable(performLogin);
+        const { abortableAction: abortablePerformAutomaticLogin, abort } =
+          abortable(performAutomaticLogin);
         AbortionSystem.registerAbort(abort);
         try {
           await timeout(
-            abortablePerformLogin(
+            abortablePerformAutomaticLogin(
               store.dispatch,
               electronUtils,
               store.getState().configuration

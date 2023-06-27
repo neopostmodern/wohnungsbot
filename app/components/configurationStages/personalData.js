@@ -131,7 +131,7 @@ const personalDataStage: StageDescription = {
                 setString('immobilienScout24.useAccount', value)
               }
             />
-            {useAccount == USEACCOUNT.JA && (
+            {useAccount === USEACCOUNT.JA && (
               <>
                 <TextField
                   type="email"
@@ -159,7 +159,7 @@ const personalDataStage: StageDescription = {
               Falls du einen ImmobilienScout24-Account hast, kannst du diesen
               hier angeben und der Bot meldet sich für dich an.
               <br />
-              Bei manueller Anmeldung gibst du deine Daten selbst ein, oder kannst den Google und Facebook login nutzen.
+              Sollte dies nicht funktionieren, oder hast du dich per Apple, Facebook oder Google angemeldet, nutze die manuelle Anmeldung.
               <br />
               Derzeit funktioniert der Bot ausschließlich für ImmobilienScout24.
             </div>

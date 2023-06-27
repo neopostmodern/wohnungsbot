@@ -12,7 +12,7 @@ import { electronRouting } from '../actions/electron';
 import ElectronUtilsRedux from './electronUtilsRedux';
 import { timeout } from './async';
 
-export function* performLogin(
+export function* performAutomaticLogin(
   dispatch: Dispatch,
   electronUtils: ElectronUtilsRedux,
   configuration: Configuration
