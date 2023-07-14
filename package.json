@@ -210,7 +210,6 @@
     "spectron": "^19.0.0",
     "style-loader": "^3.3.3",
     "stylelint": "^15.10.1",
-    "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-standard": "^34.0.0",
     "tar": "^6.1.15",
     "terser-webpack-plugin": "^5.3.9",
