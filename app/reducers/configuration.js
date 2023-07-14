@@ -19,7 +19,7 @@ import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 import { generateSearchUrl } from '../flat/urlBuilder';
 
-export const ConfigurationVersion = 5;
+export const ConfigurationVersion = 6;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -260,6 +260,16 @@ function configurationMigrations(
       ...migratedConfiguration,
       experimentalFeatures: {
         sortByNewest: false
+      }
+    };
+  }
+
+  if (oldConfiguration.configurationVersion < 6) {
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      immobilienScout24: {
+        ...migratedConfiguration.immobilienScout24,
+        useAccount: migratedConfiguration.useAccount ? USEACCOUNT.JA : USEACCOUNT.NEIN,
       }
     };
   }
