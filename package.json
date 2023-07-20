@@ -162,6 +162,7 @@
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-flow": "^7.22.5",
     "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
     "@babel/register": "^7.22.5",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^9.1.3",
