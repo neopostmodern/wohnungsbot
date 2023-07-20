@@ -29,7 +29,7 @@ type Props = {
 
 export default class Configuration extends Component<Props> {
   props: Props;
-  firstStart: Boolean;
+  isLaunching: Boolean;
   constructor() {
     super();
 
@@ -43,7 +43,7 @@ export default class Configuration extends Component<Props> {
     // $FlowFixMe - flow thinks document.body could be undefined
     document.body.addEventListener('keydown', this.handleKeyDown);
     // Indicates lifecycle start. Needed so that configuration doesn't autohide anytime it's visible
-    this.firstStart = true;
+    this.isLaunching = true;
   }
 
   componentWillUnmount() {
@@ -131,11 +131,11 @@ export default class Configuration extends Component<Props> {
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
 
-    if (configuration.policies.autostart && this.firstStart) {
+    if (configuration.policies.autostart && this.isLaunching) {
       hideConfiguration();
     }
     //Prevent configuration hiding after checkbox is checked
-    this.firstStart = false;
+    this.isLaunching = false;
     return (
       <div
         className={`${styles.wrapper} ${
