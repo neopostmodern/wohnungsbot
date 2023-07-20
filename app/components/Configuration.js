@@ -131,11 +131,12 @@ export default class Configuration extends Component<Props> {
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
 
-    if (configuration.policies.autostart && this.isLaunching) {
+    if (this.isLaunching && configuration.policies.autostart) {
       hideConfiguration();
     }
-    //Prevent configuration hiding after checkbox is checked
+    // Only hide configuration (autostart) once
     this.isLaunching = false;
+
     return (
       <div
         className={`${styles.wrapper} ${
