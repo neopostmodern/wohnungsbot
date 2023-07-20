@@ -8,9 +8,9 @@ import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import baseConfig from './webpack.config.base.babel';
-import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
+// import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
-CheckNodeEnv('production');
+// CheckNodeEnv('production');
 
 export default merge(baseConfig, {
   devtool: 'source-map',
@@ -19,7 +19,10 @@ export default merge(baseConfig, {
 
   target: 'electron-main',
 
-  entry: './app/main.dev',
+  entry: [
+   '@babel/register',
+   './app/main.dev'
+  ],
 
   output: {
     path: path.join(__dirname, '..'),
