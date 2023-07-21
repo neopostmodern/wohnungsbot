@@ -32,7 +32,8 @@ const reviewStage: StageDescription = {
         checked={configuration.policies.autostart}
         onChange={() => toggleBoolean('policies.autostart')}
       />{' '}
-      Beim nächsten Start automatisch anfangen zu suchen
+      Diese Seite zukünftig beim Start nicht mehr anzeigen und den Bot direkt
+      arbeiten lassen
       <br />
       <br />
       <div className={styles.row}>

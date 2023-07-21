@@ -29,7 +29,6 @@ type Props = {
 
 export default class Configuration extends Component<Props> {
   props: Props;
-  isLaunching: Boolean;
   constructor() {
     super();
 
@@ -42,8 +41,9 @@ export default class Configuration extends Component<Props> {
   componentDidMount() {
     // $FlowFixMe - flow thinks document.body could be undefined
     document.body.addEventListener('keydown', this.handleKeyDown);
-    // Indicates lifecycle start. Needed so that configuration doesn't autohide anytime it's visible
-    this.isLaunching = true;
+    if (configuration.policies.autostart) {
+      hideConfiguration();
+    }
   }
 
   componentWillUnmount() {
@@ -130,12 +130,6 @@ export default class Configuration extends Component<Props> {
     const { previousStage, configuration, hideConfiguration } = this.props;
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
-
-    if (this.isLaunching && configuration.policies.autostart) {
-      hideConfiguration();
-    }
-    // Only hide configuration (autostart) once
-    this.isLaunching = false;
 
     return (
       <div
