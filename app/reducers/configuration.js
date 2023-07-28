@@ -19,7 +19,7 @@ import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 import { generateSearchUrl } from '../flat/urlBuilder';
 
-export const ConfigurationVersion = 6;
+export const ConfigurationVersion = 7;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -100,6 +100,7 @@ export type ContactData = {|
 
 export type DataPolicies = {|
   flatViewingNotificationMails: boolean,
+  autostart: boolean,
   researchDataSharing: boolean,
   artConsent: boolean,
   applicationNotificationMails: boolean,
@@ -212,6 +213,7 @@ const defaultConfiguration: Configuration = {
   },
   policies: {
     flatViewingNotificationMails: false,
+    autostart: false,
     researchDataSharing: false,
     artConsent: false,
     applicationNotificationMails: false,
@@ -270,6 +272,16 @@ function configurationMigrations(
       immobilienScout24: {
         ...migratedConfiguration.immobilienScout24,
         useAccount: migratedConfiguration.useAccount ? USEACCOUNT.JA : USEACCOUNT.NEIN,
+      }
+    };
+  }
+
+  if (oldConfiguration.configurationVersion < 7) {
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      policies: {
+        ...migratedConfiguration.policies,
+        autostart: false
       }
     };
   }

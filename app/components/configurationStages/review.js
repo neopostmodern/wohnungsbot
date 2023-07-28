@@ -11,7 +11,7 @@ const reviewStage: StageDescription = {
   },
   title: 'Bereit für die Wohnungssuche?',
   subtitle: 'Überprüfe deine Suchprofil und dann kann es los gehen.',
-  body: ({ configuration }: InheritedProps) => (
+  body: ({ configuration, toggleBoolean }: InheritedProps) => (
     <div className={styles.marginBottom}>
       <div className={styles.announcement}>
         <h3>Wichtige Hinweise</h3>
@@ -26,6 +26,14 @@ const reviewStage: StageDescription = {
         solltest du den Bot tagsüber (circa 7 — 23 Uhr) am besten durchgehend
         arbeiten lassen.
       </div>
+      <br />
+      <input
+        type={'checkbox'}
+        checked={configuration.policies.autostart}
+        onChange={() => toggleBoolean('policies.autostart')}
+      />{' '}
+      Diese Seite zukünftig beim Start nicht mehr anzeigen und den Bot direkt
+      arbeiten lassen
       <br />
       <br />
       <div className={styles.row}>
