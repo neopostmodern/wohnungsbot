@@ -39,6 +39,7 @@ export default class Configuration extends Component<Props> {
   }
 
   componentDidMount() {
+    const { configuration, hideConfiguration } = this.props;
     // $FlowFixMe - flow thinks document.body could be undefined
     document.body.addEventListener('keydown', this.handleKeyDown);
     if (configuration.policies.autostart) {
@@ -127,7 +128,7 @@ export default class Configuration extends Component<Props> {
   }
 
   render() {
-    const { previousStage, configuration, hideConfiguration } = this.props;
+    const { previousStage, configuration } = this.props;
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
 
