@@ -19,7 +19,7 @@ import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 import { generateSearchUrl } from '../flat/urlBuilder';
 
-export const ConfigurationVersion = 5;
+export const ConfigurationVersion = 7;
 
 export const AllFloors = [4, 3, 2, 1, 0];
 
@@ -67,6 +67,12 @@ export const SALUTATIONS = {
 };
 export type Salutation = $Values<typeof SALUTATIONS>;
 
+export const USEACCOUNT = {
+  JA: 'Ja',
+  MANUELL: 'Manuell',
+  NEIN: 'Nein'
+};
+
 export const LOGINSTATUS = {
   LOGGED_IN: 'LOGGED_IN',
   LOGGED_OUT: 'LOGGED_OUT',
@@ -74,7 +80,7 @@ export const LOGINSTATUS = {
 };
 
 export type LoginData = {|
-  useAccount: boolean,
+  useAccount: $Values<typeof USEACCOUNT>,
   userName: string,
   password: string,
   status: $Values<typeof LOGINSTATUS>
@@ -94,6 +100,7 @@ export type ContactData = {|
 
 export type DataPolicies = {|
   flatViewingNotificationMails: boolean,
+  autostart: boolean,
   researchDataSharing: boolean,
   artConsent: boolean,
   applicationNotificationMails: boolean,
@@ -181,7 +188,7 @@ const defaultConfiguration: Configuration = {
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   immobilienScout24: {
-    useAccount: false,
+    useAccount: USEACCOUNT.NEIN,
     userName: '',
     password: '',
     status: LOGINSTATUS.LOGGED_OUT
@@ -206,6 +213,7 @@ const defaultConfiguration: Configuration = {
   },
   policies: {
     flatViewingNotificationMails: false,
+    autostart: false,
     researchDataSharing: false,
     artConsent: false,
     applicationNotificationMails: false,
@@ -254,6 +262,26 @@ function configurationMigrations(
       ...migratedConfiguration,
       experimentalFeatures: {
         sortByNewest: false
+      }
+    };
+  }
+
+  if (oldConfiguration.configurationVersion < 6) {
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      immobilienScout24: {
+        ...migratedConfiguration.immobilienScout24,
+        useAccount: migratedConfiguration.useAccount ? USEACCOUNT.JA : USEACCOUNT.NEIN,
+      }
+    };
+  }
+
+  if (oldConfiguration.configurationVersion < 7) {
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      policies: {
+        ...migratedConfiguration.policies,
+        autostart: false
       }
     };
   }

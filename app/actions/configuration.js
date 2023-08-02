@@ -21,7 +21,8 @@ import {
 export function setConfiguration(configuration: Configuration): Action {
   return {
     type: SET_CONFIGURATION,
-    payload: { configuration }
+    payload: { configuration },
+    meta: { configuration: true }
   };
 }
 

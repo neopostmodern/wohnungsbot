@@ -21,21 +21,21 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     }
   }
 
-  if (action.meta && action.meta.configuration) {
-    process.nextTick(() => {
-      const configurationToSave = {
-        ...store.getState().configuration
-      };
-      delete configurationToSave.loaded;
-      persistentStore.set('configuration', configurationToSave);
-    });
-  }
-
   if (action.meta && action.meta.cache) {
     process.nextTick(() => {
       persistentStore.set('cache', store.getState().cache);
     });
   }
 
-  return next(action);
+  let ret = next(action);
+
+  if (action.meta && action.meta.configuration) {
+    const configurationToSave = {
+      ...store.getState().configuration
+    };
+    delete configurationToSave.loaded;
+    persistentStore.set('configuration', configurationToSave);
+  }
+
+  return ret;
 };

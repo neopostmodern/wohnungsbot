@@ -12,7 +12,7 @@ import { electronRouting } from '../actions/electron';
 import ElectronUtilsRedux from './electronUtilsRedux';
 import { timeout } from './async';
 
-export default function* performLogin(
+export function* performAutomaticLogin(
   dispatch: Dispatch,
   electronUtils: ElectronUtilsRedux,
   configuration: Configuration
@@ -66,6 +66,53 @@ export default function* performLogin(
       throw new Error('Anmeldefehler');
       // TODO: need's some kind of error recovery.
     }
+
+    yield sleep(5000);
+
+    yield electronUtils.humanInteraction(async () => {
+      const exists = await electronUtils.elementExists('.mfa-verify');
+      return exists;
+    });
+
+    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+
+    dispatch(setBotMessage('Einloggen erfolgreich :)', 4000));
+  }
+
+  yield sleep(5000);
+  dispatch(returnToSearchPage());
+}
+
+export function* performManualLogin(
+  dispatch: Dispatch,
+  electronUtils: ElectronUtilsRedux,
+  configuration: Configuration
+) {
+  yield sleep(1000);
+
+  // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
+  yield electronUtils.evaluate(`grecaptcha = undefined`);
+
+  // Check again if user is logged in
+  if (yield electronUtils.elementExists('.sso-login--logged-in')) {
+    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+    dispatch(setBotMessage('Bereits eingeloggt', 4000));
+  } else {
+    dispatch(setBotMessage('Anmelden'));
+    yield dispatch(
+      electronRouting(
+        'puppet',
+        'https://www.immobilienscout24.de/geschlossenerbereich/start.html?source=headericon'
+      )
+    );
+    yield sleep(3000);
+
+    yield electronUtils.humanInteraction(async () => {
+      const username = await electronUtils.elementExists('#username');
+      const password = await electronUtils.elementExists('#password');
+      const external = electronUtils.isOnExternalPage();
+      return username || password || external;
+    });
 
     yield sleep(5000);
 
