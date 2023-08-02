@@ -1,7 +1,4 @@
-on:
-  push:
-    branches:
-      - dev
+on: push
 jobs:
   build:
     name: Build Electron app (staging)
