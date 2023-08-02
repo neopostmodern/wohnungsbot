@@ -1,12 +1,10 @@
 // @flow
 import React from 'react';
-import {
-  MapContainer,
-  GeoJSON,
-  TileLayer,
-  Marker,
-  useMapEvent
-} from 'react-leaflet';
+import { MapContainer } from 'react-leaflet/MapContainer';
+import { GeoJSON } from 'react-leaflet/GeoJSON';
+import { TileLayer } from 'react-leaflet/TileLayer';
+import { Marker } from 'react-leaflet/Marker';
+import { useMapEvent } from 'react-leaflet/hooks';
 import { divIcon, type Layer } from 'leaflet';
 import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo';

@@ -2,9 +2,11 @@
 import React, { Component } from 'react';
 import styles from './Sidebar.scss';
 import type { ApplicationData, BaseCacheEntry } from '../reducers/cache';
-import { homepage, version, bugs } from '../../package.json';
+import packageJson from '../../package.json';
 import RecentApplication from './sidebar/recentApplication';
 import { LOADING, UP_TO_DATE } from '../constants/updater';
+
+const { homepage, version, bugs } = packageJson;
 
 type Props = {
   showConfiguration: () => void,
@@ -24,10 +26,16 @@ export default class Sidebar extends Component<Props, State> {
   state: State = {};
 
   async componentWillMount() {
-    const response = await fetch('https://wohnungsbot.de/announcement.html');
-    const announcement = await response.text();
+    try {
+      const response = await fetch('https://wohnungsbot.de/announcement.html');
+      const announcement = await response.text();
 
-    this.setState({ announcement });
+      this.setState({ announcement });
+    } catch (error) {
+      this.setState({
+        announcement: `Neuigkeiten zum Wohnungsbot konnten leider nicht geladen werden.<br/><small>Technische Fehlermeldung:<pre>${error.toString()}</pre></small>`
+      });
+    }
   }
 
   render() {

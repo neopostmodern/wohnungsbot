@@ -1,9 +1,9 @@
 // @flow
 
 import sendgrid from '@sendgrid/mail';
-import { SENDGRID_API_KEY } from '../constants/keys';
+import keys from '../constants/keys';
 
-sendgrid.setApiKey(SENDGRID_API_KEY);
+sendgrid.setApiKey(keys.SENDGRID_API_KEY);
 
 const sendMail = async (to: string, subject: string, text: string) => {
   const message = {
