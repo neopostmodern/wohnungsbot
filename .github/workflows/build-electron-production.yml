@@ -25,7 +25,7 @@ jobs:
         env:
           KEYS_DECRYPT_PASSPHRASE: ${{ secrets.KEYS_DECRYPT_PASSPHRASE }}
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: coparse-inc/action-electron-builder@v1.0.0
         with:
           github_token: ${{ secrets.github_token }}
           args: '-p always'
