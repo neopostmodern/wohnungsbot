@@ -13,7 +13,7 @@ import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import baseConfig from './webpack.config.base.babel';
+import baseConfig from './webpack.config.base';
 import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { styleRules, imageAndFontRules } from './commonRules';
 

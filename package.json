@@ -14,10 +14,10 @@
   },
   "scripts": {
     "build": "concurrently \"npm run-script build-main\" \"npm run-script build-renderer\"",
-    "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --color",
-    "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --color",
-    "build-renderer": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.renderer.prod.babel.js --color",
-    "dev": "cross-env START_HOT=1 node -r @babel/register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 npm run-script start-renderer-dev",
+    "build-dll": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./configs/webpack.config.renderer.dev.dll.ts --color",
+    "build-main": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./configs/webpack.config.main.prod.ts --color",
+    "build-renderer": "cross-env NODE_ENV=production TS_NODE_TRANSPILE_ONLY=true webpack --config ./configs/webpack.config.renderer.prod.ts --color",
+    "dev": "cross-env START_HOT=1 ts-node ./internals/scripts/CheckPortInUse.ts && cross-env START_HOT=1 npm run-script start-renderer-dev",
     "flow": "flow",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install || true",
     "lint": "cross-env NODE_ENV=development eslint --cache --format=pretty .",
@@ -38,7 +38,7 @@
     "prestart": "npm run-script build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development TARGET=main electron -r @babel/register ./app/main.dev.js",
-    "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js"
+    "start-renderer-dev": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack-dev-server --config ./configs/webpack.config.renderer.dev.ts"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -163,6 +163,7 @@
     "@babel/preset-react": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@babel/register": "^7.22.5",
+    "@types/detect-port": "^1.3.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^9.1.3",
     "babel-plugin-dev-expression": "^0.2.3",
@@ -216,6 +217,7 @@
     "testcafe-browser-provider-electron": "^0.0.19",
     "testcafe-live": "^0.1.4",
     "testcafe-react-selectors": "^5.0.3",
+    "ts-node": "^10.9.1",
     "url-loader": "^4.1.1",
     "webpack": "^5.88.1",
     "webpack-bundle-analyzer": "^4.9.0",
