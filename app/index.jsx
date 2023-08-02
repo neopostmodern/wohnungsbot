@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
 import { RENDERER } from './constants/targets';
 import Root from './containers/Root';
@@ -16,9 +16,7 @@ import('./store/configureStore')
     const history = getHistory();
 
     render(
-      <AppContainer>
-        <Root store={store} history={history} />
-      </AppContainer>,
+      <Root store={store} history={history} />,
       document.getElementById('root')
     );
 
@@ -27,9 +25,7 @@ import('./store/configureStore')
         // eslint-disable-next-line global-require
         const NextRoot = require('./containers/Root').default;
         render(
-          <Fragment>
-            <NextRoot store={store} history={history} />
-          </Fragment>,
+          <NextRoot store={store} history={history} />,
           document.getElementById('root')
         );
       });
