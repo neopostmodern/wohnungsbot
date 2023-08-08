@@ -1,7 +1,4 @@
-on:
-  push:
-    branches:
-      - dev
+on: push
 jobs:
   build:
     name: Build Electron app (staging)
@@ -13,10 +10,9 @@ jobs:
       CONFIG_FILE: config-staging.json
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+        uses: actions/checkout@v3
+      - name: Set up node with volta
+        uses: volta-cli/action@v4
       - name: Install dependencies
         run: npm ci
       - name: Decrypt keys
@@ -25,12 +21,12 @@ jobs:
         env:
           KEYS_DECRYPT_PASSPHRASE: ${{ secrets.KEYS_DECRYPT_PASSPHRASE }}
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: coparse-inc/action-electron-builder@v1.0.0
         with:
           github_token: ${{ secrets.github_token }}
           args: '-p never'
       - name: Store artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Installer ${{ runner.os }}
           path: release/Wohnungsbot*
