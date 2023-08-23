@@ -3,7 +3,7 @@
  */
 
 import path from 'path';
-import webpack from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -14,14 +14,14 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 import { styleRules, imageAndFontRules } from './commonRules';
 
 CheckNodeEnv('production');
-export default merge(baseConfig, {
+export default merge<Configuration>(baseConfig, {
   devtool: 'source-map',
 
   mode: 'production',
 
   target: 'electron-renderer',
 
-  entry: path.join(__dirname, '..', 'app/index'),
+  entry: path.join(__dirname, '..', 'app/index.jsx'),
 
   output: {
     path: path.join(__dirname, '..', 'app/dist'),
