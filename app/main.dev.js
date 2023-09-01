@@ -155,6 +155,17 @@ configureStore(MAIN, isDevelopment)
         },
         `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
       );
+      newView(
+        'print',
+        {
+          webPreferences: {
+            sandbox: true,
+            contextIsolation: true,
+            enableRemoteModule: false
+          }
+        },
+        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
+      );
       const puppetView = newView(
         'puppet',
         {
