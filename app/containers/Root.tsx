@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Provider } from "react-redux";
-import { HistoryRouter as Router } from "redux-first-history/rr6"; // https://github.com/remix-run/react-router/pull/7586
+import { HistoryRouter as Router } from "redux-first-history";
 
 import type { Store } from "../reducers/types";
 import Routes from "../Routes";

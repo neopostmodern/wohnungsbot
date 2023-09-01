@@ -32,7 +32,7 @@ module.exports = (api) => {
           corejs: 3
         }
       ],
-      require('@babel/preset-flow'),
+      require('@babel/preset-typescript'),
       [require('@babel/preset-react'), { development }]
     ],
     plugins: [
