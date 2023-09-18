@@ -1,6 +1,5 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { render } from 'react-dom';
-import { AppContainer as ReactHotAppContainer } from 'react-hot-loader';
 import { RENDERER } from './constants/targets';
 import Root from './containers/Root';
 import getHistory from './store/history';
@@ -16,14 +15,8 @@ import('./store/configureStore')
   .then((store) => {
     const history = getHistory();
 
-    const AppContainer = process.env.PLAIN_HMR
-      ? Fragment
-      : ReactHotAppContainer;
-
     render(
-      <AppContainer>
-        <Root store={store} history={history} />
-      </AppContainer>,
+      <Root store={store} history={history} />,
       document.getElementById('root')
     );
 
@@ -32,9 +25,7 @@ import('./store/configureStore')
         // eslint-disable-next-line global-require
         const NextRoot = require('./containers/Root').default;
         render(
-          <AppContainer>
-            <NextRoot store={store} history={history} />
-          </AppContainer>,
+          <NextRoot store={store} history={history} />,
           document.getElementById('root')
         );
       });

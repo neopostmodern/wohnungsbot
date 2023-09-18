@@ -9,8 +9,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import webpack from 'webpack';
-import chalk from 'chalk';
+import webpack, { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -33,14 +32,12 @@ const requiredByDLLConfig = module.parent.filename.includes(
  */
 if (!requiredByDLLConfig && !(fs.existsSync(dll) && fs.existsSync(manifest))) {
   console.log(
-    chalk.black.bgYellow.bold(
-      'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
-    )
+    'The DLL files are missing. Sit back while we build them for you with "yarn build-dll"'
   );
   execSync('yarn build-dll');
 }
 
-export default merge(baseConfig, {
+export default merge<Configuration>(baseConfig, {
   devtool: 'inline-source-map',
 
   mode: 'development',
@@ -48,10 +45,9 @@ export default merge(baseConfig, {
   target: 'electron-renderer',
 
   entry: [
-    ...(process.env.PLAIN_HMR ? [] : ['react-hot-loader/patch']),
     `webpack-dev-server/client?http://localhost:${port}/`,
     'webpack/hot/only-dev-server',
-    require.resolve('../app/index')
+    require.resolve('../app/index.jsx')
   ],
 
   output: {

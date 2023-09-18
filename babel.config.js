@@ -2,7 +2,7 @@
 
 const developmentEnvironments = ['development', 'test'];
 
-const developmentPlugins = [require('react-hot-loader/babel')];
+const developmentPlugins = [];
 
 const productionPlugins = [
   require('babel-plugin-dev-expression'),
@@ -24,14 +24,7 @@ module.exports = (api) => {
 
   return {
     presets: [
-      [
-        require('@babel/preset-env'),
-        {
-          targets,
-          useBuiltIns: 'usage',
-          corejs: 3
-        }
-      ],
+      [require('@babel/preset-env')],
       require('@babel/preset-flow'),
       [require('@babel/preset-react'), { development }]
     ],
