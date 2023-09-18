@@ -21,7 +21,7 @@ const mergedConfig = merge.smart(baseConfig, {
 
   target: 'web',
 
-  entry: path.join(__dirname, '..', 'app/index'),
+  entry: path.join(__dirname, '..', 'app/index.tsx'),
 
   output: {
     path: path.join(__dirname, '..', 'app/web'),
