@@ -286,7 +286,7 @@ const personalDataStage: StageDescription = {
           }
         };
 
-        if (configuration.immobilienScout24.useAccount) {
+        if (configuration.immobilienScout24.useAccount === USEACCOUNT.JA) {
           checks.immobilienScout24 = {
             userName: 'deine E-Mail',
             password: 'dein Passwort'
