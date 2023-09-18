@@ -21,7 +21,7 @@ export default merge<Configuration>(baseConfig, {
 
   target: 'electron-renderer',
 
-  entry: path.join(__dirname, '..', 'app/index.jsx'),
+  entry: path.join(__dirname, '..', 'app/index.tsx'),
 
   output: {
     path: path.join(__dirname, '..', 'app/dist'),

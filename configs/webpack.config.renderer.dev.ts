@@ -48,7 +48,7 @@ export default merge<Configuration | DevServerConfiguration>(baseConfig, {
   entry: [
     `webpack-dev-server/client?http://localhost:${port}/`,
     'webpack/hot/only-dev-server',
-    require.resolve('../app/index.jsx')
+    require.resolve('../app/index.tsx')
   ],
 
   output: {
