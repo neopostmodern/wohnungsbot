@@ -27,6 +27,8 @@ type Props = {
   configuration: ConfigurationType
 };
 
+let isLaunching;
+
 export default class Configuration extends Component<Props> {
   props: Props;
   constructor() {
@@ -38,13 +40,11 @@ export default class Configuration extends Component<Props> {
     (this: any).goToNext = this.goToNext.bind(this);
   }
 
+  // configuration from disk is not yet available during componentDidMount
   componentDidMount() {
-    const { configuration, hideConfiguration } = this.props;
     // $FlowFixMe - flow thinks document.body could be undefined
     document.body.addEventListener('keydown', this.handleKeyDown);
-    if (configuration.policies.autostart) {
-      hideConfiguration();
-    }
+    isLaunching = true;
   }
 
   componentWillUnmount() {
@@ -128,9 +128,15 @@ export default class Configuration extends Component<Props> {
   }
 
   render() {
-    const { previousStage, configuration } = this.props;
+    const { previousStage, configuration, hideConfiguration } = this.props;
     const stage: StageDescription = stages[configuration.stage];
     const { stageValid, validationMessage } = this.checkStageValid();
+
+    // configuration is not yet available during first render call
+    if(isLaunching && configuration.policies.autostart) {
+      hideConfiguration();
+    }
+    isLaunching = false;
 
     return (
       <div
