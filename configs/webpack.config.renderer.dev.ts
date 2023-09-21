@@ -10,6 +10,7 @@
 import path from 'path';
 import fs from 'fs';
 import webpack, { Configuration } from 'webpack';
+import { Configuration as DevServerConfiguration } from 'webpack-dev-server';
 import { merge } from 'webpack-merge';
 import { spawn, execSync } from 'child_process';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
@@ -37,7 +38,7 @@ if (!requiredByDLLConfig && !(fs.existsSync(dll) && fs.existsSync(manifest))) {
   execSync('yarn build-dll');
 }
 
-export default merge<Configuration>(baseConfig, {
+export default merge<Configuration | DevServerConfiguration>(baseConfig, {
   devtool: 'inline-source-map',
 
   mode: 'development',
@@ -137,8 +138,7 @@ export default merge<Configuration>(baseConfig, {
       }
     },
     historyApiFallback: {
-      verbose: true,
-      disableDotRule: false
+      verbose: true
     },
     onBeforeSetupMiddleware() {
       if (process.env.START_HOT) {
