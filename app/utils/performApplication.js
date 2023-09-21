@@ -36,12 +36,10 @@ export default function* performApplication(
   // eslint-disable-next-line no-constant-condition
   while (true) {
     if (
-      yield electronUtils.elementExists(
-        '[data-qa="get-premium-membership-button"]'
-      )
+      (yield electronUtils.evaluate('document.title')).includes('MieterPlus freischalten')
     ) {
       yield sleep(3000);
-      throw new Error('Bewerbung nur mit "Premium"-Account möglich');
+      throw new Error('Bewerbung nur mit "MieterPlus"-Account möglich');
     }
 
     if (yield electronUtils.elementExists('#contactForm-firstName')) {
