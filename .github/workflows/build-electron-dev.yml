@@ -28,6 +28,6 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Installer ${{ runner.os }}
+          name: Wohnungsbot Installer ${{ runner.os }} ${{ github.run_number }} (${{ github.ref_name }})
           path: release/Wohnungsbot*
           if-no-files-found: error
