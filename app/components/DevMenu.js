@@ -8,8 +8,7 @@ type DevMenuProps = {
   showDevTools: (name: BrowserViewName) => void,
   resetConfiguration: () => void,
   resetCache: () => void,
-  logout: () => void,
-  printToPDF: () => void,
+  logout: () => void
 };
 
 type DevMenuState = {
@@ -28,8 +27,7 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
       resetConfiguration,
       resetCache,
       stopBot,
-      logout,
-      printToPDF
+      logout
     } = this.props;
     const { expanded } = this.state;
 
@@ -66,11 +64,6 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
           <div className={styles.menuItem}>
             <button type="button" onClick={stopBot}>
               Stop <span className="material-icons">stop</span>
-            </button>
-          </div>
-          <div className={styles.menuItem}>
-            <button type="button" onClick={() => {printToPDF(139440647)}}>
-              Print <span className="material-icons">bookmark</span>
             </button>
           </div>
           <div className={styles.menuItem} id={styles.visibilityToggle}>

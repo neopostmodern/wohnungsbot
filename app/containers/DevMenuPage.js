@@ -2,7 +2,6 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { showDevTools } from '../actions/electron';
-import { printToPDF } from '../actions/helpers';
 import DevMenu from '../components/DevMenu';
 import type { stateType } from '../reducers/types';
 import { resetCache } from '../actions/cache';
@@ -17,7 +16,7 @@ function mapStateToProps(state: stateType) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { showDevTools, resetConfiguration, resetCache, logout, printToPDF },
+    { showDevTools, resetConfiguration, resetCache, logout },
     dispatch
   );
 }
