@@ -146,7 +146,7 @@ export const generateAdditionalDataFormFillingDescription = (
   additionalInformation: AdditionalInformation
 ): FieldFillingDescription => [
   {
-    selector: '#contactForm-moveInDateType"',
+    selector: '#contactForm-moveInDateType',
     type: 'select',
     value: MOVE_IN_WHEN_VALUES[additionalInformation.moveInWhen]
   },
