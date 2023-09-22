@@ -146,8 +146,8 @@ export const generateAdditionalDataFormFillingDescription = (
   additionalInformation: AdditionalInformation
 ): FieldFillingDescription => [
   {
-    selector: '[data-is24-show-field="moveInDateType"]',
-    type: 'radio',
+    selector: '#contactForm-moveInDateType',
+    type: 'select',
     value: MOVE_IN_WHEN_VALUES[additionalInformation.moveInWhen]
   },
   {
@@ -156,8 +156,8 @@ export const generateAdditionalDataFormFillingDescription = (
     value: MOVE_IN_WHO_VALUES[additionalInformation.moveInWho]
   },
   {
-    selector: '[data-is24-show-field="hasPets"]',
-    type: 'radio',
+    selector: '#contactForm-hasPets',
+    type: 'select',
     value:
       additionalInformation.animals && additionalInformation.animals !== 'Keine'
         ? 'true'
