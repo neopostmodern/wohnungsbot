@@ -10,8 +10,8 @@ export const sendMail = (to: string, subject: string, text: string) => ({
   meta: { target: MAIN }
 });
 
-export const printToPDF = (name: string, fileIdentifier: string) => ({
+export const printToPDF = (flatId: string) => ({
   type: PRINT_TO_PDF,
-  payload: { name, fileIdentifier },
+  payload: { flatId },
   meta: { target: MAIN }
 });

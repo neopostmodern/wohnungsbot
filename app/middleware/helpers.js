@@ -6,7 +6,8 @@ import { app } from 'electron';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
 import sendMail from '../utils/email';
-import { timeout } from '../utils/async';
+import { sleep, timeout } from '../utils/async';
+import { electronRouting } from '../actions/electron';
 import ElectronUtils from '../utils/electronUtils';
 import { electronObjects } from '../store/electronObjects';
 
@@ -23,9 +24,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   }
 
   if (action.type === PRINT_TO_PDF) {
-    const { name, fileIdentifier } = action.payload;
-
-    const filePath = path.join(pdfFolderPath, `${fileIdentifier}.pdf`);
+    const { flatId } = action.payload;
+    const filePath = path.join(pdfFolderPath, `${flatId}.pdf`);
 
     try {
       const fileStat = await fs.promises.stat(filePath);
@@ -42,7 +42,10 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     }
 
     try {
-      const { webContents } = electronObjects.views[name];
+      store.dispatch(electronRouting('print', 'https://www.immobilienscout24.de/expose/' + flatId + '/print'));
+      await sleep(3000);
+
+      const { webContents } = electronObjects.views['print'];
       // `printToPDF` times out if there are iframes on the page: https://github.com/electron/electron/issues/20634
       await new ElectronUtils(webContents).evaluate(
         `document.querySelectorAll('iframe').forEach(iframe => iframe.remove())`

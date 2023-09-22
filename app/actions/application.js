@@ -39,7 +39,7 @@ export const generateApplicationTextAndSubmit =
     const { webContents } = electronObjects.views.puppet;
     const electronUtils = new ElectronUtilsRedux(webContents, dispatch);
 
-    const pdfPath: string = await dispatch(printToPDF('puppet', flatId));
+    const pdfPath: string = await dispatch(printToPDF(flatId));
 
     const { abortableAction: abortablePerformApplication, abort } =
       abortable(performApplication);
