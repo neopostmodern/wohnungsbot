@@ -26,9 +26,7 @@ export default class TextField extends React.Component<TextFieldProps, TextField
     this.state = {
       value: props.value
     };
-    // eslint-disable-next-line flowtype/no-weak-types
     (this as any).handleChange = this.handleChange.bind(this);
-    // eslint-disable-next-line flowtype/no-weak-types
     (this as any).handleKeyPress = this.handleKeyPress.bind(this);
   }
 

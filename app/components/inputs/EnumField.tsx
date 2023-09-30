@@ -14,9 +14,6 @@ const EnumField = ({
   inline,
   isWeird
 }: EnumFieldProps) => <div>
-    {
-    /* eslint-disable-next-line flowtype/no-weak-types */
-  }
     {Object.entries(options).map(([optionKey, optionValue]: any) => <div className={inline ? 'inline-enum-select' : ''} key={optionKey}>
         <input type="checkbox" checked={optionValue === value} onChange={() => onChange(optionValue)} />{' '}
         {optionValue}

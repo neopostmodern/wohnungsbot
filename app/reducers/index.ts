@@ -8,7 +8,6 @@ import cache from "./cache";
 import scheduler from "./scheduler";
 import bot from "./bot";
 export default function createRootReducer(history: History) {
-  // eslint-disable-next-line flowtype/no-weak-types
   const reducers: any = {
     electron,
     overlay,

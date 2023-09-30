@@ -27,22 +27,18 @@ export default class Configuration extends Component<Props> {
 
   constructor() {
     super();
-    // eslint-disable-next-line flowtype/no-weak-types
     (this as any).handleKeyDown = this.handleKeyDown.bind(this);
-    // eslint-disable-next-line flowtype/no-weak-types
     (this as any).goToNext = this.goToNext.bind(this);
   }
 
   // configuration from disk is not yet available during componentDidMount
   componentDidMount() {
-    // $FlowFixMe - flow thinks document.body could be undefined
     document.body.addEventListener('keydown', this.handleKeyDown);
 
     isLaunching = true;
   }
 
   componentWillUnmount() {
-    // $FlowFixMe - flow thinks document.body could be undefined
     document.body.removeEventListener('keydown', this.handleKeyDown);
   }
 

@@ -67,7 +67,6 @@ export type RawOverviewDataEntry = {
     project?: {};
   };
 };
-// eslint-disable-next-line flowtype/no-weak-types
 export type RawOverviewData = Array<RawOverviewDataEntry>;
 export type FlatAddress = {
   postcode: string;

@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./Placeholder.scss";
-// @ts-expect-error - flow doesn't like SVG
 import BotIllustrationActive from "../../resources/bot-active.svg";
 
 const Placeholder = () => <div className={styles.container}>

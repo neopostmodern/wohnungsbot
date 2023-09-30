@@ -15,7 +15,6 @@ export default class Textarea extends React.Component<TextareaProps, TextareaSta
     this.state = {
       value: props.value
     };
-    // eslint-disable-next-line flowtype/no-weak-types
     (this as any).handleChange = this.handleChange.bind(this);
   }
 

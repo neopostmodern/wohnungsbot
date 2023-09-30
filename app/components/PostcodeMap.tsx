@@ -59,12 +59,10 @@ class PostcodeMap extends React.Component<Props, State> {
       zoom: PostcodeMap.initialZoom
     };
 
-    /* eslint-disable flowtype/no-weak-types */
     (this as any).eachFeature = this.eachFeature.bind(this);
     (this as any).stylePostcodeOverlay = this.stylePostcodeOverlay.bind(this);
     (this as any).setHeightRef = this.setHeightRef.bind(this);
     (this as any).handleZoom = this.handleZoom.bind(this);
-    /* eslint-enable flowtype/no-weak-types */
   }
 
   componentDidMount() {
@@ -106,7 +104,6 @@ ${postcodeDescription.properties.district}`, {
       selectedPostcodes
     } = this.props;
     // SVG CSS is too hard to type
-    // eslint-disable-next-line flowtype/no-weak-types
     const style: any = { ...baseStyle
     };
 

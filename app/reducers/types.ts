@@ -17,9 +17,7 @@ export type stateType = {
 };
 export type Action = {
   readonly type: string;
-  // eslint-disable-next-line flowtype/no-weak-types
   payload?: any;
-  // eslint-disable-next-line flowtype/space-after-type-colon
   meta?: {
     target: string;
   } | {

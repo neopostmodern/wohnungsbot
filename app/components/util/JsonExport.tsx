@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./JsonExport.scss";
 type JsonExportProps = {
-  // eslint-disable-next-line flowtype/no-weak-types
   serializableObject: any;
 };
 type JsonExportState = {

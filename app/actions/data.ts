@@ -35,7 +35,7 @@ function processOverviewDataEntry(entry: RawOverviewDataEntry): OverviewDataEntr
   };
 
   if (realEstate.address.preciseHouseNumber) {
-    processedEntry.address.houseNumber = ((realEstate.address.houseNumber as any) as string); // eslint-disable-line flowtype/no-weak-types
+    processedEntry.address.houseNumber = ((realEstate.address.houseNumber as any) as string);
   }
 
   return processedEntry;

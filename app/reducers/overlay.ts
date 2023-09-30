@@ -10,7 +10,6 @@ export type clickAnimation = {
   y: number;
 } & baseAnimation;
 export type anyAnimation = clickAnimation;
-// eslint-disable-next-line flowtype/no-weak-types
 export type AttachedInformation = Record<string, any>;
 export type ElementBoundingBox = {
   selector: string;

@@ -13,7 +13,6 @@ export default class ElectronUtils {
     this.webContents = webContents;
   }
 
-  // eslint-disable-next-line flowtype/no-weak-types
   async evaluate(javaScript: string, isUserGesture: boolean = false): any {
     const code = `new Promise((resolve, reject) => {
        try {
@@ -89,7 +88,6 @@ ${this.webContents.getURL()}`);
     return this.evaluate(`document.querySelector('${selector}').value`);
   }
 
-  // eslint-disable-next-line flowtype/no-weak-types
   async setValue(selector: string, value: any): Promise<string> {
     return this.evaluate(`document.querySelector('${selector}').value = ${JSON.stringify(value)}`);
   }
@@ -134,8 +132,7 @@ ${this.webContents.getURL()}`);
       return null;
     }
 
-    return (this.evaluate(`JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(selector, shadowRootSelector)}.getBoundingClientRect()))` // eslint-disable-next-line flowtype/no-weak-types
-    ) as any);
+    return (this.evaluate(`JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(selector, shadowRootSelector)}.getBoundingClientRect()))`) as any);
   }
 
   async getViewportSize(): Promise<ViewportSize> {

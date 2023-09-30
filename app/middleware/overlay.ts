@@ -37,7 +37,7 @@ export default ((store: Store) => (next: Dispatch) => async (action: Action) => 
     const electronUtils = new ElectronUtils(webContents);
 
     if (overview) {
-      const boundingBoxes = (await Promise.all(Object.values(overview) // $FlowFixMe -- Object.values
+      const boundingBoxes = (await Promise.all(Object.values(overview)
       .map(async (entry: OverviewDataEntry) => {
         const selector = entrySelector(entry.id);
 
@@ -57,7 +57,7 @@ export default ((store: Store) => (next: Dispatch) => async (action: Action) => 
           group: BOUNDING_BOX_GROUPS.OVERVIEW
         };
       }))).filter(entry => entry !== null);
-      store.dispatch( // $FlowFixMe the filter call doesn't seem to be understood
+      store.dispatch(
       setBoundingBoxGroup(BOUNDING_BOX_GROUPS.OVERVIEW, boundingBoxes));
     }
   }

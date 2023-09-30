@@ -19,7 +19,6 @@ export default ((store: Store) => (next: Dispatch) => async (action: Action) => 
 
     if (overview) {
       const configurationHash = getConfigurationFilterHash(configuration);
-      // $FlowFixMe -- Object.values
       Object.values(overview).forEach((entry: OverviewDataEntry) => {
         const cachedVerdict = verdicts[entry.id];
         const flatData = flat[entry.id];

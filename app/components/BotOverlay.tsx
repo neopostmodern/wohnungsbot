@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import styles from "./BotOverlay.scss";
-// @ts-expect-error - flow doesn't like SVG
 import BotIllustration from "../../resources/bot.svg";
-// @ts-expect-error - flow doesn't like SVG
 import BotIllustrationActive from "../../resources/bot-active.svg";
 import type { anyAnimation, ElementBoundingBox } from "../reducers/overlay";
 import type { Verdict, Verdicts } from "../reducers/data";
@@ -41,7 +39,6 @@ export default class BotOverlay extends Component<Props> {
 
   constructor() {
     super();
-    // eslint-disable-next-line flowtype/no-weak-types
     (this as any).handleWheel = this.handleWheel.bind(this);
   }
 
@@ -75,7 +72,6 @@ export default class BotOverlay extends Component<Props> {
       return botMessage;
     }
 
-    // eslint-disable-next-line flowtype/no-weak-types
     const matchedFlats = ((Object.values(verdicts) as any) as Array<Verdict>).filter(({
       flatId,
       result

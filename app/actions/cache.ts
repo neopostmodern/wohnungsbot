@@ -18,8 +18,7 @@ export function resetCache(): Action {
     }
   };
 }
-export function markCompleted(name: string, identifier: string, // eslint-disable-next-line flowtype/no-weak-types
-data: any): Action {
+export function markCompleted(name: string, identifier: string, data: any): Action {
   return {
     type: MARK_COMPLETED,
     payload: {
