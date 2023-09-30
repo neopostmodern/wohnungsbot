@@ -1,4 +1,3 @@
-// @flow
 import detectPort from 'detect-port';
 
 (function CheckPortInUse() {

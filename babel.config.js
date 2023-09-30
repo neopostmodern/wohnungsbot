@@ -25,7 +25,7 @@ module.exports = (api) => {
   return {
     presets: [
       [require('@babel/preset-env')],
-      require('@babel/preset-flow'),
+      require('@babel/preset-typescript'),
       [require('@babel/preset-react'), { development }]
     ],
     plugins: [
