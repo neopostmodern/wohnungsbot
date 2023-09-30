@@ -72,7 +72,7 @@ export default class BotOverlay extends Component<Props> {
       return botMessage;
     }
 
-    const matchedFlats = ((Object.values(verdicts) as any) as Array<Verdict>).filter(({
+    const matchedFlats = (Object.values(verdicts)as Array<Verdict>).filter(({
       flatId,
       result
     }) => result && !unsuitableFlatIds.includes(flatId)).map(({

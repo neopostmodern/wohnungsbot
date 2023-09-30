@@ -12,7 +12,7 @@ const pdfFolderPath = path.join(app.getPath('userData'), 'pdf');
 
 if (!fs.existsSync(pdfFolderPath)) {
   fs.mkdirSync(pdfFolderPath);
-} // eslint-disable-next-line no-unused-vars
+}
 
 
 export default ((store: Store) => (next: Dispatch) => async (action: Action) => {

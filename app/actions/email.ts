@@ -7,7 +7,7 @@ import type { OverviewDataEntry } from "../reducers/data";
 import type { Action, Dispatch, GetState } from "../reducers/types";
 import { markCompleted } from "./cache";
 import { CACHE_NAMES } from "../reducers/cache";
-// eslint-disable-next-line import/prefer-default-export
+
 export const sendMail = (to: string, subject: string, text: string): Action => ({
   type: SEND_MAIL,
   payload: {

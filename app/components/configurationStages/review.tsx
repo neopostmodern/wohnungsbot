@@ -153,30 +153,6 @@ const reviewStage: StageDescription = {
             </> : <>
               <em>keinen</em> ImmobilienScout24-Account verwenden
             </>}
-          {
-          /* <br /> */
-        }
-          {
-          /* <br /> */
-        }
-          {
-          /* {configuration.policies.researchDataSharing ? null : ( */
-        }
-          {
-          /*  <> */
-        }
-          {
-          /*    <em>keine</em>{' '} */
-        }
-          {
-          /*  </> */
-        }
-          {
-          /* )} */
-        }
-          {
-          /* anonymen Daten zur Wohnungsnot sammeln */
-        }
           <br />
           <br />
           {configuration.experimentalFeatures.sortByNewest ? <>

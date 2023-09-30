@@ -14,7 +14,7 @@ type Props = {
   resetPostcodes: () => void;
   toggleFloor: (floor: number) => void;
   toggleBoolean: (name: configurationBoolean) => void;
-  setNumber: (name: configurationNumbers, value: number | null | undefined) => void;
+  setNumber: (name: configurationNumbers, value: number | null) => void;
   setString: (name: string, value: string | null | undefined) => void;
   resetConfiguration: () => void;
   configuration: ConfigurationType;
