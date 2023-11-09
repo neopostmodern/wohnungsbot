@@ -1,11 +1,11 @@
-import type { WebContents } from "electron";
-import ElectronUtils from "./electronUtils";
-import { clickAction, type } from "../actions/botHelpers";
-import { sleep } from "./async";
-import type { Dispatch, Store } from "../reducers/types";
-import AbortionSystem from "./abortionSystem";
-import { setBotIsActing, setBotMessage } from "../actions/bot";
-import { setInteractiveMode } from "../actions/electron";
+import type { WebContents } from 'electron';
+import ElectronUtils from './electronUtils';
+import { clickAction, type } from '../actions/botHelpers';
+import { sleep } from './async';
+import type { Dispatch, Store } from '../reducers/types';
+import AbortionSystem from './abortionSystem';
+import { setBotIsActing, setBotMessage } from '../actions/bot';
+import { setInteractiveMode } from '../actions/electron';
 export default class ElectronUtilsRedux extends ElectronUtils {
   dispatch: Dispatch;
 
@@ -15,9 +15,11 @@ export default class ElectronUtilsRedux extends ElectronUtils {
   }
 
   async click(selector: string, shadowRootSelector?: string) {
-    await this.dispatch(clickAction(selector, {
-      shadowRootSelector
-    }));
+    await this.dispatch(
+      clickAction(selector, {
+        shadowRootSelector
+      })
+    );
   }
 
   async clickAndEnsureFocused(selector: string) {
@@ -27,10 +29,12 @@ export default class ElectronUtilsRedux extends ElectronUtils {
       await sleep(800);
     }
     /* eslint-enable no-await-in-loop */
-
   }
 
-  async humanInteraction(isHumanActionStillNeeded: () => Promise<boolean>, delayBeforeFirstDoneCheckMillis: number = 3_000) {
+  async humanInteraction(
+    isHumanActionStillNeeded: () => Promise<boolean>,
+    delayBeforeFirstDoneCheckMillis: number = 3_000
+  ) {
     await sleep(delayBeforeFirstDoneCheckMillis);
 
     if (!(await isHumanActionStillNeeded())) {
@@ -73,13 +77,17 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     await sleep(500);
     await this.dispatch(type(text));
 
-    if (AbortionSystem.nestedFunctionsMayContinue && (await this.getValue(selector)) !== text) {
+    if (
+      AbortionSystem.nestedFunctionsMayContinue &&
+      (await this.getValue(selector)) !== text
+    ) {
       if (secondTry) {
-        throw Error(`Repeatedly failed to write text to "${selector}": "${text}"`);
+        throw Error(
+          `Repeatedly failed to write text to "${selector}": "${text}"`
+        );
       }
 
       await this.fillText(selector, text, true);
     }
   }
-
 }

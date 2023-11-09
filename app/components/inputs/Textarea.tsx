@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 type TextareaProps = {
   value: string | null | undefined;
   onChange: (value: string | null | undefined) => void;
@@ -6,7 +6,10 @@ type TextareaProps = {
 type TextareaState = {
   value: string | null | undefined;
 };
-export default class Textarea extends React.Component<TextareaProps, TextareaState> {
+export default class Textarea extends React.Component<
+  TextareaProps,
+  TextareaState
+> {
   props: TextareaProps;
   state: TextareaState;
 
@@ -19,12 +22,8 @@ export default class Textarea extends React.Component<TextareaProps, TextareaSta
   }
 
   handleChange(event: React.SyntheticEvent<EventTarget>) {
-    const {
-      onChange
-    } = this.props;
-    const {
-      value
-    } = event.target;
+    const { onChange } = this.props;
+    const { value } = event.target;
     this.setState({
       value
     });
@@ -32,10 +31,7 @@ export default class Textarea extends React.Component<TextareaProps, TextareaSta
   }
 
   render() {
-    const {
-      value
-    } = this.state;
+    const { value } = this.state;
     return <textarea value={value} onChange={this.handleChange} />;
   }
-
 }

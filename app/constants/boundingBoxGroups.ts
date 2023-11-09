@@ -1,4 +1,4 @@
 const enum BOUNDING_BOX_GROUPS {
   OVERVIEW = 'OVERVIEW'
-};
+}
 export default BOUNDING_BOX_GROUPS;

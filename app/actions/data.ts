@@ -1,15 +1,30 @@
-import type { FlatData, OverviewDataEntry, RawFlatData, RawOverviewData, RawOverviewDataEntry, StringBoolean, Verdict } from "../reducers/data";
-import type { Action, Dispatch, ThunkAction } from "../reducers/types";
-import { SET_OVERVIEW_DATA, REFRESH_VERDICTS, SET_VERDICT, SET_FLAT_DATA } from "../constants/actionTypes";
-import ElectronUtils from "../utils/electronUtils";
-import { electronObjects } from "../store/electronObjects";
-import { returnToSearchPage } from "./bot";
+import type {
+  FlatData,
+  OverviewDataEntry,
+  RawFlatData,
+  RawOverviewData,
+  RawOverviewDataEntry,
+  StringBoolean,
+  Verdict
+} from '../reducers/data';
+import type { Action, Dispatch, ThunkAction } from '../reducers/types';
+import {
+  SET_OVERVIEW_DATA,
+  REFRESH_VERDICTS,
+  SET_VERDICT,
+  SET_FLAT_DATA
+} from '../constants/actionTypes';
+import ElectronUtils from '../utils/electronUtils';
+import { electronObjects } from '../store/electronObjects';
+import { returnToSearchPage } from './bot';
 
 function parseBoolean(stringBoolean: StringBoolean): boolean {
   return stringBoolean === 'true';
 }
 
-function processOverviewDataEntry(entry: RawOverviewDataEntry): OverviewDataEntry {
+function processOverviewDataEntry(
+  entry: RawOverviewDataEntry
+): OverviewDataEntry {
   const realEstate = entry['resultlist.realEstate'];
   const processedEntry: OverviewDataEntry = {
     id: entry['@id'],
@@ -35,7 +50,8 @@ function processOverviewDataEntry(entry: RawOverviewDataEntry): OverviewDataEntr
   };
 
   if (realEstate.address.preciseHouseNumber) {
-    processedEntry.address.houseNumber = ((realEstate.address.houseNumber as any) as string);
+    processedEntry.address.houseNumber = realEstate.address
+      .houseNumber as any as string;
   }
 
   return processedEntry;
@@ -43,17 +59,24 @@ function processOverviewDataEntry(entry: RawOverviewDataEntry): OverviewDataEntr
 
 export function getOverviewData(): ThunkAction {
   return async (dispatch: Dispatch) => {
-    const electronUtils = new ElectronUtils(electronObjects.views.puppet.webContents);
+    const electronUtils = new ElectronUtils(
+      electronObjects.views.puppet.webContents
+    );
 
     // is null if there were zero results
     try {
-      const rawOverviewData: RawOverviewData | null | undefined = await electronUtils.evaluate(`IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`);
+      const rawOverviewData: RawOverviewData | null | undefined =
+        await electronUtils.evaluate(
+          `IS24['resultList']['resultListModel']['searchResponseModel']['resultlist.resultlist']['resultlistEntries'][0]['resultlistEntry']`
+        );
       const data = {};
 
       if (rawOverviewData) {
         for (let i = 0; i < rawOverviewData.length; i++) {
           let entry = rawOverviewData[i];
-          let hasApplied = await electronUtils.evaluate(`document.querySelector('[data-id="${entry['@id']}"]').getElementsByClassName("shortlist-star--shortlisted").length > 0`);
+          let hasApplied = await electronUtils.evaluate(
+            `document.querySelector('[data-id="${entry['@id']}"]').getElementsByClassName("shortlist-star--shortlisted").length > 0`
+          );
           entry['alreadyApplied'] = hasApplied;
           const processedEntry = processOverviewDataEntry(entry);
           data[processedEntry.id] = processedEntry;
@@ -89,10 +112,14 @@ function processFlatData(flatData: RawFlatData): FlatData {
 
 export function getFlatData(): ThunkAction {
   return async (dispatch: Dispatch) => {
-    const electronUtils = new ElectronUtils(electronObjects.views.puppet.webContents);
+    const electronUtils = new ElectronUtils(
+      electronObjects.views.puppet.webContents
+    );
     const rawFlatData: RawFlatData = await electronUtils.evaluate(`utag_data`);
     rawFlatData.additionalData = {
-      requiresWBS: await electronUtils.elementExists('.is24qa-wohnberechtigungsschein-erforderlich-label')
+      requiresWBS: await electronUtils.elementExists(
+        '.is24qa-wohnberechtigungsschein-erforderlich-label'
+      )
     };
     const flatData = processFlatData(rawFlatData);
     dispatch({

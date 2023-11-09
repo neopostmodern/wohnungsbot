@@ -1,2 +1,2 @@
-import Placeholder from "../components/Placeholder";
+import Placeholder from '../components/Placeholder';
 export default Placeholder;

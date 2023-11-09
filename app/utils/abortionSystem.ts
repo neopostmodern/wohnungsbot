@@ -26,7 +26,9 @@ const AbortionSystem: {
 
   abort(reason: AbortionReason) {
     // eslint-disable-next-line no-console
-    console.log(`ABORT - called with reason ${reason} - some activities will be suspended for ${ABORTION_SUSPENSION_PERIOD}`);
+    console.log(
+      `ABORT - called with reason ${reason} - some activities will be suspended for ${ABORTION_SUSPENSION_PERIOD}`
+    );
     AbortionSystem.abortionReason = reason;
     // for 10 seconds tell all `while (true)` loops to stop
     // 10 seconds is less than the timeout in middleware/bot.js
@@ -43,6 +45,5 @@ const AbortionSystem: {
 
     AbortionSystem.abortFunction = null;
   }
-
 };
 export default AbortionSystem;

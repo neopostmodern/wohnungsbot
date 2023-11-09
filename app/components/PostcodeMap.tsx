@@ -1,16 +1,17 @@
-import React from "react";
+import React from 'react';
 import { MapContainer } from 'react-leaflet/MapContainer';
 import { GeoJSON } from 'react-leaflet/GeoJSON';
 import { TileLayer } from 'react-leaflet/TileLayer';
 import { Marker } from 'react-leaflet/Marker';
 import { useMapEvent } from 'react-leaflet/hooks';
-import type { Layer } from "leaflet";
-import { divIcon } from "leaflet";
-import { feature } from "topojson";
-import topoData from "../map/berlin-postcodes-data.topo";
-import labels from "../map/labels";
+import type { Layer } from 'leaflet';
+import { divIcon } from 'leaflet';
+import { feature } from 'topojson';
+import topoData from '../map/berlin-postcodes-data.topo';
+import labels from '../map/labels';
 const geoData = feature(topoData, topoData.objects.collection);
-const tileUrl = 'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
+const tileUrl =
+  'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
 const tileAttribution = `
   Map tiles by <a href="http://stamen.com">Stamen Design</a>,
   <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>
@@ -29,9 +30,7 @@ type PostcodeDescription = {
   };
 };
 
-const ZoomLevelListener = ({
-  onZoomChange
-}) => {
+const ZoomLevelListener = ({ onZoomChange }) => {
   const map = useMapEvent('zoom', () => {
     onZoomChange(map.getZoom());
   });
@@ -71,10 +70,10 @@ class PostcodeMap extends React.Component<Props, State> {
 
   eachFeature(postcodeDescription: PostcodeDescription, layer: Layer) {
     layer.on('mouseover', () => {
-      const {
-        selectedPostcodes
-      } = this.props;
-      const currentlySelected = selectedPostcodes.includes(postcodeDescription.id);
+      const { selectedPostcodes } = this.props;
+      const currentlySelected = selectedPostcodes.includes(
+        postcodeDescription.id
+      );
       layer.setStyle({
         fillColor: currentlySelected ? 'darkred' : 'darkgreen',
         fillOpacity: currentlySelected ? 0.3 : 0.4
@@ -84,28 +83,26 @@ class PostcodeMap extends React.Component<Props, State> {
       layer.setStyle(this.stylePostcodeOverlay(postcodeDescription));
     });
     layer.on('click', () => {
-      const {
-        togglePostcodeSelected
-      } = this.props;
+      const { togglePostcodeSelected } = this.props;
       togglePostcodeSelected(postcodeDescription.id);
     });
-    layer.bindTooltip(`${postcodeDescription.id}
+    layer.bindTooltip(
+      `${postcodeDescription.id}
 <div class="map-tooltip-name">${postcodeDescription.properties.name}</div>
-${postcodeDescription.properties.district}`, {
-      sticky: true,
-      className: 'map-tooltip',
-      offset: [30, 0],
-      direction: 'right'
-    });
+${postcodeDescription.properties.district}`,
+      {
+        sticky: true,
+        className: 'map-tooltip',
+        offset: [30, 0],
+        direction: 'right'
+      }
+    );
   }
 
   stylePostcodeOverlay(postcodeDescription: PostcodeDescription) {
-    const {
-      selectedPostcodes
-    } = this.props;
+    const { selectedPostcodes } = this.props;
     // SVG CSS is too hard to type
-    const style: any = { ...baseStyle
-    };
+    const style: any = { ...baseStyle };
 
     if (selectedPostcodes.includes(postcodeDescription.id)) {
       Object.assign(style, {
@@ -144,28 +141,53 @@ ${postcodeDescription.properties.district}`, {
   }
 
   render() {
-    const {
-      height,
-      zoom
-    } = this.state;
-    return <div style={{
-      height: '100%'
-    }} ref={this.setHeightRef} className={`zoom-${zoom}`} data-type="map">
-        {height ? <MapContainer center={[52.5234051, 13.4113999]} zoom={PostcodeMap.initialZoom} minZoom={10} maxZoom={16} maxBounds={[[52.3202, 12.924], [52.6805, 13.8249]]} style={{
-        height
-      }}>
+    const { height, zoom } = this.state;
+    return (
+      <div
+        style={{
+          height: '100%'
+        }}
+        ref={this.setHeightRef}
+        className={`zoom-${zoom}`}
+        data-type="map"
+      >
+        {height ? (
+          <MapContainer
+            center={[52.5234051, 13.4113999]}
+            zoom={PostcodeMap.initialZoom}
+            minZoom={10}
+            maxZoom={16}
+            maxBounds={[
+              [52.3202, 12.924],
+              [52.6805, 13.8249]
+            ]}
+            style={{
+              height
+            }}
+          >
             <ZoomLevelListener onZoomChange={this.handleZoom} />
             <TileLayer url={tileUrl} attribution={tileAttribution} />
-            <GeoJSON data={geoData} onEachFeature={this.eachFeature} style={this.stylePostcodeOverlay} />
+            <GeoJSON
+              data={geoData}
+              onEachFeature={this.eachFeature}
+              style={this.stylePostcodeOverlay}
+            />
 
-            {labels.map(([name, latitude, longitude]) => <Marker position={[latitude, longitude]} key={name} icon={divIcon({
-          html: name,
-          className: 'district-label'
-        })} />)}
-          </MapContainer> : null}
-      </div>;
+            {labels.map(([name, latitude, longitude]) => (
+              <Marker
+                position={[latitude, longitude]}
+                key={name}
+                icon={divIcon({
+                  html: name,
+                  className: 'district-label'
+                })}
+              />
+            ))}
+          </MapContainer>
+        ) : null}
+      </div>
+    );
   }
-
 }
 
 export default PostcodeMap;

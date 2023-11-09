@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const valueToInt = (value: string) => {
   const parsedValue = parseFloat(value);
@@ -20,7 +20,15 @@ const NumberField = ({
   onChange: (value: number | null | undefined) => void;
   step?: number;
   style?: CSSStyleDeclaration;
-}) => <input type="number" value={value === null ? '' : value} onChange={event => onChange(valueToInt(event.target.value))} step={step} style={style} />;
+}) => (
+  <input
+    type="number"
+    value={value === null ? '' : value}
+    onChange={(event) => onChange(valueToInt(event.target.value))}
+    step={step}
+    style={style}
+  />
+);
 
 NumberField.defaultProps = {
   step: undefined,

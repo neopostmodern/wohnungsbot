@@ -1,7 +1,21 @@
-import { MAIN } from "../constants/targets";
-import type { Action } from "../reducers/types";
-import type { BrowserViewName } from "../reducers/electron";
-import { ELECTRON_ROUTING, HIDE_CONFIGURATION, INTERNAL_ADD_BROWSER_VIEW, PERFORM_SCROLL, SET_BROWSER_VIEW_READY, SET_BROWSER_VIEW_URL, SET_BROWSER_WINDOW, SET_INTERACTIVE_MODE, SHOW_CONFIGURATION, SHOW_DEV_TOOLS, OPEN_PDF, SET_AVAILABLE_VERSION, SET_UPDATE_DOWNLOAD_PROGRESS } from "../constants/actionTypes";
+import { MAIN } from '../constants/targets';
+import type { Action } from '../reducers/types';
+import type { BrowserViewName } from '../reducers/electron';
+import {
+  ELECTRON_ROUTING,
+  HIDE_CONFIGURATION,
+  INTERNAL_ADD_BROWSER_VIEW,
+  PERFORM_SCROLL,
+  SET_BROWSER_VIEW_READY,
+  SET_BROWSER_VIEW_URL,
+  SET_BROWSER_WINDOW,
+  SET_INTERACTIVE_MODE,
+  SHOW_CONFIGURATION,
+  SHOW_DEV_TOOLS,
+  OPEN_PDF,
+  SET_AVAILABLE_VERSION,
+  SET_UPDATE_DOWNLOAD_PROGRESS
+} from '../constants/actionTypes';
 export function setWindow(): Action {
   return {
     type: SET_BROWSER_WINDOW,
@@ -24,7 +38,10 @@ export function addView(name: BrowserViewName, initialUrl?: string): Action {
     }
   };
 }
-export function setBrowserViewReady(name: BrowserViewName, ready: boolean): Action {
+export function setBrowserViewReady(
+  name: BrowserViewName,
+  ready: boolean
+): Action {
   return {
     type: SET_BROWSER_VIEW_READY,
     payload: {
@@ -44,7 +61,10 @@ export function setBrowserViewUrl(name: BrowserViewName, url: string): Action {
     }
   };
 }
-export function electronRouting(name: BrowserViewName, targetUrl: string): Action {
+export function electronRouting(
+  name: BrowserViewName,
+  targetUrl: string
+): Action {
   return {
     type: ELECTRON_ROUTING,
     payload: {

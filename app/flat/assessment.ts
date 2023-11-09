@@ -1,10 +1,19 @@
-import type { Configuration } from "../reducers/configuration";
-import { getConfigurationFilterHash } from "../reducers/configuration";
-import type { FlatAction, FlatData, OverviewDataEntry, Verdict } from "../reducers/data";
-import { FLAT_ACTION, VERDICT_SCOPE } from "../reducers/data";
-import { floorToName } from "../utils/germanStrings";
+import type { Configuration } from '../reducers/configuration';
+import { getConfigurationFilterHash } from '../reducers/configuration';
+import type {
+  FlatAction,
+  FlatData,
+  OverviewDataEntry,
+  Verdict
+} from '../reducers/data';
+import { FLAT_ACTION, VERDICT_SCOPE } from '../reducers/data';
+import { floorToName } from '../utils/germanStrings';
 // eslint-disable-next-line import/prefer-default-export
-export function assessFlat(configuration: Configuration, overviewDataEntry: OverviewDataEntry, flatData?: FlatData): Verdict {
+export function assessFlat(
+  configuration: Configuration,
+  overviewDataEntry: OverviewDataEntry,
+  flatData?: FlatData
+): Verdict {
   let action: FlatAction = FLAT_ACTION.IGNORE;
   const reasons = [];
 
@@ -35,7 +44,10 @@ export function assessFlat(configuration: Configuration, overviewDataEntry: Over
     result: configuration.filter.postcodes.includes(flatPostcode)
   });
 
-  if (overviewDataEntry.title.includes('WBS') || overviewDataEntry.title.toLowerCase().includes('wohnberechtigung')) {
+  if (
+    overviewDataEntry.title.includes('WBS') ||
+    overviewDataEntry.title.toLowerCase().includes('wohnberechtigung')
+  ) {
     reasons.push({
       reason: `Wohnberechtigungsschein erforderlich`,
       result: configuration.filter.hasWBS
@@ -46,11 +58,17 @@ export function assessFlat(configuration: Configuration, overviewDataEntry: Over
     const rentPerSquareMeter = overviewDataEntry.rent / overviewDataEntry.area;
     reasons.push({
       reason: `${rentPerSquareMeter.toFixed(2)} €/m² (kalt)`,
-      result: rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
+      result:
+        rentPerSquareMeter < configuration.filter.maximumRentPerSquareMeter
     });
   }
 
-  if (overviewDataEntry.title.toLowerCase().includes('bes.') || overviewDataEntry.title.toLowerCase().includes('bes:') || overviewDataEntry.title.toLowerCase().includes('besichtigung') || overviewDataEntry.title.includes('Visit')) {
+  if (
+    overviewDataEntry.title.toLowerCase().includes('bes.') ||
+    overviewDataEntry.title.toLowerCase().includes('bes:') ||
+    overviewDataEntry.title.toLowerCase().includes('besichtigung') ||
+    overviewDataEntry.title.includes('Visit')
+  ) {
     reasons.push({
       reason: `Besichtigungstermin im Titel`,
       result: false
@@ -61,7 +79,13 @@ export function assessFlat(configuration: Configuration, overviewDataEntry: Over
   if (configuration.filter.onlyUnfurnished) {
     reasons.push({
       reason: `Unmöbliert`,
-      result: !(overviewDataEntry.title.toLowerCase().includes('öbliert') || overviewDataEntry.title.toLowerCase().includes('öbelisier') || overviewDataEntry.title.toLowerCase().includes('furnish') || overviewDataEntry.title.toLowerCase().includes('furniture') || overviewDataEntry.title.toLowerCase().includes('equipped'))
+      result: !(
+        overviewDataEntry.title.toLowerCase().includes('öbliert') ||
+        overviewDataEntry.title.toLowerCase().includes('öbelisier') ||
+        overviewDataEntry.title.toLowerCase().includes('furnish') ||
+        overviewDataEntry.title.toLowerCase().includes('furniture') ||
+        overviewDataEntry.title.toLowerCase().includes('equipped')
+      )
     });
   }
 
@@ -89,18 +113,28 @@ export function assessFlat(configuration: Configuration, overviewDataEntry: Over
   if (configuration.filter.noSwapApartment) {
     reasons.push({
       reason: `Keine Tauschwohnung`,
-      result: !(overviewDataEntry.title.toLowerCase().includes('tausch') || overviewDataEntry.title.toLowerCase().includes('swap'))
+      result: !(
+        overviewDataEntry.title.toLowerCase().includes('tausch') ||
+        overviewDataEntry.title.toLowerCase().includes('swap')
+      )
     });
   }
 
   if (configuration.filter.notSpecificallyForSeniors) {
     reasons.push({
       reason: `Keine Senioren-Wohnung`,
-      result: !(overviewDataEntry.title.toLowerCase().includes('senioren') || overviewDataEntry.title.toLowerCase().includes('altersgerechtes'))
+      result: !(
+        overviewDataEntry.title.toLowerCase().includes('senioren') ||
+        overviewDataEntry.title.toLowerCase().includes('altersgerechtes')
+      )
     });
   }
 
-  const subleaseCond = overviewDataEntry.title.toLowerCase().includes('zwischenmiete') || overviewDataEntry.title.toLowerCase().includes('befr.') || overviewDataEntry.title.toLowerCase().includes('befristet') || overviewDataEntry.title.toLowerCase().includes(' bis ');
+  const subleaseCond =
+    overviewDataEntry.title.toLowerCase().includes('zwischenmiete') ||
+    overviewDataEntry.title.toLowerCase().includes('befr.') ||
+    overviewDataEntry.title.toLowerCase().includes('befristet') ||
+    overviewDataEntry.title.toLowerCase().includes(' bis ');
 
   if (configuration.filter.onlySublease) {
     reasons.push({
@@ -140,7 +174,7 @@ export function assessFlat(configuration: Configuration, overviewDataEntry: Over
     }
   }
 
-  const result = reasons.every(reason => reason.result);
+  const result = reasons.every((reason) => reason.result);
   let scope;
 
   if (flatData) {

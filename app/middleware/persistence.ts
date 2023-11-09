@@ -1,10 +1,10 @@
-import { WAKE_UP } from "../actions/infrastructure";
-import { setConfiguration } from "../actions/configuration";
-import persistentStore from "../utils/persistentStore";
-import type { Action, Dispatch, Store } from "../reducers/types";
-import { setCache } from "../actions/cache"; // eslint-disable-next-line no-unused-vars
+import { WAKE_UP } from '../actions/infrastructure';
+import { setConfiguration } from '../actions/configuration';
+import persistentStore from '../utils/persistentStore';
+import type { Action, Dispatch, Store } from '../reducers/types';
+import { setCache } from '../actions/cache'; // eslint-disable-next-line no-unused-vars
 
-export default ((store: Store) => (next: Dispatch) => (action: Action) => {
+export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {
     const configuration = persistentStore.get('configuration');
 
@@ -29,11 +29,10 @@ export default ((store: Store) => (next: Dispatch) => (action: Action) => {
   let ret = next(action);
 
   if (action.meta && action.meta.configuration) {
-    const configurationToSave = { ...store.getState().configuration
-    };
+    const configurationToSave = { ...store.getState().configuration };
     delete configurationToSave.loaded;
     persistentStore.set('configuration', configurationToSave);
   }
 
   return ret;
-});
+};

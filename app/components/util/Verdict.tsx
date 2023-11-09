@@ -1,7 +1,7 @@
-import React from "react";
-import styles from "./Verdict.scss";
-import { flatPageUrl } from "../../flat/urlBuilder";
-import type { Verdict } from "../../reducers/data";
+import React from 'react';
+import styles from './Verdict.scss';
+import { flatPageUrl } from '../../flat/urlBuilder';
+import type { Verdict } from '../../reducers/data';
 type VerdictProps = {
   flatId: string;
   verdict: Verdict;
@@ -26,28 +26,29 @@ const VerdictSummary = ({
     return <div className={styles.oneLineReason}>Unpassend</div>;
   }
 
-  return <>
-      {verdict.reasons.map(({
-      reason,
-      result
-    }) => <div key={reason} className={styles.reason}>
+  return (
+    <>
+      {verdict.reasons.map(({ reason, result }) => (
+        <div key={reason} className={styles.reason}>
           <div className={styles.reasonIcon}>
-            <span className={`material-icons standalone-icon ${result ? 'good' : 'bad'}`}>
+            <span
+              className={`material-icons standalone-icon ${
+                result ? 'good' : 'bad'
+              }`}
+            >
               {result ? 'check' : 'block'}
             </span>
           </div>
           <div>{reason}</div>
-        </div>)}
-    </>;
+        </div>
+      ))}
+    </>
+  );
 };
 
 export default class VerdictComponent extends React.Component<VerdictProps> {
   getMainIcon(): string {
-    const {
-      verdict,
-      isAlreadyApplied,
-      isUnsuitable
-    } = this.props;
+    const { verdict, isAlreadyApplied, isUnsuitable } = this.props;
 
     if (isAlreadyApplied) {
       return 'done_outline';
@@ -61,30 +62,44 @@ export default class VerdictComponent extends React.Component<VerdictProps> {
   }
 
   render() {
-    const {
-      verdict,
-      isAlreadyApplied,
-      isUnsuitable,
-      flatId
-    } = this.props;
-    return <div className={styles.verdictOverlay}>
-        {verdict ? <>
+    const { verdict, isAlreadyApplied, isUnsuitable, flatId } = this.props;
+    return (
+      <div className={styles.verdictOverlay}>
+        {verdict ? (
+          <>
             <div className={styles.summary}>
-              <span className={`material-icons standalone-icon ${!isUnsuitable && (verdict.result || isAlreadyApplied) ? 'good' : 'bad'}`}>
+              <span
+                className={`material-icons standalone-icon ${
+                  !isUnsuitable && (verdict.result || isAlreadyApplied)
+                    ? 'good'
+                    : 'bad'
+                }`}
+              >
                 {this.getMainIcon()}
               </span>
             </div>
             <div>
-              <VerdictSummary verdict={verdict} isAlreadyApplied={isAlreadyApplied} isUnsuitable={isUnsuitable} />
+              <VerdictSummary
+                verdict={verdict}
+                isAlreadyApplied={isAlreadyApplied}
+                isUnsuitable={isUnsuitable}
+              />
             </div>
-          </> : <i>Keine Informationen</i>}
+          </>
+        ) : (
+          <i>Keine Informationen</i>
+        )}
         <div className={styles.openInBrowser}>
-          <a href={flatPageUrl(flatId)} target="_blank" rel="noopener noreferrer">
+          <a
+            href={flatPageUrl(flatId)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Wohnung im Browser ansehen
             <span className="material-icons">open_in_new</span>
           </a>
         </div>
-      </div>;
+      </div>
+    );
   }
-
 }

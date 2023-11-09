@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 type EnumFieldProps = {
   value: string;
   onChange: (value: string) => void;
@@ -13,13 +13,21 @@ const EnumField = ({
   options,
   inline,
   isWeird
-}: EnumFieldProps) => <div>
-    {Object.entries(options).map(([optionKey, optionValue]: any) => <div className={inline ? 'inline-enum-select' : ''} key={optionKey}>
-        <input type="checkbox" checked={optionValue === value} onChange={() => onChange(optionValue)} />{' '}
+}: EnumFieldProps) => (
+  <div>
+    {Object.entries(options).map(([optionKey, optionValue]: any) => (
+      <div className={inline ? 'inline-enum-select' : ''} key={optionKey}>
+        <input
+          type="checkbox"
+          checked={optionValue === value}
+          onChange={() => onChange(optionValue)}
+        />{' '}
         {optionValue}
         {isWeird ? <sup className="is-weird">&sect;</sup> : null}
-      </div>)}
-  </div>;
+      </div>
+    ))}
+  </div>
+);
 
 EnumField.defaultProps = {
   inline: false,

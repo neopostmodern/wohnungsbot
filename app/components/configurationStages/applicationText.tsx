@@ -1,15 +1,16 @@
-import React from "react";
-import styles from "../Configuration.scss";
-import type { InheritedProps, StageDescription } from "./types";
-import APPLICATION_TEMPLATES from "../../constants/applicationTemplates";
-import Textarea from "../inputs/Textarea";
-import ApplicationTextPreviews from "../util/ApplicationTextPreviews";
+import React from 'react';
+import styles from '../Configuration.scss';
+import type { InheritedProps, StageDescription } from './types';
+import APPLICATION_TEMPLATES from '../../constants/applicationTemplates';
+import Textarea from '../inputs/Textarea';
+import ApplicationTextPreviews from '../util/ApplicationTextPreviews';
 const applicationTextStage: StageDescription = {
   container: {
     className: styles.high
   },
   title: 'Dein Anschreiben',
-  subtitle: <>
+  subtitle: (
+    <>
       Ein persönlich wirkendes Anschreiben ist sehr wichtig. Der Bot kann das
       teilweise für dich übernehmen — verwende dafür die bereitgestellten, sich
       dynamisch anpassenden Textbausteine!
@@ -18,17 +19,17 @@ const applicationTextStage: StageDescription = {
       <i>mit</i> Textbausteinen ein und kannst dann <em>rechts</em> Beispiele
       sehen, wie er an die entsprechenden Wohnungen und Ansprechpartner_innen
       angepasst wird.
-    </>,
-  body: ({
-    configuration: {
-      applicationText
-    },
-    setString
-  }: InheritedProps) => <div className={styles.marginBottom}>
+    </>
+  ),
+  body: ({ configuration: { applicationText }, setString }: InheritedProps) => (
+    <div className={styles.marginBottom}>
       <div className={styles.row}>
         <div className={styles.column}>
           <h3>Deine Textvorlage</h3>
-          <Textarea onChange={text => setString('applicationText', text)} value={applicationText} />
+          <Textarea
+            onChange={(text) => setString('applicationText', text)}
+            value={applicationText}
+          />
           <h3>Verfügbare Textbausteine</h3>
           <div className={styles.searchParameter}>
             Anrede:{' '}
@@ -63,9 +64,12 @@ const applicationTextStage: StageDescription = {
               Beispiele: &quot;Neukölln&quot;, &quot;Kreuzberg&quot;
             </div>
           </div>
-          <div className={styles.comment} style={{
-          marginTop: '3rem'
-        }}>
+          <div
+            className={styles.comment}
+            style={{
+              marginTop: '3rem'
+            }}
+          >
             Allgemeiner Tipp: Du kannst deine Bewerbungsunterlagen bei einem
             Cloud-Anbieter deiner Wahl hochladen und hier einen Link
             mitschicken!
@@ -73,10 +77,14 @@ const applicationTextStage: StageDescription = {
         </div>
         <div className={styles.column}>
           <h3>Wie der Bot ihn abgeschickt</h3>
-          <ApplicationTextPreviews applicationText={applicationText} className={styles.applicationTextPreview} />
+          <ApplicationTextPreviews
+            applicationText={applicationText}
+            className={styles.applicationTextPreview}
+          />
         </div>
       </div>
-    </div>,
+    </div>
+  ),
   buttons: {
     forward: {
       text: `Weiter`

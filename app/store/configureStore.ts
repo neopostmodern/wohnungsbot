@@ -1,20 +1,24 @@
-import { createStore, applyMiddleware, compose } from "redux";
-import thunk from "redux-thunk";
-import { createReduxHistoryContext } from "redux-first-history";
-import { createLogger } from "redux-logger";
-import getHistory from "./history";
-import createRootReducer from "../reducers";
-import type { stateType } from "../reducers/types";
-import { MAIN, RENDERER, WEB } from "../constants/targets";
-import overlay from "../middleware/overlay";
-import logging from "../middleware/logging";
-import configuration from "../middleware/configuration";
-import data from "../middleware/data";
-import scheduler from "../middleware/scheduler";
-import bot from "../middleware/bot";
-import login from "../middleware/login";
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+import { createReduxHistoryContext } from 'redux-first-history';
+import { createLogger } from 'redux-logger';
+import getHistory from './history';
+import createRootReducer from '../reducers';
+import type { stateType } from '../reducers/types';
+import { MAIN, RENDERER, WEB } from '../constants/targets';
+import overlay from '../middleware/overlay';
+import logging from '../middleware/logging';
+import configuration from '../middleware/configuration';
+import data from '../middleware/data';
+import scheduler from '../middleware/scheduler';
+import bot from '../middleware/bot';
+import login from '../middleware/login';
 
-const configureStore = async (target: string, isDevelopment: boolean, initialState?: stateType) => {
+const configureStore = async (
+  target: string,
+  isDevelopment: boolean,
+  initialState?: stateType
+) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
@@ -24,9 +28,7 @@ const configureStore = async (target: string, isDevelopment: boolean, initialSta
 
   // Router Middleware
   if (target === RENDERER || target === WEB) {
-    const {
-      routerMiddleware
-    } = createReduxHistoryContext({
+    const { routerMiddleware } = createReduxHistoryContext({
       history
     });
     middleware.push(routerMiddleware);
@@ -96,16 +98,12 @@ const configureStore = async (target: string, isDevelopment: boolean, initialSta
   let composeEnhancers = compose;
 
   if (target === MAIN) {
-    const {
-      composeWithStateSync
-    } = await import('electron-redux/main');
+    const { composeWithStateSync } = await import('electron-redux/main');
     composeEnhancers = composeWithStateSync;
   }
 
   if (target === RENDERER) {
-    const {
-      composeWithStateSync
-    } = await import('electron-redux/renderer');
+    const { composeWithStateSync } = await import('electron-redux/renderer');
     composeEnhancers = composeWithStateSync;
   }
 
@@ -114,8 +112,10 @@ const configureStore = async (target: string, isDevelopment: boolean, initialSta
   const store = createStore(rootReducer, enhancer);
 
   if (module.hot) {
-    module.hot.accept('../reducers', // eslint-disable-next-line global-require
-    () => store.replaceReducer(require('../reducers').default));
+    module.hot.accept(
+      '../reducers', // eslint-disable-next-line global-require
+      () => store.replaceReducer(require('../reducers').default)
+    );
   }
 
   return store;

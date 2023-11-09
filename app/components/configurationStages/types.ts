@@ -1,11 +1,18 @@
-import type { Node } from "react";
-import type { configurationBoolean, configurationNumbers, Configuration } from "../../reducers/configuration";
+import type { Node } from 'react';
+import type {
+  configurationBoolean,
+  configurationNumbers,
+  Configuration
+} from '../../reducers/configuration';
 export type InheritedProps = {
   togglePostcode: (postcode: string) => void;
   resetPostcodes: () => void;
   toggleFloor: (floor: number) => void;
   toggleBoolean: (name: configurationBoolean) => void;
-  setNumber: (name: configurationNumbers, value: number | null | undefined) => void;
+  setNumber: (
+    name: configurationNumbers,
+    value: number | null | undefined
+  ) => void;
   setString: (name: string, value: string | null | undefined) => void;
   configuration: Configuration;
 };

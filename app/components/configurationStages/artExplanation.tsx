@@ -1,7 +1,7 @@
-import React from "react";
-import styles from "../Configuration.scss";
-import type { InheritedProps, StageDescription } from "./types";
-import type { Configuration } from "../../reducers/configuration";
+import React from 'react';
+import styles from '../Configuration.scss';
+import type { InheritedProps, StageDescription } from './types';
+import type { Configuration } from '../../reducers/configuration';
 const configurationExplanationStage: StageDescription = {
   container: {
     className: styles.high
@@ -9,12 +9,11 @@ const configurationExplanationStage: StageDescription = {
   title: '',
   body: ({
     configuration: {
-      policies: {
-        artConsent
-      }
+      policies: { artConsent }
     },
     toggleBoolean
-  }: InheritedProps) => <>
+  }: InheritedProps) => (
+    <>
       <h2>Kunst?</h2>
       <span>
         Du hast vielleicht gehört, dass dieser Bot dir helfen kann, eine Wohnung
@@ -28,7 +27,11 @@ const configurationExplanationStage: StageDescription = {
         funktioniert sie nicht, oder anders als erwartet. Vielleicht ist es
         interessant, wenn sie anders funktioniert als erwartet. Vielleicht kann
         ich dir bei Problemen helfen (lege dazu am besten ein &quot;Issue&quot;{' '}
-        <a href="https://github.com/neopostmodern/wohnungsbot/issues" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://github.com/neopostmodern/wohnungsbot/issues"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           auf GitHub
         </a>{' '}
         an), vielleicht auch nicht.
@@ -52,7 +55,11 @@ const configurationExplanationStage: StageDescription = {
         <br />
         <div className={styles.checkboxWithLabel}>
           <div>
-            <input type="checkbox" checked={artConsent} onChange={() => toggleBoolean('policies.artConsent')} />
+            <input
+              type="checkbox"
+              checked={artConsent}
+              onChange={() => toggleBoolean('policies.artConsent')}
+            />
           </div>
           <div>
             Ich habe verstanden, dass der Wohnungsbot ein Kunstprojekt ist. Ich
@@ -66,12 +73,17 @@ const configurationExplanationStage: StageDescription = {
         <br />
         <br />
         Mehr Informationen zu diesem Projekt findest du auf{' '}
-        <a href="https://wohnungsbot.de" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://wohnungsbot.de"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           wohnungsbot.de
         </a>
         .
       </span>
-    </>,
+    </>
+  ),
   buttons: {
     forward: {
       text: `Zur Konfiguration`,

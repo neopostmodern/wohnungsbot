@@ -1,13 +1,39 @@
-import dotProp from "dot-prop-immutable";
-import type { Action } from "./types";
-import { NEXT_STAGE, PREVIOUS_STAGE, RESET_CONFIGURATION, RESET_POSTCODES, SET_CONFIGURATION, SET_NUMBER, SET_SEARCH_URL, TOGGLE_FLOOR, TOGGLE_POSTCODE, TOGGLE_BOOLEAN, SET_STRING } from "../constants/actionTypes";
-import { objectHash } from "../utils/hash";
-import APPLICATION_TEMPLATES from "../constants/applicationTemplates";
-import { generateSearchUrl } from "../flat/urlBuilder";
+import dotProp from 'dot-prop-immutable';
+import type { Action } from './types';
+import {
+  NEXT_STAGE,
+  PREVIOUS_STAGE,
+  RESET_CONFIGURATION,
+  RESET_POSTCODES,
+  SET_CONFIGURATION,
+  SET_NUMBER,
+  SET_SEARCH_URL,
+  TOGGLE_FLOOR,
+  TOGGLE_POSTCODE,
+  TOGGLE_BOOLEAN,
+  SET_STRING
+} from '../constants/actionTypes';
+import { objectHash } from '../utils/hash';
+import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
+import { generateSearchUrl } from '../flat/urlBuilder';
 export const ConfigurationVersion = 7;
 export const AllFloors = [4, 3, 2, 1, 0];
-export type configurationNumbers = "maximumRent" | "minimumArea" | "minimumRooms" | "maximumRooms";
-export type configurationBoolean = "hasWBS" | "mustHaveBalcony" | "mustHaveKitchenette" | "noKitchenette" | "onlyOldBuilding" | "onlyUnfurnished" | "noSwapApartment" | "notSpecificallyForSeniors" | "onlySublease" | "noSublease";
+export type configurationNumbers =
+  | 'maximumRent'
+  | 'minimumArea'
+  | 'minimumRooms'
+  | 'maximumRooms';
+export type configurationBoolean =
+  | 'hasWBS'
+  | 'mustHaveBalcony'
+  | 'mustHaveKitchenette'
+  | 'noKitchenette'
+  | 'onlyOldBuilding'
+  | 'onlyUnfurnished'
+  | 'noSwapApartment'
+  | 'notSpecificallyForSeniors'
+  | 'onlySublease'
+  | 'noSublease';
 export type Filter = {
   postcodes: Array<string>;
   maximumRent?: number | null | undefined;
@@ -30,17 +56,17 @@ export type Filter = {
 export const enum SALUTATIONS {
   FRAU = 'Frau',
   HERR = 'Herr'
-};
+}
 export const enum USEACCOUNT {
   JA = 'Ja',
   MANUELL = 'Manuell',
-  NEIN = 'Nein',
-};
+  NEIN = 'Nein'
+}
 export const enum LOGINSTATUS {
   LOGGED_IN,
   LOGGED_OUT,
-  ERROR,
-};
+  ERROR
+}
 export type LoginData = {
   useAccount: USEACCOUNT;
   userName: string;
@@ -68,14 +94,14 @@ export type DataPolicies = {
 };
 export const enum MOVE_IN_WHEN {
   NOW = 'Ab sofort',
-  FLEXIBLE = 'Flexibel',
-};
+  FLEXIBLE = 'Flexibel'
+}
 export const enum MOVE_IN_WHO {
   SINGLE = 'Einpersonenhaushalt',
   TWO_ADULTS = 'Zwei Erwachsene',
   FAMILY = 'Familie',
   SHARED_FLAT = 'Wohngemeinschaft'
-};
+}
 export const enum EMPLOYMENT_STATUS {
   EMPLOYEE = 'Angestellte_r',
   WORKER = 'Arbeiter_in',
@@ -88,7 +114,7 @@ export const enum EMPLOYMENT_STATUS {
   UNEMPLOYED = 'Arbeitslos',
   RETIRED = 'Renter_in',
   OTHER = 'Sonstige'
-};
+}
 export type AdditionalInformation = {
   moveInWhen: MOVE_IN_WHEN;
   moveInWho: MOVE_IN_WHO;
@@ -113,7 +139,9 @@ export type Configuration = {
   configurationVersion: number;
   experimentalFeatures: ExperimentalFeatures;
 };
-export const getConfigurationFilterHash = (configurationState: Configuration): number => {
+export const getConfigurationFilterHash = (
+  configurationState: Configuration
+): number => {
   return objectHash(configurationState.filter);
 };
 const defaultConfiguration: Configuration = {
@@ -172,21 +200,32 @@ const defaultConfiguration: Configuration = {
   configurationVersion: ConfigurationVersion
 };
 
-function configurationMigrations(oldConfiguration: Configuration): Configuration {
+function configurationMigrations(
+  oldConfiguration: Configuration
+): Configuration {
   let migratedConfiguration = oldConfiguration;
 
   if (oldConfiguration.configurationVersion < 2) {
-    migratedConfiguration = dotProp.set(migratedConfiguration, 'policies.fillAsLittleAsPossible', true);
+    migratedConfiguration = dotProp.set(
+      migratedConfiguration,
+      'policies.fillAsLittleAsPossible',
+      true
+    );
   }
 
   if (oldConfiguration.configurationVersion < 3) {
     if (oldConfiguration.additionalInformation.animals.trim().length === 0) {
-      migratedConfiguration = dotProp.set(migratedConfiguration, 'additionalInformation.animals', 'Keine');
+      migratedConfiguration = dotProp.set(
+        migratedConfiguration,
+        'additionalInformation.animals',
+        'Keine'
+      );
     }
   }
 
   if (oldConfiguration.configurationVersion < 4) {
-    migratedConfiguration = { ...migratedConfiguration,
+    migratedConfiguration = {
+      ...migratedConfiguration,
       immobilienScout24: {
         useAccount: false,
         userName: '',
@@ -197,7 +236,8 @@ function configurationMigrations(oldConfiguration: Configuration): Configuration
   }
 
   if (oldConfiguration.configurationVersion < 5) {
-    migratedConfiguration = { ...migratedConfiguration,
+    migratedConfiguration = {
+      ...migratedConfiguration,
       experimentalFeatures: {
         sortByNewest: false
       }
@@ -205,34 +245,44 @@ function configurationMigrations(oldConfiguration: Configuration): Configuration
   }
 
   if (oldConfiguration.configurationVersion < 6) {
-    migratedConfiguration = { ...migratedConfiguration,
-      immobilienScout24: { ...migratedConfiguration.immobilienScout24,
-        useAccount: migratedConfiguration.useAccount ? USEACCOUNT.JA : USEACCOUNT.NEIN
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      immobilienScout24: {
+        ...migratedConfiguration.immobilienScout24,
+        useAccount: migratedConfiguration.useAccount
+          ? USEACCOUNT.JA
+          : USEACCOUNT.NEIN
       }
     };
   }
 
   if (oldConfiguration.configurationVersion < 7) {
-    migratedConfiguration = { ...migratedConfiguration,
-      policies: { ...migratedConfiguration.policies,
-        autostart: false
-      }
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      policies: { ...migratedConfiguration.policies, autostart: false }
     };
   }
 
   // always re-generate search URL at startup (in case the generation function changed, such as after bug #79)
-  migratedConfiguration = dotProp.set(migratedConfiguration, 'searchUrl', generateSearchUrl(migratedConfiguration));
-  return dotProp.set(migratedConfiguration, 'configurationVersion', ConfigurationVersion);
+  migratedConfiguration = dotProp.set(
+    migratedConfiguration,
+    'searchUrl',
+    generateSearchUrl(migratedConfiguration)
+  );
+  return dotProp.set(
+    migratedConfiguration,
+    'configurationVersion',
+    ConfigurationVersion
+  );
 }
 
-export default function configuration(state: Configuration = defaultConfiguration, action: Action): Configuration {
+export default function configuration(
+  state: Configuration = defaultConfiguration,
+  action: Action
+): Configuration {
   if (action.type === TOGGLE_POSTCODE) {
-    const {
-      postcode
-    } = action.payload;
-    const {
-      postcodes
-    } = state.filter;
+    const { postcode } = action.payload;
+    const { postcodes } = state.filter;
     const postcodeIndex = postcodes.indexOf(postcode);
 
     if (postcodeIndex !== -1) {
@@ -243,12 +293,8 @@ export default function configuration(state: Configuration = defaultConfiguratio
   }
 
   if (action.type === TOGGLE_FLOOR) {
-    const {
-      floor
-    } = action.payload;
-    const {
-      floors
-    } = state.filter;
+    const { floor } = action.payload;
+    const { floors } = state.filter;
     const floorIndex = floors.indexOf(floor);
 
     if (floorIndex !== -1) {
