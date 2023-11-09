@@ -2,7 +2,7 @@ import { RENDERER } from "../constants/targets";
 import { CALCULATE_BOUNDING_BOX, CALCULATE_OVERVIEW_BOUNDING_BOXES, CLICK_ANIMATION_CLEAR, CLICK_ANIMATION_SHOW, SET_BOUNDING_BOX, REMOVE_BOUNDING_BOXES_IN_GROUP, REFRESH_BOUNDING_BOXES, SET_BOUNDING_BOX_GROUP } from "../constants/actionTypes";
 import type { Action } from "../reducers/types";
 import type { AttachedInformation, ElementBoundingBox } from "../reducers/overlay";
-import type { BoundingBoxGroup } from "../constants/boundingBoxGroups";
+import type { BOUNDING_BOX_GROUPS } from "../constants/boundingBoxGroups"; // FIXME: first need some error, then move to 'import <default>'
 export function clickAnimationShow(animationId: string, x: number, y: number): Action {
   return {
     type: CLICK_ANIMATION_SHOW,
@@ -44,7 +44,7 @@ export function calculateBoundingBox(selector: string, {
   group,
   attachedInformation
 }: {
-  group?: BoundingBoxGroup;
+  group?: BOUNDING_BOX_GROUPS;
   attachedInformation?: AttachedInformation;
 }): Action {
   return {
@@ -60,7 +60,7 @@ export function setBoundingBox(boundingBox: ClientRect, selector: string, {
   group,
   attachedInformation
 }: {
-  group?: BoundingBoxGroup;
+  group?: BOUNDING_BOX_GROUPS;
   attachedInformation?: AttachedInformation;
 }): Action {
   return {
@@ -73,7 +73,7 @@ export function setBoundingBox(boundingBox: ClientRect, selector: string, {
     }
   };
 }
-export function setBoundingBoxGroup(group: BoundingBoxGroup, boundingBoxes: Array<ElementBoundingBox>): Action {
+export function setBoundingBoxGroup(group: BOUNDING_BOX_GROUPS, boundingBoxes: Array<ElementBoundingBox>): Action {
   return {
     type: SET_BOUNDING_BOX_GROUP,
     payload: {
@@ -82,7 +82,7 @@ export function setBoundingBoxGroup(group: BoundingBoxGroup, boundingBoxes: Arra
     }
   };
 }
-export function removeBoundingBoxesInGroup(group: BoundingBoxGroup) {
+export function removeBoundingBoxesInGroup(group: BOUNDING_BOX_GROUPS) {
   return {
     type: REMOVE_BOUNDING_BOXES_IN_GROUP,
     payload: {
