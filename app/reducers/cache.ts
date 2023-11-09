@@ -1,4 +1,3 @@
-import { $Values } from "utility-types";
 import dotProp from "dot-prop-immutable";
 import type { Action } from "./types";
 import { MARK_COMPLETED, RESET_CACHE, SET_CACHE } from "../constants/actionTypes";
@@ -16,11 +15,10 @@ export type EmailData = {
   flatId: string;
 };
 export type Cache<T> = Record<string, BaseCacheEntry & T>;
-export const CACHE_NAMES = {
-  APPLICATIONS: 'applications',
-  MAIL: 'mail'
+export const enum CACHE_NAMES {
+  APPLICATIONS = 'applications',
+  MAIL = 'mail'
 };
-export type CacheName = $Values<typeof CACHE_NAMES>;
 export type cacheStateType = {
   applications: Cache<ApplicationData>;
   mail: Cache<EmailData>;

@@ -1,4 +1,3 @@
-import { $Values } from "utility-types";
 import dotProp from "dot-prop-immutable";
 import type { Action } from "./types";
 import { NEXT_STAGE, PREVIOUS_STAGE, RESET_CONFIGURATION, RESET_POSTCODES, SET_CONFIGURATION, SET_NUMBER, SET_SEARCH_URL, TOGGLE_FLOOR, TOGGLE_POSTCODE, TOGGLE_BOOLEAN, SET_STRING } from "../constants/actionTypes";
@@ -28,29 +27,28 @@ export type Filter = {
   noSublease: boolean;
   floors: Array<number>;
 };
-export const SALUTATIONS = {
-  FRAU: 'Frau',
-  HERR: 'Herr'
+export const enum SALUTATIONS {
+  FRAU = 'Frau',
+  HERR = 'Herr'
 };
-export type Salutation = $Values<typeof SALUTATIONS>;
-export const USEACCOUNT = {
-  JA: 'Ja',
-  MANUELL: 'Manuell',
-  NEIN: 'Nein'
+export const enum USEACCOUNT {
+  JA = 'Ja',
+  MANUELL = 'Manuell',
+  NEIN = 'Nein',
 };
-export const LOGINSTATUS = {
-  LOGGED_IN: 'LOGGED_IN',
-  LOGGED_OUT: 'LOGGED_OUT',
-  ERROR: 'ERROR'
+export const enum LOGINSTATUS {
+  LOGGED_IN,
+  LOGGED_OUT,
+  ERROR,
 };
 export type LoginData = {
-  useAccount: $Values<typeof USEACCOUNT>;
+  useAccount: USEACCOUNT;
   userName: string;
   password: string;
-  status: $Values<typeof LOGINSTATUS>;
+  status: LOGINSTATUS;
 };
 export type ContactData = {
-  salutation: Salutation;
+  salutation: SALUTATIONS;
   firstName: string;
   lastName: string;
   eMail: string;
@@ -68,37 +66,34 @@ export type DataPolicies = {
   applicationNotificationMails: boolean;
   fillAsLittleAsPossible: boolean;
 };
-export const MOVE_IN_WHEN = {
-  NOW: 'Ab sofort',
-  FLEXIBLE: 'Flexibel'
+export const enum MOVE_IN_WHEN {
+  NOW = 'Ab sofort',
+  FLEXIBLE = 'Flexibel',
 };
-export type MoveInWhen = $Values<typeof MOVE_IN_WHEN>;
-export const MOVE_IN_WHO = {
-  SINGLE: 'Einpersonenhaushalt',
-  TWO_ADULTS: 'Zwei Erwachsene',
-  FAMILY: 'Familie',
-  SHARED_FLAT: 'Wohngemeinschaft'
+export const enum MOVE_IN_WHO {
+  SINGLE = 'Einpersonenhaushalt',
+  TWO_ADULTS = 'Zwei Erwachsene',
+  FAMILY = 'Familie',
+  SHARED_FLAT = 'Wohngemeinschaft'
 };
-export type MoveInWho = $Values<typeof MOVE_IN_WHO>;
-export const EMPLOYMENT_STATUS = {
-  EMPLOYEE: 'Angestellte_r',
-  WORKER: 'Arbeiter_in',
-  SELF_EMPLOYED: 'Selbstständig',
-  CIVIL_SERVANT: 'Beamte_r',
-  TRAINEE: 'Auszubildende_r',
-  STUDENT: 'Student_in',
-  PHD_STUDENT: 'Doktorand_in',
-  HOUSEPERSON: 'Hausmensch',
-  UNEMPLOYED: 'Arbeitslos',
-  RETIRED: 'Renter_in',
-  OTHER: 'Sonstige'
+export const enum EMPLOYMENT_STATUS {
+  EMPLOYEE = 'Angestellte_r',
+  WORKER = 'Arbeiter_in',
+  SELF_EMPLOYED = 'Selbstständig',
+  CIVIL_SERVANT = 'Beamte_r',
+  TRAINEE = 'Auszubildende_r',
+  STUDENT = 'Student_in',
+  PHD_STUDENT = 'Doktorand_in',
+  HOUSEPERSON = 'Hausmensch',
+  UNEMPLOYED = 'Arbeitslos',
+  RETIRED = 'Renter_in',
+  OTHER = 'Sonstige'
 };
-export type EmploymentStatus = $Values<typeof EMPLOYMENT_STATUS>;
 export type AdditionalInformation = {
-  moveInWhen: MoveInWhen;
-  moveInWho: MoveInWho;
+  moveInWhen: MOVE_IN_WHEN;
+  moveInWho: MOVE_IN_WHO;
   animals: string;
-  employmentStatus: EmploymentStatus;
+  employmentStatus: EMPLOYMENT_STATUS;
   income: number | null | undefined;
   hasDocumentsReady: boolean;
 };

@@ -1,4 +1,3 @@
-import { $Values } from "utility-types";
 import type { Action, Dispatch, GetState, ThunkAction } from "../reducers/types";
 import { QUEUE_INVESTIGATE_FLAT, SET_BOT_IS_ACTING, SET_BOT_MESSAGE, LAUNCH_NEXT_TASK, NOOP, POP_FLAT_FROM_QUEUE, SET_SHOW_OVERLAY, TASK_FINISHED, SCROLL_WHILE_IDLE, STOP_SCROLLING_WHILE_IDLE, RESET_BOT, LOGIN, LOGOUT } from "../constants/actionTypes";
 import { electronObjects } from "../store/electronObjects";
@@ -154,7 +153,7 @@ export function logout(): Action {
     payload: null
   };
 }
-export function setLoginStatus(loginStatus: $Values<typeof LOGINSTATUS>): ThunkAction {
+export function setLoginStatus(loginStatus: LOGINSTATUS): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
     const {
       configuration
