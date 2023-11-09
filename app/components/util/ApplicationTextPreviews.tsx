@@ -2,6 +2,7 @@ import React from 'react';
 import type { FlatAddress, FlatContactDetails } from '../../reducers/data';
 import styles from '../Configuration.scss';
 import applicationTextBuilder from '../../flat/applicationTextBuilder';
+
 type ApplicationTextPreviewsProps = {
   applicationText: string;
   className: string;
@@ -14,7 +15,9 @@ export default class ApplicationTextPreviews extends React.Component<
   ApplicationTextPreviewsState
 > {
   props: ApplicationTextPreviewsProps;
+
   state: ApplicationTextPreviewsState;
+
   static TestFlats: Array<{
     address: FlatAddress;
     contact: FlatContactDetails;

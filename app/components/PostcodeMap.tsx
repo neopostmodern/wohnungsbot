@@ -9,6 +9,7 @@ import { divIcon } from 'leaflet';
 import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo';
 import labels from '../map/labels';
+
 const geoData = feature(topoData, topoData.objects.collection);
 const tileUrl =
   'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
@@ -30,12 +31,12 @@ type PostcodeDescription = {
   };
 };
 
-const ZoomLevelListener = ({ onZoomChange }) => {
+function ZoomLevelListener({ onZoomChange }) {
   const map = useMapEvent('zoom', () => {
     onZoomChange(map.getZoom());
   });
   return null;
-};
+}
 
 type Props = {
   selectedPostcodes: Array<string>;
@@ -48,8 +49,11 @@ type State = {
 
 class PostcodeMap extends React.Component<Props, State> {
   props: Props;
+
   state: State;
+
   heightRef: HTMLElement;
+
   static initialZoom: number = 12;
 
   constructor() {

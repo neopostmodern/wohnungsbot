@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Verdict.scss';
 import { flatPageUrl } from '../../flat/urlBuilder';
 import type { Verdict } from '../../reducers/data';
+
 type VerdictProps = {
   flatId: string;
   verdict: Verdict;
@@ -9,7 +10,7 @@ type VerdictProps = {
   isUnsuitable: boolean;
 };
 
-const VerdictSummary = ({
+function VerdictSummary({
   verdict,
   isAlreadyApplied,
   isUnsuitable
@@ -17,7 +18,7 @@ const VerdictSummary = ({
   verdict: Verdict;
   isAlreadyApplied: boolean;
   isUnsuitable: boolean;
-}) => {
+}) {
   if (isAlreadyApplied) {
     return <div className={styles.oneLineReason}>Bewerbung abgeschickt</div>;
   }
@@ -44,7 +45,7 @@ const VerdictSummary = ({
       ))}
     </>
   );
-};
+}
 
 export default class VerdictComponent extends React.Component<VerdictProps> {
   getMainIcon(): string {

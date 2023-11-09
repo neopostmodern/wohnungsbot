@@ -3,6 +3,7 @@ import styles from '../Configuration.scss';
 import PostcodeMap from '../PostcodeMap';
 import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
+
 const areaSelectionStage: StageDescription = {
   rootContainer: {
     className: `${styles.flexboxHack}`

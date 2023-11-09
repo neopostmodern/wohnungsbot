@@ -3,15 +3,16 @@ import React, { Component } from 'react';
 import styles from './Configuration.scss';
 import type {
   configurationBoolean,
-  configurationNumbers
+  configurationNumbers,
+  Configuration as ConfigurationType
 } from '../reducers/configuration';
-import type { Configuration as ConfigurationType } from '../reducers/configuration';
 import '../reducers/configuration';
 import stages from './configurationStages';
 import type {
   FlexibleNode,
   StageDescription
 } from './configurationStages/types';
+
 type Props = {
   nextStage: () => void;
   previousStage: () => void;

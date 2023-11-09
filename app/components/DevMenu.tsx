@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styles from './DevMenu.scss';
 import type { BrowserViewName, Views } from '../reducers/electron';
+
 type DevMenuProps = {
   views: Views;
   showDevTools: (name: BrowserViewName) => void;
@@ -13,6 +14,7 @@ type DevMenuState = {
 };
 export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
   props: DevMenuProps;
+
   state: DevMenuState = {
     expanded: false
   };

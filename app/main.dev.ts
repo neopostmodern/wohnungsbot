@@ -18,6 +18,7 @@ import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
 import { electronObjects } from './store/electronObjects';
 import resizeViews from './utils/resizeViews';
+
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 let isLaunching = true;

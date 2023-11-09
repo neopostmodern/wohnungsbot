@@ -12,6 +12,7 @@ import TextField from '../inputs/TextInput';
 import NumberField from '../inputs/NumberField';
 import EnumField from '../inputs/EnumField';
 import YesNo from '../inputs/YesNo';
+
 const twoTextFieldsInLineStyles = {
   width: '200px'
 };

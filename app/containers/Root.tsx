@@ -4,6 +4,7 @@ import { HistoryRouter as Router } from 'redux-first-history/rr6'; // https://gi
 
 import type { Store } from '../reducers/types';
 import Routes from '../Routes';
+
 type Props = {
   store: Store;
   history: {};

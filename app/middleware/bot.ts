@@ -23,6 +23,7 @@ import {
 import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import { electronObjects } from '../store/electronObjects';
+
 export default (store: Store) =>
   (next: (action: Action) => void) =>
   async (action: Action) => {

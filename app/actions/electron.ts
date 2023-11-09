@@ -16,6 +16,7 @@ import {
   SET_AVAILABLE_VERSION,
   SET_UPDATE_DOWNLOAD_PROGRESS
 } from '../constants/actionTypes';
+
 export function setWindow(): Action {
   return {
     type: SET_BROWSER_WINDOW,

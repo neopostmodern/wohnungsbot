@@ -7,6 +7,7 @@ import {
   SET_BOUNDING_BOX,
   SET_BOUNDING_BOX_GROUP
 } from '../constants/actionTypes';
+
 export type baseAnimation = {
   animationId: string;
 };

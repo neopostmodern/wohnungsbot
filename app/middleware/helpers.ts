@@ -8,6 +8,7 @@ import { sleep, timeout } from '../utils/async';
 import { electronRouting } from '../actions/electron';
 import { electronObjects } from '../store/electronObjects';
 import ElectronUtils from '../utils/electronUtils';
+
 const pdfFolderPath = path.join(app.getPath('userData'), 'pdf');
 
 if (!fs.existsSync(pdfFolderPath)) {
@@ -43,11 +44,11 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
       store.dispatch(
         electronRouting(
           'print',
-          'https://www.immobilienscout24.de/expose/' + flatId + '/print'
+          `https://www.immobilienscout24.de/expose/${flatId}/print`
         )
       );
       await sleep(3000);
-      const { webContents } = electronObjects.views['print'];
+      const { webContents } = electronObjects.views.print;
       // `printToPDF` times out if there are iframes on the page: https://github.com/electron/electron/issues/20634
       await new ElectronUtils(webContents).evaluate(
         `document.querySelectorAll('iframe').forEach(iframe => iframe.remove())`

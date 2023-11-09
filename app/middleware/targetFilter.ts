@@ -1,5 +1,6 @@
 import type { Action, Dispatch, Store } from '../reducers/types';
 import type { targetType } from '../constants/targets';
+
 const actions = {};
 
 const registerAction = (type, action) => {

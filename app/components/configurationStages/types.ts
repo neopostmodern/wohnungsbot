@@ -4,6 +4,7 @@ import type {
   configurationNumbers,
   Configuration
 } from '../../reducers/configuration';
+
 export type InheritedProps = {
   togglePostcode: (postcode: string) => void;
   resetPostcodes: () => void;

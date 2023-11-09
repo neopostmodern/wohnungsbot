@@ -6,6 +6,7 @@ import {
   SET_OVERVIEW_DATA,
   SET_VERDICT
 } from '../constants/actionTypes';
+
 export type StringBoolean = 'true' | 'false';
 export type PictureDescription = {
   '@xlink.href': string;

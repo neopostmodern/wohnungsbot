@@ -17,6 +17,7 @@ import {
   TOGGLE_BOOLEAN,
   SET_STRING
 } from '../constants/actionTypes';
+
 export function setConfiguration(configuration: Configuration): Action {
   return {
     type: SET_CONFIGURATION,

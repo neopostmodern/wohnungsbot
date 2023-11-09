@@ -5,6 +5,7 @@ import {
   RESET_CACHE,
   SET_CACHE
 } from '../constants/actionTypes';
+
 export type BaseCacheEntry = {
   timestamp: number;
 };

@@ -10,7 +10,7 @@ const valueToInt = (value: string) => {
   return parsedValue;
 };
 
-const NumberField = ({
+function NumberField({
   value,
   onChange,
   step,
@@ -20,15 +20,17 @@ const NumberField = ({
   onChange: (value: number | null | undefined) => void;
   step?: number;
   style?: CSSStyleDeclaration;
-}) => (
-  <input
-    type="number"
-    value={value === null ? '' : value}
-    onChange={(event) => onChange(valueToInt(event.target.value))}
-    step={step}
-    style={style}
-  />
-);
+}) {
+  return (
+    <input
+      type="number"
+      value={value === null ? '' : value}
+      onChange={(event) => onChange(valueToInt(event.target.value))}
+      step={step}
+      style={style}
+    />
+  );
+}
 
 NumberField.defaultProps = {
   step: undefined,

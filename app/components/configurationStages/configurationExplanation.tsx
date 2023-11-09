@@ -1,5 +1,6 @@
 import React from 'react';
 import type { StageDescription } from './types';
+
 const configurationExplanationStage: StageDescription = {
   title: '',
   body: (

@@ -1,4 +1,5 @@
 import React from 'react';
+
 type TextareaProps = {
   value: string | null | undefined;
   onChange: (value: string | null | undefined) => void;
@@ -11,6 +12,7 @@ export default class Textarea extends React.Component<
   TextareaState
 > {
   props: TextareaProps;
+
   state: TextareaState;
 
   constructor(props: TextareaProps) {

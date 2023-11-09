@@ -22,6 +22,7 @@ import AbortionSystem, {
   ABORTION_ERROR,
   ABORTION_MANUAL
 } from '../utils/abortionSystem';
+
 export const generateApplicationTextAndSubmit =
   (flatId: string): ThunkAction =>
   async (dispatch: Dispatch, getState: GetState) => {

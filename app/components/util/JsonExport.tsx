@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './JsonExport.scss';
+
 type JsonExportProps = {
   serializableObject: any;
 };
@@ -11,6 +12,7 @@ export default class JsonExport extends React.Component<
   JsonExportState
 > {
   props: JsonExportProps;
+
   state: JsonExportState = {
     expanded: false
   };

@@ -6,6 +6,7 @@ import type { Dispatch, Store } from '../reducers/types';
 import AbortionSystem from './abortionSystem';
 import { setBotIsActing, setBotMessage } from '../actions/bot';
 import { setInteractiveMode } from '../actions/electron';
+
 export default class ElectronUtilsRedux extends ElectronUtils {
   dispatch: Dispatch;
 

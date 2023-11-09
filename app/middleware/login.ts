@@ -13,6 +13,7 @@ import { LOGINSTATUS, USEACCOUNT } from '../reducers/configuration';
 import { logout, setBotIsActing, setLoginStatus } from '../actions/bot';
 import performLogout from '../utils/performLogout';
 import { electronObjects } from '../store/electronObjects';
+
 export default (store: Store) =>
   (next: (action: Action) => void) =>
   async (action: Action) => {

@@ -7,6 +7,7 @@ import configuration from './configuration';
 import cache from './cache';
 import scheduler from './scheduler';
 import bot from './bot';
+
 export default function createRootReducer(history: History) {
   const reducers: any = {
     electron,

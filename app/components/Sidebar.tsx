@@ -20,6 +20,7 @@ type State = {
 };
 export default class Sidebar extends Component<Props, State> {
   props: Props;
+
   state: State = {};
 
   async componentWillMount() {
@@ -56,7 +57,7 @@ export default class Sidebar extends Component<Props, State> {
             Der <b>Wohnungsbot {availableVersion}</b> ist verfügbar, aber das
             Update kann auf macOS nicht automatisch installiert werden. Bitte{' '}
             <a
-              href={homepage + '#downloads'}
+              href={`${homepage}#downloads`}
               target="_blank"
               rel="noopener noreferrer"
             >

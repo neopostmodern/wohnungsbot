@@ -7,6 +7,7 @@ import personalDataStage from './personalData';
 import reviewStage from './review';
 import applicationTextStage from './applicationText';
 import artExplanationStage from './artExplanation';
+
 const stages: Array<StageDescription> = [
   welcomeStage,
   artExplanationStage,

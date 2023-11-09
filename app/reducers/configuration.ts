@@ -16,6 +16,7 @@ import {
 import { objectHash } from '../utils/hash';
 import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
 import { generateSearchUrl } from '../flat/urlBuilder';
+
 export const ConfigurationVersion = 7;
 export const AllFloors = [4, 3, 2, 1, 0];
 export type configurationNumbers =

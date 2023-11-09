@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../Configuration.scss';
 import type { InheritedProps, StageDescription } from './types';
 import type { Configuration } from '../../reducers/configuration';
+
 const configurationExplanationStage: StageDescription = {
   container: {
     className: styles.high

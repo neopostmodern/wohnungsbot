@@ -5,6 +5,7 @@ import {
   SET_BOT_MESSAGE,
   SET_SHOW_OVERLAY
 } from '../constants/actionTypes';
+
 export type botStateType = {
   isActive: boolean;
   message: string | null | undefined;

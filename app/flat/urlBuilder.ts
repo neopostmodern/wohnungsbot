@@ -49,7 +49,7 @@ export function generateSearchUrl(configuration: Configuration): string {
   }
 
   if (equipment.length > 0) {
-    searchUrl += '&equipment=' + equipment.join(',');
+    searchUrl += `&equipment=${equipment.join(',')}`;
   }
 
   if (!configuration.filter.hasWBS) {

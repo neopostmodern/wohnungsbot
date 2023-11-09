@@ -26,7 +26,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     });
   }
 
-  let ret = next(action);
+  const ret = next(action);
 
   if (action.meta && action.meta.configuration) {
     const configurationToSave = { ...store.getState().configuration };

@@ -4,13 +4,13 @@ import {
   setLoginStatus
 } from '../actions/bot';
 import { clickAction } from '../actions/botHelpers';
-import { sleep } from './async';
+import { sleep, timeout } from './async';
 import type { Dispatch } from '../reducers/types';
 import type { Configuration } from '../reducers/configuration';
 import { LOGINSTATUS } from '../reducers/configuration';
 import { electronRouting } from '../actions/electron';
 import ElectronUtilsRedux from './electronUtilsRedux';
-import { timeout } from './async';
+
 export function* performAutomaticLogin(
   dispatch: Dispatch,
   electronUtils: ElectronUtilsRedux,

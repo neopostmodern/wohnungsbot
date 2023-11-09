@@ -4,6 +4,7 @@ import type { InheritedProps, StageDescription } from './types';
 import { floorToName } from '../../utils/germanStrings';
 import JsonExport from '../util/JsonExport';
 import ApplicationTextPreviews from '../util/ApplicationTextPreviews';
+
 const reviewStage: StageDescription = {
   container: {
     className: styles.high
@@ -27,7 +28,7 @@ const reviewStage: StageDescription = {
       </div>
       <br />
       <input
-        type={'checkbox'}
+        type="checkbox"
         checked={configuration.policies.autostart}
         onChange={() => toggleBoolean('policies.autostart')}
       />{' '}
@@ -221,9 +222,7 @@ const reviewStage: StageDescription = {
           {configuration.experimentalFeatures.sortByNewest ? (
             <>
               folgende experimentelle Fähigkeiten verwenden:
-              <>
-                <div>- Wohnungen sortieren nach "Neueste zuerst"</div>
-              </>
+              <div>- Wohnungen sortieren nach "Neueste zuerst"</div>
             </>
           ) : (
             <>

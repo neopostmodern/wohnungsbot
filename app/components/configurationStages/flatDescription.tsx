@@ -12,6 +12,7 @@ import Disclaimer from './disclaimer';
 import TextField from '../inputs/TextInput';
 import NumberField from '../inputs/NumberField';
 import EnumField from '../inputs/EnumField';
+
 const flatDescriptionStage: StageDescription = {
   container: {
     className: styles.high

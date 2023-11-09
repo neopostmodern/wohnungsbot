@@ -3,7 +3,7 @@ import type { ApplicationData, BaseCacheEntry } from '../../reducers/cache';
 import styles from '../Sidebar.scss';
 import { flatPageUrl } from '../../flat/urlBuilder';
 
-const RecentApplication = ({
+function RecentApplication({
   application: {
     flatId,
     success,
@@ -16,7 +16,7 @@ const RecentApplication = ({
 }: {
   application: ApplicationData & BaseCacheEntry;
   openPDF: () => void;
-}) => {
+}) {
   const addressParts = addressDescription.split('(')[0].split(',');
   const area = addressParts.slice(-1).pop();
   const street =
@@ -60,6 +60,6 @@ const RecentApplication = ({
       </div>
     </div>
   );
-};
+}
 
 export default RecentApplication;

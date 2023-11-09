@@ -73,11 +73,11 @@ export function getOverviewData(): ThunkAction {
 
       if (rawOverviewData) {
         for (let i = 0; i < rawOverviewData.length; i++) {
-          let entry = rawOverviewData[i];
-          let hasApplied = await electronUtils.evaluate(
+          const entry = rawOverviewData[i];
+          const hasApplied = await electronUtils.evaluate(
             `document.querySelector('[data-id="${entry['@id']}"]').getElementsByClassName("shortlist-star--shortlisted").length > 0`
           );
-          entry['alreadyApplied'] = hasApplied;
+          entry.alreadyApplied = hasApplied;
           const processedEntry = processOverviewDataEntry(entry);
           data[processedEntry.id] = processedEntry;
         }

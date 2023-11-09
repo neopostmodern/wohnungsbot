@@ -2,6 +2,7 @@ import type { WebContents } from 'electron';
 import 'electron';
 import { uniqueId } from './random';
 import { sleep } from './async';
+
 export type ViewportSize = {
   height: number;
   width: number;

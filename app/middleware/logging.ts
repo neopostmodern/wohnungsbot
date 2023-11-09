@@ -6,6 +6,7 @@ import {
   REFRESH_BOUNDING_BOXES,
   SET_BOUNDING_BOX
 } from '../constants/actionTypes';
+
 const blackList = [
   CALCULATE_OVERVIEW_BOUNDING_BOXES,
   CALCULATE_BOUNDING_BOX,
@@ -26,7 +27,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
       }`
     );
   } else if (!blackList.includes(action.type)) {
-    let payload = action.payload;
+    let { payload } = action;
 
     if (payload && JSON.stringify(payload).length > payloadLengthLimit) {
       payload = `${JSON.stringify(action.payload).substr(

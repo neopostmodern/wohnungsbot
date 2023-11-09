@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../Configuration.scss';
 import type { StageDescription } from './types';
+
 const welcomeStage: StageDescription = {
   title: '',
   body: (

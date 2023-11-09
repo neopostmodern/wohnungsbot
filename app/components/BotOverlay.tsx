@@ -5,6 +5,7 @@ import BotIllustrationActive from '../../resources/bot-active.svg';
 import type { anyAnimation, ElementBoundingBox } from '../reducers/overlay';
 import type { Verdict, Verdicts } from '../reducers/data';
 import VerdictComponent from './util/Verdict';
+
 type Props = {
   isPuppetLoading: boolean;
   animations: Array<anyAnimation>;

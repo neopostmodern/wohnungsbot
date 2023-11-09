@@ -6,6 +6,7 @@ import type { Configuration } from './configuration';
 import type { cacheStateType } from './cache';
 import type { schedulerStateType } from './scheduler';
 import type { botStateType } from './bot';
+
 export type stateType = {
   electron: electronStateType;
   overlay: overlayStateType;

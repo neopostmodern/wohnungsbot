@@ -10,6 +10,7 @@ import type { BrowserViewName } from '../reducers/electron';
 import { electronObjects } from '../store/electronObjects';
 import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
+
 export function clickAction(
   selector: string,
   {

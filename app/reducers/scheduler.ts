@@ -6,6 +6,7 @@ import {
   QUEUE_INVESTIGATE_FLAT,
   TASK_FINISHED
 } from '../constants/actionTypes';
+
 export type schedulerStateType = {
   queuedFlatIds: Array<string>;
   isActive: boolean;

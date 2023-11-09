@@ -10,6 +10,7 @@ import {
 } from '../constants/actionTypes';
 import { LOADING } from '../constants/updater';
 import type { Action } from './types';
+
 export type BrowserViewName =
   | 'puppet'
   | 'sidebar'

@@ -30,6 +30,7 @@ import { electronRouting, setBrowserViewReady } from './electron';
 import type { LoginData } from '../reducers/configuration';
 import { LOGINSTATUS } from '../reducers/configuration';
 import { setConfiguration } from './configuration';
+
 export function queueInvestigateFlat(flatId: string): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { cache } = getState();

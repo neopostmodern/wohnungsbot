@@ -1,4 +1,5 @@
 import React from 'react';
+
 type TextFieldProps = {
   type?: string;
   value: string | null | undefined;
@@ -18,10 +19,12 @@ export default class TextField extends React.Component<
   TextFieldState
 > {
   props: TextFieldProps;
+
   static defaultProps = {
     containerStyle: {},
     onlyChangeOnSubmit: false
   };
+
   state: TextFieldState;
 
   constructor(props: TextFieldProps) {
@@ -57,7 +60,7 @@ export default class TextField extends React.Component<
     const { type, placeholder, containerStyle, style, required, error } =
       this.props;
     const { value } = this.state;
-    let hasError = error || (required && !value);
+    const hasError = error || (required && !value);
     return (
       <div
         className={`textinput-wrapper ${

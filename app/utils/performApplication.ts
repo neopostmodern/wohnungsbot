@@ -14,6 +14,7 @@ import { LOGINSTATUS } from '../reducers/configuration';
 import type { Configuration } from '../reducers/configuration';
 import type ElectronUtils from './electronUtils';
 import AbortionSystem from './abortionSystem';
+
 export default function* performApplication(
   dispatch: Dispatch,
   electronUtils: ElectronUtils,

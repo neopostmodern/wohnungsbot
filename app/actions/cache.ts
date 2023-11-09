@@ -5,6 +5,7 @@ import {
   RESET_CACHE,
   SET_CACHE
 } from '../constants/actionTypes';
+
 export function setCache(cache: cacheStateType): Action {
   return {
     type: SET_CACHE,

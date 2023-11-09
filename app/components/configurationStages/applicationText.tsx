@@ -4,6 +4,7 @@ import type { InheritedProps, StageDescription } from './types';
 import APPLICATION_TEMPLATES from '../../constants/applicationTemplates';
 import Textarea from '../inputs/Textarea';
 import ApplicationTextPreviews from '../util/ApplicationTextPreviews';
+
 const applicationTextStage: StageDescription = {
   container: {
     className: styles.high

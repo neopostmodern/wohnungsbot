@@ -9,6 +9,7 @@ import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
 import type ElectronUtils from './electronUtils';
 import { LOGINSTATUS } from '../reducers/configuration';
+
 export default function* performLogout(
   dispatch: Dispatch,
   electronUtils: ElectronUtils
