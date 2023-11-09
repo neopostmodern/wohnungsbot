@@ -20,7 +20,7 @@
     "dev": "cross-env START_HOT=1 ts-node ./internals/scripts/CheckPortInUse.ts && cross-env START_HOT=1 npm run-script start-renderer-dev",
     "flow": "flow",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install || true",
-    "lint": "cross-env NODE_ENV=development eslint --cache --format=pretty --ext .js,.jsx,.ts,.tsx .",
+    "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "npm run-script --silent lint --fix; exit 0",
     "lint-styles": "stylelint --ignore-path .eslintignore '**/*.*(css|scss)' --syntax scss",
     "lint-styles-fix": "npm run-script --silent lint-styles --fix; exit 0",
