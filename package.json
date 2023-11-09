@@ -33,7 +33,7 @@
     "package-publish-windows-linux": "npm run-script build && electron-builder build -wl --publish always",
     "package-publish-macos": "npm run-script build && electron-builder build -m --publish always",
     "postinstall": "electron-builder install-app-deps && npm run-script build-dll",
-    "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{js,jsx,json,html,css,less,scss,yml}'",
+    "postlint-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{ts,tsx,js,jsx,json,html,css,less,scss,yml}'",
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "npm run-script build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
