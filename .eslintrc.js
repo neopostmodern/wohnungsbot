@@ -1,7 +1,7 @@
 /* eslint-env node */
 module.exports = {
   extends: 'erb',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', '@eslint-community/eslint-comments'],
   rules: {
     'no-console': 'warn',
     'no-await-in-loop': 'off',
@@ -20,7 +20,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'error',
       { vars: 'all', argsIgnorePattern: '_' }
-    ]
+    ],
+    '@eslint-community/eslint-comments/no-unused-disable': 'error'
   },
   parserOptions: {
     ecmaVersion: 2022,
