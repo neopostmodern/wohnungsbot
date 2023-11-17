@@ -48,13 +48,13 @@ type State = {
 };
 
 class PostcodeMap extends React.Component<Props, State> {
+  static initialZoom: number = 12;
+
   props: Props;
 
   state: State;
 
   heightRef: HTMLElement;
-
-  static initialZoom: number = 12;
 
   constructor() {
     super();
@@ -70,6 +70,36 @@ class PostcodeMap extends React.Component<Props, State> {
 
   componentDidMount() {
     setTimeout(() => this.calculateHeight(), 0);
+  }
+
+  handleZoom(zoom) {
+    // eslint-disable-next-line no-underscore-dangle
+    this.setState({
+      zoom
+    });
+  }
+
+  setHeightRef(ref: HTMLElement | null | undefined) {
+    if (!ref) {
+      return;
+    }
+
+    this.heightRef = ref;
+  }
+
+  stylePostcodeOverlay(postcodeDescription: PostcodeDescription) {
+    const { selectedPostcodes } = this.props;
+    // SVG CSS is too hard to type
+    const style: any = { ...baseStyle };
+
+    if (selectedPostcodes.includes(postcodeDescription.id)) {
+      Object.assign(style, {
+        fillOpacity: 0.8,
+        fillColor: 'darkgreen'
+      });
+    }
+
+    return style;
   }
 
   eachFeature(postcodeDescription: PostcodeDescription, layer: Layer) {
@@ -103,29 +133,6 @@ ${postcodeDescription.properties.district}`,
     );
   }
 
-  stylePostcodeOverlay(postcodeDescription: PostcodeDescription) {
-    const { selectedPostcodes } = this.props;
-    // SVG CSS is too hard to type
-    const style: any = { ...baseStyle };
-
-    if (selectedPostcodes.includes(postcodeDescription.id)) {
-      Object.assign(style, {
-        fillOpacity: 0.8,
-        fillColor: 'darkgreen'
-      });
-    }
-
-    return style;
-  }
-
-  setHeightRef(ref: HTMLElement | null | undefined) {
-    if (!ref) {
-      return;
-    }
-
-    this.heightRef = ref;
-  }
-
   calculateHeight() {
     const height = this.heightRef.clientHeight;
 
@@ -135,13 +142,6 @@ ${postcodeDescription.properties.district}`,
         height
       });
     }
-  }
-
-  handleZoom(zoom) {
-    // eslint-disable-next-line no-underscore-dangle
-    this.setState({
-      zoom
-    });
   }
 
   render() {

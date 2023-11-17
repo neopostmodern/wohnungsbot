@@ -14,10 +14,6 @@ export default class ApplicationTextPreviews extends React.Component<
   ApplicationTextPreviewsProps,
   ApplicationTextPreviewsState
 > {
-  props: ApplicationTextPreviewsProps;
-
-  state: ApplicationTextPreviewsState;
-
   static TestFlats: Array<{
     address: FlatAddress;
     contact: FlatContactDetails;
@@ -57,6 +53,10 @@ export default class ApplicationTextPreviews extends React.Component<
       }
     }
   ];
+
+  props: ApplicationTextPreviewsProps;
+
+  state: ApplicationTextPreviewsState;
 
   constructor() {
     super();
