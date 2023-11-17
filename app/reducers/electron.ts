@@ -42,6 +42,7 @@ const electronDefaultState: electronStateType = {
   }
 };
 export default function electron(
+  // eslint-disable-next-line default-param-last
   state: electronStateType = electronDefaultState,
   action: Action
 ): electronStateType {

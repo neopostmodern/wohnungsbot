@@ -33,6 +33,7 @@ const overlayDefaultState: overlayStateType = {
   boundingBoxes: []
 };
 export default function overlay(
+  // eslint-disable-next-line default-param-last
   state: overlayStateType = overlayDefaultState,
   action: Action
 ): overlayStateType {

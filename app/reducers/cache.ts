@@ -33,6 +33,7 @@ const cacheDefaultState: cacheStateType = {
   mail: {}
 };
 export default function cache(
+  // eslint-disable-next-line default-param-last
   state: cacheStateType = cacheDefaultState,
   action: Action
 ): cacheStateType {

@@ -278,6 +278,7 @@ function configurationMigrations(
 }
 
 export default function configuration(
+  // eslint-disable-next-line default-param-last
   state: Configuration = defaultConfiguration,
   action: Action
 ): Configuration {

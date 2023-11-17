@@ -16,6 +16,7 @@ const schedulerDefaultState: schedulerStateType = {
   isActive: false
 };
 export default function scheduler(
+  // eslint-disable-next-line default-param-last
   state: schedulerStateType = schedulerDefaultState,
   action: Action
 ): schedulerStateType {

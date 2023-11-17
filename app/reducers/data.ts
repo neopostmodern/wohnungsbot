@@ -156,6 +156,7 @@ const dataDefaultState: dataStateType = {
   flat: {}
 };
 export default function data(
+  // eslint-disable-next-line default-param-last
   state: dataStateType = dataDefaultState,
   action: Action
 ): dataStateType {

@@ -17,6 +17,7 @@ const botDefaultState: botStateType = {
   showOverlay: true
 };
 export default function bot(
+  // eslint-disable-next-line default-param-last
   state: botStateType = botDefaultState,
   action: Action
 ): botStateType {
