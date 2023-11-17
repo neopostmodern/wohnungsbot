@@ -10,7 +10,11 @@ module.exports = {
     'import/extensions': 'off',
     'import/no-import-module-exports': 'off',
     'import/no-extraneous-dependencies': 'off',
-    'react/jsx-filename-extension': [2, { extensions: ['.tsx'] }]
+    'react/jsx-filename-extension': [2, { extensions: ['.tsx'] }],
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error'
   },
   parserOptions: {
     ecmaVersion: 2022,
