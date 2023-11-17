@@ -5,6 +5,7 @@ module.exports = {
   rules: {
     'no-console': 'warn',
     'no-await-in-loop': 'off',
+    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'react/static-property-placement': 'off',
     'react/state-in-constructor': 'off',
     'react/no-danger': 'off',

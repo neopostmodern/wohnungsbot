@@ -1,6 +1,6 @@
 export const ABORTION_MANUAL = 'ABORTION_MANUAL';
 export const ABORTION_ERROR = 'ABORTION_ERROR';
-export type AbortionReason = ABORTION_MANUAL | ABORTION_ERROR;
+export type AbortionReason = typeof ABORTION_MANUAL | typeof ABORTION_ERROR;
 const ABORTION_SUSPENSION_PERIOD = 10000;
 const AbortionSystem: {
   abortFunction: (() => void) | null | undefined;

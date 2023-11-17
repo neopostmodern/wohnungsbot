@@ -51,7 +51,7 @@ export default (store: Store) =>
           AbortionSystem.abort(ABORTION_ERROR);
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
-      } else if (useAccount == USEACCOUNT.JA) {
+      } else if (useAccount === USEACCOUNT.JA) {
         const { abortableAction: abortablePerformAutomaticLogin, abort } =
           abortable(performAutomaticLogin);
         AbortionSystem.registerAbort(abort);
@@ -71,7 +71,7 @@ export default (store: Store) =>
           AbortionSystem.abort(ABORTION_ERROR);
           await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
         }
-      } else if (useAccount == USEACCOUNT.MANUELL) {
+      } else if (useAccount === USEACCOUNT.MANUELL) {
         const { abortableAction: abortablePerformManualLogin, abort } =
           abortable(performManualLogin);
         AbortionSystem.registerAbort(abort);

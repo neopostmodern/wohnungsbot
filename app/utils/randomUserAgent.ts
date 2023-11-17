@@ -27,6 +27,6 @@ function getRandomChromeVersion() {
   ];
 }
 
-export default function () {
+export default function getRandomUserAgent() {
   return `Mozilla/5.0 (${getRandomOperatingSystem()}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${getRandomChromeVersion()} Safari/537.36`;
 }

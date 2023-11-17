@@ -22,8 +22,10 @@ import resizeViews from './utils/resizeViews';
 const isDevelopment =
   process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 let isLaunching = true;
+
+// TODO refactor: one function, doing init and taking the two callbacks
 export default class AppUpdater {
-  constructor() {
+  static init() {
     if (isDevelopment) {
       log.transports.file.level = 'info';
       autoUpdater.logger = log;
@@ -32,7 +34,7 @@ export default class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify();
   }
 
-  onUpdateAvailable(callback: (version: string) => void) {
+  static onUpdateAvailable(callback: (version: string) => void) {
     autoUpdater.on('checking-for-update', () => {
       callback(LOADING);
     });
@@ -44,7 +46,7 @@ export default class AppUpdater {
     });
   }
 
-  onDownloadProgress(callback: (percentage: number) => void) {
+  static onDownloadProgress(callback: (percentage: number) => void) {
     autoUpdater.on('download-progress', ({ percent }) => {
       callback(percent);
     });
@@ -227,8 +229,9 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         mainWindow = null;
       });
       mainWindow.setMenuBarVisibility(false);
-      const appUpdater = new AppUpdater();
-      appUpdater.onUpdateAvailable((version) => {
+
+      AppUpdater.init();
+      AppUpdater.onUpdateAvailable((version) => {
         store.dispatch(setAvailableVersion(version));
 
         // no auto-update on macOS
@@ -236,7 +239,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
           store.dispatch(setUpdateDownloadProgress(-1));
         }
       });
-      appUpdater.onDownloadProgress(() => {
+      AppUpdater.onDownloadProgress(() => {
         store.dispatch();
       });
     });
