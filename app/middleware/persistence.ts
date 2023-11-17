@@ -2,7 +2,7 @@ import { WAKE_UP } from '../actions/infrastructure';
 import { setConfiguration } from '../actions/configuration';
 import persistentStore from '../utils/persistentStore';
 import type { Action, Dispatch, Store } from '../reducers/types';
-import { setCache } from '../actions/cache'; // eslint-disable-next-line no-unused-vars
+import { setCache } from '../actions/cache';
 
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {

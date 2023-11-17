@@ -14,9 +14,9 @@ const blackList = [
   REFRESH_BOUNDING_BOXES,
   PERFORM_SCROLL
 ];
-const payloadLengthLimit = 200; // eslint-disable-next-line no-unused-vars
+const payloadLengthLimit = 200;
 
-export default (store: Store) => (next: Dispatch) => (action: Action) => {
+export default (_: Store) => (next: Dispatch) => (action: Action) => {
   if (action.constructor && action.constructor.name === 'AsyncFunction') {
     // eslint-disable-next-line no-console
     console.log(

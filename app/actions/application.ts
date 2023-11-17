@@ -1,4 +1,4 @@
-import type { ApplicationData, cacheStateType } from '../reducers/cache';
+import type { ApplicationData } from '../reducers/cache';
 import { CACHE_NAMES } from '../reducers/cache';
 import type { Dispatch, GetState, ThunkAction } from '../reducers/types';
 import { markCompleted } from './cache';

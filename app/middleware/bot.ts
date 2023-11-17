@@ -14,7 +14,6 @@ import {
   queueInvestigateFlat,
   setBotMessage
 } from '../actions/bot';
-import { setInteractiveMode } from '../actions/electron';
 import {
   discardApplicationProcess,
   endApplicationProcess,

@@ -1,4 +1,4 @@
-import type { Dispatch as ReduxDispatch, Store as ReduxStore } from 'redux';
+import type { Store as ReduxStore } from 'redux';
 import type { electronStateType } from './electron';
 import type { overlayStateType } from './overlay';
 import type { dataStateType } from './data';

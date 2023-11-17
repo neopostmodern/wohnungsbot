@@ -4,7 +4,7 @@ import { VERDICT_SCOPE } from '../reducers/data';
 import { setVerdict } from '../actions/data';
 import { getConfigurationFilterHash } from '../reducers/configuration';
 import { assessFlat } from '../flat/assessment';
-import type { OverviewDataEntry } from '../reducers/data'; // eslint-disable-next-line no-unused-vars
+import type { OverviewDataEntry } from '../reducers/data';
 
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   if (action.type === REFRESH_VERDICTS) {

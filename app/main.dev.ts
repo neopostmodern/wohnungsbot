@@ -236,7 +236,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
           store.dispatch(setUpdateDownloadProgress(-1));
         }
       });
-      appUpdater.onDownloadProgress((percentage) => {
+      appUpdater.onDownloadProgress(() => {
         store.dispatch();
       });
     });

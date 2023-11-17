@@ -4,7 +4,6 @@ import { createReduxHistoryContext } from 'redux-first-history';
 import { createLogger } from 'redux-logger';
 import getHistory from './history';
 import createRootReducer from '../reducers';
-import type { stateType } from '../reducers/types';
 import { MAIN, RENDERER, WEB } from '../constants/targets';
 import overlay from '../middleware/overlay';
 import logging from '../middleware/logging';
@@ -14,11 +13,7 @@ import scheduler from '../middleware/scheduler';
 import bot from '../middleware/bot';
 import login from '../middleware/login';
 
-const configureStore = async (
-  target: string,
-  isDevelopment: boolean,
-  initialState?: stateType
-) => {
+const configureStore = async (target: string, isDevelopment: boolean) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];

@@ -2,9 +2,9 @@ import type { WebContents } from 'electron';
 import ElectronUtils from './electronUtils';
 import { clickAction, type } from '../actions/botHelpers';
 import { sleep } from './async';
-import type { Dispatch, Store } from '../reducers/types';
+import type { Dispatch } from '../reducers/types';
 import AbortionSystem from './abortionSystem';
-import { setBotIsActing, setBotMessage } from '../actions/bot';
+import { setBotMessage } from '../actions/bot';
 import { setInteractiveMode } from '../actions/electron';
 
 export default class ElectronUtilsRedux extends ElectronUtils {

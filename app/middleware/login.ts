@@ -10,7 +10,7 @@ import { abortable } from '../utils/generators';
 import AbortionSystem, { ABORTION_ERROR } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import { LOGINSTATUS, USEACCOUNT } from '../reducers/configuration';
-import { logout, setBotIsActing, setLoginStatus } from '../actions/bot';
+import { setBotIsActing, setLoginStatus } from '../actions/bot';
 import performLogout from '../utils/performLogout';
 import { electronObjects } from '../store/electronObjects';
 

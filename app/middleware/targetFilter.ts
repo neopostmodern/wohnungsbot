@@ -20,7 +20,7 @@ export function targetedAction<T>(
       target
     }
   });
-} // eslint-disable-next-line no-unused-vars
+}
 
 export default (target: targetType) =>
   (store: Store) =>

@@ -2,7 +2,7 @@ import type { Action, Dispatch, Store } from '../reducers/types';
 import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
 import { navigateToFlatPage, noop, returnToSearchPage } from '../actions/bot';
 import type { schedulerStateType } from '../reducers/scheduler';
-import { endApplicationProcess } from '../actions/application'; // eslint-disable-next-line no-unused-vars
+import { endApplicationProcess } from '../actions/application';
 
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   const {

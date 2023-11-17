@@ -3,7 +3,6 @@ import {
   setBotMessage,
   setLoginStatus
 } from '../actions/bot';
-import { clickAction } from '../actions/botHelpers';
 import { electronRouting } from '../actions/electron';
 import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';

@@ -74,7 +74,7 @@ export function* performAutomaticLogin(
 export function* performManualLogin(
   dispatch: Dispatch,
   electronUtils: ElectronUtilsRedux,
-  configuration: Configuration
+  _: Configuration
 ) {
   yield sleep(1000);
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
