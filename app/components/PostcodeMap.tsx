@@ -31,7 +31,11 @@ type PostcodeDescription = {
   };
 };
 
-function ZoomLevelListener({ onZoomChange }) {
+function ZoomLevelListener({
+  onZoomChange
+}: {
+  onZoomChange: (zoomLevel: number) => void;
+}) {
   const map = useMapEvent('zoom', () => {
     onZoomChange(map.getZoom());
   });

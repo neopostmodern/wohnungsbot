@@ -282,7 +282,7 @@ const flatDescriptionStage: StageDescription = {
                 toggleBoolean('experimentalFeatures.sortByNewest')
               }
             />{' '}
-            Wohnungen nach "Neueste zuerst" sortieren
+            Wohnungen nach &quot;Neueste zuerst&quot; sortieren
           </div>
         </div>
       </div>

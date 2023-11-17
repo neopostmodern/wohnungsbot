@@ -23,7 +23,7 @@ export default class Sidebar extends Component<Props, State> {
 
   state: State = {};
 
-  async componentWillMount() {
+  async UNSAFE_componentWillMount() {
     try {
       const response = await fetch('https://wohnungsbot.de/announcement.html');
       const announcement = await response.text();

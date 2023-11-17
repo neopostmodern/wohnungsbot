@@ -7,6 +7,7 @@ type DevMenuProps = {
   showDevTools: (name: BrowserViewName) => void;
   resetConfiguration: () => void;
   resetCache: () => void;
+  stopBot: () => void;
   logout: () => void;
 };
 type DevMenuState = {

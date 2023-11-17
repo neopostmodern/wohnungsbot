@@ -222,7 +222,7 @@ const reviewStage: StageDescription = {
           {configuration.experimentalFeatures.sortByNewest ? (
             <>
               folgende experimentelle Fähigkeiten verwenden:
-              <div>- Wohnungen sortieren nach "Neueste zuerst"</div>
+              <div>- Wohnungen sortieren nach &quot;Neueste zuerst&quot;</div>
             </>
           ) : (
             <>
