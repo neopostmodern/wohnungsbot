@@ -186,6 +186,7 @@ ${this.webContents.getURL()}`);
   ): Promise<boolean> {
     try {
       if (!(await this.elementExists(selector, shadowRootSelector))) {
+        // eslint-disable-next-line no-console
         console.log(
           `isElementInViewport(${selector})${
             shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
@@ -218,6 +219,7 @@ ${this.webContents.getURL()}`);
             elementBoundingBox.bottom < viewportSize.height))
       );
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(
         `isElementInViewport(${selector})${
           shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''

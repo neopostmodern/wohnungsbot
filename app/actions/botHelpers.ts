@@ -172,6 +172,7 @@ export function clickAction(
     );
 
     if (!boundingRect) {
+      // eslint-disable-next-line no-console
       console.error(
         `[Click] No bounding box for this element: '${selector}' ${
           shadowRootSelector ? `[shadow-root: '${shadowRootSelector}']` : ''
