@@ -28,7 +28,9 @@ export type Action = {
         message: string;
       };
 };
-export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
-export type GetState = () => stateType;
+
+// eslint-disable-next-line no-use-before-define
 export type Dispatch = (action: Action | ThunkAction) => any;
+export type GetState = () => stateType;
+export type ThunkAction = (dispatch: Dispatch, getState: GetState) => any;
 export type Store = ReduxStore<stateType, Action>;

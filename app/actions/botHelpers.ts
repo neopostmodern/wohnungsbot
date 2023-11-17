@@ -11,6 +11,134 @@ import { electronObjects } from '../store/electronObjects';
 import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
 
+export type ScrollIntoViewPolicy = 'always' | 'auto' | 'none';
+export type ScrollIntoViewStrategy = 'start' | 'center' | 'end' | 'nearest';
+
+export function willClick(x: number, y: number): Action {
+  return {
+    type: WILL_CLICK,
+    payload: {
+      x,
+      y
+    }
+  };
+}
+
+export function willPressKey(keyCode: string): Action {
+  return {
+    type: WILL_PRESS_KEY,
+    payload: {
+      keyCode
+    }
+  };
+}
+
+export function willType(text: string): Action {
+  return {
+    type: WILL_TYPE,
+    payload: {
+      text
+    }
+  };
+}
+
+// todo: scrollIntoView has to request an update of bounding boxes
+export async function scrollIntoView(
+  webContents: WebContents,
+  selector: string,
+  {
+    strategy = 'center',
+    smooth = true,
+    elementExistenceGuaranteed = true,
+    shadowRootSelector
+  }: {
+    strategy: ScrollIntoViewStrategy;
+    smooth?: boolean;
+    elementExistenceGuaranteed?: boolean;
+    shadowRootSelector?: string;
+  } = {}
+) {
+  const electronUtils = new ElectronUtils(webContents);
+
+  /* eslint-disable no-await-in-loop */
+  while (AbortionSystem.nestedFunctionsMayContinue) {
+    await electronUtils.evaluate(
+      `${ElectronUtils.generateSelector(
+        selector,
+        shadowRootSelector
+      )}.scrollIntoView({ behavior: ${
+        smooth ? "'smooth'" : "'auto'"
+      }, block: '${strategy}'})`
+    );
+    // there is no way to know when the smooth scroll has finished
+    await sleep(2000);
+
+    if (
+      !elementExistenceGuaranteed ||
+      (await electronUtils.isElementInViewport(selector))
+    ) {
+      break;
+    }
+  }
+  /* eslint-enable no-await-in-loop */
+}
+
+export function scrollIntoViewAction(
+  name: BrowserViewName,
+  selector: string,
+  strategy: ScrollIntoViewStrategy = 'center',
+  smooth: boolean = true
+) {
+  return async () => {
+    const { webContents } = electronObjects.views[name];
+    await scrollIntoView(webContents, selector, {
+      strategy,
+      smooth
+    });
+  };
+}
+
+export async function scrollIntoViewByPolicy(
+  webContents: WebContents,
+  selector: string,
+  {
+    scrollIntoViewPolicy = 'auto',
+    overrideStrategy,
+    elementExistenceGuaranteed = true,
+    shadowRootSelector
+  }: {
+    scrollIntoViewPolicy?: ScrollIntoViewPolicy;
+    overrideStrategy?: ScrollIntoViewStrategy;
+    elementExistenceGuaranteed?: boolean;
+    shadowRootSelector?: string;
+  } = {}
+) {
+  if (scrollIntoViewPolicy === 'none') {
+    return;
+  }
+
+  if (scrollIntoViewPolicy === 'always') {
+    await scrollIntoView(webContents, selector, {
+      strategy: overrideStrategy || 'center',
+      elementExistenceGuaranteed,
+      shadowRootSelector
+    });
+    return;
+  }
+
+  if (
+    !(await new ElectronUtils(webContents).isElementInViewport(selector, {
+      shadowRootSelector
+    }))
+  ) {
+    await scrollIntoView(webContents, selector, {
+      strategy: overrideStrategy || 'nearest',
+      elementExistenceGuaranteed,
+      shadowRootSelector
+    });
+  }
+}
+
 export function clickAction(
   selector: string,
   {
@@ -74,6 +202,7 @@ export function clickAction(
     });
   };
 }
+
 export function type(text: string) {
   return async (dispatch: Dispatch) => {
     dispatch(willType(text));
@@ -108,6 +237,7 @@ export function type(text: string) {
     /* eslint-enable no-await-in-loop */
   };
 }
+
 export function pressKey(keyCode: string): ThunkAction {
   return async (dispatch: Dispatch) => {
     dispatch(willPressKey(keyCode));
@@ -118,126 +248,5 @@ export function pressKey(keyCode: string): ThunkAction {
     }
 
     await new ElectronUtils(webContents).performPressKey(keyCode);
-  };
-}
-export type ScrollIntoViewStrategy = 'start' | 'center' | 'end' | 'nearest';
-// todo: scrollIntoView has to request an update of bounding boxes
-export async function scrollIntoView(
-  webContents: WebContents,
-  selector: string,
-  {
-    strategy = 'center',
-    smooth = true,
-    elementExistenceGuaranteed = true,
-    shadowRootSelector
-  }: {
-    strategy: ScrollIntoViewStrategy;
-    smooth?: boolean;
-    elementExistenceGuaranteed?: boolean;
-    shadowRootSelector?: string;
-  } = {}
-) {
-  const electronUtils = new ElectronUtils(webContents);
-
-  /* eslint-disable no-await-in-loop */
-  while (AbortionSystem.nestedFunctionsMayContinue) {
-    await electronUtils.evaluate(
-      `${ElectronUtils.generateSelector(
-        selector,
-        shadowRootSelector
-      )}.scrollIntoView({ behavior: ${
-        smooth ? "'smooth'" : "'auto'"
-      }, block: '${strategy}'})`
-    );
-    // there is no way to know when the smooth scroll has finished
-    await sleep(2000);
-
-    if (
-      !elementExistenceGuaranteed ||
-      (await electronUtils.isElementInViewport(selector))
-    ) {
-      break;
-    }
-  }
-  /* eslint-enable no-await-in-loop */
-}
-export function scrollIntoViewAction(
-  name: BrowserViewName,
-  selector: string,
-  strategy: ScrollIntoViewStrategy = 'center',
-  smooth: boolean = true
-) {
-  return async () => {
-    const { webContents } = electronObjects.views[name];
-    await scrollIntoView(webContents, selector, {
-      strategy,
-      smooth
-    });
-  };
-}
-export type ScrollIntoViewPolicy = 'always' | 'auto' | 'none';
-export async function scrollIntoViewByPolicy(
-  webContents: WebContents,
-  selector: string,
-  {
-    scrollIntoViewPolicy = 'auto',
-    overrideStrategy,
-    elementExistenceGuaranteed = true,
-    shadowRootSelector
-  }: {
-    scrollIntoViewPolicy?: ScrollIntoViewPolicy;
-    overrideStrategy?: ScrollIntoViewStrategy;
-    elementExistenceGuaranteed?: boolean;
-    shadowRootSelector?: string;
-  } = {}
-) {
-  if (scrollIntoViewPolicy === 'none') {
-    return;
-  }
-
-  if (scrollIntoViewPolicy === 'always') {
-    await scrollIntoView(webContents, selector, {
-      strategy: overrideStrategy || 'center',
-      elementExistenceGuaranteed,
-      shadowRootSelector
-    });
-    return;
-  }
-
-  if (
-    !(await new ElectronUtils(webContents).isElementInViewport(selector, {
-      shadowRootSelector
-    }))
-  ) {
-    await scrollIntoView(webContents, selector, {
-      strategy: overrideStrategy || 'nearest',
-      elementExistenceGuaranteed,
-      shadowRootSelector
-    });
-  }
-}
-export function willClick(x: number, y: number): Action {
-  return {
-    type: WILL_CLICK,
-    payload: {
-      x,
-      y
-    }
-  };
-}
-export function willPressKey(keyCode: string): Action {
-  return {
-    type: WILL_PRESS_KEY,
-    payload: {
-      keyCode
-    }
-  };
-}
-export function willType(text: string): Action {
-  return {
-    type: WILL_TYPE,
-    payload: {
-      text
-    }
   };
 }

@@ -55,6 +55,34 @@ export function popFlatFromQueue(flatId: string): Action {
     }
   };
 }
+export function setBotIsActing(isActing: boolean): Action {
+  return {
+    type: SET_BOT_IS_ACTING,
+    payload: {
+      isActing
+    }
+  };
+}
+export function setBotMessage(
+  message: string | null | undefined,
+  timeout?: number
+): Action {
+  return {
+    type: SET_BOT_MESSAGE,
+    payload: {
+      message,
+      timeout
+    }
+  };
+}
+export function setShowOverlay(showOverlay: boolean): Action {
+  return {
+    type: SET_SHOW_OVERLAY,
+    payload: {
+      showOverlay
+    }
+  };
+}
 export const navigateToFlatPage =
   (flatId: string) => async (dispatch: Dispatch) => {
     await sleep(10000);
@@ -85,34 +113,6 @@ export const navigateToFlatPage =
     /* eslint-enable no-await-in-loop */
     return false;
   };
-export function setBotIsActing(isActing: boolean): Action {
-  return {
-    type: SET_BOT_IS_ACTING,
-    payload: {
-      isActing
-    }
-  };
-}
-export function setBotMessage(
-  message: string | null | undefined,
-  timeout?: number
-): Action {
-  return {
-    type: SET_BOT_MESSAGE,
-    payload: {
-      message,
-      timeout
-    }
-  };
-}
-export function setShowOverlay(showOverlay: boolean): Action {
-  return {
-    type: SET_SHOW_OVERLAY,
-    payload: {
-      showOverlay
-    }
-  };
-}
 export function launchNextTask(): Action {
   return {
     type: LAUNCH_NEXT_TASK,

@@ -23,6 +23,31 @@ import AbortionSystem, {
   ABORTION_MANUAL
 } from '../utils/abortionSystem';
 
+const markApplicationCompleted = async (
+  dispatch: Dispatch,
+  applicationData: ApplicationData
+) => {
+  dispatch(popFlatFromQueue(applicationData.flatId));
+  return dispatch(
+    markCompleted(
+      CACHE_NAMES.APPLICATIONS,
+      applicationData.flatId,
+      applicationData
+    )
+  );
+};
+
+export const endApplicationProcess =
+  (): ThunkAction => async (dispatch: Dispatch) => {
+    dispatch(returnToSearchPage());
+    dispatch(setBotMessage(null));
+    dispatch(taskFinished());
+    await sleep(5000);
+    // this kicks of next queued action, if any (?? — shouldn't this be caused by the page load caused in by `returnToSearchPage`)
+    dispatch(setBotIsActing(false));
+    dispatch(setShowOverlay(true));
+  };
+
 export const generateApplicationTextAndSubmit =
   (flatId: string): ThunkAction =>
   async (dispatch: Dispatch, getState: GetState) => {
@@ -75,30 +100,6 @@ ${error}`);
     await dispatch(endApplicationProcess());
   };
 
-const markApplicationCompleted = async (
-  dispatch: Dispatch,
-  applicationData: ApplicationData
-) => {
-  dispatch(popFlatFromQueue(applicationData.flatId));
-  return dispatch(
-    markCompleted(
-      CACHE_NAMES.APPLICATIONS,
-      applicationData.flatId,
-      applicationData
-    )
-  );
-};
-
-export const endApplicationProcess =
-  (): ThunkAction => async (dispatch: Dispatch) => {
-    dispatch(returnToSearchPage());
-    dispatch(setBotMessage(null));
-    dispatch(taskFinished());
-    await sleep(5000);
-    // this kicks of next queued action, if any (?? — shouldn't this be caused by the page load caused in by `returnToSearchPage`)
-    dispatch(setBotIsActing(false));
-    dispatch(setShowOverlay(true));
-  };
 export const discardApplicationProcess =
   (flatOverview: OverviewDataEntry): ThunkAction =>
   async (dispatch: Dispatch) => {
