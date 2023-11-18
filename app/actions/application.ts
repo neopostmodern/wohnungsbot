@@ -5,7 +5,7 @@ import { markCompleted } from './cache';
 import { sleep, timeout } from '../utils/async';
 import type { Configuration } from '../reducers/configuration';
 import type { dataStateType, OverviewDataEntry } from '../reducers/data';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import {
   popFlatFromQueue,

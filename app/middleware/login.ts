@@ -12,7 +12,7 @@ import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import { LOGINSTATUS, USEACCOUNT } from '../reducers/configuration';
 import { setBotIsActing, setLoginStatus } from '../actions/bot';
 import performLogout from '../utils/performLogout';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 
 export default (store: Store) =>
   (next: (action: Action) => void) =>

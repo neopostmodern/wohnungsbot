@@ -7,7 +7,7 @@ import {
   WILL_TYPE
 } from '../constants/actionTypes';
 import type { BrowserViewName } from '../reducers/electron';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
 

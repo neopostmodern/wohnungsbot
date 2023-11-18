@@ -2,7 +2,7 @@ import { sleep } from './async';
 import ElectronUtils from './electronUtils';
 import type { Dispatch, GetState } from '../reducers/types';
 import { calculateOverviewBoundingBoxes } from '../actions/overlay';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 
 export default function scrollWhileIdle(
   getState: GetState,

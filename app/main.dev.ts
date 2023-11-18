@@ -16,7 +16,7 @@ import { LOADING, UP_TO_DATE } from './constants/updater';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
-import { electronObjects } from './store/electronObjects';
+import electronObjects from './store/electronObjects';
 import resizeViews from './utils/resizeViews';
 
 const isDevelopment =

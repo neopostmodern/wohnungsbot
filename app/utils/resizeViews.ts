@@ -1,5 +1,5 @@
 import type { electronStateType } from '../reducers/electron';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 
 export default function resizeViews(
   electronState: electronStateType,

@@ -19,7 +19,7 @@ import {
   LOGIN,
   LOGOUT
 } from '../constants/actionTypes';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 import { sleep } from '../utils/async';
 import { clickAction, scrollIntoViewAction } from './botHelpers';
 import { calculateOverviewBoundingBoxes } from './overlay';

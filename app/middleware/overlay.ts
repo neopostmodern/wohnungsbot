@@ -23,7 +23,7 @@ import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
 import ElectronUtils from '../utils/electronUtils';
 import { entrySelector } from '../utils/selectors';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   if (action.type === WILL_CLICK) {

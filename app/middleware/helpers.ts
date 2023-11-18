@@ -6,7 +6,7 @@ import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
 import sendMail from '../utils/email';
 import { sleep, timeout } from '../utils/async';
 import { electronRouting } from '../actions/electron';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 import ElectronUtils from '../utils/electronUtils';
 
 const pdfFolderPath = path.join(app.getPath('userData'), 'pdf');

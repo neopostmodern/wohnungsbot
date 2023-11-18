@@ -28,7 +28,7 @@ import resizeViews from '../utils/resizeViews';
 import scrollWhileIdle from '../utils/scrollWhileIdle';
 import ElectronUtils from '../utils/electronUtils';
 import { login } from '../actions/bot';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 
 let stopScrollingWhileIdle;
 export default (store: Store) =>

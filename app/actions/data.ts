@@ -15,7 +15,7 @@ import {
   SET_FLAT_DATA
 } from '../constants/actionTypes';
 import ElectronUtils from '../utils/electronUtils';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 import { returnToSearchPage } from './bot';
 
 function parseBoolean(stringBoolean: StringBoolean): boolean {

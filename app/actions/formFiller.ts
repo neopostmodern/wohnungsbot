@@ -14,7 +14,7 @@ import type { ScrollIntoViewPolicy } from './botHelpers';
 import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import AbortionSystem from '../utils/abortionSystem';
-import { electronObjects } from '../store/electronObjects';
+import electronObjects from '../store/electronObjects';
 
 const SALUTATION_VALUES = {
   [SALUTATIONS.FRAU]: 'FEMALE',
