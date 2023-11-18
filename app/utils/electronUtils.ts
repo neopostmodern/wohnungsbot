@@ -88,9 +88,11 @@ ${this.webContents.getURL()}`);
     selector: string,
     shadowRootSelector?: string
   ): Promise<void> {
+    /* eslint-disable no-await-in-loop */
     while (!(await this.elementExists(selector, shadowRootSelector))) {
       await sleep(1000);
     }
+    /* eslint-enable no-await-in-loop */
   }
 
   async getInnerText(selector: string): Promise<string | undefined> {

@@ -50,9 +50,11 @@ export default class ElectronUtilsRedux extends ElectronUtils {
 
     this.dispatch(setInteractiveMode(true));
 
+    /* eslint-disable no-await-in-loop */
     while (await isHumanActionStillNeeded()) {
       await sleep(1000);
     }
+    /* eslint-enable no-await-in-loop */
 
     this.dispatch(setBotMessage('Geschafft, ich übernehme wieder!'));
     this.dispatch(setInteractiveMode(false));

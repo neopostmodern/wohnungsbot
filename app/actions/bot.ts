@@ -109,8 +109,8 @@ export const navigateToFlatPage =
       await dispatch(clickAction(flatTitleSelector));
       await sleep(5000);
     }
-
     /* eslint-enable no-await-in-loop */
+
     return false;
   };
 export function launchNextTask(): Action {

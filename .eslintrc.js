@@ -4,7 +4,6 @@ module.exports = {
   plugins: ['@typescript-eslint', '@eslint-community/eslint-comments'],
   rules: {
     'no-console': 'warn',
-    'no-await-in-loop': 'off',
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
     'react/static-property-placement': 'off',
     'react/state-in-constructor': 'off',

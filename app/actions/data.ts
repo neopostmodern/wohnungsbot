@@ -72,6 +72,7 @@ export function getOverviewData(): ThunkAction {
       const data = {};
 
       if (rawOverviewData) {
+        /* eslint-disable no-await-in-loop */
         for (let i = 0; i < rawOverviewData.length; i++) {
           const entry = rawOverviewData[i];
           const hasApplied = await electronUtils.evaluate(
@@ -81,6 +82,7 @@ export function getOverviewData(): ThunkAction {
           const processedEntry = processOverviewDataEntry(entry);
           data[processedEntry.id] = processedEntry;
         }
+        /* eslint-enable no-await-in-loop */
       }
 
       dispatch({
