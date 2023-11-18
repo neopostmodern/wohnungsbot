@@ -14,7 +14,6 @@ export default class Root extends Component<Props> {
   render() {
     const { store, history } = this.props;
     return (
-      // eslint-disable-next-line no-console
       <Provider store={store}>
         <Router history={history}>
           <App>

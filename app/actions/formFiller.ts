@@ -239,7 +239,6 @@ async function fillSelectField(
     let down = true;
 
     /* eslint-disable no-await-in-loop */
-    // eslint-disable-next-line no-constant-condition
     while (AbortionSystem.nestedFunctionsMayContinue) {
       const currentValue = await electronUtils.getValue(field.selector);
 

@@ -77,7 +77,6 @@ class PostcodeMap extends React.Component<Props, State> {
   }
 
   handleZoom(zoom) {
-    // eslint-disable-next-line no-underscore-dangle
     this.setState({
       zoom
     });
