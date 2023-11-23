@@ -119,14 +119,14 @@ export type FlatData = {
   floor: number;
   requiresWBS: boolean;
 };
-export const enum FLAT_ACTION {
+export const enum FlatAction {
   APPLY = 'APPLY',
   INVESTIGATE = 'INVESTIGATE',
   NOTIFY_VIEWING_DATE = 'NOTIFY_VIEWING_DATE',
   IGNORE = 'IGNORE',
   DISCARD = 'DISCARD'
 }
-export const enum VERDICT_SCOPE {
+export const enum VerdictScope {
   OVERVIEW = 'OVERVIEW',
   COMPLETE = 'COMPLETE'
 }
@@ -134,12 +134,12 @@ export type Verdict = {
   flatId: string;
   configurationHash: number;
   result: boolean;
-  scope: VERDICT_SCOPE;
+  scope: VerdictScope;
   reasons: Array<{
     reason: string;
     result: boolean;
   }>;
-  action?: FLAT_ACTION;
+  action?: FlatAction;
 };
 export type Verdicts = Record<string, Verdict>;
 export type dataStateType = {

@@ -28,7 +28,7 @@ import AbortionSystem from '../utils/abortionSystem';
 import { entrySelector, entryTitleSelector } from '../utils/selectors';
 import { electronRouting, setBrowserViewReady } from './electron';
 import type { LoginData } from '../reducers/configuration';
-import { LOGINSTATUS } from '../reducers/configuration';
+import { LoginStatus } from '../reducers/configuration';
 import { setConfiguration } from './configuration';
 
 export function queueInvestigateFlat(flatId: string): ThunkAction {
@@ -174,7 +174,7 @@ export function logout(): Action {
     payload: null
   };
 }
-export function setLoginStatus(loginStatus: LOGINSTATUS): ThunkAction {
+export function setLoginStatus(loginStatus: LoginStatus): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
     const { configuration } = getState();
     configuration.immobilienScout24.status = loginStatus;

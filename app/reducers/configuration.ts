@@ -54,28 +54,28 @@ export type Filter = {
   noSublease: boolean;
   floors: Array<number>;
 };
-export const enum SALUTATIONS {
+export const enum Salutations {
   FRAU = 'Frau',
   HERR = 'Herr'
 }
-export const enum USEACCOUNT {
+export const enum UseAccount {
   JA = 'Ja',
   MANUELL = 'Manuell',
   NEIN = 'Nein'
 }
-export const enum LOGINSTATUS {
+export const enum LoginStatus {
   LOGGED_IN,
   LOGGED_OUT,
   ERROR
 }
 export type LoginData = {
-  useAccount: USEACCOUNT;
+  useAccount: UseAccount;
   userName: string;
   password: string;
-  status: LOGINSTATUS;
+  status: LoginStatus;
 };
 export type ContactData = {
-  salutation: SALUTATIONS;
+  salutation: Salutations;
   firstName: string;
   lastName: string;
   eMail: string;
@@ -93,17 +93,17 @@ export type DataPolicies = {
   applicationNotificationMails: boolean;
   fillAsLittleAsPossible: boolean;
 };
-export const enum MOVE_IN_WHEN {
+export const enum MoveInWhen {
   NOW = 'Ab sofort',
   FLEXIBLE = 'Flexibel'
 }
-export const enum MOVE_IN_WHO {
+export const enum MoveInWho {
   SINGLE = 'Einpersonenhaushalt',
   TWO_ADULTS = 'Zwei Erwachsene',
   FAMILY = 'Familie',
   SHARED_FLAT = 'Wohngemeinschaft'
 }
-export const enum EMPLOYMENT_STATUS {
+export const enum EmploymentStatus {
   EMPLOYEE = 'Angestellte_r',
   WORKER = 'Arbeiter_in',
   SELF_EMPLOYED = 'Selbstständig',
@@ -117,10 +117,10 @@ export const enum EMPLOYMENT_STATUS {
   OTHER = 'Sonstige'
 }
 export type AdditionalInformation = {
-  moveInWhen: MOVE_IN_WHEN;
-  moveInWho: MOVE_IN_WHO;
+  moveInWhen: MoveInWhen;
+  moveInWho: MoveInWho;
   animals: string;
-  employmentStatus: EMPLOYMENT_STATUS;
+  employmentStatus: EmploymentStatus;
   income: number | null | undefined;
   hasDocumentsReady: boolean;
 };
@@ -164,13 +164,13 @@ const defaultConfiguration: Configuration = {
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   immobilienScout24: {
-    useAccount: USEACCOUNT.NEIN,
+    useAccount: UseAccount.NEIN,
     userName: '',
     password: '',
-    status: LOGINSTATUS.LOGGED_OUT
+    status: LoginStatus.LOGGED_OUT
   },
   contactData: {
-    salutation: SALUTATIONS.FRAU,
+    salutation: Salutations.FRAU,
     firstName: '',
     lastName: '',
     eMail: '',
@@ -180,10 +180,10 @@ const defaultConfiguration: Configuration = {
     city: ''
   },
   additionalInformation: {
-    moveInWhen: MOVE_IN_WHEN.NOW,
-    moveInWho: MOVE_IN_WHO.SINGLE,
+    moveInWhen: MoveInWhen.NOW,
+    moveInWho: MoveInWho.SINGLE,
     animals: '',
-    employmentStatus: EMPLOYMENT_STATUS.EMPLOYEE,
+    employmentStatus: EmploymentStatus.EMPLOYEE,
     income: null,
     hasDocumentsReady: true
   },
@@ -231,7 +231,7 @@ function configurationMigrations(
         useAccount: false,
         userName: '',
         password: '',
-        status: LOGINSTATUS.LOGGED_OUT
+        status: LoginStatus.LOGGED_OUT
       }
     };
   }
@@ -251,8 +251,8 @@ function configurationMigrations(
       immobilienScout24: {
         ...migratedConfiguration.immobilienScout24,
         useAccount: migratedConfiguration.useAccount
-          ? USEACCOUNT.JA
-          : USEACCOUNT.NEIN
+          ? UseAccount.JA
+          : UseAccount.NEIN
       }
     };
   }

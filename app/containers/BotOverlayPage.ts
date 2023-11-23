@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import BotOverlay from '../components/BotOverlay';
 import { performScroll } from '../actions/electron';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import BoundingBoxGroups from '../constants/boundingBoxGroups';
 import type { stateType } from '../reducers/types';
 
 function mapStateToProps(state: stateType) {
@@ -10,7 +10,7 @@ function mapStateToProps(state: stateType) {
     isPuppetLoading: !state.electron.views.puppet.ready,
     animations: state.overlay.animations,
     overviewBoundingBoxes: state.overlay.boundingBoxes.filter(
-      ({ group }) => group === BOUNDING_BOX_GROUPS.OVERVIEW
+      ({ group }) => group === BoundingBoxGroups.OVERVIEW
     ),
     verdicts: state.data.verdicts,
     isBotActing: state.bot.isActive,

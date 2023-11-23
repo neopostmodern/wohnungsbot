@@ -6,7 +6,7 @@ import type { ContactData } from '../reducers/configuration';
 import type { OverviewDataEntry } from '../reducers/data';
 import type { Action, Dispatch, GetState } from '../reducers/types';
 import { markCompleted } from './cache';
-import { CACHE_NAMES } from '../reducers/cache';
+import { CacheNames } from '../reducers/cache';
 
 export const sendMail = (
   to: string,
@@ -66,7 +66,7 @@ Viel Erfolg mit der Wohnung wünscht der Wohnungsbot!`
       )
     );
     dispatch(
-      markCompleted(CACHE_NAMES.MAIL, flatOverview.id, {
+      markCompleted(CacheNames.MAIL, flatOverview.id, {
         flatId: flatOverview.id
       })
     );

@@ -5,7 +5,7 @@ import type {
   OverviewDataEntry,
   Verdict
 } from '../reducers/data';
-import { FLAT_ACTION, VERDICT_SCOPE } from '../reducers/data';
+import { FlatAction, VerdictScope } from '../reducers/data';
 import { floorToName } from '../utils/germanStrings';
 // eslint-disable-next-line import/prefer-default-export
 export function assessFlat(
@@ -13,7 +13,7 @@ export function assessFlat(
   overviewDataEntry: OverviewDataEntry,
   flatData?: FlatData
 ): Verdict {
-  let action: FLAT_ACTION = FLAT_ACTION.IGNORE;
+  let action: FlatAction = FlatAction.IGNORE;
   const reasons = [];
 
   if (overviewDataEntry.hasAlreadyApplied) {
@@ -72,7 +72,7 @@ export function assessFlat(
       reason: `Besichtigungstermin im Titel`,
       result: false
     });
-    action = FLAT_ACTION.NOTIFY_VIEWING_DATE;
+    action = FlatAction.NOTIFY_VIEWING_DATE;
   }
 
   if (configuration.filter.onlyUnfurnished) {
@@ -177,18 +177,18 @@ export function assessFlat(
   let scope;
 
   if (flatData) {
-    scope = VERDICT_SCOPE.COMPLETE;
+    scope = VerdictScope.COMPLETE;
 
     if (result) {
-      action = FLAT_ACTION.APPLY;
+      action = FlatAction.APPLY;
     } else {
-      action = FLAT_ACTION.DISCARD;
+      action = FlatAction.DISCARD;
     }
   } else {
-    scope = VERDICT_SCOPE.OVERVIEW;
+    scope = VerdictScope.OVERVIEW;
 
     if (result) {
-      action = FLAT_ACTION.INVESTIGATE;
+      action = FlatAction.INVESTIGATE;
     }
   }
 

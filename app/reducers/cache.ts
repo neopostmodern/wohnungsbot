@@ -20,7 +20,7 @@ export type EmailData = {
   flatId: string;
 };
 export type Cache<T> = Record<string, BaseCacheEntry & T>;
-export const enum CACHE_NAMES {
+export const enum CacheNames {
   APPLICATIONS = 'applications',
   MAIL = 'mail'
 }

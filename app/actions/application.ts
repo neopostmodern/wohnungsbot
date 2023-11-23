@@ -1,5 +1,5 @@
 import type { ApplicationData } from '../reducers/cache';
-import { CACHE_NAMES } from '../reducers/cache';
+import { CacheNames } from '../reducers/cache';
 import type { Dispatch, GetState, ThunkAction } from '../reducers/types';
 import { markCompleted } from './cache';
 import { sleep, timeout } from '../utils/async';
@@ -30,7 +30,7 @@ const markApplicationCompleted = async (
   dispatch(popFlatFromQueue(applicationData.flatId));
   return dispatch(
     markCompleted(
-      CACHE_NAMES.APPLICATIONS,
+      CacheNames.APPLICATIONS,
       applicationData.flatId,
       applicationData
     )

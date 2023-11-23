@@ -7,7 +7,7 @@ import {
 } from '../constants/actionTypes';
 import { calculateOverviewBoundingBoxes } from '../actions/overlay';
 import { getFlatData, getOverviewData, refreshVerdicts } from '../actions/data';
-import { FLAT_ACTION } from '../reducers/data';
+import { FlatAction } from '../reducers/data';
 import { sendFlatViewingNotificationMail } from '../actions/email';
 import {
   launchNextTask,
@@ -140,21 +140,21 @@ export default (store: Store) =>
 
       // eslint-disable-next-line default-case
       switch (verdict.action) {
-        case FLAT_ACTION.NOTIFY_VIEWING_DATE:
+        case FlatAction.NOTIFY_VIEWING_DATE:
           store.dispatch(
             sendFlatViewingNotificationMail(contactData, flatOverview)
           );
           break;
 
-        case FLAT_ACTION.INVESTIGATE:
+        case FlatAction.INVESTIGATE:
           store.dispatch(queueInvestigateFlat(flatId));
           break;
 
-        case FLAT_ACTION.APPLY:
+        case FlatAction.APPLY:
           store.dispatch(generateApplicationTextAndSubmit(flatId));
           break;
 
-        case FLAT_ACTION.DISCARD:
+        case FlatAction.DISCARD:
           store.dispatch(discardApplicationProcess(flatOverview));
           break;
       }

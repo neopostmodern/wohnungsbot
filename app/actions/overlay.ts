@@ -14,7 +14,7 @@ import type {
   AttachedInformation,
   ElementBoundingBox
 } from '../reducers/overlay';
-import type { BOUNDING_BOX_GROUPS } from '../constants/boundingBoxGroups';
+import type { BoundingBoxGroups } from '../constants/boundingBoxGroups';
 // TODO PROVOKE TS: first need some error, then move to 'import <default>'
 
 export function clickAnimationShow(
@@ -64,7 +64,7 @@ export function calculateBoundingBox(
     group,
     attachedInformation
   }: {
-    group?: BOUNDING_BOX_GROUPS;
+    group?: BoundingBoxGroups;
     attachedInformation?: AttachedInformation;
   }
 ): Action {
@@ -84,7 +84,7 @@ export function setBoundingBox(
     group,
     attachedInformation
   }: {
-    group?: BOUNDING_BOX_GROUPS;
+    group?: BoundingBoxGroups;
     attachedInformation?: AttachedInformation;
   }
 ): Action {
@@ -99,7 +99,7 @@ export function setBoundingBox(
   };
 }
 export function setBoundingBoxGroup(
-  group: BOUNDING_BOX_GROUPS,
+  group: BoundingBoxGroups,
   boundingBoxes: Array<ElementBoundingBox>
 ): Action {
   return {
@@ -110,7 +110,7 @@ export function setBoundingBoxGroup(
     }
   };
 }
-export function removeBoundingBoxesInGroup(group: BOUNDING_BOX_GROUPS) {
+export function removeBoundingBoxesInGroup(group: BoundingBoxGroups) {
   return {
     type: REMOVE_BOUNDING_BOXES_IN_GROUP,
     payload: {

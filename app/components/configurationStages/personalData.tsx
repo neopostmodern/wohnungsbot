@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from '../Configuration.scss';
 import {
-  EMPLOYMENT_STATUS,
-  SALUTATIONS,
-  USEACCOUNT
+  EmploymentStatus,
+  Salutations,
+  UseAccount
 } from '../../reducers/configuration';
 import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';
@@ -61,7 +61,7 @@ const personalDataStage: StageDescription = {
           <EnumField
             value={salutation}
             onChange={(value) => setString('contactData.salutation', value)}
-            options={SALUTATIONS}
+            options={Salutations}
             inline
             isWeird
           />
@@ -140,13 +140,13 @@ const personalDataStage: StageDescription = {
           </h3>
           <div className={styles.searchParameter}>
             <EnumField
-              options={USEACCOUNT}
+              options={UseAccount}
               value={useAccount}
               onChange={(value) =>
                 setString('immobilienScout24.useAccount', value)
               }
             />
-            {useAccount === USEACCOUNT.JA && (
+            {useAccount === UseAccount.JA && (
               <>
                 <TextField
                   type="email"
@@ -236,7 +236,7 @@ const personalDataStage: StageDescription = {
           <br />
           Du bist...
           <EnumField
-            options={EMPLOYMENT_STATUS}
+            options={EmploymentStatus}
             value={employmentStatus}
             onChange={(value) =>
               setString('additionalInformation.employmentStatus', value)
@@ -308,7 +308,7 @@ const personalDataStage: StageDescription = {
           }
         };
 
-        if (configuration.immobilienScout24.useAccount === USEACCOUNT.JA) {
+        if (configuration.immobilienScout24.useAccount === UseAccount.JA) {
           checks.immobilienScout24 = {
             userName: 'deine E-Mail',
             password: 'dein Passwort'

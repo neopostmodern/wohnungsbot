@@ -7,7 +7,7 @@ import { electronRouting } from '../actions/electron';
 import { sleep } from './async';
 import type { Dispatch } from '../reducers/types';
 import type ElectronUtils from './electronUtils';
-import { LOGINSTATUS } from '../reducers/configuration';
+import { LoginStatus } from '../reducers/configuration';
 
 export default function* performLogout(
   dispatch: Dispatch,
@@ -28,6 +28,6 @@ export default function* performLogout(
     yield sleep(3000);
   }
 
-  dispatch(setLoginStatus(LOGINSTATUS.LOGGED_OUT));
+  dispatch(setLoginStatus(LoginStatus.LOGGED_OUT));
   dispatch(returnToSearchPage());
 }

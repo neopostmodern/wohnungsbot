@@ -19,7 +19,7 @@ import {
   WILL_CLICK
 } from '../constants/actionTypes';
 import type { OverviewDataEntry } from '../reducers/data';
-import BOUNDING_BOX_GROUPS from '../constants/boundingBoxGroups';
+import BoundingBoxGroups from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
 import ElectronUtils from '../utils/electronUtils';
 import { entrySelector } from '../utils/selectors';
@@ -69,13 +69,13 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
               attachedInformation: {
                 flatId: entry.id
               },
-              group: BOUNDING_BOX_GROUPS.OVERVIEW
+              group: BoundingBoxGroups.OVERVIEW
             };
           })
         )
       ).filter((entry) => entry !== null);
       store.dispatch(
-        setBoundingBoxGroup(BOUNDING_BOX_GROUPS.OVERVIEW, boundingBoxes)
+        setBoundingBoxGroup(BoundingBoxGroups.OVERVIEW, boundingBoxes)
       );
     }
   }

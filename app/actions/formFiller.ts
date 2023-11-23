@@ -3,10 +3,10 @@ import type {
   ContactData
 } from '../reducers/configuration';
 import {
-  EMPLOYMENT_STATUS,
-  MOVE_IN_WHEN,
-  MOVE_IN_WHO,
-  SALUTATIONS
+  EmploymentStatus,
+  MoveInWhen,
+  MoveInWho,
+  Salutations
 } from '../reducers/configuration';
 import { sleep } from '../utils/async';
 import type { Dispatch } from '../reducers/types';
@@ -16,9 +16,9 @@ import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import AbortionSystem from '../utils/abortionSystem';
 import electronObjects from '../store/electronObjects';
 
-const SALUTATION_VALUES = {
-  [SALUTATIONS.FRAU]: 'FEMALE',
-  [SALUTATIONS.HERR]: 'MALE'
+const Salutation_VALUES = {
+  [Salutations.FRAU]: 'FEMALE',
+  [Salutations.HERR]: 'MALE'
 };
 type BaseField = {
   selector: string;
@@ -46,7 +46,7 @@ export const generatePersonalDataFormFillingDescription = (
     {
       selector: '#contactForm-salutation',
       type: 'select',
-      value: SALUTATION_VALUES[contactData.salutation]
+      value: Salutation_VALUES[contactData.salutation]
     },
     {
       selector: '#contactForm-firstName',
@@ -97,28 +97,28 @@ export const generatePersonalDataFormFillingDescription = (
     }
   ]);
 };
-const MOVE_IN_WHEN_VALUES = {
-  [MOVE_IN_WHEN.NOW]: 'FROM_NOW',
-  [MOVE_IN_WHEN.FLEXIBLE]: 'FLEXIBLE'
+const MoveInWhen_VALUES = {
+  [MoveInWhen.NOW]: 'FROM_NOW',
+  [MoveInWhen.FLEXIBLE]: 'FLEXIBLE'
 };
-const MOVE_IN_WHO_VALUES = {
-  [MOVE_IN_WHO.SINGLE]: 'ONE_PERSON',
-  [MOVE_IN_WHO.TWO_ADULTS]: 'TWO_PERSON',
-  [MOVE_IN_WHO.FAMILY]: 'FAMILY',
-  [MOVE_IN_WHO.SHARED_FLAT]: 'BIG_GROUP'
+const MoveInWho_VALUES = {
+  [MoveInWho.SINGLE]: 'ONE_PERSON',
+  [MoveInWho.TWO_ADULTS]: 'TWO_PERSON',
+  [MoveInWho.FAMILY]: 'FAMILY',
+  [MoveInWho.SHARED_FLAT]: 'BIG_GROUP'
 };
-const EMPLOYMENT_STATUS_VALUES = {
-  [EMPLOYMENT_STATUS.EMPLOYEE]: 'PUBLIC_EMPLOYEE',
-  [EMPLOYMENT_STATUS.WORKER]: 'WORKER',
-  [EMPLOYMENT_STATUS.SELF_EMPLOYED]: 'SELF_EMPLOYED',
-  [EMPLOYMENT_STATUS.CIVIL_SERVANT]: 'OFFICER',
-  [EMPLOYMENT_STATUS.TRAINEE]: 'TRAINEE',
-  [EMPLOYMENT_STATUS.STUDENT]: 'STUDENT',
-  [EMPLOYMENT_STATUS.PHD_STUDENT]: 'DOCTORAND',
-  [EMPLOYMENT_STATUS.HOUSEPERSON]: 'HOUSEWIFE',
-  [EMPLOYMENT_STATUS.UNEMPLOYED]: 'UNEMPLOYED',
-  [EMPLOYMENT_STATUS.RETIRED]: 'RETIREE',
-  [EMPLOYMENT_STATUS.OTHER]: 'OTHER'
+const EmploymentStatus_VALUES = {
+  [EmploymentStatus.EMPLOYEE]: 'PUBLIC_EMPLOYEE',
+  [EmploymentStatus.WORKER]: 'WORKER',
+  [EmploymentStatus.SELF_EMPLOYED]: 'SELF_EMPLOYED',
+  [EmploymentStatus.CIVIL_SERVANT]: 'OFFICER',
+  [EmploymentStatus.TRAINEE]: 'TRAINEE',
+  [EmploymentStatus.STUDENT]: 'STUDENT',
+  [EmploymentStatus.PHD_STUDENT]: 'DOCTORAND',
+  [EmploymentStatus.HOUSEPERSON]: 'HOUSEWIFE',
+  [EmploymentStatus.UNEMPLOYED]: 'UNEMPLOYED',
+  [EmploymentStatus.RETIRED]: 'RETIREE',
+  [EmploymentStatus.OTHER]: 'OTHER'
 };
 
 const mapIncomeToValue = (income: number | null | undefined): string => {
@@ -165,12 +165,12 @@ export const generateAdditionalDataFormFillingDescription = (
   {
     selector: '#contactForm-moveInDateType',
     type: 'select',
-    value: MOVE_IN_WHEN_VALUES[additionalInformation.moveInWhen]
+    value: MoveInWhen_VALUES[additionalInformation.moveInWhen]
   },
   {
     selector: '#contactForm-numberOfPersons',
     type: 'select',
-    value: MOVE_IN_WHO_VALUES[additionalInformation.moveInWho]
+    value: MoveInWho_VALUES[additionalInformation.moveInWho]
   },
   {
     selector: '#contactForm-hasPets',
@@ -188,7 +188,7 @@ export const generateAdditionalDataFormFillingDescription = (
   {
     selector: '#contactForm-employmentRelationship',
     type: 'select',
-    value: EMPLOYMENT_STATUS_VALUES[additionalInformation.employmentStatus]
+    value: EmploymentStatus_VALUES[additionalInformation.employmentStatus]
   },
   {
     selector: '#contactForm-income',

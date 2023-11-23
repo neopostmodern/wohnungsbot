@@ -7,7 +7,7 @@ import { clickAction } from '../actions/botHelpers';
 import { sleep, timeout } from './async';
 import type { Dispatch } from '../reducers/types';
 import type { Configuration } from '../reducers/configuration';
-import { LOGINSTATUS } from '../reducers/configuration';
+import { LoginStatus } from '../reducers/configuration';
 import { electronRouting } from '../actions/electron';
 import ElectronUtilsRedux from './electronUtilsRedux';
 
@@ -22,7 +22,7 @@ export function* performAutomaticLogin(
 
   // Check again if user is logged in
   if (yield electronUtils.elementExists('.sso-login--logged-in')) {
-    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+    dispatch(setLoginStatus(LoginStatus.LOGGED_IN));
     dispatch(setBotMessage('Bereits eingeloggt', 4000));
   } else {
     dispatch(setBotMessage('Anmelden'));
@@ -55,7 +55,7 @@ export function* performAutomaticLogin(
     // Check for errors
     if (yield electronUtils.elementExists('#errors_password')) {
       yield sleep(2000);
-      dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+      dispatch(setLoginStatus(LoginStatus.ERROR));
       throw new Error('Anmeldefehler'); // TODO: need's some kind of error recovery.
     }
 
@@ -64,7 +64,7 @@ export function* performAutomaticLogin(
       const exists = await electronUtils.elementExists('.mfa-verify');
       return exists;
     });
-    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+    dispatch(setLoginStatus(LoginStatus.LOGGED_IN));
     dispatch(setBotMessage('Einloggen erfolgreich :)', 4000));
   }
 
@@ -82,7 +82,7 @@ export function* performManualLogin(
 
   // Check again if user is logged in
   if (yield electronUtils.elementExists('.sso-login--logged-in')) {
-    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+    dispatch(setLoginStatus(LoginStatus.LOGGED_IN));
     dispatch(setBotMessage('Bereits eingeloggt', 4000));
   } else {
     dispatch(setBotMessage('Anmelden'));
@@ -104,7 +104,7 @@ export function* performManualLogin(
       const exists = await electronUtils.elementExists('.mfa-verify');
       return exists;
     });
-    dispatch(setLoginStatus(LOGINSTATUS.LOGGED_IN));
+    dispatch(setLoginStatus(LoginStatus.LOGGED_IN));
     dispatch(setBotMessage('Einloggen erfolgreich :)', 4000));
   }
 

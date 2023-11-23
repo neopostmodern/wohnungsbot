@@ -2,8 +2,8 @@ import React from 'react';
 import styles from '../Configuration.scss';
 import {
   AllFloors,
-  MOVE_IN_WHEN,
-  MOVE_IN_WHO
+  MoveInWhen,
+  MoveInWho
 } from '../../reducers/configuration';
 import { floorToName } from '../../utils/germanStrings';
 import type { Configuration } from '../../reducers/configuration';
@@ -209,7 +209,7 @@ const flatDescriptionStage: StageDescription = {
           <h3>Wer soll einziehen?</h3>
           <EnumField
             value={moveInWho}
-            options={MOVE_IN_WHO}
+            options={MoveInWho}
             onChange={(value) =>
               setString('additionalInformation.moveInWho', value)
             }
@@ -231,7 +231,7 @@ const flatDescriptionStage: StageDescription = {
           <h3>Ab wann?</h3>
           <EnumField
             value={moveInWhen}
-            options={MOVE_IN_WHEN}
+            options={MoveInWhen}
             onChange={(value) =>
               setString('additionalInformation.moveInWhen', value)
             }

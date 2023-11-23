@@ -9,7 +9,7 @@ import { electronRouting } from '../actions/electron';
 import { abortable } from '../utils/generators';
 import AbortionSystem, { ABORTION_ERROR } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
-import { LOGINSTATUS, USEACCOUNT } from '../reducers/configuration';
+import { LoginStatus, UseAccount } from '../reducers/configuration';
 import { setBotIsActing, setLoginStatus } from '../actions/bot';
 import performLogout from '../utils/performLogout';
 import electronObjects from '../store/electronObjects';
@@ -31,7 +31,7 @@ export default (store: Store) =>
       const { webContents } = electronObjects.views.puppet;
       const electronUtils = new ElectronUtilsRedux(webContents, store.dispatch);
 
-      if (action.type === LOGOUT || useAccount === USEACCOUNT.NEIN) {
+      if (action.type === LOGOUT || useAccount === UseAccount.NEIN) {
         const { abortableAction: abortablePerformLogout, abort } =
           abortable(performLogout);
         AbortionSystem.registerAbort(abort);
@@ -49,9 +49,9 @@ export default (store: Store) =>
           // eslint-disable-next-line no-console
           console.error(`Error during logout: ${error}`);
           AbortionSystem.abort(ABORTION_ERROR);
-          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+          await store.dispatch(setLoginStatus(LoginStatus.ERROR));
         }
-      } else if (useAccount === USEACCOUNT.JA) {
+      } else if (useAccount === UseAccount.JA) {
         const { abortableAction: abortablePerformAutomaticLogin, abort } =
           abortable(performAutomaticLogin);
         AbortionSystem.registerAbort(abort);
@@ -69,9 +69,9 @@ export default (store: Store) =>
           // eslint-disable-next-line no-console
           console.error(`Error during login: ${error}`);
           AbortionSystem.abort(ABORTION_ERROR);
-          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+          await store.dispatch(setLoginStatus(LoginStatus.ERROR));
         }
-      } else if (useAccount === USEACCOUNT.MANUELL) {
+      } else if (useAccount === UseAccount.MANUELL) {
         const { abortableAction: abortablePerformManualLogin, abort } =
           abortable(performManualLogin);
         AbortionSystem.registerAbort(abort);
@@ -89,7 +89,7 @@ export default (store: Store) =>
           // eslint-disable-next-line no-console
           console.error(`Error during login: ${error}`);
           AbortionSystem.abort(ABORTION_ERROR);
-          await store.dispatch(setLoginStatus(LOGINSTATUS.ERROR));
+          await store.dispatch(setLoginStatus(LoginStatus.ERROR));
         }
       }
 

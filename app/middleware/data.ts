@@ -1,6 +1,6 @@
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { REFRESH_VERDICTS } from '../constants/actionTypes';
-import { VERDICT_SCOPE } from '../reducers/data';
+import { VerdictScope } from '../reducers/data';
 import { setVerdict } from '../actions/data';
 import { getConfigurationFilterHash } from '../reducers/configuration';
 import { assessFlat } from '../flat/assessment';
@@ -19,8 +19,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
         const cachedVerdict = verdicts[entry.id];
         const flatData = flat[entry.id];
         const currentScope = flatData
-          ? VERDICT_SCOPE.COMPLETE
-          : VERDICT_SCOPE.OVERVIEW;
+          ? VerdictScope.COMPLETE
+          : VerdictScope.OVERVIEW;
 
         if (
           cachedVerdict &&
