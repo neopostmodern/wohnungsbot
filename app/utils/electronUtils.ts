@@ -47,6 +47,7 @@ ${stack
 Current URL:
 ${this.webContents.getURL()}`);
     }
+    return null;
   }
 
   isOnExternalPage(): boolean {
@@ -149,7 +150,7 @@ ${this.webContents.getURL()}`);
     selector: string,
     shadowRootSelector?: string
   ): Promise<
-    | (ClientRect & {
+    | (DOMRect & {
         x: number;
         y: number;
       })

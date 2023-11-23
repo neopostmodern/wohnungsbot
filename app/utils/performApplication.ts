@@ -31,7 +31,6 @@ export default function* performApplication(
     )
   );
 
-  // eslint-disable-next-line no-constant-condition
   while (true) {
     if (
       (yield electronUtils.evaluate('document.title')).includes(

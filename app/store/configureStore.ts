@@ -5,6 +5,7 @@ import { createLogger } from 'redux-logger';
 import getHistory from './history';
 import createRootReducer from '../reducers';
 import { MAIN, RENDERER, WEB } from '../constants/targets';
+
 import overlay from '../middleware/overlay';
 import logging from '../middleware/logging';
 import configuration from '../middleware/configuration';

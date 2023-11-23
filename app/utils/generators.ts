@@ -19,6 +19,7 @@ export const abortable = (generator) => {
         resumeValue = await n.value;
 
         if (shouldAbort) {
+          // eslint-disable-next-line consistent-return
           return;
         } // next loop, we give resumeValue back to the generator
       }

@@ -31,6 +31,7 @@ export default (target: targetType) =>
     }
 
     if (action.meta.target !== target) {
+      // eslint-disable-next-line consistent-return
       return;
     }
 

@@ -94,6 +94,7 @@ export function getOverviewData(): ThunkAction {
       return data;
     } catch (error) {
       dispatch(returnToSearchPage(true));
+      return null;
     }
   };
 }

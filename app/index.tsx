@@ -10,6 +10,7 @@ import('./store/configureStore')
   .then(({ default: configureStore }) =>
     configureStore(target, process.env.NODE_ENV === 'development')
   )
+  /* eslint-disable promise/always-return */
   .then((store) => {
     const history = getHistory();
     render(
@@ -29,6 +30,7 @@ import('./store/configureStore')
       });
     }
   })
+  /* eslint-enable promise/always-return */
   .catch((error) => {
     // eslint-disable-next-line no-console
     console.error(`Error in index.tsx`, error);

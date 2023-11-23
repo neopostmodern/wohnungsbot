@@ -1,7 +1,10 @@
 export const sleep = (milliseconds) =>
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+
 export const timeout = (promise, waitingTime) =>
-  // eslint-disable-next-line no-async-promise-executor
+  /* eslint-disable no-async-promise-executor */
   new Promise(async (resolve, reject) => {
     const timeoutId = setTimeout(
       () => reject(new Error('Timed out')),
@@ -16,3 +19,4 @@ export const timeout = (promise, waitingTime) =>
       reject(error);
     }
   });
+/* eslint-enable no-async-promise-executor */

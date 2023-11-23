@@ -15,7 +15,8 @@ import type {
   ElementBoundingBox
 } from '../reducers/overlay';
 import type { BOUNDING_BOX_GROUPS } from '../constants/boundingBoxGroups';
-// FIXME: first need some error, then move to 'import <default>'
+// TODO PROVOKE TS: first need some error, then move to 'import <default>'
+
 export function clickAnimationShow(
   animationId: string,
   x: number,
@@ -77,7 +78,7 @@ export function calculateBoundingBox(
   };
 }
 export function setBoundingBox(
-  boundingBox: ClientRect,
+  boundingBox: DOMRect,
   selector: string,
   {
     group,

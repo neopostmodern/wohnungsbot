@@ -167,5 +167,6 @@ export default (store: Store) =>
       shell.openPath(action.payload.pdfPath);
     }
 
+    // eslint-disable-next-line consistent-return
     return next(action);
   };

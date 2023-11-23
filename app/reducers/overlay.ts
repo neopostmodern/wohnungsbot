@@ -22,7 +22,7 @@ export type ElementBoundingBox = {
   selector: string;
   group?: string;
   attachedInformation: AttachedInformation;
-  boundingBox: ClientRect;
+  boundingBox: DOMRect;
 };
 export type overlayStateType = {
   animations: Array<anyAnimation>;

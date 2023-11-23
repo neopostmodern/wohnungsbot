@@ -76,6 +76,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
 
       const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
       const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
+      /* eslint-disable promise/no-nesting */
       return Promise.all(
         extensions.map((name) =>
           installer.default(installer[name], forceDownload)
@@ -84,6 +85,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         // eslint-disable-next-line no-console
         console.error(`Problem installing extensions: ${error}`);
       });
+      /* eslint-enable promise/no-nesting */
     };
 
     /**
@@ -117,7 +119,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         if (mainWindow === undefined || mainWindow === null) {
           // eslint-disable-next-line no-console
           console.error('Main window not defined!');
-          return;
+          return null; // TODO PROVOKE TS: this should not be legit as return type is browserview
         }
 
         const browserView = new BrowserView(options);
