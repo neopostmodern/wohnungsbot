@@ -1,7 +1,6 @@
 import type { Configuration } from '../reducers/configuration';
 import { getConfigurationFilterHash } from '../reducers/configuration';
 import type {
-  FlatAction,
   FlatData,
   OverviewDataEntry,
   Verdict
@@ -14,7 +13,7 @@ export function assessFlat(
   overviewDataEntry: OverviewDataEntry,
   flatData?: FlatData
 ): Verdict {
-  let action: FlatAction = FLAT_ACTION.IGNORE;
+  let action: FLAT_ACTION = FLAT_ACTION.IGNORE;
   const reasons = [];
 
   if (overviewDataEntry.hasAlreadyApplied) {

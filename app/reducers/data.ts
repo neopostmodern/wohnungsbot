@@ -1,4 +1,3 @@
-import { $Keys } from 'utility-types';
 import dotProp from 'dot-prop-immutable';
 import type { Action } from './types';
 import {
@@ -120,29 +119,27 @@ export type FlatData = {
   floor: number;
   requiresWBS: boolean;
 };
-export const FLAT_ACTION = {
-  APPLY: 'APPLY',
-  INVESTIGATE: 'INVESTIGATE',
-  NOTIFY_VIEWING_DATE: 'NOTIFY_VIEWING_DATE',
-  IGNORE: 'IGNORE',
-  DISCARD: 'DISCARD'
-};
-export type FlatAction = $Keys<typeof FLAT_ACTION>;
-export const VERDICT_SCOPE = {
-  OVERVIEW: 'OVERVIEW',
-  COMPLETE: 'COMPLETE'
-};
-export type VerdictScope = $Keys<typeof VERDICT_SCOPE>;
+export const enum FLAT_ACTION {
+  APPLY = 'APPLY',
+  INVESTIGATE = 'INVESTIGATE',
+  NOTIFY_VIEWING_DATE = 'NOTIFY_VIEWING_DATE',
+  IGNORE = 'IGNORE',
+  DISCARD = 'DISCARD'
+}
+export const enum VERDICT_SCOPE {
+  OVERVIEW = 'OVERVIEW',
+  COMPLETE = 'COMPLETE'
+}
 export type Verdict = {
   flatId: string;
   configurationHash: number;
   result: boolean;
-  scope: VerdictScope;
+  scope: VERDICT_SCOPE;
   reasons: Array<{
     reason: string;
     result: boolean;
   }>;
-  action?: FlatAction;
+  action?: FLAT_ACTION;
 };
 export type Verdicts = Record<string, Verdict>;
 export type dataStateType = {
