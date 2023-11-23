@@ -6,7 +6,6 @@ export function objectHash(object) {
   let chr;
   if (jsonString.length === 0) return hash;
 
-  // eslint-disable-next-line no-plusplus
   for (i = 0; i < jsonString.length; i++) {
     chr = jsonString.charCodeAt(i);
     // eslint-disable-next-line no-bitwise

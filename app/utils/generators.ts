@@ -1,6 +1,6 @@
 // this is largely copied form here: https://dev.to/chromiumdev/cancellable-async-functions-in-javascript-5gp7
 // eslint-disable-next-line import/prefer-default-export
-export const abortable = generator => {
+export const abortable = (generator) => {
   let shouldAbort = false;
   return {
     abortableAction: async (...args) => {
@@ -19,12 +19,11 @@ export const abortable = generator => {
         resumeValue = await n.value;
 
         if (shouldAbort) {
+          // eslint-disable-next-line consistent-return
           return;
         } // next loop, we give resumeValue back to the generator
-
       }
       /* eslint-enable no-await-in-loop */
-
     },
     abort: () => {
       shouldAbort = true;

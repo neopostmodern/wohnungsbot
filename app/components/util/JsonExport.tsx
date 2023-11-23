@@ -1,45 +1,62 @@
-import React from "react";
-import styles from "./JsonExport.scss";
+import React from 'react';
+import styles from './JsonExport.scss';
+
 type JsonExportProps = {
   serializableObject: any;
 };
 type JsonExportState = {
   expanded: boolean;
 };
-export default class JsonExport extends React.Component<JsonExportProps, JsonExportState> {
+export default class JsonExport extends React.Component<
+  JsonExportProps,
+  JsonExportState
+> {
   props: JsonExportProps;
+
   state: JsonExportState = {
     expanded: false
   };
 
   render() {
-    const {
-      expanded
-    } = this.state;
-    const {
-      serializableObject
-    } = this.props;
+    const { expanded } = this.state;
+    const { serializableObject } = this.props;
 
     if (!expanded) {
-      return <div className={styles.trigger} onClick={() => this.setState({
-        expanded: true
-      })}>
+      return (
+        <div
+          className={styles.trigger}
+          onClick={() =>
+            this.setState({
+              expanded: true
+            })
+          }
+        >
           JSON Export
           <span className="material-icons">expand_more</span>
-        </div>;
+        </div>
+      );
     }
 
-    return <>
-        <div className={styles.trigger} onClick={() => this.setState({
-        expanded: false
-      })}>
+    return (
+      <>
+        <div
+          className={styles.trigger}
+          onClick={() =>
+            this.setState({
+              expanded: false
+            })
+          }
+        >
           JSON Export
           <span className="material-icons">expand_less</span>
         </div>
-        <pre dangerouslySetInnerHTML={{
-        __html: JSON.stringify(serializableObject, null, 2)
-      }} className={styles.exportArea} />
-      </>;
+        <pre
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(serializableObject, null, 2)
+          }}
+          className={styles.exportArea}
+        />
+      </>
+    );
   }
-
 }

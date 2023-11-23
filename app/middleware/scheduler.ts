@@ -1,10 +1,10 @@
-import type { Action, Dispatch, Store } from "../reducers/types";
-import { LAUNCH_NEXT_TASK } from "../constants/actionTypes";
-import { navigateToFlatPage, noop, returnToSearchPage } from "../actions/bot";
-import type { schedulerStateType } from "../reducers/scheduler";
-import { endApplicationProcess } from "../actions/application"; // eslint-disable-next-line no-unused-vars
+import type { Action, Dispatch, Store } from '../reducers/types';
+import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
+import { navigateToFlatPage, noop, returnToSearchPage } from '../actions/bot';
+import type { schedulerStateType } from '../reducers/scheduler';
+import { endApplicationProcess } from '../actions/application';
 
-export default ((store: Store) => (next: Dispatch) => async (action: Action) => {
+export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   const {
     scheduler
   }: {
@@ -19,15 +19,20 @@ export default ((store: Store) => (next: Dispatch) => async (action: Action) => 
     }
 
     if (scheduler.queuedFlatIds.length === 0) {
-      setTimeout(() => {
-        store.dispatch(returnToSearchPage(true));
-      }, 60000 + Math.random() * 300000);
+      setTimeout(
+        () => {
+          store.dispatch(returnToSearchPage(true));
+        },
+        60000 + Math.random() * 300000
+      );
       return next(noop());
     }
 
     const nextFlatId = scheduler.queuedFlatIds[0];
     const result = next(action);
-    const reachedFlatPage = await store.dispatch(navigateToFlatPage(nextFlatId));
+    const reachedFlatPage = await store.dispatch(
+      navigateToFlatPage(nextFlatId)
+    );
 
     if (!reachedFlatPage) {
       // eslint-disable-next-line no-console
@@ -39,4 +44,4 @@ export default ((store: Store) => (next: Dispatch) => async (action: Action) => 
   }
 
   return next(action);
-});
+};

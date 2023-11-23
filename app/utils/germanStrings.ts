@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 export const floorToName = (floor: number, limit?: number) => {
   if (floor === 0) {
     return 'Erdgeschoss';

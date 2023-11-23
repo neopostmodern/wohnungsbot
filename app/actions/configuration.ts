@@ -1,6 +1,23 @@
-import type { configurationBoolean, configurationNumbers, Configuration } from "../reducers/configuration";
-import type { Action } from "../reducers/types";
-import { NEXT_STAGE, PREVIOUS_STAGE, RESET_CONFIGURATION, RESET_POSTCODES, SET_CONFIGURATION, SET_NUMBER, SET_SEARCH_URL, TOGGLE_FLOOR, TOGGLE_POSTCODE, TOGGLE_BOOLEAN, SET_STRING } from "../constants/actionTypes";
+import type {
+  configurationBoolean,
+  configurationNumbers,
+  Configuration
+} from '../reducers/configuration';
+import type { Action } from '../reducers/types';
+import {
+  NEXT_STAGE,
+  PREVIOUS_STAGE,
+  RESET_CONFIGURATION,
+  RESET_POSTCODES,
+  SET_CONFIGURATION,
+  SET_NUMBER,
+  SET_SEARCH_URL,
+  TOGGLE_FLOOR,
+  TOGGLE_POSTCODE,
+  TOGGLE_BOOLEAN,
+  SET_STRING
+} from '../constants/actionTypes';
+
 export function setConfiguration(configuration: Configuration): Action {
   return {
     type: SET_CONFIGURATION,
@@ -81,7 +98,10 @@ export function toggleBoolean(name: configurationBoolean): Action {
     }
   };
 }
-export function setNumber(name: configurationNumbers, value: number | null | undefined): Action {
+export function setNumber(
+  name: configurationNumbers,
+  value: number | null | undefined
+): Action {
   return {
     type: SET_NUMBER,
     payload: {
@@ -93,7 +113,10 @@ export function setNumber(name: configurationNumbers, value: number | null | und
     }
   };
 }
-export function setString(name: string, value: string | null | undefined): Action {
+export function setString(
+  name: string,
+  value: string | null | undefined
+): Action {
   return {
     type: SET_STRING,
     payload: {

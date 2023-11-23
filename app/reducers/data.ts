@@ -1,11 +1,15 @@
-import { $Keys } from "utility-types";
-import dotProp from "dot-prop-immutable";
-import type { Action } from "./types";
-import { SET_FLAT_DATA, SET_OVERVIEW_DATA, SET_VERDICT } from "../constants/actionTypes";
-export type StringBoolean = "true" | "false";
+import dotProp from 'dot-prop-immutable';
+import type { Action } from './types';
+import {
+  SET_FLAT_DATA,
+  SET_OVERVIEW_DATA,
+  SET_VERDICT
+} from '../constants/actionTypes';
+
+export type StringBoolean = 'true' | 'false';
 export type PictureDescription = {
   '@xlink.href': string;
-  '@xsi.type': "common:Picture";
+  '@xsi.type': 'common:Picture';
   floorplan: StringBoolean;
   titlePicture: StringBoolean;
 };
@@ -34,9 +38,9 @@ export type RawOverviewDataEntry = {
     balcony: StringBoolean;
     builtInKitchen: StringBoolean;
     calculatedPrice: {
-      marketingType: "BUDGET_RENT";
-      priceIntervalType: "MONTH";
-      rentScope: "WARM_RENT";
+      marketingType: 'BUDGET_RENT';
+      priceIntervalType: 'MONTH';
+      rentScope: 'WARM_RENT';
       value: number;
     };
     contactDetails: {
@@ -45,19 +49,19 @@ export type RawOverviewDataEntry = {
       firstname?: string;
       lastname?: string;
       phoneNumber?: string;
-      salutation: "MALE" | "FEMALE" | "NO_SALUTATION";
+      salutation: 'MALE' | 'FEMALE' | 'NO_SALUTATION';
     };
     floorPlan: StringBoolean;
     galleryAttachments: {
       attachment: Array<PictureDescription>;
     };
     garden: StringBoolean;
-    listingType: "S";
+    listingType: 'S';
     livingSpace: number;
     numberOfRooms: number;
     price: {
-      marketingType: "RENT";
-      priceIntervalType: "MONTH";
+      marketingType: 'RENT';
+      priceIntervalType: 'MONTH';
       value: number;
     };
     privateOffer: StringBoolean;
@@ -79,7 +83,7 @@ export type FlatContactDetails = {
   company?: string;
   firstName?: string;
   lastName?: string;
-  salutation: "MALE" | "FEMALE" | "NO_SALUTATION";
+  salutation: 'MALE' | 'FEMALE' | 'NO_SALUTATION';
 };
 export type OverviewDataEntry = {
   id: string;
@@ -115,19 +119,17 @@ export type FlatData = {
   floor: number;
   requiresWBS: boolean;
 };
-export const FLAT_ACTION = {
-  APPLY: 'APPLY',
-  INVESTIGATE: 'INVESTIGATE',
-  NOTIFY_VIEWING_DATE: 'NOTIFY_VIEWING_DATE',
-  IGNORE: 'IGNORE',
-  DISCARD: 'DISCARD'
-};
-export type FlatAction = $Keys<typeof FLAT_ACTION>;
-export const VERDICT_SCOPE = {
-  OVERVIEW: 'OVERVIEW',
-  COMPLETE: 'COMPLETE'
-};
-export type VerdictScope = $Keys<typeof VERDICT_SCOPE>;
+export const enum FlatAction {
+  APPLY = 'APPLY',
+  INVESTIGATE = 'INVESTIGATE',
+  NOTIFY_VIEWING_DATE = 'NOTIFY_VIEWING_DATE',
+  IGNORE = 'IGNORE',
+  DISCARD = 'DISCARD'
+}
+export const enum VerdictScope {
+  OVERVIEW = 'OVERVIEW',
+  COMPLETE = 'COMPLETE'
+}
 export type Verdict = {
   flatId: string;
   configurationHash: number;
@@ -150,22 +152,26 @@ const dataDefaultState: dataStateType = {
   verdicts: {},
   flat: {}
 };
-export default function data(state: dataStateType = dataDefaultState, action: Action): dataStateType {
+export default function data(
+  // eslint-disable-next-line default-param-last
+  state: dataStateType = dataDefaultState,
+  action: Action
+): dataStateType {
   if (action.type === SET_OVERVIEW_DATA) {
-    return { ...state,
-      overview: action.payload.data
-    };
+    return { ...state, overview: action.payload.data };
   }
 
   if (action.type === SET_FLAT_DATA) {
-    const {
-      flatData
-    } = action.payload;
+    const { flatData } = action.payload;
     return dotProp.set(state, `flat.${flatData.id}`, flatData);
   }
 
   if (action.type === SET_VERDICT) {
-    return dotProp.set(state, `verdicts.${action.payload.flatId}`, action.payload.verdict);
+    return dotProp.set(
+      state,
+      `verdicts.${action.payload.flatId}`,
+      action.payload.verdict
+    );
   }
 
   return state;

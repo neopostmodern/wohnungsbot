@@ -1,18 +1,14 @@
-import type { electronStateType } from "../reducers/electron";
-import { electronObjects } from "../store/electronObjects";
-export default function resizeViews(electronState: electronStateType, configurationVisibility: number | null | undefined = null) {
-  const {
-    interactiveMode
-  } = electronState;
+import type { electronStateType } from '../reducers/electron';
+import electronObjects from '../store/electronObjects';
+
+export default function resizeViews(
+  electronState: electronStateType,
+  configurationVisibility: number | null | undefined = null
+) {
+  const { interactiveMode } = electronState;
   const {
     window,
-    views: {
-      puppet,
-      sidebar,
-      botOverlay,
-      configuration,
-      devMenu
-    }
+    views: { puppet, sidebar, botOverlay, configuration, devMenu }
   } = electronObjects;
 
   if (window === undefined || window === null) {
@@ -45,7 +41,10 @@ export default function resizeViews(electronState: electronStateType, configurat
   });
   let configurationY = electronState.configurationHidden ? windowHeight : 0;
 
-  if (configurationVisibility !== undefined && configurationVisibility !== null) {
+  if (
+    configurationVisibility !== undefined &&
+    configurationVisibility !== null
+  ) {
     configurationY = Math.round(windowHeight * (1 - configurationVisibility));
   }
 

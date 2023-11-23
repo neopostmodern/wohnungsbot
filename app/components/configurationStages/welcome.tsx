@@ -1,23 +1,33 @@
-import React from "react";
-import styles from "../Configuration.scss";
-import type { StageDescription } from "./types";
+import React from 'react';
+import styles from '../Configuration.scss';
+import type { StageDescription } from './types';
+
 const welcomeStage: StageDescription = {
   title: '',
-  body: <>
-      <h1 className={`${styles.fadeIn} ${styles.largeTitle}`} style={{
-      animationDuration: '4s',
-      animationDelay: '1s'
-    }}>
+  body: (
+    <>
+      <h1
+        className={`${styles.fadeIn} ${styles.largeTitle}`}
+        style={{
+          animationDuration: '4s',
+          animationDelay: '1s'
+        }}
+      >
         Der Wohnungsbot.
       </h1>
-      <div className={styles.fadeIn} style={{
-      animationDuration: '2s',
-      animationDelay: '3s'
-    }}>
+      <div
+        className={styles.fadeIn}
+        style={{
+          animationDuration: '2s',
+          animationDelay: '3s'
+        }}
+      >
         Willkommen bei
-        <div style={{
-        margin: '0.5em 0'
-      }}>
+        <div
+          style={{
+            margin: '0.5em 0'
+          }}
+        >
           <i>
             Von einem der auszog eine Wohnung in Berlin zu finden.
             <br />
@@ -31,14 +41,18 @@ const welcomeStage: StageDescription = {
         <br />
         <br />
       </div>
-      <small className={styles.fadeIn} style={{
-      animationDuration: '2s',
-      animationDelay: '10s'
-    }}>
+      <small
+        className={styles.fadeIn}
+        style={{
+          animationDuration: '2s',
+          animationDelay: '10s'
+        }}
+      >
         Um zu beginnen klicke oben rechts auf &quot;Los geht&apos;s&quot; und
         der Bot wird dich einführen.
       </small>
-    </>,
+    </>
+  ),
   buttons: {
     forward: {
       text: `Los geht's`,

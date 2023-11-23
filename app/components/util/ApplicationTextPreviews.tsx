@@ -1,7 +1,8 @@
-import React from "react";
-import type { FlatAddress, FlatContactDetails } from "../../reducers/data";
-import styles from "../Configuration.scss";
-import applicationTextBuilder from "../../flat/applicationTextBuilder";
+import React from 'react';
+import type { FlatAddress, FlatContactDetails } from '../../reducers/data';
+import styles from '../Configuration.scss';
+import applicationTextBuilder from '../../flat/applicationTextBuilder';
+
 type ApplicationTextPreviewsProps = {
   applicationText: string;
   className: string;
@@ -9,72 +10,87 @@ type ApplicationTextPreviewsProps = {
 type ApplicationTextPreviewsState = {
   previewIndex: number;
 };
-export default class ApplicationTextPreviews extends React.Component<ApplicationTextPreviewsProps, ApplicationTextPreviewsState> {
-  props: ApplicationTextPreviewsProps;
-  state: ApplicationTextPreviewsState;
+export default class ApplicationTextPreviews extends React.Component<
+  ApplicationTextPreviewsProps,
+  ApplicationTextPreviewsState
+> {
   static TestFlats: Array<{
     address: FlatAddress;
     contact: FlatContactDetails;
-  }> = [{
-    address: {
-      street: 'Hermannstr.',
-      houseNumber: '177',
-      neighborhood: 'Neukölln',
-      postcode: '12051'
+  }> = [
+    {
+      address: {
+        street: 'Hermannstr.',
+        houseNumber: '177',
+        neighborhood: 'Neukölln',
+        postcode: '12051'
+      },
+      contact: {
+        firstName: 'Helga',
+        lastName: 'Schneider',
+        salutation: 'FEMALE'
+      }
     },
-    contact: {
-      firstName: 'Helga',
-      lastName: 'Schneider',
-      salutation: 'FEMALE'
-    }
-  }, {
-    address: {
-      street: 'Richardplatz',
-      neighborhood: 'Neukölln',
-      postcode: '12055'
+    {
+      address: {
+        street: 'Richardplatz',
+        neighborhood: 'Neukölln',
+        postcode: '12055'
+      },
+      contact: {
+        salutation: 'NO_SALUTATION'
+      }
     },
-    contact: {
-      salutation: 'NO_SALUTATION'
+    {
+      address: {
+        neighborhood: 'Neukölln',
+        postcode: '12049'
+      },
+      contact: {
+        salutation: 'MALE',
+        firstName: 'Richard',
+        lastName: 'Meier'
+      }
     }
-  }, {
-    address: {
-      neighborhood: 'Neukölln',
-      postcode: '12049'
-    },
-    contact: {
-      salutation: 'MALE',
-      firstName: 'Richard',
-      lastName: 'Meier'
-    }
-  }];
+  ];
+
+  props: ApplicationTextPreviewsProps;
+
+  state: ApplicationTextPreviewsState;
 
   constructor() {
     super();
     this.state = {
       previewIndex: 0
     };
-    setInterval(() => this.setState((previousState: ApplicationTextPreviewsState) => ({
-      previewIndex: (previousState.previewIndex + 1) % ApplicationTextPreviews.TestFlats.length
-    })), 5000);
+    setInterval(
+      () =>
+        this.setState((previousState: ApplicationTextPreviewsState) => ({
+          previewIndex:
+            (previousState.previewIndex + 1) %
+            ApplicationTextPreviews.TestFlats.length
+        })),
+      5000
+    );
   }
 
   render() {
-    const {
-      applicationText,
-      className
-    } = this.props;
-    const {
-      previewIndex
-    } = this.state;
-    return <>
+    const { applicationText, className } = this.props;
+    const { previewIndex } = this.state;
+    return (
+      <>
         <pre className={className}>
-          {applicationTextBuilder(applicationText, ApplicationTextPreviews.TestFlats[previewIndex].address, ApplicationTextPreviews.TestFlats[previewIndex].contact)}
+          {applicationTextBuilder(
+            applicationText,
+            ApplicationTextPreviews.TestFlats[previewIndex].address,
+            ApplicationTextPreviews.TestFlats[previewIndex].contact
+          )}
         </pre>
         <div className={styles.comment}>
           Beispiel {previewIndex + 1} von{' '}
           {ApplicationTextPreviews.TestFlats.length}
         </div>
-      </>;
+      </>
+    );
   }
-
 }

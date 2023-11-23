@@ -1,5 +1,5 @@
-import APPLICATION_TEMPLATES from "../constants/applicationTemplates";
-import type { FlatAddress, FlatContactDetails } from "../reducers/data";
+import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
+import type { FlatAddress, FlatContactDetails } from '../reducers/data';
 
 function generateSalutation(contactData: FlatContactDetails): string {
   let salutation = 'Sehr geehrte';
@@ -15,16 +15,20 @@ function generateSalutation(contactData: FlatContactDetails): string {
   return salutation;
 }
 
-const streetNamePrepositions = [{
-  suffixes: ['platz', 'pl.', 'damm', 'ufer', 'ring'],
-  preposition: 'am'
-}, {
-  suffixes: ['allee', 'promenade', 'hasenheide'],
-  preposition: 'an der'
-}, {
-  suffixes: ['weg', 'steig', 'grund'],
-  preposition: 'im'
-}];
+const streetNamePrepositions = [
+  {
+    suffixes: ['platz', 'pl.', 'damm', 'ufer', 'ring'],
+    preposition: 'am'
+  },
+  {
+    suffixes: ['allee', 'promenade', 'hasenheide'],
+    preposition: 'an der'
+  },
+  {
+    suffixes: ['weg', 'steig', 'grund'],
+    preposition: 'im'
+  }
+];
 
 function getStreetPrefix(street: string): string {
   if (street.toLowerCase().startsWith('am ')) {
@@ -46,19 +50,30 @@ function getStreetPrefix(street: string): string {
 }
 
 export function generateInPlaceDescription(address: FlatAddress): string {
-  const {
-    street,
-    neighborhood
-  } = address;
+  const { street, neighborhood } = address;
 
   if (street !== undefined && street !== null) {
-    return `${getStreetPrefix(street)} ${street.replace(/str\./, 'straße').replace(/Str\./, 'Straße').replace(/pl\./, 'platz').replace(/Pl\./, 'Platz')}`;
+    return `${getStreetPrefix(street)} ${street
+      .replace(/str\./, 'straße')
+      .replace(/Str\./, 'Straße')
+      .replace(/pl\./, 'platz')
+      .replace(/Pl\./, 'Platz')}`;
   }
 
   return `in ${neighborhood}`;
 }
-export default function applicationTextBuilder(template: string, address: FlatAddress, contactData: FlatContactDetails): string {
+export default function applicationTextBuilder(
+  template: string,
+  address: FlatAddress,
+  contactData: FlatContactDetails
+): string {
   let applicationText = template;
-  applicationText = applicationText.replace(APPLICATION_TEMPLATES.SALUTATION, generateSalutation(contactData)).replace(APPLICATION_TEMPLATES.IN_PLACE, generateInPlaceDescription(address)).replace(APPLICATION_TEMPLATES.NEIGHBORHOOD, address.neighborhood);
+  applicationText = applicationText
+    .replace(APPLICATION_TEMPLATES.SALUTATION, generateSalutation(contactData))
+    .replace(
+      APPLICATION_TEMPLATES.IN_PLACE,
+      generateInPlaceDescription(address)
+    )
+    .replace(APPLICATION_TEMPLATES.NEIGHBORHOOD, address.neighborhood);
   return applicationText;
 }

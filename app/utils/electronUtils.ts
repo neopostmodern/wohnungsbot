@@ -1,7 +1,8 @@
-import type { WebContents } from "electron";
-import "electron";
-import { uniqueId } from "./random";
-import { sleep } from "./async";
+import type { WebContents } from 'electron';
+import 'electron';
+import { uniqueId } from './random';
+import { sleep } from './async';
+
 export type ViewportSize = {
   height: number;
   width: number;
@@ -22,9 +23,7 @@ export default class ElectronUtils {
        }
     })`;
     // save a stack trace in case we have an error later
-    const {
-      stack
-    } = new Error();
+    const { stack } = new Error();
 
     try {
       return await this.webContents.executeJavaScript(code, isUserGesture);
@@ -39,19 +38,34 @@ ${code}
 // END OF CODE
 
 Stack that led to the execution of this snippet (Electron):
-${stack.split('\n').slice(2).map(line => line.replace(/\s+/i, ' ')).join('\n')}
+${stack
+  .split('\n')
+  .slice(2)
+  .map((line) => line.replace(/\s+/i, ' '))
+  .join('\n')}
 
 Current URL:
 ${this.webContents.getURL()}`);
     }
+    return null;
   }
 
   isOnExternalPage(): boolean {
-    return !this.webContents.getURL().substring(0, 50).includes("immobilienscout24.de");
+    return !this.webContents
+      .getURL()
+      .substring(0, 50)
+      .includes('immobilienscout24.de');
   }
 
-  static generateSelector(selector: string, shadowRootSelector?: string): string {
-    return `document${shadowRootSelector ? `.querySelector('${shadowRootSelector}').shadowRoot` : ''}.querySelector('${selector}')`;
+  static generateSelector(
+    selector: string,
+    shadowRootSelector?: string
+  ): string {
+    return `document${
+      shadowRootSelector
+        ? `.querySelector('${shadowRootSelector}').shadowRoot`
+        : ''
+    }.querySelector('${selector}')`;
   }
 
   // returns a selector unique to the first element of passed in selector
@@ -62,14 +76,24 @@ ${this.webContents.getURL()}`);
     return `#${id}`;
   }
 
-  async elementExists(selector: string, shadowRootSelector?: string): Promise<boolean> {
-    return this.evaluate(`${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`);
+  async elementExists(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<boolean> {
+    return this.evaluate(
+      `${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`
+    );
   }
 
-  async awaitElementExists(selector: string, shadowRootSelector?: string): Promise<void> {
+  async awaitElementExists(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<void> {
+    /* eslint-disable no-await-in-loop */
     while (!(await this.elementExists(selector, shadowRootSelector))) {
       await sleep(1000);
     }
+    /* eslint-enable no-await-in-loop */
   }
 
   async getInnerText(selector: string): Promise<string | undefined> {
@@ -77,7 +101,9 @@ ${this.webContents.getURL()}`);
   }
 
   async isElementSelected(selector: string): Promise<boolean> {
-    return this.evaluate(`document.querySelector(':focus') === document.querySelector('${selector}')`);
+    return this.evaluate(
+      `document.querySelector(':focus') === document.querySelector('${selector}')`
+    );
   }
 
   async isElementChecked(selector: string): Promise<boolean> {
@@ -89,7 +115,9 @@ ${this.webContents.getURL()}`);
   }
 
   async setValue(selector: string, value: any): Promise<string> {
-    return this.evaluate(`document.querySelector('${selector}').value = ${JSON.stringify(value)}`);
+    return this.evaluate(
+      `document.querySelector('${selector}').value = ${JSON.stringify(value)}`
+    );
   }
 
   async performPressKey(keyCode: string, modifiers?: Array<string>) {
@@ -107,65 +135,100 @@ ${this.webContents.getURL()}`);
       eventDescription.charCode = 13;
     }
 
-    this.webContents.sendInputEvent({ ...eventDescription,
-      type: 'keyDown'
-    });
+    this.webContents.sendInputEvent({ ...eventDescription, type: 'keyDown' });
     await sleep(1 + Math.random() * 5);
-    this.webContents.sendInputEvent({ ...eventDescription,
-      type: 'char'
-    });
+    this.webContents.sendInputEvent({ ...eventDescription, type: 'char' });
     await sleep(10 + Math.random() * 50);
-    this.webContents.sendInputEvent({ ...eventDescription,
-      type: 'keyUp'
-    });
+    this.webContents.sendInputEvent({ ...eventDescription, type: 'keyUp' });
   }
 
   async scrollBy(deltaX: number, deltaY: number) {
     return this.evaluate(`window.scrollBy(${deltaX}, ${deltaY})`);
   }
 
-  async getBoundingBox(selector: string, shadowRootSelector?: string): Promise<(ClientRect & {
-    x: number;
-    y: number;
-  }) | null | undefined> {
+  async getBoundingBox(
+    selector: string,
+    shadowRootSelector?: string
+  ): Promise<
+    | (DOMRect & {
+        x: number;
+        y: number;
+      })
+    | null
+    | undefined
+  > {
     if (!(await this.elementExists(selector, shadowRootSelector))) {
       return null;
     }
 
-    return (this.evaluate(`JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(selector, shadowRootSelector)}.getBoundingClientRect()))`) as any);
+    return this.evaluate(
+      `JSON.parse(JSON.stringify(${ElectronUtils.generateSelector(
+        selector,
+        shadowRootSelector
+      )}.getBoundingClientRect()))`
+    ) as any;
   }
 
   async getViewportSize(): Promise<ViewportSize> {
-    return this.evaluate(`JSON.parse(JSON.stringify({ height: window.innerHeight, width: window.innerWidth }))`);
+    return this.evaluate(
+      `JSON.parse(JSON.stringify({ height: window.innerHeight, width: window.innerWidth }))`
+    );
   }
 
-  async isElementInViewport(selector: string, {
-    mustIncludeTop = true,
-    mustIncludeBottom = false,
-    shadowRootSelector
-  }: {
-    mustIncludeTop?: boolean;
-    mustIncludeBottom?: boolean;
-    shadowRootSelector?: string;
-  } = {}): Promise<boolean> {
+  async isElementInViewport(
+    selector: string,
+    {
+      mustIncludeTop = true,
+      mustIncludeBottom = false,
+      shadowRootSelector
+    }: {
+      mustIncludeTop?: boolean;
+      mustIncludeBottom?: boolean;
+      shadowRootSelector?: string;
+    } = {}
+  ): Promise<boolean> {
     try {
       if (!(await this.elementExists(selector, shadowRootSelector))) {
-        console.log(`isElementInViewport(${selector})${shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''} called on non-existent element`);
+        // eslint-disable-next-line no-console
+        console.log(
+          `isElementInViewport(${selector})${
+            shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
+          } called on non-existent element`
+        );
         return false;
       }
 
-      const elementBoundingBox = await this.getBoundingBox(selector, shadowRootSelector);
+      const elementBoundingBox = await this.getBoundingBox(
+        selector,
+        shadowRootSelector
+      );
       const viewportSize = await this.getViewportSize();
 
-      if ((elementBoundingBox.top < 0 || elementBoundingBox.top > viewportSize.height) && (elementBoundingBox.bottom < 0 || elementBoundingBox.bottom > viewportSize.height)) {
+      if (
+        (elementBoundingBox.top < 0 ||
+          elementBoundingBox.top > viewportSize.height) &&
+        (elementBoundingBox.bottom < 0 ||
+          elementBoundingBox.bottom > viewportSize.height)
+      ) {
         return false;
       }
 
-      return (!mustIncludeTop || elementBoundingBox.top > 0 && elementBoundingBox.top < viewportSize.height) && (!mustIncludeBottom || elementBoundingBox.bottom > 0 && elementBoundingBox.bottom < viewportSize.height);
+      return (
+        (!mustIncludeTop ||
+          (elementBoundingBox.top > 0 &&
+            elementBoundingBox.top < viewportSize.height)) &&
+        (!mustIncludeBottom ||
+          (elementBoundingBox.bottom > 0 &&
+            elementBoundingBox.bottom < viewportSize.height))
+      );
     } catch (error) {
-      console.error(`isElementInViewport(${selector})${shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''} failed.`);
+      // eslint-disable-next-line no-console
+      console.error(
+        `isElementInViewport(${selector})${
+          shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
+        } failed.`
+      );
       return false;
     }
   }
-
 }

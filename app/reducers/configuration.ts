@@ -1,14 +1,40 @@
-import { $Values } from "utility-types";
-import dotProp from "dot-prop-immutable";
-import type { Action } from "./types";
-import { NEXT_STAGE, PREVIOUS_STAGE, RESET_CONFIGURATION, RESET_POSTCODES, SET_CONFIGURATION, SET_NUMBER, SET_SEARCH_URL, TOGGLE_FLOOR, TOGGLE_POSTCODE, TOGGLE_BOOLEAN, SET_STRING } from "../constants/actionTypes";
-import { objectHash } from "../utils/hash";
-import APPLICATION_TEMPLATES from "../constants/applicationTemplates";
-import { generateSearchUrl } from "../flat/urlBuilder";
+import dotProp from 'dot-prop-immutable';
+import type { Action } from './types';
+import {
+  NEXT_STAGE,
+  PREVIOUS_STAGE,
+  RESET_CONFIGURATION,
+  RESET_POSTCODES,
+  SET_CONFIGURATION,
+  SET_NUMBER,
+  SET_SEARCH_URL,
+  TOGGLE_FLOOR,
+  TOGGLE_POSTCODE,
+  TOGGLE_BOOLEAN,
+  SET_STRING
+} from '../constants/actionTypes';
+import { objectHash } from '../utils/hash';
+import APPLICATION_TEMPLATES from '../constants/applicationTemplates';
+import { generateSearchUrl } from '../flat/urlBuilder';
+
 export const ConfigurationVersion = 7;
 export const AllFloors = [4, 3, 2, 1, 0];
-export type configurationNumbers = "maximumRent" | "minimumArea" | "minimumRooms" | "maximumRooms";
-export type configurationBoolean = "hasWBS" | "mustHaveBalcony" | "mustHaveKitchenette" | "noKitchenette" | "onlyOldBuilding" | "onlyUnfurnished" | "noSwapApartment" | "notSpecificallyForSeniors" | "onlySublease" | "noSublease";
+export type configurationNumbers =
+  | 'maximumRent'
+  | 'minimumArea'
+  | 'minimumRooms'
+  | 'maximumRooms';
+export type configurationBoolean =
+  | 'hasWBS'
+  | 'mustHaveBalcony'
+  | 'mustHaveKitchenette'
+  | 'noKitchenette'
+  | 'onlyOldBuilding'
+  | 'onlyUnfurnished'
+  | 'noSwapApartment'
+  | 'notSpecificallyForSeniors'
+  | 'onlySublease'
+  | 'noSublease';
 export type Filter = {
   postcodes: Array<string>;
   maximumRent?: number | null | undefined;
@@ -28,29 +54,28 @@ export type Filter = {
   noSublease: boolean;
   floors: Array<number>;
 };
-export const SALUTATIONS = {
-  FRAU: 'Frau',
-  HERR: 'Herr'
-};
-export type Salutation = $Values<typeof SALUTATIONS>;
-export const USEACCOUNT = {
-  JA: 'Ja',
-  MANUELL: 'Manuell',
-  NEIN: 'Nein'
-};
-export const LOGINSTATUS = {
-  LOGGED_IN: 'LOGGED_IN',
-  LOGGED_OUT: 'LOGGED_OUT',
-  ERROR: 'ERROR'
-};
+export const enum Salutations {
+  FRAU = 'Frau',
+  HERR = 'Herr'
+}
+export const enum UseAccount {
+  JA = 'Ja',
+  MANUELL = 'Manuell',
+  NEIN = 'Nein'
+}
+export const enum LoginStatus {
+  LOGGED_IN,
+  LOGGED_OUT,
+  ERROR
+}
 export type LoginData = {
-  useAccount: $Values<typeof USEACCOUNT>;
+  useAccount: UseAccount;
   userName: string;
   password: string;
-  status: $Values<typeof LOGINSTATUS>;
+  status: LoginStatus;
 };
 export type ContactData = {
-  salutation: Salutation;
+  salutation: Salutations;
   firstName: string;
   lastName: string;
   eMail: string;
@@ -68,32 +93,29 @@ export type DataPolicies = {
   applicationNotificationMails: boolean;
   fillAsLittleAsPossible: boolean;
 };
-export const MOVE_IN_WHEN = {
-  NOW: 'Ab sofort',
-  FLEXIBLE: 'Flexibel'
-};
-export type MoveInWhen = $Values<typeof MOVE_IN_WHEN>;
-export const MOVE_IN_WHO = {
-  SINGLE: 'Einpersonenhaushalt',
-  TWO_ADULTS: 'Zwei Erwachsene',
-  FAMILY: 'Familie',
-  SHARED_FLAT: 'Wohngemeinschaft'
-};
-export type MoveInWho = $Values<typeof MOVE_IN_WHO>;
-export const EMPLOYMENT_STATUS = {
-  EMPLOYEE: 'Angestellte_r',
-  WORKER: 'Arbeiter_in',
-  SELF_EMPLOYED: 'Selbstständig',
-  CIVIL_SERVANT: 'Beamte_r',
-  TRAINEE: 'Auszubildende_r',
-  STUDENT: 'Student_in',
-  PHD_STUDENT: 'Doktorand_in',
-  HOUSEPERSON: 'Hausmensch',
-  UNEMPLOYED: 'Arbeitslos',
-  RETIRED: 'Renter_in',
-  OTHER: 'Sonstige'
-};
-export type EmploymentStatus = $Values<typeof EMPLOYMENT_STATUS>;
+export const enum MoveInWhen {
+  NOW = 'Ab sofort',
+  FLEXIBLE = 'Flexibel'
+}
+export const enum MoveInWho {
+  SINGLE = 'Einpersonenhaushalt',
+  TWO_ADULTS = 'Zwei Erwachsene',
+  FAMILY = 'Familie',
+  SHARED_FLAT = 'Wohngemeinschaft'
+}
+export const enum EmploymentStatus {
+  EMPLOYEE = 'Angestellte_r',
+  WORKER = 'Arbeiter_in',
+  SELF_EMPLOYED = 'Selbstständig',
+  CIVIL_SERVANT = 'Beamte_r',
+  TRAINEE = 'Auszubildende_r',
+  STUDENT = 'Student_in',
+  PHD_STUDENT = 'Doktorand_in',
+  HOUSEPERSON = 'Hausmensch',
+  UNEMPLOYED = 'Arbeitslos',
+  RETIRED = 'Renter_in',
+  OTHER = 'Sonstige'
+}
 export type AdditionalInformation = {
   moveInWhen: MoveInWhen;
   moveInWho: MoveInWho;
@@ -118,7 +140,9 @@ export type Configuration = {
   configurationVersion: number;
   experimentalFeatures: ExperimentalFeatures;
 };
-export const getConfigurationFilterHash = (configurationState: Configuration): number => {
+export const getConfigurationFilterHash = (
+  configurationState: Configuration
+): number => {
   return objectHash(configurationState.filter);
 };
 const defaultConfiguration: Configuration = {
@@ -140,13 +164,13 @@ const defaultConfiguration: Configuration = {
   },
   applicationText: `${APPLICATION_TEMPLATES.SALUTATION},\n`,
   immobilienScout24: {
-    useAccount: USEACCOUNT.NEIN,
+    useAccount: UseAccount.NEIN,
     userName: '',
     password: '',
-    status: LOGINSTATUS.LOGGED_OUT
+    status: LoginStatus.LOGGED_OUT
   },
   contactData: {
-    salutation: SALUTATIONS.FRAU,
+    salutation: Salutations.FRAU,
     firstName: '',
     lastName: '',
     eMail: '',
@@ -156,10 +180,10 @@ const defaultConfiguration: Configuration = {
     city: ''
   },
   additionalInformation: {
-    moveInWhen: MOVE_IN_WHEN.NOW,
-    moveInWho: MOVE_IN_WHO.SINGLE,
+    moveInWhen: MoveInWhen.NOW,
+    moveInWho: MoveInWho.SINGLE,
     animals: '',
-    employmentStatus: EMPLOYMENT_STATUS.EMPLOYEE,
+    employmentStatus: EmploymentStatus.EMPLOYEE,
     income: null,
     hasDocumentsReady: true
   },
@@ -177,32 +201,44 @@ const defaultConfiguration: Configuration = {
   configurationVersion: ConfigurationVersion
 };
 
-function configurationMigrations(oldConfiguration: Configuration): Configuration {
+function configurationMigrations(
+  oldConfiguration: Configuration
+): Configuration {
   let migratedConfiguration = oldConfiguration;
 
   if (oldConfiguration.configurationVersion < 2) {
-    migratedConfiguration = dotProp.set(migratedConfiguration, 'policies.fillAsLittleAsPossible', true);
+    migratedConfiguration = dotProp.set(
+      migratedConfiguration,
+      'policies.fillAsLittleAsPossible',
+      true
+    );
   }
 
   if (oldConfiguration.configurationVersion < 3) {
     if (oldConfiguration.additionalInformation.animals.trim().length === 0) {
-      migratedConfiguration = dotProp.set(migratedConfiguration, 'additionalInformation.animals', 'Keine');
+      migratedConfiguration = dotProp.set(
+        migratedConfiguration,
+        'additionalInformation.animals',
+        'Keine'
+      );
     }
   }
 
   if (oldConfiguration.configurationVersion < 4) {
-    migratedConfiguration = { ...migratedConfiguration,
+    migratedConfiguration = {
+      ...migratedConfiguration,
       immobilienScout24: {
         useAccount: false,
         userName: '',
         password: '',
-        status: LOGINSTATUS.LOGGED_OUT
+        status: LoginStatus.LOGGED_OUT
       }
     };
   }
 
   if (oldConfiguration.configurationVersion < 5) {
-    migratedConfiguration = { ...migratedConfiguration,
+    migratedConfiguration = {
+      ...migratedConfiguration,
       experimentalFeatures: {
         sortByNewest: false
       }
@@ -210,34 +246,45 @@ function configurationMigrations(oldConfiguration: Configuration): Configuration
   }
 
   if (oldConfiguration.configurationVersion < 6) {
-    migratedConfiguration = { ...migratedConfiguration,
-      immobilienScout24: { ...migratedConfiguration.immobilienScout24,
-        useAccount: migratedConfiguration.useAccount ? USEACCOUNT.JA : USEACCOUNT.NEIN
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      immobilienScout24: {
+        ...migratedConfiguration.immobilienScout24,
+        useAccount: migratedConfiguration.useAccount
+          ? UseAccount.JA
+          : UseAccount.NEIN
       }
     };
   }
 
   if (oldConfiguration.configurationVersion < 7) {
-    migratedConfiguration = { ...migratedConfiguration,
-      policies: { ...migratedConfiguration.policies,
-        autostart: false
-      }
+    migratedConfiguration = {
+      ...migratedConfiguration,
+      policies: { ...migratedConfiguration.policies, autostart: false }
     };
   }
 
   // always re-generate search URL at startup (in case the generation function changed, such as after bug #79)
-  migratedConfiguration = dotProp.set(migratedConfiguration, 'searchUrl', generateSearchUrl(migratedConfiguration));
-  return dotProp.set(migratedConfiguration, 'configurationVersion', ConfigurationVersion);
+  migratedConfiguration = dotProp.set(
+    migratedConfiguration,
+    'searchUrl',
+    generateSearchUrl(migratedConfiguration)
+  );
+  return dotProp.set(
+    migratedConfiguration,
+    'configurationVersion',
+    ConfigurationVersion
+  );
 }
 
-export default function configuration(state: Configuration = defaultConfiguration, action: Action): Configuration {
+export default function configuration(
+  // eslint-disable-next-line default-param-last
+  state: Configuration = defaultConfiguration,
+  action: Action
+): Configuration {
   if (action.type === TOGGLE_POSTCODE) {
-    const {
-      postcode
-    } = action.payload;
-    const {
-      postcodes
-    } = state.filter;
+    const { postcode } = action.payload;
+    const { postcodes } = state.filter;
     const postcodeIndex = postcodes.indexOf(postcode);
 
     if (postcodeIndex !== -1) {
@@ -248,12 +295,8 @@ export default function configuration(state: Configuration = defaultConfiguratio
   }
 
   if (action.type === TOGGLE_FLOOR) {
-    const {
-      floor
-    } = action.payload;
-    const {
-      floors
-    } = state.filter;
+    const { floor } = action.payload;
+    const { floors } = state.filter;
     const floorIndex = floors.indexOf(floor);
 
     if (floorIndex !== -1) {

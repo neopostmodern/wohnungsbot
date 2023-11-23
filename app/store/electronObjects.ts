@@ -1,4 +1,5 @@
-export const electronObjects = {
+const electronObjects = {
   views: {},
   window: null
 };
+export default electronObjects;
