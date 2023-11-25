@@ -2,7 +2,7 @@ import React from 'react';
 
 type YesNoProps = {
   value: boolean | null | undefined;
-  onChange: (value: boolean) => void;
+  onChange: () => void;
 };
 export default class YesNo extends React.Component<YesNoProps> {
   props: YesNoProps;

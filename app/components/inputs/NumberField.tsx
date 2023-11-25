@@ -1,4 +1,5 @@
 import React from 'react';
+import CSS from 'csstype';
 
 const valueToInt = (value: string) => {
   const parsedValue = parseFloat(value);
@@ -19,7 +20,7 @@ function NumberField({
   value: number | null | undefined;
   onChange: (value: number | null | undefined) => void;
   step?: number;
-  style?: CSSStyleDeclaration;
+  style?: CSS.Properties;
 }) {
   return (
     <input

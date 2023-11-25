@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import Sidebar from '../components/Sidebar';
 import { openPDF, showConfiguration } from '../actions/electron';
 import { resetBot } from '../actions/bot';
+import { stateType } from '../reducers/types';
 
-function mapStateToProps(state) {
+function mapStateToProps(state: stateType) {
   const applications = Object.values(state.cache.applications).filter(
     ({ reason }) => reason !== 'UNSUITABLE'
   );

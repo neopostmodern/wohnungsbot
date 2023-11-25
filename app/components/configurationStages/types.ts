@@ -1,4 +1,4 @@
-import type { Node } from 'react';
+import type { ReactNode } from 'react';
 import type {
   configurationBoolean,
   configurationNumbers,
@@ -17,7 +17,10 @@ export type InheritedProps = {
   setString: (name: string, value: string | null | undefined) => void;
   configuration: Configuration;
 };
-export type FlexibleNode = string | Node | ((props: InheritedProps) => Node);
+export type FlexibleNode =
+  | string
+  | ReactNode
+  | ((props: InheritedProps) => ReactNode);
 type ElementDescription = {
   text: FlexibleNode;
   className?: string;

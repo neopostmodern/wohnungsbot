@@ -1,10 +1,6 @@
 import type { Configuration } from '../reducers/configuration';
 import { getConfigurationFilterHash } from '../reducers/configuration';
-import type {
-  FlatData,
-  OverviewDataEntry,
-  Verdict
-} from '../reducers/data';
+import type { FlatData, OverviewDataEntry, Verdict } from '../reducers/data';
 import { FlatAction, VerdictScope } from '../reducers/data';
 import { floorToName } from '../utils/germanStrings';
 // eslint-disable-next-line import/prefer-default-export

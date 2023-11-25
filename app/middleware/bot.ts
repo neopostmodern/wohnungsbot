@@ -1,4 +1,4 @@
-import type { Action, Store } from '../reducers/types';
+import type { Action, Dispatch, Store } from '../reducers/types';
 import { sleep } from '../utils/async';
 import {
   RESET_BOT,
@@ -23,7 +23,7 @@ import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import electronObjects from '../store/electronObjects';
 
-export default (store: Store) =>
+export default (store: Store & { dispatch: Dispatch }) =>
   (next: (action: Action) => void) =>
   async (action: Action) => {
     const handlePuppetReady = async () => {

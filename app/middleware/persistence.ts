@@ -20,7 +20,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     }
   }
 
-  if (action.meta && action.meta.cache) {
+  if (action.meta && 'cache' in action.meta) {
     process.nextTick(() => {
       persistentStore.set('cache', store.getState().cache);
     });
@@ -28,7 +28,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
 
   const ret = next(action);
 
-  if (action.meta && action.meta.configuration) {
+  if (action.meta && 'configuration' in action.meta) {
     const configurationToSave = { ...store.getState().configuration };
     delete configurationToSave.loaded;
     persistentStore.set('configuration', configurationToSave);

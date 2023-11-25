@@ -35,7 +35,7 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
         className={`${styles.container} ${expanded ? '' : styles.collapsed}`}
       >
         <div className={styles.menu}>
-          {Object.keys(views).map((viewName) => (
+          {Object.keys(views).map((viewName: BrowserViewName) => (
             <div key={viewName} className={styles.menuItem}>
               <div className={styles.entryName}>{viewName}</div>
               <button type="button" onClick={() => showDevTools(viewName)}>

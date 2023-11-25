@@ -21,11 +21,18 @@ export type Action = {
   payload?: any;
   meta?:
     | {
-        target: string;
+        scope?: string;
+        target?: string;
       }
     | {
         queue: true;
         message: string;
+      }
+    | {
+        cache: true;
+      }
+    | {
+        configuration: true;
       };
 };
 

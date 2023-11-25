@@ -16,7 +16,8 @@ export type BrowserViewName =
   | 'sidebar'
   | 'botOverlay'
   | 'configuration'
-  | 'devMenu';
+  | 'devMenu'
+  | 'print';
 export type BrowserViewState = {
   url: string;
   ready: boolean;
@@ -33,7 +34,7 @@ export type electronStateType = {
   updater: UpdaterStatus;
 };
 const electronDefaultState: electronStateType = {
-  views: {},
+  views: {} as any,
   configurationHidden: false,
   interactiveMode: false,
   updater: {

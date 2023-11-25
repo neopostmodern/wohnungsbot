@@ -58,8 +58,8 @@ export default class ApplicationTextPreviews extends React.Component<
 
   state: ApplicationTextPreviewsState;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       previewIndex: 0
     };

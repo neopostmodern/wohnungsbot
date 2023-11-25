@@ -14,8 +14,7 @@ import type {
   AttachedInformation,
   ElementBoundingBox
 } from '../reducers/overlay';
-import type { BoundingBoxGroups } from '../constants/boundingBoxGroups';
-// TODO PROVOKE TS: first need some error, then move to 'import <default>'
+import BoundingBoxGroups from '../constants/boundingBoxGroups';
 
 export function clickAnimationShow(
   animationId: string,

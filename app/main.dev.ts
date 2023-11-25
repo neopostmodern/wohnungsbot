@@ -145,8 +145,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         {
           webPreferences: {
             sandbox: true,
-            contextIsolation: true,
-            enableRemoteModule: false
+            contextIsolation: true
           }
         },
         `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
@@ -156,8 +155,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         {
           webPreferences: {
             sandbox: true,
-            contextIsolation: true,
-            enableRemoteModule: false
+            contextIsolation: true
           }
         },
         `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
@@ -241,8 +239,8 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
           store.dispatch(setUpdateDownloadProgress(-1));
         }
       });
-      AppUpdater.onDownloadProgress(() => {
-        store.dispatch();
+      AppUpdater.onDownloadProgress((percentage) => {
+        store.dispatch(setUpdateDownloadProgress(percentage));
       });
     });
   })

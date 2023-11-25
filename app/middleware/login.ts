@@ -1,5 +1,5 @@
 import { LOGIN, LOGOUT } from '../constants/actionTypes';
-import type { Action, Store } from '../reducers/types';
+import type { Action, Dispatch, Store } from '../reducers/types';
 import { sleep, timeout } from '../utils/async';
 import {
   performAutomaticLogin,
@@ -14,7 +14,7 @@ import { setBotIsActing, setLoginStatus } from '../actions/bot';
 import performLogout from '../utils/performLogout';
 import electronObjects from '../store/electronObjects';
 
-export default (store: Store) =>
+export default (store: Store & { dispatch: Dispatch }) =>
   (next: (action: Action) => void) =>
   async (action: Action) => {
     if (action.type === LOGIN || action.type === LOGOUT) {

@@ -1,4 +1,4 @@
-import type { Node } from 'react';
+import type { ReactNode } from 'react';
 import React, { Component } from 'react';
 import styles from './Configuration.scss';
 import type {
@@ -99,7 +99,7 @@ export default class Configuration extends Component<Props> {
     };
   }
 
-  renderAmbiguous(text: FlexibleNode | null | undefined): string | Node {
+  renderAmbiguous(text: FlexibleNode | null | undefined): string | ReactNode {
     if (text === null || text === undefined) {
       return null;
     }

@@ -2,7 +2,7 @@ import type { electronStateType } from '../reducers/electron';
 import electronObjects from '../store/electronObjects';
 
 export default function resizeViews(
-  electronState: electronStateType,
+  electronState: Partial<electronStateType>,
   configurationVisibility: number | null | undefined = null
 ) {
   const { interactiveMode } = electronState;

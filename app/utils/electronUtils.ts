@@ -1,4 +1,4 @@
-import type { WebContents } from 'electron';
+import type { WebContents, InputEvent } from 'electron';
 import 'electron';
 import { uniqueId } from './random';
 import { sleep } from './async';
@@ -14,7 +14,10 @@ export default class ElectronUtils {
     this.webContents = webContents;
   }
 
-  async evaluate(javaScript: string, isUserGesture: boolean = false): any {
+  async evaluate(
+    javaScript: string,
+    isUserGesture: boolean = false
+  ): Promise<any> {
     const code = `new Promise((resolve, reject) => {
        try {
           resolve(${javaScript})
@@ -120,10 +123,10 @@ ${this.webContents.getURL()}`);
     );
   }
 
-  async performPressKey(keyCode: string, modifiers?: Array<string>) {
+  async performPressKey(keyCode: string, modifiers?: InputEvent['modifiers']) {
     const eventDescription: {
       keyCode: string;
-      modifiers?: Array<string>;
+      modifiers?: InputEvent['modifiers'];
       charCode?: number;
     } = {
       keyCode,

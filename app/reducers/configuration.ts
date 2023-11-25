@@ -20,21 +20,29 @@ import { generateSearchUrl } from '../flat/urlBuilder';
 export const ConfigurationVersion = 7;
 export const AllFloors = [4, 3, 2, 1, 0];
 export type configurationNumbers =
-  | 'maximumRent'
-  | 'minimumArea'
-  | 'minimumRooms'
-  | 'maximumRooms';
+  | 'filter.maximumRent'
+  | 'filter.minimumArea'
+  | 'filter.minimumRooms'
+  | 'filter.maximumRooms'
+  | 'filter.maximumRentPerSquareMeter'
+  | 'additionalInformation.income';
 export type configurationBoolean =
-  | 'hasWBS'
-  | 'mustHaveBalcony'
-  | 'mustHaveKitchenette'
-  | 'noKitchenette'
-  | 'onlyOldBuilding'
-  | 'onlyUnfurnished'
-  | 'noSwapApartment'
-  | 'notSpecificallyForSeniors'
-  | 'onlySublease'
-  | 'noSublease';
+  | 'filter.hasWBS'
+  | 'filter.mustHaveBalcony'
+  | 'filter.mustHaveKitchenette'
+  | 'filter.noKitchenette'
+  | 'filter.onlyOldBuilding'
+  | 'filter.onlyUnfurnished'
+  | 'filter.noSwapApartment'
+  | 'filter.notSpecificallyForSeniors'
+  | 'filter.onlySublease'
+  | 'filter.noSublease'
+  | 'policies.artConsent'
+  | 'policies.applicationNotificationMails'
+  | 'policies.flatViewingNotificationMails'
+  | 'policies.fillAsLittleAsPossible'
+  | 'policies.researchDataSharing'
+  | 'experimentalFeatures.sortByNewest';
 export type Filter = {
   postcodes: Array<string>;
   maximumRent?: number | null | undefined;
@@ -54,11 +62,11 @@ export type Filter = {
   noSublease: boolean;
   floors: Array<number>;
 };
-export const enum Salutations {
+export enum Salutations {
   FRAU = 'Frau',
   HERR = 'Herr'
 }
-export const enum UseAccount {
+export enum UseAccount {
   JA = 'Ja',
   MANUELL = 'Manuell',
   NEIN = 'Nein'
@@ -93,17 +101,17 @@ export type DataPolicies = {
   applicationNotificationMails: boolean;
   fillAsLittleAsPossible: boolean;
 };
-export const enum MoveInWhen {
+export enum MoveInWhen {
   NOW = 'Ab sofort',
   FLEXIBLE = 'Flexibel'
 }
-export const enum MoveInWho {
+export enum MoveInWho {
   SINGLE = 'Einpersonenhaushalt',
   TWO_ADULTS = 'Zwei Erwachsene',
   FAMILY = 'Familie',
   SHARED_FLAT = 'Wohngemeinschaft'
 }
-export const enum EmploymentStatus {
+export enum EmploymentStatus {
   EMPLOYEE = 'Angestellte_r',
   WORKER = 'Arbeiter_in',
   SELF_EMPLOYED = 'Selbstständig',

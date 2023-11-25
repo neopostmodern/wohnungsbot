@@ -1,10 +1,6 @@
 import React from 'react';
 import styles from '../Configuration.scss';
-import {
-  AllFloors,
-  MoveInWhen,
-  MoveInWho
-} from '../../reducers/configuration';
+import { AllFloors, MoveInWhen, MoveInWho } from '../../reducers/configuration';
 import { floorToName } from '../../utils/germanStrings';
 import type { Configuration } from '../../reducers/configuration';
 import type { InheritedProps, StageDescription } from './types';

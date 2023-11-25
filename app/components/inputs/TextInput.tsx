@@ -1,12 +1,13 @@
 import React from 'react';
+import CSS from 'csstype';
 
 type TextFieldProps = {
   type?: string;
   value: string | null | undefined;
   onChange: (value: string | null | undefined) => void;
   placeholder: string;
-  style: CSSStyleDeclaration;
-  containerStyle?: CSSStyleDeclaration;
+  style: CSS.Properties;
+  containerStyle?: CSS.Properties;
   onlyChangeOnSubmit?: boolean;
   error?: boolean;
   required?: boolean;
@@ -36,9 +37,9 @@ export default class TextField extends React.Component<
     (this as any).handleKeyPress = this.handleKeyPress.bind(this);
   }
 
-  handleChange(event: React.SyntheticEvent<EventTarget>) {
+  handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { onChange, onlyChangeOnSubmit } = this.props;
-    const { value } = event.target;
+    const { value } = event.target as HTMLInputElement;
     this.setState({
       value
     });
@@ -48,11 +49,11 @@ export default class TextField extends React.Component<
     }
   }
 
-  handleKeyPress(event: React.SyntheticEvent<EventTarget>) {
+  handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
     const { onChange } = this.props;
 
     if (event.key === 'Enter') {
-      onChange(event.target.value.trim());
+      onChange((event.target as HTMLInputElement).value.trim());
     }
   }
 

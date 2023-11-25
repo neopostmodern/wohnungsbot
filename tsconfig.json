@@ -7,7 +7,10 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "allowJs": true
+    "allowJs": true,
+    "jsx": "react",
+    "types": []
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "include": ["app"]
 }

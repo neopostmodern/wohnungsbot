@@ -60,8 +60,8 @@ class PostcodeMap extends React.Component<Props, State> {
 
   heightRef: HTMLElement;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       zoom: PostcodeMap.initialZoom
     };
