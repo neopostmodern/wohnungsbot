@@ -1,14 +1,10 @@
 import React from 'react';
-import { MapContainer } from 'react-leaflet/MapContainer';
-import { GeoJSON } from 'react-leaflet/GeoJSON';
-import { TileLayer } from 'react-leaflet/TileLayer';
-import { Marker } from 'react-leaflet/Marker';
-import { useMapEvent } from 'react-leaflet/hooks';
+import { MapContainer, TileLayer, GeoJSON, Marker, useMapEvent } from 'react-leaflet'
 import type { Layer } from 'leaflet';
 import { divIcon } from 'leaflet';
 import { feature } from 'topojson';
-import topoData from '../map/berlin-postcodes-data.topo';
-import labels from '../map/labels';
+import topoData from '../map/berlin-postcodes-data.topo.json';
+import labels from '../map/labels.json';
 
 const geoData = feature(topoData, topoData.objects.collection);
 const tileUrl =
