@@ -49,8 +49,8 @@ export default class BotOverlay extends Component<Props> {
     );
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     (this as any).handleWheel = this.handleWheel.bind(this);
   }
 

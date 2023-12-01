@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { createReduxHistoryContext } from 'redux-first-history';
+import type {HashHistory} from 'history'
 import electron from './electron';
 import overlay from './overlay';
 import data from './data';
@@ -8,7 +9,7 @@ import cache from './cache';
 import scheduler from './scheduler';
 import bot from './bot';
 
-export default function createRootReducer(history: History) {
+export default function createRootReducer(history: HashHistory) {
   const reducers: any = {
     electron,
     overlay,

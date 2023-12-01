@@ -37,11 +37,12 @@ export type configurationBoolean =
   | 'filter.notSpecificallyForSeniors'
   | 'filter.onlySublease'
   | 'filter.noSublease'
+  | 'policies.flatViewingNotificationMails'
+  | 'policies.autostart'
+  | 'policies.researchDataSharing'
   | 'policies.artConsent'
   | 'policies.applicationNotificationMails'
-  | 'policies.flatViewingNotificationMails'
   | 'policies.fillAsLittleAsPossible'
-  | 'policies.researchDataSharing'
   | 'experimentalFeatures.sortByNewest';
 export type Filter = {
   postcodes: Array<string>;

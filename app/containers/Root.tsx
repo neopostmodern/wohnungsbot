@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { HistoryRouter as Router } from 'redux-first-history/rr6'; // https://github.com/remix-run/react-router/pull/7586
 
+import type {HashHistory } from 'history'
 import type { Store } from '../reducers/types';
 import Routes from '../Routes';
 import App from './App';
 
 type Props = {
   store: Store;
-  history: {};
+  history: HashHistory;
 };
 export default class Root extends Component<Props> {
   render() {

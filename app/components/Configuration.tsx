@@ -32,8 +32,8 @@ let isLaunching;
 export default class Configuration extends Component<Props> {
   props: Props;
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     (this as any).handleKeyDown = this.handleKeyDown.bind(this);
     (this as any).goToNext = this.goToNext.bind(this);
   }

@@ -7,6 +7,7 @@ import {
   SET_BOUNDING_BOX,
   SET_BOUNDING_BOX_GROUP
 } from '../constants/actionTypes';
+import BoundingBoxGroups from '../constants/boundingBoxGroups';
 
 export type baseAnimation = {
   animationId: string;
@@ -20,7 +21,7 @@ export type anyAnimation = clickAnimation;
 export type AttachedInformation = Record<string, any>;
 export type ElementBoundingBox = {
   selector: string;
-  group?: string;
+  group?: BoundingBoxGroups;
   attachedInformation: AttachedInformation;
   boundingBox: DOMRect;
 };

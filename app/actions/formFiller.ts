@@ -319,7 +319,7 @@ export function fillForm(
       }
 
       await scrollIntoViewByPolicy(webContents, field.selector, {
-        scrollIntoViewByPolicy: 'auto',
+        scrollIntoViewPolicy: 'auto',
         overrideStrategy: 'center'
       });
 

@@ -305,7 +305,8 @@ const personalDataStage: StageDescription = {
             city: 'deine Stadt',
             telephone: 'deine Telefonnummer',
             eMail: 'deine E-Mail'
-          }
+          },
+          immobilienScout24: {}
         };
 
         if (configuration.immobilienScout24.useAccount === UseAccount.JA) {
