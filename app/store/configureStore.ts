@@ -91,16 +91,16 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
   // Apply Middleware & Compose Enhancers
   enhancers.push(applyMiddleware(...middleware));
   // Electron Redux
-  let composeEnhancers = compose;
+  let composeEnhancers;
 
   if (target === MAIN) {
     const { composeWithStateSync } = await import('electron-redux/main');
     composeEnhancers = composeWithStateSync;
-  }
-
-  if (target === RENDERER) {
+  } else if (target === RENDERER) {
     const { composeWithStateSync } = await import('electron-redux/renderer');
     composeEnhancers = composeWithStateSync;
+  } else {
+     composeEnhancers = compose;
   }
 
   const enhancer = composeEnhancers(...enhancers);
