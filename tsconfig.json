@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "allowJs": true,
     "jsx": "react",
-    "types": []
+    "types": ["webpack-env"]
   },
   "exclude": ["node_modules"],
   "include": ["app"]
