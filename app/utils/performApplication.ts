@@ -27,7 +27,7 @@ export default function* performApplication(
   yield dispatch(
     clickAction(
       yield electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
-      'always'
+      {scrollIntoViewPolicy: 'always'}
     )
   );
 

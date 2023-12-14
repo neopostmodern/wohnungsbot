@@ -260,7 +260,7 @@ function configurationMigrations(
       ...migratedConfiguration,
       immobilienScout24: {
         ...migratedConfiguration.immobilienScout24,
-        useAccount: migratedConfiguration.useAccount
+        useAccount: migratedConfiguration.immobilienScout24.useAccount
           ? UseAccount.JA
           : UseAccount.NEIN
       }
