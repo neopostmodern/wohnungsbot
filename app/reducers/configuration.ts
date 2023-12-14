@@ -237,6 +237,7 @@ function configurationMigrations(
     migratedConfiguration = {
       ...migratedConfiguration,
       immobilienScout24: {
+        // @ts-ignore
         useAccount: false,
         userName: '',
         password: '',
