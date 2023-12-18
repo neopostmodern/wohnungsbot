@@ -23,7 +23,8 @@ export default class ApplicationTextPreviews extends React.Component<
         street: 'Hermannstr.',
         houseNumber: '177',
         neighborhood: 'Neukölln',
-        postcode: '12051'
+        postcode: '12051',
+        description: '' // mandatory field, not used for preview
       },
       contact: {
         firstName: 'Helga',
@@ -35,7 +36,8 @@ export default class ApplicationTextPreviews extends React.Component<
       address: {
         street: 'Richardplatz',
         neighborhood: 'Neukölln',
-        postcode: '12055'
+        postcode: '12055',
+        description: '' // mandatory field, not used for preview
       },
       contact: {
         salutation: 'NO_SALUTATION'
@@ -44,7 +46,8 @@ export default class ApplicationTextPreviews extends React.Component<
     {
       address: {
         neighborhood: 'Neukölln',
-        postcode: '12049'
+        postcode: '12049',
+        description: '' // mandatory field, not used for preview
       },
       contact: {
         salutation: 'MALE',

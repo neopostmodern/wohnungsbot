@@ -57,12 +57,12 @@ export type RawOverviewDataEntry = {
     };
     garden: StringBoolean;
     listingType: 'S';
-    livingSpace: string;
+    livingSpace: string; // usually of type number
     numberOfRooms: number;
     price: {
       marketingType: 'RENT';
       priceIntervalType: 'MONTH';
-      value: string;
+      value: string; // usually of type number
     };
     privateOffer: StringBoolean;
     realtorCompanyName: string;
