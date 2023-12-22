@@ -298,7 +298,10 @@ export default function configuration(
     const postcodeIndex = postcodes.indexOf(postcode);
 
     if (postcodeIndex !== -1) {
-      return dotProp.delete(state, `filter.postcodes.${postcodeIndex}`);
+      return dotProp.delete(
+        state,
+        `filter.postcodes.${postcodeIndex}`
+      ) as Configuration;
     }
 
     return dotProp.merge(state, 'filter.postcodes', [postcode]);
@@ -310,7 +313,10 @@ export default function configuration(
     const floorIndex = floors.indexOf(floor);
 
     if (floorIndex !== -1) {
-      return dotProp.delete(state, `filter.floors.${floorIndex}`);
+      return dotProp.delete(
+        state,
+        `filter.floors.${floorIndex}`
+      ) as Configuration;
     }
 
     return dotProp.merge(state, 'filter.floors', [floor]);
