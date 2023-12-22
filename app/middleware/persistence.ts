@@ -7,7 +7,7 @@ import { setCache } from '../actions/cache';
 
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {
-    const configuration: Configuration = persistentStore.get('configuration');
+    const configuration = persistentStore.get('configuration');
 
     if (configuration) {
       configuration.loaded = true;
