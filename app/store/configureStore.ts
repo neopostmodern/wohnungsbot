@@ -13,6 +13,7 @@ import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
 import bot from '../middleware/bot';
 import login from '../middleware/login';
+import { Store } from '../reducers/types';
 
 const configureStore = async (target: string, isDevelopment: boolean) => {
   // Redux Configuration
@@ -100,12 +101,12 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
     const { composeWithStateSync } = await import('electron-redux/renderer');
     composeEnhancers = composeWithStateSync;
   } else {
-     composeEnhancers = compose;
+    composeEnhancers = compose;
   }
 
   const enhancer = composeEnhancers(...enhancers);
   // Create Store
-  const store = createStore(rootReducer, enhancer);
+  const store = createStore(rootReducer, enhancer) as Store; // todo: migrate away from deprecated Redux syntax, should fix TypeScript issues
 
   if (module.hot) {
     module.hot.accept(
