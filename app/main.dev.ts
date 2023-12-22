@@ -113,7 +113,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
 
       const newView = (
         name: BrowserViewName,
-        options: BrowserViewConstructorOptions,
+        options: BrowserViewConstructorOptions & { transparent?: boolean },
         initialUrl: string
       ): BrowserView => {
         if (mainWindow === undefined || mainWindow === null) {
