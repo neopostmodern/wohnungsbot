@@ -187,7 +187,6 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-import-resolver-webpack": "^0.13.2",
     "eslint-plugin-compat": "4.1.4",
-    "eslint-plugin-flowtype": "8.0.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-jsx-a11y": "6.7.1",
     "eslint-plugin-prettier": "5.0.0",
