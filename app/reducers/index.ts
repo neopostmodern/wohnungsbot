@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { createReduxHistoryContext } from 'redux-first-history';
-import type {HashHistory} from 'history'
+import type { HashHistory } from 'history';
 import electron from './electron';
 import overlay from './overlay';
 import data from './data';
@@ -8,6 +8,7 @@ import configuration from './configuration';
 import cache from './cache';
 import scheduler from './scheduler';
 import bot from './bot';
+import { Store } from './types';
 
 export default function createRootReducer(history: HashHistory) {
   const reducers: any = {
@@ -27,5 +28,5 @@ export default function createRootReducer(history: HashHistory) {
     reducers.router = routerReducer;
   }
 
-  return combineReducers<{}, any>(reducers);
+  return combineReducers<Store>(reducers);
 }

@@ -3,7 +3,10 @@ export const sleep = (milliseconds) =>
     setTimeout(resolve, milliseconds);
   });
 
-export const timeout = (promise, waitingTime) =>
+export const timeout = <T>(
+  promise: Promise<T>,
+  waitingTime: number
+): Promise<T> =>
   /* eslint-disable no-async-promise-executor */
   new Promise(async (resolve, reject) => {
     const timeoutId = setTimeout(
