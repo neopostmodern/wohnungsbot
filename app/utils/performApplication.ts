@@ -13,6 +13,7 @@ import type { Dispatch } from '../reducers/types';
 import { LoginStatus } from '../reducers/configuration';
 import type { Configuration } from '../reducers/configuration';
 import type ElectronUtils from './electronUtils';
+import type ElectronUtilsRedux from './electronUtilsRedux';
 import AbortionSystem from './abortionSystem';
 
 export default function* performApplication(
@@ -58,7 +59,7 @@ export default function* performApplication(
     flatOverview.address,
     flatOverview.contactDetails
   );
-  yield electronUtils.fillText('#contactForm-Message', applicationText);
+  yield (electronUtils as ElectronUtilsRedux).fillText('#contactForm-Message', applicationText);
   yield dispatch(
     fillForm(
       personalDataFormFillingDescription,
