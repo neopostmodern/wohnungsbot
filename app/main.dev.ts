@@ -117,9 +117,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         initialUrl: string
       ): BrowserView => {
         if (mainWindow === undefined || mainWindow === null) {
-          // eslint-disable-next-line no-console
-          console.error('Main window not defined!');
-          return null;
+          throw Error('Main window not defined!');
         }
 
         const browserView = new BrowserView(options);
