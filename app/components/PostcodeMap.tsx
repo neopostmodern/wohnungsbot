@@ -1,10 +1,18 @@
 import React from 'react';
+/* eslint-disable import/no-unresolved */
+/// <reference path="../../node_modules/react-leaflet/lib/index.d.ts" />
+// @ts-ignore
 import { MapContainer } from 'react-leaflet/MapContainer';
+// @ts-ignore
 import { GeoJSON } from 'react-leaflet/GeoJSON';
+// @ts-ignore
 import { TileLayer } from 'react-leaflet/TileLayer';
+// @ts-ignore
 import { Marker } from 'react-leaflet/Marker';
+// @ts-ignore
 import { useMapEvent } from 'react-leaflet/hooks';
-import type { Layer } from 'leaflet';
+/* eslint-enable import/no-unresolved */
+import { FeatureGroup } from 'leaflet';
 import { divIcon } from 'leaflet';
 import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo.json';
@@ -105,25 +113,28 @@ class PostcodeMap extends React.Component<Props, State> {
     return style;
   }
 
-  eachFeature(postcodeDescription: PostcodeDescription, layer: Layer) {
-    layer.on('mouseover', () => {
+  eachFeature(
+    postcodeDescription: PostcodeDescription,
+    featureGroup: FeatureGroup
+  ) {
+    featureGroup.on('mouseover', () => {
       const { selectedPostcodes } = this.props;
       const currentlySelected = selectedPostcodes.includes(
         postcodeDescription.id
       );
-      layer.setStyle({
+      featureGroup.setStyle({
         fillColor: currentlySelected ? 'darkred' : 'darkgreen',
         fillOpacity: currentlySelected ? 0.3 : 0.4
       });
     });
-    layer.on('mouseout', () => {
-      layer.setStyle(this.stylePostcodeOverlay(postcodeDescription));
+    featureGroup.on('mouseout', () => {
+      featureGroup.setStyle(this.stylePostcodeOverlay(postcodeDescription));
     });
-    layer.on('click', () => {
+    featureGroup.on('click', () => {
       const { togglePostcodeSelected } = this.props;
       togglePostcodeSelected(postcodeDescription.id);
     });
-    layer.bindTooltip(
+    featureGroup.bindTooltip(
       `${postcodeDescription.id}
 <div class="map-tooltip-name">${postcodeDescription.properties.name}</div>
 ${postcodeDescription.properties.district}`,
@@ -180,16 +191,18 @@ ${postcodeDescription.properties.district}`,
               style={this.stylePostcodeOverlay}
             />
 
-            {labels.map(([name, latitude, longitude]) => (
-              <Marker
-                position={[latitude, longitude]}
-                key={name}
-                icon={divIcon({
-                  html: name,
-                  className: 'district-label'
-                })}
-              />
-            ))}
+            {(labels as Array<[string, number, number]>).map(
+              ([name, latitude, longitude]) => (
+                <Marker
+                  position={[latitude, longitude]}
+                  key={name}
+                  icon={divIcon({
+                    html: name,
+                    className: 'district-label'
+                  })}
+                />
+              )
+            )}
           </MapContainer>
         ) : null}
       </div>

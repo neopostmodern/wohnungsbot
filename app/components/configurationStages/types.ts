@@ -8,6 +8,7 @@ import type {
 export type InheritedProps = {
   togglePostcode: (postcode: string) => void;
   resetPostcodes: () => void;
+  resetConfiguration: () => void;
   toggleFloor: (floor: number) => void;
   toggleBoolean: (name: configurationBoolean) => void;
   setNumber: (
