@@ -1,5 +1,5 @@
 import type { Configuration } from '../reducers/configuration';
-import districts from '../map/districts';
+import districts from '../map/districts.json';
 
 const numberToUrlFloatString = (value: number | null | undefined): string => {
   if (value === null || value === undefined) {

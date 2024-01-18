@@ -7,8 +7,8 @@ import { useMapEvent } from 'react-leaflet/hooks';
 import type { Layer } from 'leaflet';
 import { divIcon } from 'leaflet';
 import { feature } from 'topojson';
-import topoData from '../map/berlin-postcodes-data.topo';
-import labels from '../map/labels';
+import topoData from '../map/berlin-postcodes-data.topo.json';
+import labels from '../map/labels.json';
 
 const geoData = feature(topoData, topoData.objects.collection);
 const tileUrl =

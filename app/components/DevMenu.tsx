@@ -7,7 +7,6 @@ type DevMenuProps = {
   showDevTools: (name: BrowserViewName) => void;
   resetConfiguration: () => void;
   resetCache: () => void;
-  stopBot: () => void;
   logout: () => void;
 };
 type DevMenuState = {
@@ -26,7 +25,6 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
       showDevTools,
       resetConfiguration,
       resetCache,
-      stopBot,
       logout
     } = this.props;
     const { expanded } = this.state;
@@ -63,11 +61,6 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
           <div className={styles.menuItem}>
             <button type="button" onClick={logout}>
               Logout <span className="material-icons">replay</span>
-            </button>
-          </div>
-          <div className={styles.menuItem}>
-            <button type="button" onClick={stopBot}>
-              Stop <span className="material-icons">stop</span>
             </button>
           </div>
           <div className={styles.menuItem} id={styles.visibilityToggle}>

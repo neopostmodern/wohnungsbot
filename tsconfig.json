@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "CommonJS",
-    "target": "es5",
+    "target": "es2021",
     "sourceMap": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "allowJs": true,
     "jsx": "react",
-    "types": []
+    "types": ["webpack-env"]
   },
   "exclude": ["node_modules"],
   "include": ["app"]

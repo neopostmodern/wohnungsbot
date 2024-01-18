@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, WheelEvent } from 'react';
 import styles from './BotOverlay.scss';
 import BotIllustration from '../../resources/bot.svg';
 import BotIllustrationActive from '../../resources/bot-active.svg';
@@ -49,8 +49,8 @@ export default class BotOverlay extends Component<Props> {
     );
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     (this as any).handleWheel = this.handleWheel.bind(this);
   }
 

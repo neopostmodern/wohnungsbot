@@ -1,5 +1,5 @@
 import sendgrid from '@sendgrid/mail';
-import keys from '../constants/keys';
+import keys from '../constants/keys.json';
 
 sendgrid.setApiKey(keys.SENDGRID_API_KEY);
 

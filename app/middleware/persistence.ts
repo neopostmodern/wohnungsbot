@@ -2,6 +2,7 @@ import { WAKE_UP } from '../actions/infrastructure';
 import { setConfiguration } from '../actions/configuration';
 import persistentStore from '../utils/persistentStore';
 import type { Action, Dispatch, Store } from '../reducers/types';
+import type { Configuration } from '../reducers/configuration';
 import { setCache } from '../actions/cache';
 
 export default (store: Store) => (next: Dispatch) => (action: Action) => {

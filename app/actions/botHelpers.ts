@@ -47,16 +47,20 @@ export async function scrollIntoView(
   webContents: WebContents,
   selector: string,
   {
-    strategy = 'center',
-    smooth = true,
-    elementExistenceGuaranteed = true,
+    strategy,
+    smooth,
+    elementExistenceGuaranteed,
     shadowRootSelector
   }: {
     strategy: ScrollIntoViewStrategy;
     smooth?: boolean;
     elementExistenceGuaranteed?: boolean;
     shadowRootSelector?: string;
-  } = {}
+  } = {
+    strategy: 'center',
+    smooth: true,
+    elementExistenceGuaranteed: true,
+  }
 ) {
   const electronUtils = new ElectronUtils(webContents);
 

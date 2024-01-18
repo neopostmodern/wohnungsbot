@@ -12,7 +12,7 @@ const AbortionSystem: {
 } = {
   abortFunction: null,
   nestedFunctionsMayContinue: true,
-  reason: null,
+  abortionReason: null,
 
   registerAbort(abort) {
     AbortionSystem.abortFunction = abort;

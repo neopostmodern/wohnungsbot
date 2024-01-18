@@ -113,13 +113,11 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
 
       const newView = (
         name: BrowserViewName,
-        options: BrowserViewConstructorOptions,
+        options: BrowserViewConstructorOptions & { transparent?: boolean },
         initialUrl: string
       ): BrowserView => {
         if (mainWindow === undefined || mainWindow === null) {
-          // eslint-disable-next-line no-console
-          console.error('Main window not defined!');
-          return null; // TODO PROVOKE TS: this should not be legit as return type is browserview
+          throw Error('Main window not defined!');
         }
 
         const browserView = new BrowserView(options);

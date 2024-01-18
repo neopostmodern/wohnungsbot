@@ -37,11 +37,12 @@ export type configurationBoolean =
   | 'filter.notSpecificallyForSeniors'
   | 'filter.onlySublease'
   | 'filter.noSublease'
+  | 'policies.flatViewingNotificationMails'
+  | 'policies.autostart'
+  | 'policies.researchDataSharing'
   | 'policies.artConsent'
   | 'policies.applicationNotificationMails'
-  | 'policies.flatViewingNotificationMails'
   | 'policies.fillAsLittleAsPossible'
-  | 'policies.researchDataSharing'
   | 'experimentalFeatures.sortByNewest';
 export type Filter = {
   postcodes: Array<string>;
@@ -236,6 +237,7 @@ function configurationMigrations(
     migratedConfiguration = {
       ...migratedConfiguration,
       immobilienScout24: {
+        // @ts-ignore
         useAccount: false,
         userName: '',
         password: '',
@@ -258,7 +260,7 @@ function configurationMigrations(
       ...migratedConfiguration,
       immobilienScout24: {
         ...migratedConfiguration.immobilienScout24,
-        useAccount: migratedConfiguration.useAccount
+        useAccount: migratedConfiguration.immobilienScout24.useAccount
           ? UseAccount.JA
           : UseAccount.NEIN
       }
@@ -296,7 +298,10 @@ export default function configuration(
     const postcodeIndex = postcodes.indexOf(postcode);
 
     if (postcodeIndex !== -1) {
-      return dotProp.delete(state, `filter.postcodes.${postcodeIndex}`);
+      return dotProp.delete(
+        state,
+        `filter.postcodes.${postcodeIndex}`
+      ) as Configuration;
     }
 
     return dotProp.merge(state, 'filter.postcodes', [postcode]);
@@ -308,7 +313,10 @@ export default function configuration(
     const floorIndex = floors.indexOf(floor);
 
     if (floorIndex !== -1) {
-      return dotProp.delete(state, `filter.floors.${floorIndex}`);
+      return dotProp.delete(
+        state,
+        `filter.floors.${floorIndex}`
+      ) as Configuration;
     }
 
     return dotProp.merge(state, 'filter.floors', [floor]);

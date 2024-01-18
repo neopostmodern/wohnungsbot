@@ -26,7 +26,7 @@ export default (target: targetType) =>
   (store: Store) =>
   (next: Dispatch) =>
   (action: Action) => {
-    if (!action.meta || !action.meta.target) {
+    if (!action.meta || !('target' in action.meta)) {
       return next(action);
     }
 

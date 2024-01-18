@@ -319,7 +319,7 @@ export function fillForm(
       }
 
       await scrollIntoViewByPolicy(webContents, field.selector, {
-        scrollIntoViewByPolicy: 'auto',
+        scrollIntoViewPolicy: 'auto',
         overrideStrategy: 'center'
       });
 
@@ -342,21 +342,22 @@ export function fillForm(
         fillAsLittleAsPossible &&
         (optionalElementExistsById || optionalElementExistsByData);
 
-      if (field.type === 'text') {
-        if (skipField) {
-          await electronUtils.fillText(field.selector, '');
-          await sleep(300);
-        } else if (field.value) {
-          await electronUtils.fillText(field.selector, field.value);
-          await sleep(1000);
-        }
-      } else if (field.type === 'select') {
-        await fillSelectField(dispatch, electronUtils, field, skipField);
-      } else if (field.type === 'radio') {
-        await fillRadioField(dispatch, electronUtils, field, skipField);
-      } else {
-        // eslint-disable-next-line no-console
-        console.error(`Unknown field type: ${field.type}`);
+      switch(field.type) {
+        case 'text':
+          if (skipField) {
+            await electronUtils.fillText(field.selector, '');
+            await sleep(300);
+          } else if (field.value) {
+            await electronUtils.fillText(field.selector, field.value);
+            await sleep(1000);
+          }
+          break;
+        case 'select':
+          await fillSelectField(dispatch, electronUtils, field, skipField);
+          break;
+        case 'radio':
+          await fillRadioField(dispatch, electronUtils, field, skipField);
+          break;
       }
     }
     /* eslint-enable no-await-in-loop */

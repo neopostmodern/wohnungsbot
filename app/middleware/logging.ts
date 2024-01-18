@@ -18,11 +18,13 @@ const payloadLengthLimit = 200;
 
 export default (_: Store) => (next: Dispatch) => (action: Action) => {
   if (action.constructor && action.constructor.name === 'AsyncFunction') {
+    const actionAsAsyncFunction = action as unknown as Function;
     // eslint-disable-next-line no-console
     console.log(
       `[Async Function] ${
-        action.name ||
-        (action.prototype && action.prototype.name) ||
+        actionAsAsyncFunction.name ||
+        (actionAsAsyncFunction.prototype &&
+          actionAsAsyncFunction.prototype.name) ||
         '<anonynumous>'
       }`
     );
