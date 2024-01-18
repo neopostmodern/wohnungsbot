@@ -13,6 +13,7 @@ exports.default = async function notarizing(context) {
   const appleId = process.env.APPLEID;
   const appleIdPassword = process.env.APPLEID_PASSWORD;
 
+  // eslint-disable-next-line consistent-return
   return notarize({
     appBundleId: 'com.neopostmodern.wohnung',
     appPath: `${appOutDir}/${appName}.app`,
