@@ -8,4 +8,3 @@ declare module 'history' {
     goForward(): void;
   }
 }
-

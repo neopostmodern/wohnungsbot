@@ -25,7 +25,7 @@ export default class Textarea extends React.Component<
 
   handleChange(event: React.SyntheticEvent<EventTarget>) {
     const { onChange } = this.props;
-    const { value } = (event.target as HTMLTextAreaElement);
+    const { value } = event.target as HTMLTextAreaElement;
     this.setState({
       value
     });

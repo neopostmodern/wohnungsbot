@@ -20,13 +20,8 @@ export default class DevMenu extends Component<DevMenuProps, DevMenuState> {
   };
 
   render() {
-    const {
-      views,
-      showDevTools,
-      resetConfiguration,
-      resetCache,
-      logout
-    } = this.props;
+    const { views, showDevTools, resetConfiguration, resetCache, logout } =
+      this.props;
     const { expanded } = this.state;
     return (
       <div

@@ -342,7 +342,7 @@ export function fillForm(
         fillAsLittleAsPossible &&
         (optionalElementExistsById || optionalElementExistsByData);
 
-      switch(field.type) {
+      switch (field.type) {
         case 'text':
           if (skipField) {
             await electronUtils.fillText(field.selector, '');

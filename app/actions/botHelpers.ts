@@ -59,7 +59,7 @@ export async function scrollIntoView(
   } = {
     strategy: 'center',
     smooth: true,
-    elementExistenceGuaranteed: true,
+    elementExistenceGuaranteed: true
   }
 ) {
   const electronUtils = new ElectronUtils(webContents);

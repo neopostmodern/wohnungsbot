@@ -28,7 +28,7 @@ export default function* performApplication(
   yield dispatch(
     clickAction(
       yield electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
-      {scrollIntoViewPolicy: 'always'}
+      { scrollIntoViewPolicy: 'always' }
     )
   );
 
@@ -59,7 +59,10 @@ export default function* performApplication(
     flatOverview.address,
     flatOverview.contactDetails
   );
-  yield (electronUtils as ElectronUtilsRedux).fillText('#contactForm-Message', applicationText);
+  yield (electronUtils as ElectronUtilsRedux).fillText(
+    '#contactForm-Message',
+    applicationText
+  );
   yield dispatch(
     fillForm(
       personalDataFormFillingDescription,
