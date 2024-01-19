@@ -18,7 +18,7 @@ import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo.json';
 import labels from '../map/labels.json';
 
-const geoData = feature(topoData, topoData.objects.collection);
+const geoData = feature(topoData as any, topoData.objects.collection as any);
 const tileUrl =
   'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
 const tileAttribution = `
