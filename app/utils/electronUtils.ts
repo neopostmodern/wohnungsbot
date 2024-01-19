@@ -198,6 +198,7 @@ ${this.webContents.getURL()}`);
             shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
           } called on non-existent element`
         );
+        console.log(new Error().stack)
         return false;
       }
 
