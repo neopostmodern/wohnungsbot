@@ -1,3 +1,5 @@
+const { logger } = require('../utils/tracer-logger.js');
+
 import type { Action, Dispatch, Store } from '../reducers/types';
 import {
   CALCULATE_BOUNDING_BOX,
@@ -31,7 +33,7 @@ export default (_: Store) => (next: Dispatch) => (action: Action) => {
       }`
     );
   } else if (!blackList.includes(action.type)) {
-    let { payload } = action;
+    let { payload, type, ...action_less } = action;
 
     if (payload && JSON.stringify(payload).length > payloadLengthLimit) {
       payload = `${JSON.stringify(action.payload).substr(
@@ -40,8 +42,7 @@ export default (_: Store) => (next: Dispatch) => (action: Action) => {
       )}...`;
     }
 
-    // eslint-disable-next-line no-console
-    console.log({ ...action, payload });
+    logger.debug( 'ACTION type:%s \tpayload:%j other:%j', type, payload, action_less);
   }
 
   return next(action);
