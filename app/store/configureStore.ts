@@ -7,7 +7,6 @@ import createRootReducer from '../reducers';
 import { MAIN, RENDERER, WEB } from '../constants/targets';
 
 import overlay from '../middleware/overlay';
-import logging from '../middleware/logging';
 import configuration from '../middleware/configuration';
 import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
@@ -79,6 +78,7 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
     middleware.unshift(logger);
   }
   else if (target === MAIN) {
+    const logging = (await import('../middleware/logging')).default;
     middleware.unshift(logging);
   }
 
