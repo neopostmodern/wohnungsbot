@@ -12,21 +12,20 @@ import('./store/configureStore')
   /* eslint-disable promise/always-return */
   .then((store) => {
     const history = getHistory();
-    render(
-      <Root store={store} history={history} />,
-      document.getElementById('root')
-    );
-
     if (module.hot) {
       module.hot.accept('./containers/Root', () => {
         // eslint-disable-next-line global-require
         const NextRoot = require('./containers/Root').default;
-
         render(
           <NextRoot store={store} history={history} />,
           document.getElementById('root')
         );
       });
+    } else {
+      render(
+        <Root store={store} history={history} />,
+        document.getElementById('root')
+      );
     }
   })
   /* eslint-enable promise/always-return */
