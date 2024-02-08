@@ -78,8 +78,7 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
     });
     middleware.unshift(logger);
   }
-
-  if (target === MAIN) {
+  else if (target === MAIN) {
     middleware.unshift(logging);
   }
 
