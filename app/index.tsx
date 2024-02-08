@@ -13,7 +13,6 @@ import('./store/configureStore')
   .then((store) => {
     const history = getHistory();
     const reactRoot = createRoot(document.getElementById('root'));
-    reactRoot.render(<Root store={store} history={history} />);
 
     if (module.hot) {
       module.hot.accept('./containers/Root', () => {
@@ -22,6 +21,8 @@ import('./store/configureStore')
 
         reactRoot.render(<NextRoot store={store} history={history} />);
       });
+    } else {
+      reactRoot.render(<Root store={store} history={history} />);
     }
   })
   /* eslint-enable promise/always-return */
