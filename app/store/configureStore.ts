@@ -76,7 +76,7 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
       level: isDevelopment ? 'info' : 'debug', // TODO GEORG use isDevelopment in pino logger.js
       collapsed: true
     });
-    middleware.push(logger);
+    middleware.unshift(logger);
   }
 
   if (target === MAIN) {
