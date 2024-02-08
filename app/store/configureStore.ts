@@ -71,22 +71,16 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
   }
 
   // Logging Middleware
-  if (isDevelopment) {
-    if (target === RENDERER) {
-      const logger = createLogger({
-        level: 'info',
-        collapsed: true
-      });
+  if (target === RENDERER) {
+    const logger = createLogger({
+      level: isDevelopment ? 'info' : 'debug', // TODO GEORG use isDevelopment in pino logger.js
+      collapsed: true
+    });
+    middleware.push(logger);
+  }
 
-      // Skip redux logs in console during the tests
-      if (process.env.NODE_ENV !== 'test') {
-        middleware.push(logger);
-      }
-    }
-
-    if (target === MAIN) {
-      middleware.unshift(logging);
-    }
+  if (target === MAIN) {
+    middleware.unshift(logging);
   }
 
   // Apply Middleware & Compose Enhancers
