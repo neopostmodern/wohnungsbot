@@ -19,14 +19,17 @@ import getRandomUserAgent from './utils/randomUserAgent';
 import electronObjects from './store/electronObjects';
 import resizeViews from './utils/resizeViews';
 
-const isDevelopment =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
+const enableDebug = process.env.ENABLE_DEBUG === 'true';
+const enableDevtools = isDevelopment || enableDebug;
+
 let isLaunching = true;
 
 // TODO refactor: one function, doing init and taking the two callbacks
 export default class AppUpdater {
   static init() {
-    if (isDevelopment) {
+    if (enableDebug) {
       log.transports.file.level = 'info';
       autoUpdater.logger = log;
     }
@@ -56,13 +59,13 @@ export default class AppUpdater {
   }
 }
 
-if (process.env.NODE_ENV === 'production') {
+if (isProduction) {
   const sourceMapSupport = require('source-map-support');
-
   sourceMapSupport.install();
 }
 
-if (isDevelopment) {
+// TODO: dedup this with the installExtensions()
+if (enableDevtools) {
   require('electron-debug')();
 }
 
@@ -95,10 +98,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
       app.quit();
     });
     app.on('ready', async () => {
-      if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.DEBUG_PROD === 'true'
-      ) {
+      if (enableDevtools) {
         await installExtensions();
       }
 

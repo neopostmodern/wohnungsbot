@@ -54,7 +54,7 @@ export default merge<Configuration>(baseConfig, {
      */
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
-      DEBUG_PROD: false,
+      ENABLE_DEBUG: false,
       START_MINIMIZED: false
     }),
 
