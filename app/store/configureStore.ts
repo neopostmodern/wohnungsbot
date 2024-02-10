@@ -18,9 +18,10 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
+  const history = getHistory(target);
+
   // Thunk Middleware
   middleware.push(thunk);
-  const history = getHistory(target);
 
   // Router Middleware
   if (target === RENDERER || target === WEB) {
@@ -30,42 +31,26 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
     middleware.push(routerMiddleware);
   }
 
-  // data extraction + routing + more
+  // Main Middleware: data extraction + routing + more
   if (target === MAIN) {
     const electron = (await import('../middleware/electron')).default;
     middleware.push(electron);
-  }
 
-  if (target === MAIN) {
     middleware.push(configuration);
     const persistence = (await import('../middleware/persistence')).default;
     middleware.push(persistence);
-  }
 
-  if (target === MAIN) {
     middleware.push(overlay);
-  }
 
-  if (target === MAIN) {
     middleware.push(bot);
-  }
 
-  if (target === MAIN) {
     middleware.push(data);
-  }
 
-  if (target === MAIN) {
     middleware.push(login);
-  }
 
-  if (target === MAIN) {
     const helpers = (await import('../middleware/helpers')).default;
     middleware.push(helpers);
-  }
 
-  const rootReducer = createRootReducer(history);
-
-  if (target === MAIN) {
     middleware.unshift(scheduler);
   }
 
@@ -99,6 +84,7 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
 
   const enhancer = composeEnhancers(...enhancers);
   // Create Store
+  const rootReducer = createRootReducer(history);
   const store = createStore(rootReducer, enhancer) as Store; // todo: migrate away from deprecated Redux syntax, should fix TypeScript issues
 
   if (module.hot) {
