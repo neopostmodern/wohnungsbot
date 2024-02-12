@@ -59,10 +59,13 @@ export default (store: Store & { dispatch: Dispatch }) =>
         (await electronUtils.elementExists(
           '#uc-center-container',
           cookiePopupRootSelector
+        )) &&
+        (await electronUtils.elementExists(
+          '[data-testid="uc-customize-button"]',
+          cookiePopupRootSelector
         ))
       ) {
         store.dispatch(setBotMessage('🍪⁉️'));
-        await sleep(1000);
         await electronUtils.click(
           '[data-testid="uc-customize-button"]',
           cookiePopupRootSelector
