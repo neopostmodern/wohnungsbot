@@ -20,7 +20,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch) { // how frontend interacts with configuration state
   return bindActionCreators(
     {
       nextStage,

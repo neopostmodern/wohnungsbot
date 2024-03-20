@@ -28,7 +28,7 @@ export type cacheStateType = {
   applications: Cache<ApplicationData>;
   mail: Cache<EmailData>;
 };
-const cacheDefaultState: cacheStateType = {
+const cacheDefaultState: cacheStateType = { // teil vom default
   applications: {},
   mail: {}
 };
@@ -37,7 +37,7 @@ export default function cache(
   state: cacheStateType = cacheDefaultState,
   action: Action
 ): cacheStateType {
-  if (action.type === MARK_COMPLETED) {
+  if (action.type === MARK_COMPLETED) { // UNDERSTANDME
     const { name, identifier, data } = action.payload;
     return dotProp.set(state, `${name}.${identifier}`, {
       ...data,

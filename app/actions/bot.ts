@@ -179,5 +179,6 @@ export function setLoginStatus(loginStatus: LoginStatus): ThunkAction {
     const { configuration } = getState();
     configuration.immobilienScout24.status = loginStatus;
     dispatch(setConfiguration(configuration));
+    // TODO FUTURE dispatch(setLoginStatus(status))
   };
 }

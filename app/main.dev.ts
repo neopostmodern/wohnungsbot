@@ -23,6 +23,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const enableDebug = process.env.ENABLE_DEBUG === 'true';
 const enableDevtools = isDevelopment || enableDebug;
+logger.debug("start with env vars prod:%s dev:%s debug:%s tools:%s", isProduction, isDevelopment, enableDebug, enableDevtools)
 
 let isLaunching = true;
 
@@ -94,6 +95,7 @@ const appOnReady = async (store) => {
     mainWindow.addBrowserView(browserView);
     electronObjects.views[name] = browserView;
     store.dispatch(addView(name, initialUrl));
+    // browserView.webContents.openDevTools();
     return browserView;
   };
 

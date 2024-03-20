@@ -1,4 +1,5 @@
 import dotProp from 'dot-prop-immutable';
+import { logger } from '../utils/tracer-logger.js';
 import type { Action } from './types';
 import {
   NEXT_STAGE,
@@ -152,6 +153,7 @@ export type Configuration = {
 export const getConfigurationFilterHash = (
   configurationState: Configuration
 ): number => {
+  // logger.trace() // too much
   return objectHash(configurationState.filter);
 };
 const defaultConfiguration: Configuration = {
@@ -213,6 +215,7 @@ const defaultConfiguration: Configuration = {
 function configurationMigrations(
   oldConfiguration: Configuration
 ): Configuration {
+  logger.trace("args oldConfiguration:%j", oldConfiguration);
   let migratedConfiguration = oldConfiguration;
 
   if (oldConfiguration.configurationVersion < 2) {
@@ -275,6 +278,7 @@ function configurationMigrations(
   }
 
   // always re-generate search URL at startup (in case the generation function changed, such as after bug #79)
+  // TODO FUTURE: maybe we don't need this because of setSearchUrl in middleware/configuration.ts
   migratedConfiguration = dotProp.set(
     migratedConfiguration,
     'searchUrl',
@@ -324,7 +328,8 @@ export default function configuration(
 
   switch (action.type) {
     case SET_CONFIGURATION:
-      return configurationMigrations(action.payload.configuration);
+      logger.trace(action.type);
+      return configurationMigrations(action.payload.configuration); // TODO FUTURE: dont run migrations every time... or is this only triggered on startup?
 
     case RESET_CONFIGURATION:
       return defaultConfiguration;

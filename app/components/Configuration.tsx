@@ -1,3 +1,4 @@
+// import { logger } from '../utils/tracer-logger.js';
 import type { ReactNode } from 'react';
 import React, { Component } from 'react';
 import styles from './Configuration.scss';
@@ -61,6 +62,7 @@ export default class Configuration extends Component<Props> {
   }
 
   goToNext() {
+    // logger.trace(); // does not end up in main-terminal
     const {
       configuration: { stage },
       hideConfiguration,
@@ -78,6 +80,7 @@ export default class Configuration extends Component<Props> {
     stageValid: boolean;
     validationMessage: FlexibleNode | null | undefined;
   } {
+    // logger.trace(); // does not end up in main-terminal
     const { configuration } = this.props;
     const stage: StageDescription = stages[configuration.stage];
     let stageValid = true;

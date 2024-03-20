@@ -41,7 +41,7 @@ export default (_: Store) => (next: Dispatch) => (action: Action) => {
       )}...`;
     }
 
-    logger.debug( 'ACTION type:%s \tpayload:%j other:%j', type, payload, action_less);
+    logger.trace('ACTION %s \tpayload:%j other:%j', type, payload, action_less);
   }
 
   return next(action);

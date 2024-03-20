@@ -66,6 +66,7 @@ export default function electron(
   }
 
   if (action.type === HIDE_CONFIGURATION) {
+    // REDUCER HIDE
     return { ...state, configurationHidden: true };
   }
 

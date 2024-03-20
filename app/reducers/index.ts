@@ -15,7 +15,7 @@ export default function createRootReducer(history: HashHistory) {
     electron,
     overlay,
     data,
-    configuration,
+    configuration, // nur configuration von config.json wird in den configuration.ts reducer gegeben (und zurück erwartet)
     cache,
     scheduler,
     bot

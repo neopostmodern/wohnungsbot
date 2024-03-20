@@ -148,7 +148,7 @@ export type dataStateType = {
   flat: Record<string, FlatData>;
   verdicts: Verdicts;
 };
-const dataDefaultState: dataStateType = {
+const dataDefaultState: dataStateType = { // teil vom default state
   overview: {},
   verdicts: {},
   flat: {}
