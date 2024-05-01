@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../Configuration.scss';
 import type { InheritedProps, StageDescription } from './types';
 import { floorToName } from '../../utils/germanStrings';
+import { UseAccount } from '../../reducers/configuration';
 import JsonExport from '../util/JsonExport';
 import ApplicationTextPreviews from '../util/ApplicationTextPreviews';
 
@@ -207,7 +208,7 @@ const reviewStage: StageDescription = {
           E-Mails mit Terminen für Massenbesichtigungen verschicken
           <br />
           <br />
-          {configuration.immobilienScout24.useAccount ? (
+          {configuration.immobilienScout24.useAccount === UseAccount.JA ? (
             <>
               den ImmobilienScout24-Account{' '}
               <em>{configuration.immobilienScout24.userName}</em> verwenden
