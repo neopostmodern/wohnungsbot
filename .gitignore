@@ -90,3 +90,7 @@ typings/
 
 # Electron-Forge
 out/
+
+# Common IDEs
+.code/
+.idea/
