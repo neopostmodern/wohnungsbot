@@ -1,4 +1,4 @@
-/* eslint global-require: off, import/no-dynamic-require: off */
+/* eslint global-require: off, import/no-dynamic-require: off, no-console: off */
 
 /**
  * Build config for development electron renderer process that uses
@@ -48,7 +48,7 @@ export default merge<Configuration | DevServerConfiguration>(baseConfig, {
   entry: [
     `webpack-dev-server/client?http://localhost:${port}/`,
     'webpack/hot/only-dev-server',
-    require.resolve('../app/index.jsx')
+    require.resolve('../app/index.tsx')
   ],
 
   output: {
@@ -59,7 +59,7 @@ export default merge<Configuration | DevServerConfiguration>(baseConfig, {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',

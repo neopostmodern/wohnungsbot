@@ -3,7 +3,7 @@
  */
 
 import path from 'path';
-import webpack from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
@@ -12,7 +12,7 @@ import CheckNodeEnv from '../internals/scripts/CheckNodeEnv';
 
 CheckNodeEnv('production');
 
-export default merge(baseConfig, {
+export default merge<Configuration>(baseConfig, {
   devtool: 'source-map',
 
   mode: 'production',

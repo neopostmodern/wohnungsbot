@@ -17,15 +17,11 @@ module.exports = (api) => {
   // see docs about api at https://babeljs.io/docs/en/config-files#apicache
 
   const development = api.env(developmentEnvironments);
-  const targets =
-    process.env.TARGET === 'web'
-      ? ['defaults']
-      : { electron: require('electron/package.json').version };
 
   return {
     presets: [
       [require('@babel/preset-env')],
-      require('@babel/preset-flow'),
+      require('@babel/preset-typescript'),
       [require('@babel/preset-react'), { development }]
     ],
     plugins: [

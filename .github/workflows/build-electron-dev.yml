@@ -13,6 +13,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Set up node with volta
         uses: volta-cli/action@v4
+      - name: Install dmg-license
+        run: npm i dmg-license
+        if: matrix.os == 'macos-latest'
       - name: Install dependencies
         run: npm ci
       - name: Decrypt keys
