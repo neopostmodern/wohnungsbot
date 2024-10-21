@@ -14,7 +14,7 @@ import { useMapEvent } from 'react-leaflet/hooks';
 /* eslint-enable import/no-unresolved */
 import { FeatureGroup } from 'leaflet';
 import { divIcon } from 'leaflet';
-import { feature } from 'topojson';
+import { feature } from 'topojson-client';
 import topoData from '../map/berlin-postcodes-data.topo.json';
 import labels from '../map/labels.json';
 import keys from '../constants/keys.json';

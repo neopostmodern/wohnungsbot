@@ -1,6 +1,6 @@
 /* eslint global-require: off */
-import type { BrowserViewConstructorOptions } from 'electron';
-import { app, screen, BrowserWindow, BrowserView } from 'electron';
+import type { WebPreferences } from 'electron';
+import { app, screen, BrowserWindow, WebContentsView } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import configureStore from './store/configureStore';
@@ -106,55 +106,49 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         show: false,
         width: Math.min(1200, screen.getPrimaryDisplay().workAreaSize.width),
         height: Math.min(800, screen.getPrimaryDisplay().workAreaSize.height),
-        titleBarStyle: 'hidden'
+        titleBarStyle: process.platform === 'darwin' ? 'hidden' : 'default'
       });
       electronObjects.window = mainWindow;
       store.dispatch(setWindow());
 
       const newView = (
         name: BrowserViewName,
-        options: BrowserViewConstructorOptions & { transparent?: boolean },
+        options: WebPreferences,
         initialUrl: string
-      ): BrowserView => {
+      ): WebContentsView => {
         if (mainWindow === undefined || mainWindow === null) {
           throw Error('Main window not defined!');
         }
 
-        const browserView = new BrowserView(options);
-        mainWindow.addBrowserView(browserView);
-        electronObjects.views[name] = browserView;
+        const view = new WebContentsView({ webPreferences: options });
+        mainWindow.contentView.addChildView(view);
+        electronObjects.views[name] = view;
         store.dispatch(addView(name, initialUrl));
-        return browserView;
+        return view;
       };
 
       newView(
         'sidebar',
         {
-          webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            preload: `${__dirname}/preload.js`
-          }
+          nodeIntegration: true,
+          contextIsolation: false,
+          preload: `${__dirname}/preload.js`
         },
         `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
       );
       newView(
         'print',
         {
-          webPreferences: {
-            sandbox: true,
-            contextIsolation: true
-          }
+          sandbox: true,
+          contextIsolation: true
         },
         `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
       );
       const puppetView = newView(
         'puppet',
         {
-          webPreferences: {
-            sandbox: true,
-            contextIsolation: true
-          }
+          sandbox: true,
+          contextIsolation: true
         },
         `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
       );
@@ -162,12 +156,10 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
       newView(
         'botOverlay',
         {
-          webPreferences: {
-            nodeIntegration: true,
-            experimentalFeatures: true,
-            contextIsolation: false,
-            preload: `${__dirname}/preload.js`
-          },
+          nodeIntegration: true,
+          experimentalFeatures: true,
+          contextIsolation: false,
+          preload: `${__dirname}/preload.js`,
           transparent: true
         },
         `file://${__dirname}/app.html#${ROUTES.BOT_OVERLAY}`
@@ -175,11 +167,9 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
       const configurationView = newView(
         'configuration',
         {
-          webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            preload: `${__dirname}/preload.js`
-          },
+          nodeIntegration: true,
+          contextIsolation: false,
+          preload: `${__dirname}/preload.js`,
           transparent: true
         },
         `file://${__dirname}/app.html#${ROUTES.CONFIGURATION}`
@@ -189,12 +179,10 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         newView(
           'devMenu',
           {
-            webPreferences: {
-              nodeIntegration: true,
-              experimentalFeatures: true,
-              contextIsolation: false,
-              preload: `${__dirname}/preload.js`
-            },
+            nodeIntegration: true,
+            experimentalFeatures: true,
+            contextIsolation: false,
+            preload: `${__dirname}/preload.js`,
             transparent: true
           },
           `file://${__dirname}/app.html#${ROUTES.DEV_MENU}`
