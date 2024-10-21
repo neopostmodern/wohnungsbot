@@ -22,7 +22,7 @@ import type { OverviewDataEntry } from '../reducers/data';
 import BoundingBoxGroups from '../constants/boundingBoxGroups';
 import { setBotMessage } from '../actions/bot';
 import ElectronUtils from '../utils/electronUtils';
-import { entrySelector } from '../utils/selectors';
+import { entrySelector } from '../constants/querySelectors';
 import electronObjects from '../store/electronObjects';
 
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {

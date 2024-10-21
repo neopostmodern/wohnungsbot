@@ -25,7 +25,7 @@ import { clickAction, scrollIntoViewAction } from './botHelpers';
 import { calculateOverviewBoundingBoxes } from './overlay';
 import ElectronUtils from '../utils/electronUtils';
 import AbortionSystem from '../utils/abortionSystem';
-import { entrySelector, entryTitleSelector } from '../utils/selectors';
+import { entrySelector, entryTitleSelector } from '../constants/querySelectors';
 import { electronRouting, setBrowserViewReady } from './electron';
 import type { LoginData } from '../reducers/configuration';
 import { LoginStatus } from '../reducers/configuration';

@@ -22,6 +22,13 @@ import {
 import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import electronObjects from '../store/electronObjects';
+import { querySelectorsForCookiePopup } from '../constants/querySelectors';
+import {
+  URL_PREFIX_FLAT_LISTING,
+  URL_SEARCH_PAGE,
+  URL_PARAMETER_SORT_NEWEST
+} from '../constants/urls';
+import { CAPTCHA_HINT } from '../constants/documentTitles';
 
 export default (store: Store & { dispatch: Dispatch }) =>
   (next: (action: Action) => void) =>
@@ -37,13 +44,11 @@ export default (store: Store & { dispatch: Dispatch }) =>
 
       // handle captcha if prompted
       if (
-        (await electronUtils.evaluate('document.title')).includes(
-          'Ich bin kein Roboter'
-        )
+        (await electronUtils.evaluate('document.title')).includes(CAPTCHA_HINT)
       ) {
         await electronUtils.humanInteraction(async () => {
           return (await electronUtils.evaluate('document.title')).includes(
-            'Ich bin kein Roboter'
+            CAPTCHA_HINT
           );
         });
         await sleep(5000);
@@ -52,44 +57,45 @@ export default (store: Store & { dispatch: Dispatch }) =>
       }
 
       // handle cookie popup if present
-      const cookiePopupRootSelector = '#usercentrics-root';
-
       if (
-        (await electronUtils.elementExists(cookiePopupRootSelector)) &&
         (await electronUtils.elementExists(
-          '#uc-center-container',
-          cookiePopupRootSelector
+          querySelectorsForCookiePopup.popupRoot
+        )) &&
+        (await electronUtils.elementExists(
+          querySelectorsForCookiePopup.popupContainer,
+          querySelectorsForCookiePopup.popupRoot
         ))
       ) {
         store.dispatch(setBotMessage('🍪⁉️'));
         await sleep(1000);
         await electronUtils.click(
-          '[data-testid="uc-customize-button"]',
-          cookiePopupRootSelector
+          querySelectorsForCookiePopup.cookieCustomizeButton,
+          querySelectorsForCookiePopup.popupRoot
         );
         await sleep(1000);
         await electronUtils.click(
-          '[data-testid="uc-deny-all-button"]',
-          cookiePopupRootSelector
+          querySelectorsForCookiePopup.cookieDenyAllButton,
+          querySelectorsForCookiePopup.popupRoot
         );
         await sleep(500);
         store.dispatch(setBotMessage('🍪✔️'));
         await sleep(500);
       }
 
-      if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
+      if (puppet.url.startsWith(URL_SEARCH_PAGE)) {
         const {
           configuration: { experimentalFeatures }
         } = store.getState();
 
         if (
           experimentalFeatures.sortByNewest &&
-          !puppet.url.includes('sorting=2')
+          !puppet.url.includes(URL_PARAMETER_SORT_NEWEST)
         ) {
           store.dispatch(setBotMessage('Sortierung ändern...️'));
           setImmediate(async () => {
             await electronUtils.evaluate(
-              "window.location = window.location + '&sorting=2'"
+              "window.location = window.location + '&'" +
+                URL_PARAMETER_SORT_NEWEST
             );
           });
           await sleep(2000);
@@ -113,7 +119,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
         store.dispatch(launchNextTask());
       }
 
-      if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
+      if (puppet.url.startsWith(URL_PREFIX_FLAT_LISTING)) {
         await store.dispatch(getFlatData());
         store.dispatch(refreshVerdicts());
       }

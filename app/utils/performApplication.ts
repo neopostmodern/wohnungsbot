@@ -6,6 +6,11 @@ import {
   generateAdditionalDataFormFillingDescription,
   generatePersonalDataFormFillingDescription
 } from '../actions/formFiller';
+import {
+  querySelectorsForApplicationForm,
+  composeMessageButtonSelector
+} from '../constants/querySelectors';
+import { PREMIUM_HINT } from '../constants/documentTitles';
 import applicationTextBuilder from '../flat/applicationTextBuilder';
 import { sendApplicationNotificationEmail } from '../actions/email';
 import type { OverviewDataEntry } from '../reducers/data';
@@ -25,24 +30,29 @@ export default function* performApplication(
   dispatch(setBotMessage('Anfrage schreiben!'));
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
+
   yield dispatch(
     clickAction(
-      yield electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
+      yield electronUtils.selectorForVisibleElement(
+        composeMessageButtonSelector
+      ),
       { scrollIntoViewPolicy: 'always' }
     )
   );
 
   while (true) {
     if (
-      (yield electronUtils.evaluate('document.title')).includes(
-        'MieterPlus freischalten'
-      )
+      (yield electronUtils.evaluate('document.title')).includes(PREMIUM_HINT)
     ) {
       yield sleep(3000);
       throw new Error('Bewerbung nur mit "MieterPlus"-Account möglich');
     }
 
-    if (yield electronUtils.elementExists('#contactForm-firstName')) {
+    if (
+      yield electronUtils.elementExists(
+        querySelectorsForApplicationForm.firstNameField
+      )
+    ) {
       break;
     }
 
@@ -59,10 +69,12 @@ export default function* performApplication(
     flatOverview.address,
     flatOverview.contactDetails
   );
+
   yield (electronUtils as ElectronUtilsRedux).fillText(
-    '#contactForm-Message',
+    querySelectorsForApplicationForm.messageTextarea,
     applicationText
   );
+
   yield dispatch(
     fillForm(
       personalDataFormFillingDescription,
@@ -74,7 +86,7 @@ export default function* performApplication(
   if (
     configuration.immobilienScout24.useAccount &&
     (yield electronUtils.elementExists(
-      '[data-is24-show-field="moveInDateType"]'
+      querySelectorsForApplicationForm.moveInDate
     ))
   ) {
     yield dispatch(
@@ -99,17 +111,17 @@ export default function* performApplication(
 
   dispatch(setBotMessage('Abschicken :)'));
   yield sleep(3000);
-  const submitButtonSelector = '#is24-expose-modal .button-primary';
 
-  // make sure the submit button gets clicked, if not re-try
   while (
-    ((yield electronUtils.getInnerText(submitButtonSelector)) || '').includes(
-      'Anfrage senden'
-    ) &&
+    (
+      (yield electronUtils.getInnerText(
+        querySelectorsForApplicationForm.submitButton
+      )) || ''
+    ).includes(querySelectorsForApplicationForm.submitButtonContent) &&
     AbortionSystem.nestedFunctionsMayContinue
   ) {
     yield dispatch(
-      clickAction(submitButtonSelector, {
+      clickAction(querySelectorsForApplicationForm.submitButton, {
         scrollIntoViewPolicy: 'always',
         elementExistenceGuaranteed: false
       })
@@ -128,16 +140,17 @@ export default function* performApplication(
   }
 
   dispatch(setBotMessage('Fertig.'));
-  const saveDataButtonSelector = `[data-qa="saveProfileButton"]`;
 
   if (
     configuration.immobilienScout24.useAccount &&
-    ((yield electronUtils.getInnerText(saveDataButtonSelector)) || '').includes(
-      'Daten speichern'
-    )
+    (
+      (yield electronUtils.getInnerText(
+        querySelectorsForApplicationForm.saveDataButton
+      )) || ''
+    ).includes(querySelectorsForApplicationForm.saveDataButtonContent)
   ) {
     yield dispatch(
-      clickAction(saveDataButtonSelector, {
+      clickAction(querySelectorsForApplicationForm.saveDataButton, {
         scrollIntoViewPolicy: 'always',
         elementExistenceGuaranteed: false
       })
