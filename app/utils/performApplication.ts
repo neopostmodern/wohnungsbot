@@ -31,6 +31,11 @@ export default function* performApplication(
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
+  //  click on button to compose a message
+  if (!(yield electronUtils.elementExists(composeMessageButtonSelector))) {
+    dispatch(setBotMessage('"Nachricht schreiben"-Button nicht gefunden'));
+  }
+
   yield dispatch(
     clickAction(
       yield electronUtils.selectorForVisibleElement(
@@ -41,6 +46,7 @@ export default function* performApplication(
   );
 
   while (true) {
+    //  check if this ad is for premium users only and we're not one of the privileged bunch
     if (
       (yield electronUtils.evaluate('document.title')).includes(PREMIUM_HINT)
     ) {
@@ -48,6 +54,7 @@ export default function* performApplication(
       throw new Error('Bewerbung nur mit "MieterPlus"-Account möglich');
     }
 
+    // check if the form is there, e.g. the first name field
     if (
       yield electronUtils.elementExists(
         querySelectorsForApplicationForm.firstNameField
@@ -70,6 +77,15 @@ export default function* performApplication(
     flatOverview.contactDetails
   );
 
+  if (
+    !(yield electronUtils.elementExists(
+      querySelectorsForApplicationForm.messageTextarea
+    ))
+  ) {
+    dispatch(setBotMessage('"Nachricht"-Feld nicht gefunden'));
+  }
+
+  //  fill in message field
   yield (electronUtils as ElectronUtilsRedux).fillText(
     querySelectorsForApplicationForm.messageTextarea,
     applicationText
@@ -112,6 +128,15 @@ export default function* performApplication(
   dispatch(setBotMessage('Abschicken :)'));
   yield sleep(3000);
 
+  if (
+    !(yield electronUtils.elementExists(
+      querySelectorsForApplicationForm.submitButton
+    ))
+  ) {
+    dispatch(setBotMessage('"Senden"-Button nicht gefunden'));
+  }
+
+  // make sure the submit button gets clicked, if not re-try
   while (
     (
       (yield electronUtils.getInnerText(
@@ -140,6 +165,14 @@ export default function* performApplication(
   }
 
   dispatch(setBotMessage('Fertig.'));
+
+  if (
+    !(yield electronUtils.elementExists(
+      querySelectorsForApplicationForm.saveDataButton
+    ))
+  ) {
+    dispatch(setBotMessage('"Nachricht speichern"-Button nicht gefunden'));
+  }
 
   if (
     configuration.immobilienScout24.useAccount &&
