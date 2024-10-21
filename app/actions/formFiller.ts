@@ -15,6 +15,7 @@ import { clickAction, pressKey, scrollIntoViewByPolicy } from './botHelpers';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import AbortionSystem from '../utils/abortionSystem';
 import electronObjects from '../store/electronObjects';
+import querySelectorsForApplicationForm from '../constants/querySelectors';
 
 const Salutation_VALUES = {
   [Salutations.FRAU]: 'FEMALE',
@@ -44,17 +45,17 @@ export const generatePersonalDataFormFillingDescription = (
 ): FieldFillingDescription => {
   const fieldFillingDescription: FieldFillingDescription = [
     {
-      selector: '#contactForm-salutation',
+      selector: querySelectorsForApplicationForm.salutationField,
       type: 'select',
       value: Salutation_VALUES[contactData.salutation]
     },
     {
-      selector: '#contactForm-firstName',
+      selector: querySelectorsForApplicationForm.firstNameField,
       type: 'text',
       value: contactData.firstName
     },
     {
-      selector: '#contactForm-lastName',
+      selector: querySelectorsForApplicationForm.lastNameField,
       type: 'text',
       value: contactData.lastName
     }
@@ -63,7 +64,7 @@ export const generatePersonalDataFormFillingDescription = (
   // the e-mail address field is read-only for logged in users
   if (!userIsLoggedIn) {
     fieldFillingDescription.push({
-      selector: '#contactForm-emailAddress',
+      selector: querySelectorsForApplicationForm.emailField,
       type: 'text',
       value: contactData.eMail
     });
@@ -71,27 +72,27 @@ export const generatePersonalDataFormFillingDescription = (
 
   return fieldFillingDescription.concat([
     {
-      selector: '#contactForm-phoneNumber',
+      selector: querySelectorsForApplicationForm.phoneField,
       type: 'text',
       value: contactData.telephone
     },
     {
-      selector: '#contactForm-street',
+      selector: querySelectorsForApplicationForm.streetField,
       type: 'text',
       value: contactData.street
     },
     {
-      selector: '#contactForm-houseNumber',
+      selector: querySelectorsForApplicationForm.houseNumberField,
       type: 'text',
       value: contactData.houseNumber
     },
     {
-      selector: '#contactForm-postcode',
+      selector: querySelectorsForApplicationForm.postCodeField,
       type: 'text',
       value: contactData.postcode
     },
     {
-      selector: '#contactForm-city',
+      selector: querySelectorsForApplicationForm.cityField,
       type: 'text',
       value: contactData.city
     }
@@ -163,42 +164,42 @@ export const generateAdditionalDataFormFillingDescription = (
   additionalInformation: AdditionalInformation
 ): FieldFillingDescription => [
   {
-    selector: '#contactForm-moveInDateType',
+    selector: querySelectorsForApplicationForm.moveInDate,
     type: 'select',
     value: MoveInWhen_VALUES[additionalInformation.moveInWhen]
   },
   {
-    selector: '#contactForm-numberOfPersons',
+    selector: querySelectorsForApplicationForm.numberOfPersons,
     type: 'select',
     value: MoveInWho_VALUES[additionalInformation.moveInWho]
   },
   {
-    selector: '#contactForm-hasPets',
+    selector: querySelectorsForApplicationForm.petsField,
     type: 'select',
     value:
       additionalInformation.animals && additionalInformation.animals !== 'Keine'
-        ? 'true'
-        : 'false'
+        ? 'TRUE'
+        : 'FALSE'
   },
   {
-    selector: '#contactForm-personalData-petsInHousehold',
+    selector: querySelectorsForApplicationForm.petsDetailField,
     type: 'text',
     value: additionalInformation.animals
   },
   {
-    selector: '#contactForm-employmentRelationship',
+    selector: querySelectorsForApplicationForm.employmentField,
     type: 'select',
     value: EmploymentStatus_VALUES[additionalInformation.employmentStatus]
   },
   {
-    selector: '#contactForm-income',
+    selector: querySelectorsForApplicationForm.incomeField,
     type: 'select',
     value: mapIncomeToValue(additionalInformation.income)
   },
   {
-    selector: '#contactForm-applicationPackageCompleted',
+    selector: querySelectorsForApplicationForm.applicationPackageField,
     type: 'select',
-    value: additionalInformation.hasDocumentsReady.toString()
+    value: additionalInformation.hasDocumentsReady ? 'TRUE' : 'FALSE'
   }
 ];
 

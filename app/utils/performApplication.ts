@@ -6,6 +6,11 @@ import {
   generateAdditionalDataFormFillingDescription,
   generatePersonalDataFormFillingDescription
 } from '../actions/formFiller';
+import {
+  querySelectorsForApplicationForm,
+  composeMessageButtonSelector
+} from '../constants/querySelectors';
+import { PREMIUM_HINT } from '../constants/documentTitles';
 import applicationTextBuilder from '../flat/applicationTextBuilder';
 import { sendApplicationNotificationEmail } from '../actions/email';
 import type { OverviewDataEntry } from '../reducers/data';
@@ -25,24 +30,36 @@ export default function* performApplication(
   dispatch(setBotMessage('Anfrage schreiben!'));
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
+
+  //  click on button to compose a message
+  if (!(yield electronUtils.elementExists(composeMessageButtonSelector))) {
+    dispatch(setBotMessage('"Nachricht schreiben"-Button nicht gefunden'));
+  }
+
   yield dispatch(
     clickAction(
-      yield electronUtils.selectorForVisibleElement('[data-qa="sendButton"]'),
+      yield electronUtils.selectorForVisibleElement(
+        composeMessageButtonSelector
+      ),
       { scrollIntoViewPolicy: 'always' }
     )
   );
 
   while (true) {
+    //  check if this ad is for premium users only and we're not one of the privileged bunch
     if (
-      (yield electronUtils.evaluate('document.title')).includes(
-        'MieterPlus freischalten'
-      )
+      (yield electronUtils.evaluate('document.title')).includes(PREMIUM_HINT)
     ) {
       yield sleep(3000);
       throw new Error('Bewerbung nur mit "MieterPlus"-Account möglich');
     }
 
-    if (yield electronUtils.elementExists('#contactForm-firstName')) {
+    // check if the form is there, e.g. the first name field
+    if (
+      yield electronUtils.elementExists(
+        querySelectorsForApplicationForm.firstNameField
+      )
+    ) {
       break;
     }
 
@@ -59,10 +76,21 @@ export default function* performApplication(
     flatOverview.address,
     flatOverview.contactDetails
   );
+
+  if (
+    !(yield electronUtils.elementExists(
+      querySelectorsForApplicationForm.messageTextarea
+    ))
+  ) {
+    dispatch(setBotMessage('"Nachricht"-Feld nicht gefunden'));
+  }
+
+  //  fill in message field
   yield (electronUtils as ElectronUtilsRedux).fillText(
-    '#contactForm-Message',
+    querySelectorsForApplicationForm.messageTextarea,
     applicationText
   );
+
   yield dispatch(
     fillForm(
       personalDataFormFillingDescription,
@@ -74,7 +102,7 @@ export default function* performApplication(
   if (
     configuration.immobilienScout24.useAccount &&
     (yield electronUtils.elementExists(
-      '[data-is24-show-field="moveInDateType"]'
+      querySelectorsForApplicationForm.moveInDate
     ))
   ) {
     yield dispatch(
@@ -85,44 +113,40 @@ export default function* performApplication(
         configuration.policies.fillAsLittleAsPossible
       )
     );
-  } else if (
-    !(yield electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
-  ) {
-    dispatch(setBotMessage('Und noch eine Seite...'));
-    yield dispatch(clickAction('#is24-expose-modal button.button-primary'));
-    yield sleep(3000);
-
-    // check if one of the inputs of the second page exists
-    if (!(yield electronUtils.elementExists('#contactForm-numberOfPersons'))) {
-      throw Error('Fehler beim Ausfüllen des Formulars');
-    }
-
-    yield dispatch(
-      fillForm(
-        generateAdditionalDataFormFillingDescription(
-          configuration.additionalInformation
-        ),
-        configuration.policies.fillAsLittleAsPossible
-      )
-    );
-    yield sleep(1000);
   }
 
-  // todo: seems unnecessary?
-  // await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
+  yield dispatch(
+    fillForm(
+      generateAdditionalDataFormFillingDescription(
+        configuration.additionalInformation
+      ),
+      configuration.policies.fillAsLittleAsPossible
+    )
+  );
+  yield sleep(1000);
+
   dispatch(setBotMessage('Abschicken :)'));
   yield sleep(3000);
-  const submitButtonSelector = '#is24-expose-modal .button-primary';
+
+  if (
+    !(yield electronUtils.elementExists(
+      querySelectorsForApplicationForm.submitButton
+    ))
+  ) {
+    dispatch(setBotMessage('"Senden"-Button nicht gefunden'));
+  }
 
   // make sure the submit button gets clicked, if not re-try
   while (
-    ((yield electronUtils.getInnerText(submitButtonSelector)) || '').includes(
-      'Anfrage senden'
-    ) &&
+    (
+      (yield electronUtils.getInnerText(
+        querySelectorsForApplicationForm.submitButton
+      )) || ''
+    ).includes(querySelectorsForApplicationForm.submitButtonContent) &&
     AbortionSystem.nestedFunctionsMayContinue
   ) {
     yield dispatch(
-      clickAction(submitButtonSelector, {
+      clickAction(querySelectorsForApplicationForm.submitButton, {
         scrollIntoViewPolicy: 'always',
         elementExistenceGuaranteed: false
       })
@@ -141,16 +165,25 @@ export default function* performApplication(
   }
 
   dispatch(setBotMessage('Fertig.'));
-  const saveDataButtonSelector = `[data-qa="saveProfileButton"]`;
+
+  if (
+    !(yield electronUtils.elementExists(
+      querySelectorsForApplicationForm.saveDataButton
+    ))
+  ) {
+    dispatch(setBotMessage('"Nachricht speichern"-Button nicht gefunden'));
+  }
 
   if (
     configuration.immobilienScout24.useAccount &&
-    ((yield electronUtils.getInnerText(saveDataButtonSelector)) || '').includes(
-      'Daten speichern'
-    )
+    (
+      (yield electronUtils.getInnerText(
+        querySelectorsForApplicationForm.saveDataButton
+      )) || ''
+    ).includes(querySelectorsForApplicationForm.saveDataButtonContent)
   ) {
     yield dispatch(
-      clickAction(saveDataButtonSelector, {
+      clickAction(querySelectorsForApplicationForm.saveDataButton, {
         scrollIntoViewPolicy: 'always',
         elementExistenceGuaranteed: false
       })
