@@ -17,15 +17,15 @@ import { divIcon } from 'leaflet';
 import { feature } from 'topojson';
 import topoData from '../map/berlin-postcodes-data.topo.json';
 import labels from '../map/labels.json';
+import keys from '../constants/keys.json';
 
 const geoData = feature(topoData as any, topoData.objects.collection as any);
-const tileUrl =
-  'https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png';
-const tileAttribution = `
-  Map tiles by <a href="http://stamen.com">Stamen Design</a>,
-  <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>
-  &mdash; Map data &copy;
-  <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`;
+const tileUrl = `https://tiles-eu.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.jpg?api_key=${keys.STADIAMAPS_API_KEY}`;
+const tileAttribution = `+© <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>
+© <a href="https://stamen.com/" target="_blank">Stamen Design</a>
+© <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>
+© <a href="https://www.openstreetmap.org/about/" target="_blank">OpenStreetMap contributors</a>
+`;
 const baseStyle = {
   color: 'black',
   weight: 1,
