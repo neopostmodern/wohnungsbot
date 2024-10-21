@@ -85,31 +85,18 @@ export default function* performApplication(
         configuration.policies.fillAsLittleAsPossible
       )
     );
-  } else if (
-    !(yield electronUtils.elementExists('#contactForm-privacyPolicyAccepted'))
-  ) {
-    dispatch(setBotMessage('Und noch eine Seite...'));
-    yield dispatch(clickAction('#is24-expose-modal button.button-primary'));
-    yield sleep(3000);
-
-    // check if one of the inputs of the second page exists
-    if (!(yield electronUtils.elementExists('#contactForm-numberOfPersons'))) {
-      throw Error('Fehler beim Ausfüllen des Formulars');
-    }
-
-    yield dispatch(
-      fillForm(
-        generateAdditionalDataFormFillingDescription(
-          configuration.additionalInformation
-        ),
-        configuration.policies.fillAsLittleAsPossible
-      )
-    );
-    yield sleep(1000);
   }
 
-  // todo: seems unnecessary?
-  // await dispatch(clickAction('#contactForm-privacyPolicyAccepted'));
+  yield dispatch(
+    fillForm(
+      generateAdditionalDataFormFillingDescription(
+        configuration.additionalInformation
+      ),
+      configuration.policies.fillAsLittleAsPossible
+    )
+  );
+  yield sleep(1000);
+
   dispatch(setBotMessage('Abschicken :)'));
   yield sleep(3000);
   const submitButtonSelector = '#is24-expose-modal .button-primary';
