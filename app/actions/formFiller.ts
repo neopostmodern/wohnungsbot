@@ -177,8 +177,8 @@ export const generateAdditionalDataFormFillingDescription = (
     type: 'select',
     value:
       additionalInformation.animals && additionalInformation.animals !== 'Keine'
-        ? 'true'
-        : 'false'
+        ? 'TRUE'
+        : 'FALSE'
   },
   {
     selector: '#contactForm-personalData-petsInHousehold',
@@ -198,7 +198,7 @@ export const generateAdditionalDataFormFillingDescription = (
   {
     selector: '#contactForm-applicationPackageCompleted',
     type: 'select',
-    value: additionalInformation.hasDocumentsReady.toString()
+    value: additionalInformation.hasDocumentsReady ? 'TRUE' : 'FALSE'
   }
 ];
 
