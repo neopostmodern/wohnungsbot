@@ -36,6 +36,7 @@
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "prestart": "npm run-script build",
     "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
+    "start-dev": "cross-env NODE_ENV=development electron ./app/main.prod.js",
     "start-main-dev": "cross-env HOT=1 NODE_ENV=development TARGET=main electron -r @babel/register ./app/main.dev.ts",
     "start-renderer-dev": "cross-env NODE_ENV=development NODE_OPTIONS=\"--loader ts-node/esm\" webpack --config ./configs/webpack.config.renderer.dev.ts --color"
   },
