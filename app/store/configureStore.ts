@@ -57,7 +57,7 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
   // Logging Middleware
   if (target === RENDERER) {
     const logger = createLogger({
-      level: isDevelopment ? 'info' : 'debug', // TODO GEORG use isDevelopment in pino logger.js
+      level: isDevelopment ? 'debug' : 'info',
       collapsed: true
     });
     middleware.unshift(logger);

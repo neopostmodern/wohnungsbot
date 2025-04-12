@@ -1,6 +1,8 @@
 const colors = require('colors');
 const tracer = require('tracer');
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const logger = tracer.colorConsole({
   level: 'log',
   format: [
@@ -37,7 +39,7 @@ const logger = tracer.colorConsole({
 //   allLogsFileName: 'myAppName'
 // })
 
-// tracer.setLevel('debug'); // can't change to a more lower level than the initial level
+// tracer.setLevel(isDevelopment ? 'log' : 'info'); // can't change to a more lower level than the initial level
 // tracer.close()
 
 module.exports.logger = logger;
