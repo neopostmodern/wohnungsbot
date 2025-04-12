@@ -99,6 +99,7 @@ export default (store: Store) =>
     if (action.type === HIDE_CONFIGURATION) {
       const { immobilienScout24 } = store.getState().configuration;
       store.dispatch(login(immobilienScout24));
+      store.dispatch(playAudio('audio.mp3')); // testing purpose
     }
 
     if (

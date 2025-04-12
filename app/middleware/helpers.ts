@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { app } from 'electron';
 import type { Action, Dispatch, Store } from '../reducers/types';
-import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
+import { PRINT_TO_PDF, SEND_MAIL, PLAY_AUDIO } from '../constants/actionTypes';
 import sendMail from '../utils/email';
 import { sleep, timeout } from '../utils/async';
 import { electronRouting } from '../actions/electron';
@@ -69,6 +69,14 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     // ignoring further returned values!
     next(action);
     return filePath;
+  }
+
+  if (action.type === PLAY_AUDIO) {
+    const { filename } = action.payload;
+    console.log("START AUDIO");
+    // TODO
+    // play '../../resources' + filename
+    console.log("END AUDIO");
   }
 
   return next(action);

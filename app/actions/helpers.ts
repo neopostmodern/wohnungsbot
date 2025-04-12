@@ -1,4 +1,4 @@
-import { PRINT_TO_PDF, SEND_MAIL } from '../constants/actionTypes';
+import { PRINT_TO_PDF, SEND_MAIL, PLAY_AUDIO } from '../constants/actionTypes';
 import { MAIN } from '../constants/targets';
 
 export const sendMail = (to: string, subject: string, text: string) => ({
@@ -12,10 +12,21 @@ export const sendMail = (to: string, subject: string, text: string) => ({
     target: MAIN
   }
 });
+
 export const printToPDF = (flatId: string) => ({
   type: PRINT_TO_PDF,
   payload: {
     flatId
+  },
+  meta: {
+    target: MAIN
+  }
+});
+
+export const playAudio = (filename: string) => ({
+  type: PLAY_AUDIO,
+  payload: {
+    filename
   },
   meta: {
     target: MAIN
