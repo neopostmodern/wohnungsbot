@@ -35,7 +35,7 @@ export function addView(name: BrowserViewName, initialUrl?: string): Action {
     },
     meta: {
       scope: 'local',
-      target: 'main'
+      target: MAIN
     }
   };
 }
@@ -73,7 +73,7 @@ export function electronRouting(
       targetUrl
     },
     meta: {
-      target: 'main'
+      target: MAIN
     }
   };
 }
