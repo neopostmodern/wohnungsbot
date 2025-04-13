@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import detectPort from 'detect-port';
 
 (function CheckPortInUse() {
