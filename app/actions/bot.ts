@@ -87,14 +87,14 @@ export function setShowOverlay(showOverlay: boolean): Action {
 export const navigateToFlatPage =
   (flatId: string) => async (dispatch: Dispatch) => {
     logger.trace('navigateToFlatPage');
-    await sleep(10000);
+    await sleep(1000);
     dispatch(setBotIsActing(true));
     dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
     dispatch(setShowOverlay(false));
     await dispatch(scrollIntoViewAction('puppet', entrySelector(flatId)));
     dispatch(calculateOverviewBoundingBoxes());
     dispatch(setShowOverlay(true));
-    await sleep(5000);
+    await sleep(1000);
     dispatch(setShowOverlay(false));
     dispatch(setBotMessage(`Wohnung ${flatId} genauer anschauen!`));
     const puppetView = new ElectronUtils(

@@ -117,7 +117,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
         );
         await store.dispatch(getOverviewData());
         await store.dispatch(refreshVerdicts());
-        await sleep(20000);
+        await sleep(2000);
         store.dispatch(launchNextTask());
       }
 
