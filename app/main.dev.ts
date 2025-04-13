@@ -18,13 +18,17 @@ import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
 import electronObjects from './store/electronObjects';
 import resizeViews from './utils/resizeViews';
+import { version, osData } from './utils/info';
+
+logger.info(`Running version ${version}`);
+logger.info(`Running on:`, osData);
 
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const enableDebug = process.env.ENABLE_DEBUG === 'true';
 const enableDevtools = isDevelopment || enableDebug;
 logger.info(
-  `ENVIRONMENT prod:${isProduction} dev:${isDevelopment} debug:${enableDebug} tools:${enableDevtools}`
+  `ENV prod:${isProduction} dev:${isDevelopment} debug:${enableDebug} tools:${enableDevtools}`
 );
 
 let isLaunching = true;

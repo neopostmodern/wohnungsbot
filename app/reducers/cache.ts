@@ -5,6 +5,7 @@ import {
   RESET_CACHE,
   SET_CACHE
 } from '../constants/actionTypes';
+import { logger } from '../utils/tracer-logger.js';
 
 export type BaseCacheEntry = {
   timestamp: number;
@@ -38,6 +39,9 @@ export default function cache(
   action: Action
 ): cacheStateType {
   if (action.type === MARK_COMPLETED) {
+    logger.info(
+      `Mark application for flat ${flatId} as completed. [success=${data.success}]`
+    );
     const { name, identifier, data } = action.payload;
     return dotProp.set(state, `${name}.${identifier}`, {
       ...data,
