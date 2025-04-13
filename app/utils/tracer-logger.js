@@ -1,9 +1,21 @@
-const colors = require('colors');
-const tracer = require('tracer');
+import {
+  white,
+  magenta,
+  blue,
+  green,
+  yellow,
+  red,
+  bold,
+  underline
+} from 'colors';
+import { colorConsole, console } from 'tracer';
+import { join } from 'path';
+import { app } from 'electron';
+import { existsSync, mkdirSync, appendFileSync } from 'fs';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-const logger = tracer.colorConsole({
+export const logger = colorConsole({
   level: 'log',
   format: [
     '{{timestamp}} {{title}} \t{{method}}[{{file}}:{{line}}] > {{message}}',
@@ -17,13 +29,13 @@ const logger = tracer.colorConsole({
     data.title = data.title.toUpperCase();
   },
   filters: {
-    log: colors.magenta,
-    trace: colors.magenta,
-    debug: colors.blue,
-    info: colors.green,
-    warn: colors.yellow,
-    error: [colors.red, colors.bold],
-    fatal: [colors.red, colors.bold, colors.underline]
+    log: magenta,
+    trace: magenta,
+    debug: blue,
+    info: green,
+    warn: yellow,
+    error: [red, bold],
+    fatal: [red, bold, underline]
   },
   inspectOpt: {
     showHidden: true, // the object's non-enumerable properties will be shown too
@@ -39,8 +51,6 @@ const logger = tracer.colorConsole({
 
 // tracer.setLevel(isDevelopment ? 'log' : 'info'); // can't change to a more lower level than the initial level
 // tracer.close()
-
-module.exports.logger = logger;
 
 /* example log outputs */
 // logger.log('hello');
