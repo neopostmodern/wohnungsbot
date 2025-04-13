@@ -5,9 +5,12 @@ import Root from './containers/Root';
 import getHistory from './store/history';
 import './styles/app.global.scss';
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+const enableDebug = process.env.ENABLE_DEBUG === 'true';
+
 import('./store/configureStore')
   .then(({ default: configureStore }) => {
-    return configureStore(RENDERER, process.env.NODE_ENV === 'development');
+    return configureStore(RENDERER, isDevelopment);
   })
   /* eslint-disable promise/always-return */
   .then((store) => {
