@@ -24,6 +24,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
       store.dispatch(refreshVerdicts());
 
       if (action.type !== SET_SEARCH_URL) {
+        // no need to set the search URL again if that is what we're currently doing
         process.nextTick(() => {
           store.dispatch(
             setSearchUrl(generateSearchUrl(store.getState().configuration))

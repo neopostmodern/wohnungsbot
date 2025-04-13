@@ -8,12 +8,14 @@ import type { OverviewDataEntry } from '../reducers/data';
 
 export default (store: Store) => (next: Dispatch) => async (action: Action) => {
   if (action.type === REFRESH_VERDICTS) {
+    // currently without reducer
     const {
       data: { overview, flat, verdicts },
       configuration
     } = store.getState();
 
     if (overview) {
+      // we need multiple parts of the state, thus cannot do the this logic in reducers [unclean]
       const configurationHash = getConfigurationFilterHash(configuration);
       Object.values(overview).forEach((entry: OverviewDataEntry) => {
         const cachedVerdict = verdicts[entry.id];
