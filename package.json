@@ -254,14 +254,10 @@
     "source-map-support": "^0.5.21",
     "topojson-client": "^3.1.0"
   },
-  "devEngines": {
-    "node": ">=16.x",
-    "npm": ">=8.x"
-  },
   "browserslist": [
     "last 1 electron version"
   ],
   "volta": {
-    "node": "18.18.0"
+    "node": "22.14.0"
   }
 }
