@@ -181,9 +181,11 @@ export function assessFlat(
       action = FlatAction.DISCARD;
     }
   } else {
+    // we are on the overview page, where we only see the list of flats
     scope = VerdictScope.OVERVIEW;
 
     if (result) {
+      // navigate to the detailed view URL, and re-run assessFlat with more detailed flatData
       action = FlatAction.INVESTIGATE;
     }
   }
