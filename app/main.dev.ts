@@ -1,8 +1,8 @@
 /* eslint global-require: off */
 import type { WebPreferences } from 'electron';
 import { app, screen, BrowserWindow, WebContentsView } from 'electron';
-import { autoUpdater } from 'electron-updater';
-import log from 'electron-log';
+import AppUpdater from './AppUpdater';
+import { logger } from './utils/tracer-logger.js';
 import configureStore from './store/configureStore';
 import {
   addView,
@@ -12,7 +12,6 @@ import {
 } from './actions/electron';
 import { MAIN } from './constants/targets';
 import ROUTES from './constants/routes';
-import { LOADING, UP_TO_DATE } from './constants/updater';
 import { wakeUp } from './actions/infrastructure';
 import type { BrowserViewName } from './reducers/electron';
 import getRandomUserAgent from './utils/randomUserAgent';
@@ -26,39 +25,6 @@ const enableDevtools = isDevelopment || enableDebug;
 
 let isLaunching = true;
 
-// TODO refactor: one function, doing init and taking the two callbacks
-export default class AppUpdater {
-  static init() {
-    if (enableDebug) {
-      log.transports.file.level = 'info';
-      autoUpdater.logger = log;
-    }
-
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-
-  static onUpdateAvailable(callback: (version: string) => void) {
-    autoUpdater.on('checking-for-update', () => {
-      callback(LOADING);
-    });
-    autoUpdater.on('update-available', ({ version }) => {
-      callback(version);
-    });
-    autoUpdater.on('update-not-available', () => {
-      callback(UP_TO_DATE);
-    });
-  }
-
-  static onDownloadProgress(callback: (percentage: number) => void) {
-    autoUpdater.on('download-progress', ({ percent }) => {
-      callback(percent);
-    });
-    autoUpdater.on('update-downloaded', () => {
-      callback(100);
-    });
-  }
-}
-
 if (isProduction) {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
@@ -71,10 +37,12 @@ if (enableDevtools) {
 
 configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-return
   .then((store) => {
+    logger.trace("configureStore().then()");
     let mainWindow: BrowserWindow | null | undefined = null;
 
     // todo: extensions don't seem to load in BrowserView?
     const installExtensions = async () => {
+      logger.trace();
       const installer = require('electron-devtools-installer');
 
       const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -85,8 +53,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
           installer.default(installer[name], forceDownload)
         )
       ).catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(`Problem installing extensions: ${error}`);
+        logger.error(`Problem installing extensions: ${error}`);
       });
       /* eslint-enable promise/no-nesting */
     };
@@ -95,9 +62,11 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
      * Add event listeners...
      */
     app.on('window-all-closed', () => {
+      logger.trace("app.on('window-all-closed')");
       app.quit();
     });
     app.on('ready', async () => {
+      logger.trace("app.on('ready')");
       if (enableDevtools) {
         await installExtensions();
       }
@@ -116,6 +85,7 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
         options: WebPreferences,
         initialUrl: string
       ): WebContentsView => {
+        logger.trace("args : %s %j %s", name, options, initialUrl);
         if (mainWindow === undefined || mainWindow === null) {
           throw Error('Main window not defined!');
         }
@@ -190,9 +160,9 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
       }
 
       configurationView.webContents.on('did-finish-load', () => {
+        logger.trace("configurationView.webContents.on('did-finish-load')");
         if (mainWindow === undefined || mainWindow === null) {
-          // eslint-disable-next-line no-console
-          console.error('Main window not defined!');
+          logger.error('Main window not defined!');
           return;
         }
 
@@ -231,6 +201,5 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
     });
   })
   .catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error(error);
+    logger.error(error);
   });

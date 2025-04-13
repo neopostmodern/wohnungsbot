@@ -1,5 +1,4 @@
-const { logger } = require('../utils/tracer-logger.js');
-
+import { logger } from '../utils/tracer-logger.js';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import {
   CALCULATE_BOUNDING_BOX,

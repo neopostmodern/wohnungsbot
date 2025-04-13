@@ -4,9 +4,10 @@ const tracer = require('tracer');
 const logger = tracer.colorConsole({
   level: 'log',
   format: [
-    // {{method}}
     '{{timestamp}} {{title}} {{file}}:{{line}} > {{message}} ',
     {
+      trace:
+        '{{timestamp}} {{title}} {{method}} ({{file}}:{{line}}) > {{message}}',
       error:
         '{{timestamp}} {{title}} {{file}}:{{line}} > {{message}} \nCall Stack:\n{{stack}}'
     }
