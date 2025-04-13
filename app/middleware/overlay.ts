@@ -57,7 +57,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
             if (
               !(await electronUtils.isElementInViewport(selector, {
                 mustIncludeBottom: false,
-                mustIncludeTop: false
+                mustIncludeTop: false,
+                supressErrors: true
               }))
             ) {
               return null;
