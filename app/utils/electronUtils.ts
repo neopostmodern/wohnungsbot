@@ -63,6 +63,10 @@ ${this.webContents.getURL()}`);
       .includes('immobilienscout24.de');
   }
 
+  getURL(): string {
+    return this.webContents.getURL();
+  }
+
   static generateSelector(
     selector: string,
     shadowRootSelector?: string
