@@ -10,7 +10,7 @@ jobs:
       CONFIG_FILE: config-staging.json
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up node with volta
         uses: volta-cli/action@v4
       - name: Install dmg-license
@@ -29,7 +29,7 @@ jobs:
           github_token: ${{ secrets.github_token }}
           args: '-p never'
       - name: Store artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Wohnungsbot Installer ${{ runner.os }} ${{ github.run_number }} (${{ github.ref_name }})
           path: release/Wohnungsbot*
