@@ -101,62 +101,62 @@ const appOnReady = async (store) => {
     return view;
   };
 
-      newView(
-        'sidebar',
-        {
-          nodeIntegration: true,
-          contextIsolation: false,
-          preload: `${__dirname}/preload.js`
-        },
-        `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
-      );
-      newView(
-        'print',
-        {
-          sandbox: true,
-          contextIsolation: true
-        },
-        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
-      );
-      const puppetView = newView(
-        'puppet',
-        {
-          sandbox: true,
-          contextIsolation: true
-        },
-        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
-      );
-      puppetView.webContents.setUserAgent(getRandomUserAgent());
-      newView(
-        'botOverlay',
-        {
-          nodeIntegration: true,
-          experimentalFeatures: true,
-          contextIsolation: false,
-          preload: `${__dirname}/preload.js`,
-          transparent: true
-        },
-        `file://${__dirname}/app.html#${ROUTES.BOT_OVERLAY}`
-      );
-      const configurationView = newView(
-        'configuration',
-        {
-          nodeIntegration: true,
-          contextIsolation: false,
-          preload: `${__dirname}/preload.js`,
+  newView(
+    'sidebar',
+    {
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: `${__dirname}/preload.js`
+    },
+    `file://${__dirname}/app.html#${ROUTES.SIDEBAR}`
+  );
+  newView(
+    'print',
+    {
+      sandbox: true,
+      contextIsolation: true
+    },
+    `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
+  );
+  const puppetView = newView(
+    'puppet',
+    {
+      sandbox: true,
+      contextIsolation: true
+    },
+    `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
+  );
+  puppetView.webContents.setUserAgent(getRandomUserAgent());
+  newView(
+    'botOverlay',
+    {
+      nodeIntegration: true,
+      experimentalFeatures: true,
+      contextIsolation: false,
+      preload: `${__dirname}/preload.js`,
+      transparent: true
+    },
+    `file://${__dirname}/app.html#${ROUTES.BOT_OVERLAY}`
+  );
+  const configurationView = newView(
+    'configuration',
+    {
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: `${__dirname}/preload.js`,
       transparent: true
     },
     `file://${__dirname}/app.html#${ROUTES.CONFIGURATION}`
   );
 
-      if (isDevelopment) {
-        newView(
-          'devMenu',
-          {
-            nodeIntegration: true,
-            experimentalFeatures: true,
-            contextIsolation: false,
-            preload: `${__dirname}/preload.js`,
+  if (isDevelopment) {
+    newView(
+      'devMenu',
+      {
+        nodeIntegration: true,
+        experimentalFeatures: true,
+        contextIsolation: false,
+        preload: `${__dirname}/preload.js`,
         transparent: true
       },
       `file://${__dirname}/app.html#${ROUTES.DEV_MENU}`

@@ -1,6 +1,11 @@
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
-import { navigateToFlatPage, noop, returnToSearchPage, popFlatFromQueue } from '../actions/bot';
+import {
+  navigateToFlatPage,
+  noop,
+  returnToSearchPage,
+  popFlatFromQueue
+} from '../actions/bot';
 import { markCompleted } from '../actions/cache';
 import type { schedulerStateType } from '../reducers/scheduler';
 import { CacheNames } from '../reducers/cache';
