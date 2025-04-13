@@ -102,6 +102,16 @@ export const navigateToFlatPage =
     );
     const flatTitleSelector = entryTitleSelector(flatId);
 
+    if (!(await puppetView.elementExists(flatTitleSelector))) {
+      logger.warn(
+        `Current flat with flatTitleSelector='${flatTitleSelector}' could not be found!`
+      );
+      logger.warn(`url:${puppetView.getURL()}`);
+      dispatch(setBotMessage(`Fehler: Wohnung ${flatId} nicht gefunden...`));
+      await sleep(5000);
+      return false;
+    }
+
     /* eslint-disable no-await-in-loop */
     while (AbortionSystem.nestedFunctionsMayContinue) {
       if (!(await puppetView.elementExists(flatTitleSelector))) {
