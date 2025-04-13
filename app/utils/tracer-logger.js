@@ -18,15 +18,38 @@ const logger = tracer.colorConsole({
     if (data.args.length > 1) {
       // have more than only just a string passed to the logger
       for (const [key, value] of Object.entries(data.args)) {
-        if (typeof(value) === 'object'){
-          if ('immobilienScout24' in value) {
+        if (typeof value === 'object') {
+          if (
+            'applicationText' in value &&
+            'immobilienScout24' in value &&
+            'contactData' in value
+          ) {
             // found something that looks like a configuration
             // we don't want to modify the object, so we copy it
-            // do not feed back name and password
-            let { immobilienScout24, ...other } = value;
-            data.args[key] = Object.assign({}, other);
-            let { userName, password, ...other24} = immobilienScout24;
-            data.args[key].immobilienScout24 = Object.assign({}, other24);
+            data.args[key] = Object.assign({}, value);
+            data.args[key].applicationText = 'HIDDEN';
+            data.args[key].immobilienScout24 = Object.assign(
+              {},
+              value.immobilienScout24
+            );
+            data.args[key].immobilienScout24.userName = 'HIDDEN';
+            data.args[key].immobilienScout24.password = 'HIDDEN';
+            data.args[key].contactData = Object.assign({}, value.contactData);
+            data.args[key].contactData.salutation = 'HIDDEN';
+            data.args[key].contactData.firstName = 'HIDDEN';
+            data.args[key].contactData.lastName = 'HIDDEN';
+            data.args[key].contactData.eMail = 'HIDDEN';
+            data.args[key].contactData.street = 'HIDDEN';
+            data.args[key].contactData.houseNumber = 'HIDDEN';
+            data.args[key].contactData.postcode = 'HIDDEN';
+            data.args[key].contactData.city = 'HIDDEN';
+            data.args[key].contactData.telephone = 'HIDDEN';
+            data.args[key].additionalInformation = Object.assign(
+              {},
+              value.additionalInformation
+            );
+            data.args[key].additionalInformation.employmentStatus = 'HIDDEN';
+            data.args[key].additionalInformation.income = 0;
           }
         }
       }
