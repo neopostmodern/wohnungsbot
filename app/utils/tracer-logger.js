@@ -6,12 +6,10 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 const logger = tracer.colorConsole({
   level: 'log',
   format: [
-    '{{timestamp}} {{title}} {{file}}:{{line}} > {{message}} ',
+    '{{timestamp}} {{title}} \t{{method}}[{{file}}:{{line}}] > {{message}}',
     {
-      trace:
-        '{{timestamp}} {{title}} {{method}} ({{file}}:{{line}}) > {{message}}',
-      error:
-        '{{timestamp}} {{title}} {{file}}:{{line}} > {{message}} \nCall Stack:\n{{stack}}'
+      fatal:
+        '{{timestamp}} {{title}} \t[{{file}}:{{line}}] > {{message}} \nCall Stack:\n{{stack}}'
     }
   ],
   dateformat: 'HH:MM:ss.L',
@@ -19,7 +17,7 @@ const logger = tracer.colorConsole({
     data.title = data.title.toUpperCase();
   },
   filters: {
-    log: colors.white,
+    log: colors.magenta,
     trace: colors.magenta,
     debug: colors.blue,
     info: colors.green,
