@@ -7,6 +7,7 @@ import { setCache } from '../actions/cache';
 
 export default (store: Store) => (next: Dispatch) => (action: Action) => {
   if (action.type === WAKE_UP) {
+    // currently without reducer
     const configuration = persistentStore.get('configuration');
 
     if (configuration) {
@@ -21,6 +22,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
     }
   }
 
+  // if action contains 'cache: true' then save it before state modification
   if (action.meta && 'cache' in action.meta) {
     process.nextTick(() => {
       persistentStore.set('cache', store.getState().cache);
@@ -29,6 +31,7 @@ export default (store: Store) => (next: Dispatch) => (action: Action) => {
 
   const ret = next(action);
 
+  // if action contains 'configuration: true' then save it after state modification
   if (action.meta && 'configuration' in action.meta) {
     const configurationToSave = { ...store.getState().configuration };
     delete configurationToSave.loaded;
