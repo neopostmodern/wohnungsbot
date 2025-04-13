@@ -1,3 +1,4 @@
+import { logger } from '../utils/tracer-logger.js';
 import { setSearchUrl } from '../actions/configuration';
 import { refreshVerdicts } from '../actions/data';
 import type { Action, Dispatch, Store } from '../reducers/types';
@@ -21,9 +22,11 @@ export default (store: Store & { dispatch: Dispatch }) =>
       getConfigurationFilterHash(store.getState().configuration) !==
       filterBeforeUpdate
     ) {
+      logger.info('Configuration filter changed...');
       store.dispatch(refreshVerdicts());
 
       if (action.type !== SET_SEARCH_URL) {
+        // no need to set the search URL again if that is what we're currently doing
         process.nextTick(() => {
           store.dispatch(
             setSearchUrl(generateSearchUrl(store.getState().configuration))

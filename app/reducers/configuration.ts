@@ -1,4 +1,5 @@
 import dotProp from 'dot-prop-immutable';
+import { logger } from '../utils/tracer-logger.js';
 import type { Action } from './types';
 import {
   NEXT_STAGE,
@@ -213,9 +214,12 @@ const defaultConfiguration: Configuration = {
 function configurationMigrations(
   oldConfiguration: Configuration
 ): Configuration {
+  logger.trace();
+  logger.log('configuration:', oldConfiguration);
   let migratedConfiguration = oldConfiguration;
 
   if (oldConfiguration.configurationVersion < 2) {
+    logger.debug('Migrate configuration version 1 -> 2');
     migratedConfiguration = dotProp.set(
       migratedConfiguration,
       'policies.fillAsLittleAsPossible',
@@ -224,6 +228,7 @@ function configurationMigrations(
   }
 
   if (oldConfiguration.configurationVersion < 3) {
+    logger.debug('Migrate configuration version 2 -> 3');
     if (oldConfiguration.additionalInformation.animals.trim().length === 0) {
       migratedConfiguration = dotProp.set(
         migratedConfiguration,
@@ -234,6 +239,7 @@ function configurationMigrations(
   }
 
   if (oldConfiguration.configurationVersion < 4) {
+    logger.debug('Migrate configuration version 3 -> 4');
     migratedConfiguration = {
       ...migratedConfiguration,
       immobilienScout24: {
@@ -247,6 +253,7 @@ function configurationMigrations(
   }
 
   if (oldConfiguration.configurationVersion < 5) {
+    logger.debug('Migrate configuration version 4 -> 5');
     migratedConfiguration = {
       ...migratedConfiguration,
       experimentalFeatures: {
@@ -268,6 +275,7 @@ function configurationMigrations(
   }
 
   if (oldConfiguration.configurationVersion < 7) {
+    logger.debug('Migrate configuration version 6 -> 7');
     migratedConfiguration = {
       ...migratedConfiguration,
       policies: { ...migratedConfiguration.policies, autostart: false }
@@ -275,16 +283,28 @@ function configurationMigrations(
   }
 
   // always re-generate search URL at startup (in case the generation function changed, such as after bug #79)
+  logger.debug('Set search URL');
   migratedConfiguration = dotProp.set(
     migratedConfiguration,
     'searchUrl',
     generateSearchUrl(migratedConfiguration)
   );
-  return dotProp.set(
+
+  logger.debug('Set configuration version');
+  migratedConfiguration = dotProp.set(
     migratedConfiguration,
     'configurationVersion',
     ConfigurationVersion
   );
+
+  if (
+    JSON.stringify(oldConfiguration) !== JSON.stringify(migratedConfiguration)
+  ) {
+    logger.info('Did migrate configuration');
+    logger.log('migratedConfiguration:', migratedConfiguration);
+  }
+
+  return migratedConfiguration;
 }
 
 export default function configuration(

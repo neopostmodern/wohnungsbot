@@ -1,3 +1,4 @@
+import { logger } from '../utils/tracer-logger.js';
 import type { Configuration } from '../reducers/configuration';
 import { getConfigurationFilterHash } from '../reducers/configuration';
 import type { FlatData, OverviewDataEntry, Verdict } from '../reducers/data';
@@ -9,6 +10,10 @@ export function assessFlat(
   overviewDataEntry: OverviewDataEntry,
   flatData?: FlatData
 ): Verdict {
+  logger.trace();
+  // logger.log("configuration:", configuration);
+  logger.log('overviewDataEntry:', overviewDataEntry);
+  logger.log('flatData:', flatData);
   let action: FlatAction = FlatAction.IGNORE;
   const reasons = [];
 
@@ -181,12 +186,16 @@ export function assessFlat(
       action = FlatAction.DISCARD;
     }
   } else {
+    // we are on the overview page, where we only see the list of flats
     scope = VerdictScope.OVERVIEW;
 
     if (result) {
+      // navigate to the detailed view URL, and re-run assessFlat with more detailed flatData
       action = FlatAction.INVESTIGATE;
     }
   }
+
+  logger.debug(`Have verdict ${action} [scope=${scope}]`);
 
   return {
     flatId: overviewDataEntry.id,

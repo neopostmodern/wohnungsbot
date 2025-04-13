@@ -16,7 +16,8 @@ export default class ElectronUtils {
 
   async evaluate(
     javaScript: string,
-    isUserGesture: boolean = false
+    isUserGesture: boolean = false,
+    supressErrors: boolean = false
   ): Promise<any> {
     const code = `new Promise((resolve, reject) => {
        try {
@@ -31,8 +32,9 @@ export default class ElectronUtils {
     try {
       return await this.webContents.executeJavaScript(code, isUserGesture);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`Error executing JavaScript-snippet within webContents:
+      if (!supressErrors) {
+        // eslint-disable-next-line no-console
+        console.error(`Error executing JavaScript-snippet within webContents:
 [${error.name}] ${error.message}
 ${error.stack}
 
@@ -49,6 +51,7 @@ ${stack
 
 Current URL:
 ${this.webContents.getURL()}`);
+      }
     }
     return null;
   }
@@ -58,6 +61,10 @@ ${this.webContents.getURL()}`);
       .getURL()
       .substring(0, 50)
       .includes('immobilienscout24.de');
+  }
+
+  getURL(): string {
+    return this.webContents.getURL();
   }
 
   static generateSelector(
@@ -81,10 +88,16 @@ ${this.webContents.getURL()}`);
 
   async elementExists(
     selector: string,
-    shadowRootSelector?: string
+    shadowRootSelector?: string,
+    supressErrors: boolean
   ): Promise<boolean> {
     return this.evaluate(
-      `${ElectronUtils.generateSelector(selector, shadowRootSelector)} !== null`
+      `${ElectronUtils.generateSelector(
+        selector,
+        shadowRootSelector
+      )} !== null`,
+      false,
+      supressErrors
     );
   }
 
@@ -183,21 +196,30 @@ ${this.webContents.getURL()}`);
     {
       mustIncludeTop = true,
       mustIncludeBottom = false,
+      supressErrors = false,
       shadowRootSelector
     }: {
       mustIncludeTop?: boolean;
       mustIncludeBottom?: boolean;
+      supressErrors?: boolean;
       shadowRootSelector?: string;
     } = {}
   ): Promise<boolean> {
     try {
-      if (!(await this.elementExists(selector, shadowRootSelector))) {
-        // eslint-disable-next-line no-console
-        console.log(
-          `isElementInViewport(${selector})${
-            shadowRootSelector ? ` [shadow-root: '${shadowRootSelector}']` : ''
-          } called on non-existent element`
-        );
+      if (
+        !(await this.elementExists(selector, shadowRootSelector, supressErrors))
+      ) {
+        if (!supressErrors) {
+          // eslint-disable-next-line no-console
+          console.log(
+            `isElementInViewport(${selector})${
+              shadowRootSelector
+                ? ` [shadow-root: '${shadowRootSelector}']`
+                : ''
+            } called on non-existent element`
+          );
+          console.log(new Error().stack);
+        }
         return false;
       }
 

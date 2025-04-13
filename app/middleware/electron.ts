@@ -27,6 +27,7 @@ import { easeInOutCubic } from '../utils/easing';
 import resizeViews from '../utils/resizeViews';
 import scrollWhileIdle from '../utils/scrollWhileIdle';
 import ElectronUtils from '../utils/electronUtils';
+import { logger } from '../utils/tracer-logger.js';
 import { login } from '../actions/bot';
 import electronObjects from '../store/electronObjects';
 
@@ -36,13 +37,13 @@ export default (store: Store) =>
   async (action: Action) => {
     if (action.type === ELECTRON_ROUTING) {
       const { name, targetUrl } = action.payload;
+      logger.trace(`url:${targetUrl}`);
       store.dispatch(setBrowserViewReady(name, false));
       store.dispatch(setBrowserViewUrl(name, targetUrl));
       const browserView = electronObjects.views[name];
 
       if (browserView === undefined) {
-        // eslint-disable-next-line no-console
-        console.error(`No view registered for ${name}!`);
+        logger.error(`No view registered for ${name}!`);
       } else {
         browserView.webContents.loadURL(targetUrl);
       }
@@ -52,8 +53,7 @@ export default (store: Store) =>
       const { window } = electronObjects;
 
       if (window === undefined || window === null) {
-        // eslint-disable-next-line no-console
-        console.error('Main window not defined!');
+        logger.error('Main window not defined!');
         return;
       }
 
@@ -68,14 +68,16 @@ export default (store: Store) =>
           action: 'deny'
         };
       });
-      browserView.webContents.on('did-navigate', (event, url) => {
-        store.dispatch(setBrowserViewUrl(name, url));
-      });
+      // NEW: why do we have setBrowserViewUrl both at beginning (see ELECTRON_ROUTING) and end (here)
+      // browserView.webContents.on('did-navigate', (event, url) => {
+      //   store.dispatch(setBrowserViewUrl(name, url));
+      // });
 
       if (initialUrl) {
-        process.nextTick(() =>
-          store.dispatch(electronRouting(name, initialUrl))
-        );
+        store.dispatch(electronRouting(name, initialUrl));
+        // NEW: can we remove this?
+        // process.nextTick(() =>
+        // );
       }
     }
 
@@ -97,6 +99,7 @@ export default (store: Store) =>
     }
 
     if (action.type === HIDE_CONFIGURATION) {
+      logger.info('Close configuration...');
       const { immobilienScout24 } = store.getState().configuration;
       store.dispatch(login(immobilienScout24));
     }

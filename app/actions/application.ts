@@ -22,23 +22,11 @@ import AbortionSystem, {
   ABORTION_ERROR,
   ABORTION_MANUAL
 } from '../utils/abortionSystem';
-
-const markApplicationCompleted = async (
-  dispatch: Dispatch,
-  applicationData: ApplicationData
-) => {
-  dispatch(popFlatFromQueue(applicationData.flatId));
-  return dispatch(
-    markCompleted(
-      CacheNames.APPLICATIONS,
-      applicationData.flatId,
-      applicationData
-    )
-  );
-};
+import { logger } from '../utils/tracer-logger.js';
 
 export const endApplicationProcess =
   (): ThunkAction => async (dispatch: Dispatch) => {
+    logger.info('End application process...');
     dispatch(returnToSearchPage());
     dispatch(setBotMessage(null));
     dispatch(taskFinished());
@@ -88,13 +76,16 @@ ${error}`);
     }
 
     if (AbortionSystem.abortionReason !== ABORTION_MANUAL) {
-      await markApplicationCompleted(dispatch, {
-        flatId,
-        success,
-        addressDescription: data.overview[flatId].address.description,
-        reason,
-        pdfPath
-      });
+      dispatch(popFlatFromQueue(flatId));
+      await dispatch(
+        markCompleted(CacheNames.APPLICATIONS, flatId, {
+          flatId,
+          success,
+          addressDescription: data.overview[flatId].address.description,
+          reason,
+          pdfPath
+        })
+      );
     }
 
     await dispatch(endApplicationProcess());
@@ -106,11 +97,13 @@ export const discardApplicationProcess =
     dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
     await sleep(5000);
     dispatch(popFlatFromQueue(flatOverview.id));
-    await markApplicationCompleted(dispatch, {
-      flatId: flatOverview.id,
-      success: false,
-      addressDescription: flatOverview.address.description,
-      reason: 'UNSUITABLE' // this won't show up in the sidebar
-    });
+    await dispatch(
+      markCompleted(CacheNames.APPLICATIONS, flatOverview.id, {
+        flatId: flatOverview.id,
+        success: false,
+        addressDescription: flatOverview.address.description,
+        reason: 'UNSUITABLE' // this won't show up in the sidebar
+      })
+    );
     await dispatch(endApplicationProcess());
   };

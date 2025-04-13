@@ -30,6 +30,7 @@ import { electronRouting, setBrowserViewReady } from './electron';
 import type { LoginData } from '../reducers/configuration';
 import { LoginStatus } from '../reducers/configuration';
 import { setConfiguration } from './configuration';
+import { logger } from '../utils/tracer-logger.js';
 
 export function queueInvestigateFlat(flatId: string): ThunkAction {
   return async (dispatch: Dispatch, getState: GetState) => {
@@ -85,6 +86,7 @@ export function setShowOverlay(showOverlay: boolean): Action {
 }
 export const navigateToFlatPage =
   (flatId: string) => async (dispatch: Dispatch) => {
+    logger.trace('navigateToFlatPage');
     await sleep(10000);
     dispatch(setBotIsActing(true));
     dispatch(setBotMessage(`Wohnung ${flatId} suchen...`));
@@ -100,9 +102,20 @@ export const navigateToFlatPage =
     );
     const flatTitleSelector = entryTitleSelector(flatId);
 
+    if (!(await puppetView.elementExists(flatTitleSelector))) {
+      logger.warn(
+        `Current flat with flatTitleSelector='${flatTitleSelector}' could not be found!`
+      );
+      logger.warn(`url:${puppetView.getURL()}`);
+      dispatch(setBotMessage(`Fehler: Wohnung ${flatId} nicht gefunden...`));
+      await sleep(5000);
+      return false;
+    }
+
     /* eslint-disable no-await-in-loop */
     while (AbortionSystem.nestedFunctionsMayContinue) {
       if (!(await puppetView.elementExists(flatTitleSelector))) {
+        // now the absence of the element signals the success - we're on the next page
         return true;
       }
 
@@ -127,6 +140,7 @@ export function taskFinished(): Action {
 }
 export function returnToSearchPage(forceReload: boolean = false) {
   return async (dispatch: Dispatch, getState: GetState) => {
+    logger.trace(`returnToSearchPage force:${forceReload}`);
     const { electron, configuration } = getState();
 
     if (electron.views.puppet.url === configuration.searchUrl && !forceReload) {

@@ -5,9 +5,9 @@ import { createLogger } from 'redux-logger';
 import getHistory from './history';
 import createRootReducer from '../reducers';
 import { MAIN, RENDERER, WEB } from '../constants/targets';
+import { logger } from '../utils/tracer-logger.js';
 
 import overlay from '../middleware/overlay';
-import logging from '../middleware/logging';
 import configuration from '../middleware/configuration';
 import data from '../middleware/data';
 import scheduler from '../middleware/scheduler';
@@ -16,12 +16,16 @@ import login from '../middleware/login';
 import { Store } from '../reducers/types';
 
 const configureStore = async (target: string, isDevelopment: boolean) => {
+  logger.trace(`target:${target} dev:${isDevelopment}`);
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
+  const history = getHistory(target);
+
+  logger.info('Configure middleware...');
+
   // Thunk Middleware
   middleware.push(thunk);
-  const history = getHistory(target);
 
   // Router Middleware
   if (target === RENDERER || target === WEB) {
@@ -31,69 +35,48 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
     middleware.push(routerMiddleware);
   }
 
-  // data extraction + routing + more
+  // Main Middleware: data extraction + routing + more
   if (target === MAIN) {
     const electron = (await import('../middleware/electron')).default;
     middleware.push(electron);
-  }
 
-  if (target === MAIN) {
     middleware.push(configuration);
     const persistence = (await import('../middleware/persistence')).default;
     middleware.push(persistence);
-  }
 
-  if (target === MAIN) {
     middleware.push(overlay);
-  }
 
-  if (target === MAIN) {
     middleware.push(bot);
-  }
 
-  if (target === MAIN) {
     middleware.push(data);
-  }
 
-  if (target === MAIN) {
     middleware.push(login);
-  }
 
-  if (target === MAIN) {
     const helpers = (await import('../middleware/helpers')).default;
     middleware.push(helpers);
-  }
 
-  const rootReducer = createRootReducer(history);
-
-  if (target === MAIN) {
     middleware.unshift(scheduler);
   }
 
   // Logging Middleware
-  if (isDevelopment) {
-    if (target === RENDERER) {
-      const logger = createLogger({
-        level: 'info',
-        collapsed: true
-      });
-
-      // Skip redux logs in console during the tests
-      if (process.env.NODE_ENV !== 'test') {
-        middleware.push(logger);
-      }
-    }
-
-    if (target === MAIN) {
-      middleware.unshift(logging);
-    }
+  if (target === RENDERER) {
+    const logger = createLogger({
+      level: isDevelopment ? 'debug' : 'info',
+      collapsed: true
+    });
+    middleware.unshift(logger);
+  } else if (target === MAIN) {
+    const logging = (await import('../middleware/logging')).default;
+    middleware.unshift(logging);
   }
 
   // Apply Middleware & Compose Enhancers
   enhancers.push(applyMiddleware(...middleware));
+
+  logger.info('Configure enhancers...');
+
   // Electron Redux
   let composeEnhancers;
-
   if (target === MAIN) {
     const { composeWithStateSync } = await import('electron-redux/main');
     composeEnhancers = composeWithStateSync;
@@ -103,9 +86,12 @@ const configureStore = async (target: string, isDevelopment: boolean) => {
   } else {
     composeEnhancers = compose;
   }
-
   const enhancer = composeEnhancers(...enhancers);
-  // Create Store
+
+  logger.info('Configure reducers...');
+  const rootReducer = createRootReducer(history);
+
+  logger.info('Create store...');
   const store = createStore(rootReducer, enhancer) as Store; // todo: migrate away from deprecated Redux syntax, should fix TypeScript issues
 
   if (module.hot) {

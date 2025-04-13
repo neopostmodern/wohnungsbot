@@ -4,25 +4,29 @@ import { RENDERER } from './constants/targets';
 import Root from './containers/Root';
 import getHistory from './store/history';
 import './styles/app.global.scss';
-// eslint-disable-next-line no-undef
-const target = typeof __TARGET__ === 'undefined' ? RENDERER : __TARGET__;
+
+const isDevelopment = process.env.NODE_ENV === 'development';
+const enableDebug = process.env.ENABLE_DEBUG === 'true';
+
 import('./store/configureStore')
-  .then(({ default: configureStore }) =>
-    configureStore(target, process.env.NODE_ENV === 'development')
-  )
+  .then(({ default: configureStore }) => {
+    return configureStore(RENDERER, isDevelopment);
+  })
   /* eslint-disable promise/always-return */
   .then((store) => {
     const history = getHistory();
     const reactRoot = createRoot(document.getElementById('root'));
-    reactRoot.render(<Root store={store} history={history} />);
 
     if (module.hot) {
       module.hot.accept('./containers/Root', () => {
         // eslint-disable-next-line global-require
         const NextRoot = require('./containers/Root').default;
-
         reactRoot.render(<NextRoot store={store} history={history} />);
       });
+    } else {
+      reactRoot.render(
+        <Root store={store} history={history} />
+      );
     }
   })
   /* eslint-enable promise/always-return */
