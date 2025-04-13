@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
 import { createReduxHistoryContext } from 'redux-first-history';
 import type { HashHistory } from 'history';
+
+import { logger } from '../utils/tracer-logger.js';
 import electron from './electron';
 import overlay from './overlay';
 import data from './data';
@@ -11,6 +13,8 @@ import bot from './bot';
 import { Store } from './types';
 
 export default function createRootReducer(history: HashHistory) {
+  logger.info('Gather all reducers...');
+
   const reducers: any = {
     electron,
     overlay,

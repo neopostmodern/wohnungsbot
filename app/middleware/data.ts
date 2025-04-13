@@ -1,3 +1,4 @@
+import { logger } from '../utils/tracer-logger.js';
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { REFRESH_VERDICTS } from '../constants/actionTypes';
 import { VerdictScope } from '../reducers/data';
@@ -15,6 +16,8 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
     } = store.getState();
 
     if (overview) {
+      logger.debug(`overview ids:${Object.keys(overview)}`);
+      // logger.log(`full overview:${overview}`);
       // we need multiple parts of the state, thus cannot do the this logic in reducers [unclean]
       const configurationHash = getConfigurationFilterHash(configuration);
       Object.values(overview).forEach((entry: OverviewDataEntry) => {
@@ -32,9 +35,14 @@ export default (store: Store) => (next: Dispatch) => async (action: Action) => {
           return;
         }
 
+        logger.info(
+          `Refresh verdict for flat ${entry.id} [scope=${currentScope}]`
+        );
         const verdict = assessFlat(configuration, entry, flatData);
         store.dispatch(setVerdict(entry.id, verdict));
       });
+    } else {
+      logger.warn("Have no overview. Isn't this at least '{}'?");
     }
   }
 

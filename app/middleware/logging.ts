@@ -23,7 +23,7 @@ export default (_: Store) => (next: Dispatch) => (action: Action) => {
   if (action.constructor && action.constructor.name === 'AsyncFunction') {
     const actionAsAsyncFunction = action as unknown as Function;
     // eslint-disable-next-line no-console
-    console.log(
+    logger.debug(
       `[Async Function] ${
         actionAsAsyncFunction.name ||
         (actionAsAsyncFunction.prototype &&
@@ -32,16 +32,21 @@ export default (_: Store) => (next: Dispatch) => (action: Action) => {
       }`
     );
   } else if (!blackList.includes(action.type)) {
-    let { payload, type, ...action_less } = action;
+    let { payload, type, ...other } = action;
 
+    logger.debug(`ACTION ${type}`);
+
+    let message;
     if (payload && JSON.stringify(payload).length > payloadLengthLimit) {
       payload = `${JSON.stringify(action.payload).substr(
         0,
         payloadLengthLimit
       )}...`;
+      message = `payload(short):${payload} other:`;
+    } else {
+      message = `payload:${JSON.stringify(payload)} other:`;
     }
-
-    logger.debug( 'ACTION type:%s \tpayload:%j other:%j', type, payload, action_less);
+    logger.log(message, other);
   }
 
   return next(action);

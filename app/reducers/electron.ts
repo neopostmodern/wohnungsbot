@@ -10,6 +10,7 @@ import {
 } from '../constants/actionTypes';
 import { LOADING } from '../constants/updater';
 import type { Action } from './types';
+import { logger } from '../utils/tracer-logger.js';
 
 export type BrowserViewName =
   | 'puppet'
@@ -66,6 +67,7 @@ export default function electron(
   }
 
   if (action.type === HIDE_CONFIGURATION) {
+    logger.info('Starten...');
     return { ...state, configurationHidden: true };
   }
 
