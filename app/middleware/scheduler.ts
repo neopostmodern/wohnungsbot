@@ -1,7 +1,14 @@
 import type { Action, Dispatch, Store } from '../reducers/types';
 import { LAUNCH_NEXT_TASK } from '../constants/actionTypes';
-import { navigateToFlatPage, noop, returnToSearchPage } from '../actions/bot';
+import {
+  navigateToFlatPage,
+  noop,
+  returnToSearchPage,
+  popFlatFromQueue
+} from '../actions/bot';
+import { markCompleted } from '../actions/cache';
 import type { schedulerStateType } from '../reducers/scheduler';
+import { CacheNames } from '../reducers/cache';
 import type { dataStateType } from '../reducers/data';
 import { endApplicationProcess } from '../actions/application';
 import { logger } from '../utils/tracer-logger.js';
@@ -52,6 +59,15 @@ export default (store: Store & { dispatch: Dispatch }) =>
       if (!reachedFlatPage) {
         // eslint-disable-next-line no-console
         logger.error(`Flat page wasn't reached, aborting task.`);
+        await store.dispatch(popFlatFromQueue(nextFlatId));
+        await store.dispatch(
+          markCompleted(CacheNames.APPLICATIONS, nextFlatId, {
+            flatId: nextFlatId,
+            success: false,
+            addressDescription: '',
+            reason: 'Flat not found'
+          })
+        );
         store.dispatch(endApplicationProcess());
       }
 
