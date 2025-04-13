@@ -1,3 +1,4 @@
+import { logger } from '../utils/tracer-logger.js';
 import type { Configuration } from '../reducers/configuration';
 import { getConfigurationFilterHash } from '../reducers/configuration';
 import type { FlatData, OverviewDataEntry, Verdict } from '../reducers/data';
@@ -9,6 +10,10 @@ export function assessFlat(
   overviewDataEntry: OverviewDataEntry,
   flatData?: FlatData
 ): Verdict {
+  logger.trace();
+  // logger.log("configuration:", configuration);
+  logger.log('overviewDataEntry:', overviewDataEntry);
+  logger.log('flatData:', flatData);
   let action: FlatAction = FlatAction.IGNORE;
   const reasons = [];
 
@@ -189,6 +194,8 @@ export function assessFlat(
       action = FlatAction.INVESTIGATE;
     }
   }
+
+  logger.debug(`Have verdict ${action} [scope=${scope}]`);
 
   return {
     flatId: overviewDataEntry.id,

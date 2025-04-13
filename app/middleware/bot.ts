@@ -22,6 +22,7 @@ import {
 import AbortionSystem, { ABORTION_MANUAL } from '../utils/abortionSystem';
 import ElectronUtilsRedux from '../utils/electronUtilsRedux';
 import electronObjects from '../store/electronObjects';
+import { logger } from '../utils/tracer-logger.js';
 
 export default (store: Store & { dispatch: Dispatch }) =>
   (next: (action: Action) => void) =>
@@ -78,6 +79,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
       }
 
       if (puppet.url.startsWith('https://www.immobilienscout24.de/Suche')) {
+        logger.info('Finished loading search page...');
         const {
           configuration: { experimentalFeatures }
         } = store.getState();
@@ -114,6 +116,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
       }
 
       if (puppet.url.startsWith('https://www.immobilienscout24.de/expose/')) {
+        logger.info('Finished loading flat expose page...');
         await store.dispatch(getFlatData());
         store.dispatch(refreshVerdicts());
       }
@@ -143,20 +146,24 @@ export default (store: Store & { dispatch: Dispatch }) =>
       // eslint-disable-next-line default-case
       switch (verdict.action) {
         case FlatAction.NOTIFY_VIEWING_DATE:
+          logger.info(`Notify me for flat ${flatId}...`);
           store.dispatch(
             sendFlatViewingNotificationMail(contactData, flatOverview)
           );
           break;
 
         case FlatAction.INVESTIGATE:
+          logger.info(`Schedule flat ${flatId} for investigation`);
           store.dispatch(queueInvestigateFlat(flatId));
           break;
 
         case FlatAction.APPLY:
+          logger.info(`Applying for flat ${flatId}...`);
           store.dispatch(generateApplicationTextAndSubmit(flatId));
           break;
 
         case FlatAction.DISCARD:
+          logger.info(`Discard flat ${flatId}`);
           store.dispatch(discardApplicationProcess(flatOverview));
           break;
       }

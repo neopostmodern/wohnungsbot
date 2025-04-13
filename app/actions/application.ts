@@ -22,9 +22,11 @@ import AbortionSystem, {
   ABORTION_ERROR,
   ABORTION_MANUAL
 } from '../utils/abortionSystem';
+import { logger } from '../utils/tracer-logger.js';
 
 export const endApplicationProcess =
   (): ThunkAction => async (dispatch: Dispatch) => {
+    logger.info('End application process...');
     dispatch(returnToSearchPage());
     dispatch(setBotMessage(null));
     dispatch(taskFinished());

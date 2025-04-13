@@ -23,6 +23,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === 'development';
 const enableDebug = process.env.ENABLE_DEBUG === 'true';
 const enableDevtools = isDevelopment || enableDebug;
+logger.info(
+  `ENVIRONMENT prod:${isProduction} dev:${isDevelopment} debug:${enableDebug} tools:${enableDevtools}`
+);
 
 let isLaunching = true;
 
@@ -68,6 +71,7 @@ const appOnReady = async (store) => {
   }
 
   /* Initialize views... */
+  logger.info('Initialize views...');
 
   mainWindow = new BrowserWindow({
     show: false,
@@ -83,7 +87,9 @@ const appOnReady = async (store) => {
     options: BrowserViewConstructorOptions & { transparent?: boolean },
     initialUrl: string
   ): BrowserView => {
-    logger.trace('args : %s %j %s', name, options, initialUrl);
+    logger.trace(`name:${name}`);
+    logger.log(`initialUrl:${initialUrl}`);
+    logger.log('options:', options);
     if (mainWindow === undefined || mainWindow === null) {
       throw Error('Main window not defined!');
     }
@@ -170,6 +176,7 @@ const appOnReady = async (store) => {
   }
 
   /* Add event listeners... */
+  logger.info('Add event listeners...');
 
   const configurationViewDidFinishLoad = async () => {
     logger.trace();
@@ -204,6 +211,7 @@ const appOnReady = async (store) => {
   mainWindow.on('closed', () => mainWindowOnClosed());
   mainWindow.setMenuBarVisibility(false);
 
+  logger.info('Initialize AppUpdater...');
   AppUpdater.init();
   AppUpdater.onUpdateAvailable((version) => {
     store.dispatch(setAvailableVersion(version));
@@ -216,6 +224,7 @@ const appOnReady = async (store) => {
   AppUpdater.onDownloadProgress((percentage) => {
     store.dispatch(setUpdateDownloadProgress(percentage));
   });
+  logger.trace('DONE');
 };
 
 const configureStoreThen = async (store) => {
