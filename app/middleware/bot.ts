@@ -136,6 +136,8 @@ export default (store: Store & { dispatch: Dispatch }) =>
       }
     }
 
+    const result = next(action);
+
     if (action.type === SET_VERDICT) {
       const { flatId, verdict } = action.payload;
       const {
@@ -166,5 +168,5 @@ export default (store: Store & { dispatch: Dispatch }) =>
       }
     }
 
-    return next(action);
+    return result;
   };
