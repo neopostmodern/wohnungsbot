@@ -68,14 +68,16 @@ export default (store: Store) =>
           action: 'deny'
         };
       });
-      browserView.webContents.on('did-navigate', (event, url) => {
-        store.dispatch(setBrowserViewUrl(name, url));
-      });
+      // NEW: why do we have setBrowserViewUrl both at beginning (see ELECTRON_ROUTING) and end (here)
+      // browserView.webContents.on('did-navigate', (event, url) => {
+      //   store.dispatch(setBrowserViewUrl(name, url));
+      // });
 
       if (initialUrl) {
-        process.nextTick(() =>
-          store.dispatch(electronRouting(name, initialUrl))
-        );
+        store.dispatch(electronRouting(name, initialUrl));
+        // NEW: can we remove this?
+        // process.nextTick(() =>
+        // );
       }
     }
 
