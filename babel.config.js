@@ -9,7 +9,6 @@ const productionPlugins = [
 
   // babel-preset-react-optimize
   require('@babel/plugin-transform-react-constant-elements'),
-  require('@babel/plugin-transform-react-inline-elements'),
   require('babel-plugin-transform-react-remove-prop-types')
 ];
 

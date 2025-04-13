@@ -110,9 +110,7 @@ export default merge<Configuration | DevServerConfiguration>(baseConfig, {
 
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1
-    }),
-
-    new MiniCssExtractPlugin()
+    })
   ],
 
   node: {

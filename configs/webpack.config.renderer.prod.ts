@@ -58,10 +58,6 @@ export default merge<Configuration>(baseConfig, {
       NODE_ENV: 'production'
     }),
 
-    new MiniCssExtractPlugin({
-      filename: 'style.css'
-    }),
-
     new BundleAnalyzerPlugin({
       analyzerMode:
         process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { RENDERER } from './constants/targets';
 import Root from './containers/Root';
 import getHistory from './store/history';
@@ -13,20 +13,15 @@ import('./store/configureStore')
   /* eslint-disable promise/always-return */
   .then((store) => {
     const history = getHistory();
-    render(
-      <Root store={store} history={history} />,
-      document.getElementById('root')
-    );
+    const reactRoot = createRoot(document.getElementById('root'));
+    reactRoot.render(<Root store={store} history={history} />);
 
     if (module.hot) {
       module.hot.accept('./containers/Root', () => {
         // eslint-disable-next-line global-require
         const NextRoot = require('./containers/Root').default;
 
-        render(
-          <NextRoot store={store} history={history} />,
-          document.getElementById('root')
-        );
+        reactRoot.render(<NextRoot store={store} history={history} />);
       });
     }
   })
