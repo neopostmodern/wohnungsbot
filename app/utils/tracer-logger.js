@@ -15,6 +15,22 @@ const logger = tracer.colorConsole({
   dateformat: 'HH:MM:ss.L',
   preprocess: function (data) {
     data.title = data.title.toUpperCase();
+    if (data.args.length > 1) {
+      // have more than only just a string passed to the logger
+      for (const [key, value] of Object.entries(data.args)) {
+        if (typeof(value) === 'object'){
+          if ('immobilienScout24' in value) {
+            // found something that looks like a configuration
+            // we don't want to modify the object, so we copy it
+            // do not feed back name and password
+            let { immobilienScout24, ...other } = value;
+            data.args[key] = Object.assign({}, other);
+            let { userName, password, ...other24} = immobilienScout24;
+            data.args[key].immobilienScout24 = Object.assign({}, other24);
+          }
+        }
+      }
+    }
   },
   filters: {
     log: colors.magenta,
