@@ -55,6 +55,7 @@ export function generateSearchUrl(configuration: Configuration): string {
   if (!configuration.filter.hasWBS) {
     searchUrl += '&haspromotion=false';
   }
+  searchUrl += '&viewMode=LIST';
 
   return searchUrl;
 }
