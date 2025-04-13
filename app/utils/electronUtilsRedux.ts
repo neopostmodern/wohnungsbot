@@ -61,8 +61,11 @@ export default class ElectronUtilsRedux extends ElectronUtils {
   }
 
   async fillText(selector: string, text: string, secondTry: boolean = false) {
+    console.log('WRITE INTO', selector);
+    console.log('text:', text);
     await sleep(500);
-    const currentValue = await this.getValue(selector);
+    let currentValue = await this.getValue(selector);
+    console.log('current:', currentValue);
 
     if (currentValue) {
       if (currentValue === text) {
@@ -77,13 +80,17 @@ export default class ElectronUtilsRedux extends ElectronUtils {
       await this.clickAndEnsureFocused(selector);
     }
 
+    currentValue = await this.getValue(selector);
+    console.log('current:', currentValue);
+
     await sleep(500);
     await this.dispatch(type(text));
 
-    if (
-      AbortionSystem.nestedFunctionsMayContinue &&
-      (await this.getValue(selector)) !== text
-    ) {
+    currentValue = await this.getValue(selector);
+    console.log('current:', currentValue);
+    if (AbortionSystem.nestedFunctionsMayContinue && currentValue !== text) {
+      console.error('write into failed. need:', text);
+
       if (secondTry) {
         throw Error(
           `Repeatedly failed to write text to "${selector}": "${text}"`
