@@ -4,7 +4,7 @@ const tracer = require('tracer');
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 const logger = tracer.colorConsole({
-  level: 'log',
+  level: 'trace',
   format: [
     '{{timestamp}} {{title}} \t{{method}}[{{file}}:{{line}}] > {{message}}',
     {
