@@ -97,6 +97,7 @@ const appOnReady = async (store) => {
     mainWindow.contentView.addChildView(view);
     electronObjects.views[name] = view;
     store.dispatch(addView(name, initialUrl));
+    view.webContents.openDevTools();
     return view;
   };
 
