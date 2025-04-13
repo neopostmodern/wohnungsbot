@@ -178,7 +178,7 @@
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.1",
     "detect-port": "^1.5.1",
-    "electron": "^33.0.1",
+    "electron": "^35.1.5",
     "electron-builder": "^24.4.0",
     "electron-devtools-installer": "^3.2.0",
     "electron-notarize": "^1.1.1",
