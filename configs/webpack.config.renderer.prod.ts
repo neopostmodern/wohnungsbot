@@ -54,9 +54,7 @@ export default merge<Configuration>(baseConfig, {
      * NODE_ENV should be production so that modules do not perform certain
      * development checks
      */
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: 'production'
-    }),
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
 
     new BundleAnalyzerPlugin({
       analyzerMode:
