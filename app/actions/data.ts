@@ -36,10 +36,10 @@ function processOverviewDataEntry(
       street: realEstate.address.street
     },
     contactDetails: {
-      salutation: realEstate.contactDetails.salutation,
-      firstName: realEstate.contactDetails.firstname,
-      lastName: realEstate.contactDetails.lastname,
-      company: realEstate.contactDetails.company
+      salutation: typeof realEstate.contactDetails !== "undefined" ? realEstate.contactDetails.salutation : "NO_SALUTATION",
+      firstName: typeof realEstate.contactDetails !== "undefined" ? realEstate.contactDetails.firstname : "",
+      lastName: typeof realEstate.contactDetails !== "undefined" ? realEstate.contactDetails.lastname : "",
+      company: typeof realEstate.contactDetails !== "undefined" ? realEstate.contactDetails.company : ""
     },
     rent: parseFloat(realEstate.price.value),
     area: parseFloat(realEstate.livingSpace),
