@@ -114,13 +114,35 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
       const newView = (
         name: BrowserViewName,
         options: WebPreferences,
-        initialUrl: string
+        initialUrl: string,
+        { logConsoleErrors = true }: { logConsoleErrors?: boolean } = {}
       ): WebContentsView => {
         if (mainWindow === undefined || mainWindow === null) {
           throw Error('Main window not defined!');
         }
 
         const view = new WebContentsView({ webPreferences: options });
+        if (logConsoleErrors) {
+          view.webContents.on(
+            'console-message',
+            ({ level, message, line, sourceId }: any) => {
+              if (level === 'error') {
+                console.error(
+                  `Forwarded from browser view (${name}): ${message}`,
+                  {
+                    browserView: name,
+                    line,
+                    sourceId
+                  }
+                );
+              }
+            }
+          );
+        }
+
+        if (name === 'configuration' || name === 'print') {
+          view.webContents.toggleDevTools();
+        }
         mainWindow.contentView.addChildView(view);
         electronObjects.views[name] = view;
         store.dispatch(addView(name, initialUrl));
@@ -150,7 +172,8 @@ configureStore(MAIN, isDevelopment) // eslint-disable-next-line promise/always-r
           sandbox: true,
           contextIsolation: true
         },
-        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`
+        `file://${__dirname}/app.html#${ROUTES.PLACEHOLDER}`,
+        { logConsoleErrors: false }
       );
       puppetView.webContents.setUserAgent(getRandomUserAgent());
       newView(
