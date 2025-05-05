@@ -53,7 +53,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
             CAPTCHA_HINT
           );
         });
-        await sleep(5000);
+        await sleep(500);
         logger.info('Captcha done...');
         await handlePuppetReady();
         return;
@@ -71,12 +71,12 @@ export default (store: Store & { dispatch: Dispatch }) =>
       ) {
         logger.info('Found a cookie...');
         store.dispatch(setBotMessage('🍪⁉️'));
-        await sleep(1000);
+        await sleep(500);
         await electronUtils.click(
           querySelectorsForCookiePopup.cookieCustomizeButton,
           querySelectorsForCookiePopup.popupRoot
         );
-        await sleep(1000);
+        await sleep(500);
         await electronUtils.click(
           querySelectorsForCookiePopup.cookieDenyAllButton,
           querySelectorsForCookiePopup.popupRoot
@@ -105,24 +105,21 @@ export default (store: Store & { dispatch: Dispatch }) =>
                 URL_PARAMETER_SORT_NEWEST
             );
           });
-          await sleep(2000);
+          await sleep(500);
           store.dispatch(setBotMessage(null));
           await handlePuppetReady();
           return;
         }
 
         setImmediate(() => store.dispatch(calculateOverviewBoundingBoxes()));
+        setTimeout(() => store.dispatch(calculateOverviewBoundingBoxes()), 500);
         setTimeout(
           () => store.dispatch(calculateOverviewBoundingBoxes()),
           1000
         );
-        setTimeout(
-          () => store.dispatch(calculateOverviewBoundingBoxes()),
-          5000
-        );
         await store.dispatch(getOverviewData());
         await store.dispatch(refreshVerdicts());
-        await sleep(20000);
+        await sleep(500);
         store.dispatch(launchNextTask());
       }
 
