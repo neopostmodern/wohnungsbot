@@ -6,6 +6,7 @@ import type { Dispatch } from '../reducers/types';
 import AbortionSystem from './abortionSystem';
 import { setBotMessage } from '../actions/bot';
 import { setInteractiveMode } from '../actions/electron';
+import { logger } from '../utils/tracer-logger.js';
 
 export default class ElectronUtilsRedux extends ElectronUtils {
   dispatch: Dispatch;
@@ -61,11 +62,11 @@ export default class ElectronUtilsRedux extends ElectronUtils {
   }
 
   async fillText(selector: string, text: string, secondTry: boolean = false) {
-    console.log('WRITE INTO', selector);
-    console.log('text:', text);
+    logger.trace(`selector=${selector} secondTry=${secondTry}`);
     await sleep(500);
     let currentValue = await this.getValue(selector);
-    console.log('current:', currentValue);
+    logger.log(`current:${currentValue ? '\n' + currentValue : currentValue}`);
+    logger.log(`text:${text ? '\n' + text : text}`);
 
     if (currentValue) {
       if (currentValue === text) {
@@ -81,15 +82,15 @@ export default class ElectronUtilsRedux extends ElectronUtils {
     }
 
     currentValue = await this.getValue(selector);
-    console.log('current:', currentValue);
+    logger.log(`current:${currentValue ? '\n' + currentValue : currentValue}`);
 
     await sleep(500);
     await this.dispatch(type(text));
 
     currentValue = await this.getValue(selector);
-    console.log('current:', currentValue);
+    logger.log(`current:${currentValue ? '\n' + currentValue : currentValue}`);
     if (AbortionSystem.nestedFunctionsMayContinue && currentValue !== text) {
-      console.error('write into failed. need:', text);
+      logger.error(`Write into failed. Need: ${text}`);
 
       if (secondTry) {
         throw Error(

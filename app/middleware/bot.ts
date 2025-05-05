@@ -47,12 +47,14 @@ export default (store: Store & { dispatch: Dispatch }) =>
       if (
         (await electronUtils.evaluate('document.title')).includes(CAPTCHA_HINT)
       ) {
+        logger.info('Found a captcha...');
         await electronUtils.humanInteraction(async () => {
           return (await electronUtils.evaluate('document.title')).includes(
             CAPTCHA_HINT
           );
         });
         await sleep(5000);
+        logger.info('Captcha done...');
         await handlePuppetReady();
         return;
       }
@@ -67,6 +69,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
           querySelectorsForCookiePopup.popupRoot
         ))
       ) {
+        logger.info('Found a cookie...');
         store.dispatch(setBotMessage('🍪⁉️'));
         await sleep(1000);
         await electronUtils.click(
@@ -81,10 +84,12 @@ export default (store: Store & { dispatch: Dispatch }) =>
         await sleep(500);
         store.dispatch(setBotMessage('🍪✔️'));
         await sleep(500);
+        logger.info('Cookies done...');
       }
 
       if (puppet.url.startsWith(URL_SEARCH_PAGE)) {
         logger.info('Finished loading search page...');
+        logger.debug(`url: ${puppet.url}`);
         const {
           configuration: { experimentalFeatures }
         } = store.getState();
@@ -123,6 +128,7 @@ export default (store: Store & { dispatch: Dispatch }) =>
 
       if (puppet.url.startsWith(URL_PREFIX_FLAT_LISTING)) {
         logger.info('Finished loading flat expose page...');
+        logger.debug(`url: ${puppet.url}`);
         await store.dispatch(getFlatData());
         store.dispatch(refreshVerdicts());
       }

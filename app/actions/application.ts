@@ -39,6 +39,7 @@ export const endApplicationProcess =
 export const generateApplicationTextAndSubmit =
   (flatId: string): ThunkAction =>
   async (dispatch: Dispatch, getState: GetState) => {
+    logger.trace('generateApplicationTextAndSubmit');
     const {
       configuration,
       data
@@ -55,6 +56,7 @@ export const generateApplicationTextAndSubmit =
     let success;
     let reason;
 
+    logger.debug(`Start abortable application (flatId=${flatId})`);
     try {
       await timeout(
         abortablePerformApplication(
@@ -63,17 +65,18 @@ export const generateApplicationTextAndSubmit =
           configuration,
           data.overview[flatId]
         ),
-        300000
+        // extracting this number to a variable leads to errors
+        // TypeError: p is not a function
+        300_000
       );
       success = true;
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`Error in application:
-${error}`);
+      logger.error(`Error in application: [${error.name}] ${error.message}`);
       success = false;
       AbortionSystem.abort(ABORTION_ERROR);
       reason = error.message;
     }
+    logger.debug(`End abortable application (flatId=${flatId})`);
 
     if (AbortionSystem.abortionReason !== ABORTION_MANUAL) {
       dispatch(popFlatFromQueue(flatId));
@@ -94,6 +97,7 @@ ${error}`);
 export const discardApplicationProcess =
   (flatOverview: OverviewDataEntry): ThunkAction =>
   async (dispatch: Dispatch) => {
+    logger.trace('discardApplicationProcess');
     dispatch(setBotMessage(`Wohnung ist leider unpassend :(`));
     await sleep(5000);
     dispatch(popFlatFromQueue(flatOverview.id));

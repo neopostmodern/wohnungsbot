@@ -17,6 +17,7 @@ import {
 import ElectronUtils from '../utils/electronUtils';
 import electronObjects from '../store/electronObjects';
 import { returnToSearchPage } from './bot';
+import { logger } from '../utils/tracer-logger.js';
 
 function parseBoolean(stringBoolean: StringBoolean): boolean {
   return stringBoolean === 'true';
@@ -59,6 +60,7 @@ function processOverviewDataEntry(
 
 export function getOverviewData(): ThunkAction {
   return async (dispatch: Dispatch) => {
+    logger.trace('getOverviewData');
     const electronUtils = new ElectronUtils(
       electronObjects.views.puppet.webContents
     );

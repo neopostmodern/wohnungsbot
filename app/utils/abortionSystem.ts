@@ -1,7 +1,10 @@
+import { logger } from './tracer-logger.js';
+
 export const ABORTION_MANUAL = 'ABORTION_MANUAL';
 export const ABORTION_ERROR = 'ABORTION_ERROR';
 export type AbortionReason = typeof ABORTION_MANUAL | typeof ABORTION_ERROR;
-const ABORTION_SUSPENSION_PERIOD = 10000;
+const ABORTION_SUSPENSION_PERIOD = 10_000;
+
 const AbortionSystem: {
   abortFunction: (() => void) | null | undefined;
   nestedFunctionsMayContinue: boolean;
@@ -15,19 +18,20 @@ const AbortionSystem: {
   abortionReason: null,
 
   registerAbort(abort) {
+    logger.trace();
     AbortionSystem.abortFunction = abort;
     // reset reason
     AbortionSystem.abortionReason = null;
   },
 
   cancelAbort() {
+    logger.trace();
     AbortionSystem.abortFunction = null;
   },
 
   abort(reason: AbortionReason) {
-    // eslint-disable-next-line no-console
-    console.log(
-      `ABORT - called with reason ${reason} - some activities will be suspended for ${ABORTION_SUSPENSION_PERIOD}`
+    logger.info(
+      `ABORT - called with reason ${reason} - some activities will be suspended for ${ABORTION_SUSPENSION_PERIOD / 1000}s`
     );
     AbortionSystem.abortionReason = reason;
     // for 10 seconds tell all `while (true)` loops to stop
@@ -35,8 +39,7 @@ const AbortionSystem: {
     AbortionSystem.nestedFunctionsMayContinue = false;
     setTimeout(() => {
       AbortionSystem.nestedFunctionsMayContinue = true;
-      // eslint-disable-next-line no-console
-      console.log('ABORT - end of process, return to normal');
+      logger.info('ABORT - end of process, return to normal');
     }, ABORTION_SUSPENSION_PERIOD);
 
     if (AbortionSystem.abortFunction) {
