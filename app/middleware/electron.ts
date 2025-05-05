@@ -68,10 +68,10 @@ export default (store: Store) =>
           action: 'deny'
         };
       });
-      // NEW: why do we have setBrowserViewUrl both at beginning (see ELECTRON_ROUTING) and end (here)
-      // browserView.webContents.on('did-navigate', (event, url) => {
-      //   store.dispatch(setBrowserViewUrl(name, url));
-      // });
+      // For click-navigation this is the hook how metadata / url is updated
+      browserView.webContents.on('did-navigate', (event, url) => {
+        store.dispatch(setBrowserViewUrl(name, url));
+      });
 
       if (initialUrl) {
         store.dispatch(electronRouting(name, initialUrl));
