@@ -98,16 +98,23 @@ export type OverviewDataEntry = {
   isPartOfProject: boolean;
   hasAlreadyApplied: boolean;
 };
-export type RawFlatData = {
+export type RawFlatDataUtag = {
   obj_scoutId: string;
   obj_yearConstructed: string;
   obj_totalRent: string;
   obj_baseRent: string;
   obj_serviceCharge: string;
   obj_floor: string;
-  additionalData: {
-    requiresWBS: boolean;
+};
+export type RawFlatDataExpose = {
+  contactData: {
+    contactButton: {
+      clickOutUrl?: string;
+    };
   };
+};
+export type AdditionalFlatData = {
+  requiresWBS: boolean;
 };
 export type FlatData = {
   id: string;
@@ -118,6 +125,7 @@ export type FlatData = {
     additional: number;
   };
   floor: number;
+  applicationLinksExternally: boolean;
   requiresWBS: boolean;
 };
 export const enum FlatAction {

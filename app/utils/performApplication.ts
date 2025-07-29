@@ -31,6 +31,8 @@ export default function* performApplication(
   // there seems to be a problem with the captcha implementation: https://github.com/google/recaptcha/issues/269
   yield electronUtils.evaluate(`grecaptcha = undefined`);
 
+  // window.IS24.expose.contactData.contactButton.clickOutUrl
+
   //  click on button to compose a message
   if (!(yield electronUtils.elementExists(composeMessageButtonSelector))) {
     dispatch(setBotMessage('"Nachricht schreiben"-Button nicht gefunden'));

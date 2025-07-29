@@ -1,7 +1,9 @@
 import type {
+  AdditionalFlatData,
   FlatData,
   OverviewDataEntry,
-  RawFlatData,
+  RawFlatDataExpose,
+  RawFlatDataUtag,
   RawOverviewData,
   RawOverviewDataEntry,
   StringBoolean,
@@ -100,17 +102,24 @@ export function getOverviewData(): ThunkAction {
   };
 }
 
-function processFlatData(flatData: RawFlatData): FlatData {
+function processFlatData(
+  flatDataUtag: RawFlatDataUtag,
+  flatDataExpose: RawFlatDataExpose,
+  additionalFlatData: AdditionalFlatData
+): FlatData {
   return {
-    id: flatData.obj_scoutId,
-    yearConstructed: parseInt(flatData.obj_yearConstructed, 10),
-    floor: parseInt(flatData.obj_floor, 10),
+    id: flatDataUtag.obj_scoutId,
+    yearConstructed: parseInt(flatDataUtag.obj_yearConstructed, 10),
+    floor: parseInt(flatDataUtag.obj_floor, 10),
     rent: {
-      total: parseFloat(flatData.obj_totalRent),
-      base: parseFloat(flatData.obj_baseRent),
-      additional: parseFloat(flatData.obj_serviceCharge)
+      total: parseFloat(flatDataUtag.obj_totalRent),
+      base: parseFloat(flatDataUtag.obj_baseRent),
+      additional: parseFloat(flatDataUtag.obj_serviceCharge)
     },
-    requiresWBS: flatData.additionalData.requiresWBS
+    applicationLinksExternally: Boolean(
+      flatDataExpose.contactData.contactButton.clickOutUrl
+    ),
+    requiresWBS: additionalFlatData.requiresWBS
   };
 }
 
@@ -119,13 +128,23 @@ export function getFlatData(): ThunkAction {
     const electronUtils = new ElectronUtils(
       electronObjects.views.puppet.webContents
     );
-    const rawFlatData: RawFlatData = await electronUtils.evaluate(`utag_data`);
-    rawFlatData.additionalData = {
+    const rawFlatDataUtag: RawFlatDataUtag =
+      await electronUtils.evaluate(`utag_data`);
+    const rawFlatDataExpose: RawFlatDataExpose = await electronUtils.evaluate(
+      `JSON.parse(JSON.stringify(IS24.expose))`
+    );
+    const additionalData = {
       requiresWBS: await electronUtils.elementExists(
         '.is24qa-wohnberechtigungsschein-erforderlich-label'
       )
     };
-    const flatData = processFlatData(rawFlatData);
+    console.log(rawFlatDataExpose);
+    const flatData = processFlatData(
+      rawFlatDataUtag,
+      rawFlatDataExpose,
+      additionalData
+    );
+    console.log(flatData);
     dispatch({
       type: SET_FLAT_DATA,
       payload: {

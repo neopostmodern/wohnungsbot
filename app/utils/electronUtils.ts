@@ -22,6 +22,7 @@ export default class ElectronUtils {
        try {
           resolve(${javaScript})
        } catch(err) {
+          resolve({ __error: { name: err.name, message: err.message, stack: err.stack } })
           throw { name: err.name, message: err.message, stack: err.stack }
        }
     })`;
@@ -29,7 +30,15 @@ export default class ElectronUtils {
     const { stack } = new Error();
 
     try {
-      return await this.webContents.executeJavaScript(code, isUserGesture);
+      const result = await this.webContents.executeJavaScript(
+        code,
+        isUserGesture
+      );
+      console.log(result);
+      if ('__error' in Object(result)) {
+        throw result.__error;
+      }
+      return result;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(`Error executing JavaScript-snippet within webContents:

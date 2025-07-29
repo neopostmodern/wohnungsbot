@@ -167,6 +167,13 @@ export function assessFlat(
         result: flatData.yearConstructed < 1950
       });
     }
+
+    if (flatData.applicationLinksExternally) {
+      reasons.push({
+        reason: `Verweist auf externe Website`,
+        result: false
+      });
+    }
   }
 
   const result = reasons.every((reason) => reason.result);
